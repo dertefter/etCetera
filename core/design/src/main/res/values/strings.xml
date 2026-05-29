@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="design_update_failed">Failed to load data</string>
+    <string name="design_retry">Retry</string>
+    <string name="design_back_content_desc">Back</string>
+    <string name="design_like_button_like">Like</string>
+    <string name="design_like_button_unlike">Remove like</string>
+    <string name="design_repost">Repost</string>
+    <string name="design_unrepost">Remove repost</string>
+    <string name="design_comments">Comments</string>
+    <string name="design_poll_total_votes">Total votes: %1$d</string>
+    <string name="design_poll_select_one">Select one option</string>
+    <string name="design_poll_select_multiple">Select multiple options</string>
+    <string name="design_poll_save">Save</string>
+    <string name="design_poll_change_vote">Change vote</string>
+    <string name="design_new_poll_title_placeholder">Poll title…</string>
+    <string name="design_new_poll_add_option">Add option</string>
+    <string name="design_new_poll_multiple_choice">Multiple choice</string>
+
+</resources>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feed_popular">Для вас</string>
+    <string name="feed_clan">Лента клана</string>
+    <string name="feed_following">Подписки</string>
+    <string name="feed_title">Лента</string>
+</resources>

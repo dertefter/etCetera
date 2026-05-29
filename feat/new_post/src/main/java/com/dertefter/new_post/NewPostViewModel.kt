@@ -1,0 +1,235 @@
+package com.dertefter.new_post
+
+import android.app.Application
+import android.net.Uri
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.dertefter.data.repository.NewPostRepository
+import com.dertefter.navigation.Navigator
+import com.dertefter.new_post.presentation.Event
+import com.dertefter.new_post.presentation.UiState
+import com.dertefter.new_post.presentation.Upload
+import com.dertefter.new_post.presentation.UploadStatus
+import com.dertefter.design.components.poll.NewPollUiModel
+import com.dertefter.design.components.poll.NewPollOptionUiModel
+import com.dertefter.data.dto.new_post.NewPostRequestDto
+import com.dertefter.data.dto.new_post.NewPollDto
+import com.dertefter.data.dto.new_post.NewPollOptionDto
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import java.io.File
+import java.util.UUID
+import javax.inject.Inject
+
+@HiltViewModel
+class NewPostViewModel @Inject constructor(
+    private val application: Application,
+    private val newPostRepository: NewPostRepository,
+    private val navigator: Navigator
+) : ViewModel() {
+
+
+    private val _poll = MutableStateFlow<NewPollUiModel?>(null)
+
+    private val _uploads = MutableStateFlow<List<Upload>>(emptyList())
+
+    private val _content = MutableStateFlow("")
+
+    private val _isUploadingPost = MutableStateFlow(false)
+
+    private var wallRecipientId: String? = null
+
+    val uiState: StateFlow<UiState> = combine(_content, _uploads, _poll, _isUploadingPost) { content, uploads, poll, isUploadingPost ->
+        UiState(content, uploads, poll, isUploadingPost)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), UiState(
+        "",
+        emptyList()
+    ))
+
+    fun onEvent(event: Event) {
+        when (event) {
+            is Event.OnPhotosSelected -> {
+                uploadPhotos(event.uris)
+            }
+
+            is Event.OnRemoveUpload -> {
+                _uploads.update { it.filter { upload -> upload.uri != event.uri } }
+            }
+
+            is Event.OnRetryUpload -> {
+                retryUpload(event.uri)
+            }
+
+            is Event.OnContentChanged -> {
+                _content.value = event.content
+            }
+
+            Event.OnAddPoll -> {
+                _poll.value = NewPollUiModel(
+                    title = "",
+                    questions = listOf(
+                        NewPollOptionUiModel("", UUID.randomUUID().toString()),
+                        NewPollOptionUiModel("", UUID.randomUUID().toString())
+                    )
+                )
+            }
+
+            Event.OnRemovePoll -> {
+                _poll.value = null
+            }
+
+            is Event.OnPollTitleChanged -> {
+                _poll.update { it?.copy(title = event.title) }
+            }
+
+            is Event.OnPollQuestionChanged -> {
+                _poll.update { poll ->
+                    poll?.copy(
+                        questions = poll.questions.map {
+                            if (it.id == event.id) it.copy(text = event.text) else it
+                        }
+                    )
+                }
+            }
+
+            Event.OnAddPollQuestion -> {
+                _poll.update { poll ->
+                    poll?.copy(
+                        questions = poll.questions + NewPollOptionUiModel("", UUID.randomUUID().toString())
+                    )
+                }
+            }
+
+            is Event.OnRemovePollQuestion -> {
+                _poll.update { poll ->
+                    if (poll == null) return@update null
+                    val newQuestions = poll.questions.filter { it.id != event.id }
+                    if (newQuestions.size < 2) {
+                        null
+                    } else {
+                        poll.copy(questions = newQuestions)
+                    }
+                }
+            }
+
+            is Event.OnPollMultipleChoiceChanged -> {
+                _poll.update { it?.copy(isMultipleChoice = event.isMultipleChoice) }
+            }
+
+            Event.OnSavePost -> {
+                wallRecipientId?.let{ wallRecipientId ->
+                    savePost(wallRecipientId)
+                }
+
+            }
+        }
+    }
+
+    fun clearAll() {
+        _content.value = ""
+        _uploads.value = emptyList()
+        _poll.value = null
+        _isUploadingPost.value = false
+    }
+
+    private fun savePost(wallRecipientId: String) {
+        viewModelScope.launch {
+            _isUploadingPost.value = true
+            val pollDto = _poll.value?.let { poll ->
+                NewPollDto(
+                    question = poll.title,
+                    options = poll.questions.map { NewPollOptionDto(it.text) },
+                    multipleChoice = poll.isMultipleChoice
+                )
+            }
+            val attachmentIds = _uploads.value
+                .filter { it.uploadStatus == UploadStatus.SUCCESS }
+                .mapNotNull { it.attachment?.id }
+
+            val request = NewPostRequestDto(
+                content = _content.value,
+                poll = pollDto,
+                attachmentIds = attachmentIds,
+                wallRecipientId = wallRecipientId
+            )
+
+            val result = newPostRepository.newPost(request)
+            if (result.isSuccess) {
+                clearAll()
+                navigator.hideBottomSheet()
+            }
+            _isUploadingPost.value = false
+        }
+    }
+
+    private fun uploadPhotos(uris: List<Uri>) {
+        uris.forEach { uri ->
+            if (_uploads.value.any { it.uri == uri }) return@forEach
+            val newUpload = Upload(UploadStatus.UPLOADING, uri, null)
+            _uploads.update { it + newUpload }
+            uploadFile(newUpload)
+        }
+    }
+
+    private fun retryUpload(uri: Uri) {
+        _uploads.update { uploads ->
+            uploads.map {
+                if (it.uri == uri) it.copy(uploadStatus = UploadStatus.UPLOADING) else it
+            }
+        }
+        val upload = _uploads.value.find { it.uri == uri }
+        if (upload != null) {
+            uploadFile(upload)
+        }
+    }
+
+    private fun uploadFile(upload: Upload) {
+        viewModelScope.launch {
+            try {
+                val file = uriToFile(upload.uri)
+                val result = newPostRepository.upload(file)
+                _uploads.update { uploads ->
+                    uploads.map {
+                        if (it.uri == upload.uri) {
+                            if (result.isSuccess) {
+                                it.copy(uploadStatus = UploadStatus.SUCCESS, attachment = result.getOrNull())
+                            } else {
+                                it.copy(uploadStatus = UploadStatus.ERROR)
+                            }
+                        } else it
+                    }
+                }
+            } catch (e: Exception) {
+                _uploads.update { uploads ->
+                    uploads.map {
+                        if (it.uri == upload.uri) it.copy(uploadStatus = UploadStatus.ERROR) else it
+                    }
+                }
+            }
+        }
+    }
+
+    private fun uriToFile(uri: Uri): File {
+        val inputStream = application.contentResolver.openInputStream(uri)
+        val file = File(application.cacheDir, "temp_upload_${System.currentTimeMillis()}.jpg")
+        inputStream?.use { input ->
+            file.outputStream().use { output ->
+                input.copyTo(output)
+            }
+        }
+        return file
+    }
+
+    fun initWithWalId(wallRecipientId: String?) {
+        if (this.wallRecipientId == wallRecipientId) return
+        this.wallRecipientId = wallRecipientId
+        clearAll()
+    }
+
+}

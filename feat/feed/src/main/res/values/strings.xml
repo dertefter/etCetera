@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feed_popular">For you</string>
+    <string name="feed_clan">Clan</string>
+    <string name="feed_following">Following</string>
+    <string name="feed_title">Feed</string>
+</resources>
