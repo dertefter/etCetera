@@ -236,6 +236,10 @@ class UserViewModel @Inject constructor(
                 follow(event.userId)
             }
 
+            is Event.OnBannerEdit -> {
+                navigator.navigate(Routes.BannerEdit)
+            }
+
             is Event.OnSaveBio -> {
                 viewModelScope.launch {
                     meRepository.updateMe(

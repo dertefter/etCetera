@@ -39,7 +39,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
-import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -51,7 +50,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -360,7 +358,12 @@ fun UserScreen(
                             emoji = uiState.userDto.avatar,
                             name = uiState.userDto.displayName,
                             username = uiState.userDto.username,
-                            scrollBehavior = scrollBehavior
+                            scrollBehavior = scrollBehavior,
+                            onBannerClick = {
+                                if (uiState.isMe){
+                                    onEvent(Event.OnBannerEdit)
+                                }
+                            }
                         )
                     }
                     item {

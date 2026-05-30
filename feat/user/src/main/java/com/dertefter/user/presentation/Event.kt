@@ -26,5 +26,7 @@ sealed interface Event {
 
     data class OnFollow(val userId: String) : Event
 
+    data object OnBannerEdit : Event
+
     data class OnUnfollow(val userId: String) : Event
 }

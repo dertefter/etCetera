@@ -2,6 +2,7 @@ package com.dertefter.user.presentation.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,7 +20,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,7 +40,8 @@ fun Header(
     name: String?,
     username: String?,
     avatarSize: Dp = 120.dp,
-    scrollBehavior: TopAppBarScrollBehavior? = null
+    scrollBehavior: TopAppBarScrollBehavior? = null,
+    onBannerClick: () -> Unit = {}
 ){
 
 
@@ -69,6 +70,7 @@ fun Header(
                     .padding(bottom = avatarSize / 2)
                     .alpha(sqrt(1f - scrollFraction))
                     .clip(MaterialTheme.shapes.extraLarge)
+                    .clickable(onClick = onBannerClick)
                     .background(MaterialTheme.colorScheme.surfaceVariant)
                     .fillMaxWidth()
                     .height(172.dp),
