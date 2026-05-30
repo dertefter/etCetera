@@ -77,19 +77,25 @@ fun NotificationsFeed(
         ) { state ->
             when (state) {
                 PaginatorUiState.Idle, is PaginatorUiState.Loading -> {
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Box(Modifier
+                        .padding(contentPadding)
+                        .fillMaxSize(), contentAlignment = Alignment.Center) {
                         AppLoadingIndicator()
                     }
                 }
 
                 is PaginatorUiState.Empty -> {
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Box(Modifier
+                        .padding(contentPadding)
+                        .fillMaxSize(), contentAlignment = Alignment.Center) {
                         Text("Уведомлений пока нет")
                     }
                 }
 
                 is PaginatorUiState.Error -> {
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Box(Modifier
+                        .padding(contentPadding)
+                        .fillMaxSize(), contentAlignment = Alignment.Center) {
                         Text("Ошибка загрузки: ${state.exception.message}")
                     }
                 }
