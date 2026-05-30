@@ -29,6 +29,9 @@ sealed interface Routes {
     data object Notifications : Routes
 
     @Serializable
+    data object BannerEdit : Routes
+
+    @Serializable
     data class NewPost(val wallRecipientId: String?) : Routes
 
     @Serializable
