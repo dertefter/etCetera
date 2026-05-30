@@ -5,19 +5,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed interface Routes {
 
-
-    @Serializable
-    data object Tab1 : Routes
-
-    @Serializable
-    data object Tab2 : Routes
-
-    @Serializable
-    data object Tab3 : Routes
-
-    @Serializable
-    data object Tab4 : Routes
-
     @Serializable
     data object Auth : Routes
 

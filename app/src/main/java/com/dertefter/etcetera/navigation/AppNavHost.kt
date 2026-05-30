@@ -1,14 +1,11 @@
 package com.dertefter.etcetera.navigation
 
-import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.dertefter.auth.AuthRoute
 import com.dertefter.banner_edit.BannerEditRoute
@@ -20,36 +17,19 @@ import com.dertefter.new_post.NewPostRoute
 import com.dertefter.notifications.NotificationsRoute
 import com.dertefter.user.UserRoute
 
-@SuppressLint("RestrictedApi")
+
 @Composable
 fun AppNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    navItems: List<TabRouteItem>
+    startDestination: Routes
 ) {
-    if (navItems.isEmpty()) return
-
-    LaunchedEffect(navController) {
-        navController.currentBackStack.collect { backStack ->
-            val routes = backStack
-                .mapNotNull { it.destination.route?.substringAfterLast(".") }
-                .joinToString(" -> ")
-        }
-    }
-
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = Routes.Tab1
+        startDestination = startDestination
     ) {
-        navItems.forEach { item ->
-            navigation(
-                startDestination = item.startDestination,
-                route = item.tab::class
-            ) {
-                graph()
-            }
-        }
+        graph()
     }
 }
 
@@ -64,7 +44,6 @@ fun RouteContent(route: Routes) {
         is Routes.Followers -> FollowersRoute()
         is Routes.Notifications -> NotificationsRoute()
         is Routes.BannerEdit -> BannerEditRoute()
-        else -> {}
     }
 }
 

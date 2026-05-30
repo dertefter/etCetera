@@ -1,34 +1,32 @@
 package com.dertefter.etcetera.presentation
 
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.statusBars
-import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.rememberBottomSheetState
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.unit.coerceAtLeast
-import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.dertefter.comments.CommentsRoute
-import com.dertefter.design.theme.cornerShape
-import com.dertefter.design.theme.isTab
-import com.dertefter.etcetera.navigation.getNavigationMenu
-import com.dertefter.etcetera.presentation.adaptive.PhoneUi
-import com.dertefter.etcetera.presentation.adaptive.TabUI
+import com.dertefter.etcetera.navigation.AppNavHost
 import com.dertefter.navigation.NavigationAction
 import com.dertefter.navigation.Navigator
 import com.dertefter.navigation.Routes
 import com.dertefter.new_post.NewPostRoute
+import com.gigamole.composefadingedges.FadingEdgesGravity
+import com.gigamole.composefadingedges.fill.FadingEdgesFillType
+import com.gigamole.composefadingedges.verticalFadingEdges
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,15 +36,12 @@ fun MainScreen(
 ){
 
     val navController = rememberNavController()
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = navBackStackEntry?.destination
+
+    val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
     var bottomSheetRoute by remember { mutableStateOf<Routes?>(null) }
     val sheetState = rememberBottomSheetState( SheetValue.Hidden)
 
-    val isFullScreen = false
-
-    val navigationItems = getNavigationMenu(mainScreenState.isAuthorized)
 
     if (bottomSheetRoute != null) {
         ModalBottomSheet(
@@ -95,20 +90,17 @@ fun MainScreen(
         }
     }
 
+    val startDestination = if (mainScreenState.isAuthorized) Routes.Feed else Routes.Auth
 
-    if (MaterialTheme.isTab) {
-        TabUI(
-            navController = navController,
-            currentDestination = currentDestination,
-            navigationItems = navigationItems,
-            isFullScreen = isFullScreen
-        )
-    } else {
-        PhoneUi(
-            navController = navController,
-            currentDestination = currentDestination,
-            navigationItems = navigationItems,
-            isFullScreen = isFullScreen
-        )
-    }
+    AppNavHost(
+        navController = navController,
+        modifier = Modifier
+            .verticalFadingEdges(
+                fillType = FadingEdgesFillType.FadeColor(color = MaterialTheme.colorScheme.background),
+                gravity = FadingEdgesGravity.End,
+                length = navigationBarHeight + (navigationBarHeight * 0.5f )
+            )
+            .fillMaxSize(),
+        startDestination = startDestination
+    )
 }
