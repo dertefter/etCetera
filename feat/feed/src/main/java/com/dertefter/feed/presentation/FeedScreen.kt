@@ -47,6 +47,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Wallpapers
 import androidx.compose.ui.unit.dp
 import com.dertefter.data.dto.feed.AuthorDto
 import com.dertefter.data.dto.feed.PostDto
@@ -285,7 +286,9 @@ fun FeedScreen(
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
-@Preview(showBackground = true)
+@Preview(showBackground = true, showSystemUi = true,
+    wallpaper = Wallpapers.GREEN_DOMINATED_EXAMPLE
+)
 @Composable
 fun FeedScreenPreview() {
     AppTheme {
@@ -318,6 +321,74 @@ fun FeedScreenPreview() {
             ),
             PostDto(
                 id = "2",
+                content = "Another sample post",
+                spans = emptyList(),
+                likesCount = 5,
+                commentsCount = 0,
+                repostsCount = 0,
+                viewsCount = 50,
+                author = sampleAuthor,
+                attachments = emptyList(),
+                isLiked = true,
+                isReposted = false,
+                isOwner = false,
+                isViewed = true,
+                createdAt = "2023-10-27T11:00:00Z",
+                vs = ""
+            ),
+            PostDto(
+                id = "3",
+                content = "Another sample post",
+                spans = emptyList(),
+                likesCount = 5,
+                commentsCount = 0,
+                repostsCount = 0,
+                viewsCount = 50,
+                author = sampleAuthor,
+                attachments = emptyList(),
+                isLiked = true,
+                isReposted = false,
+                isOwner = false,
+                isViewed = true,
+                createdAt = "2023-10-27T11:00:00Z",
+                vs = ""
+            ),
+            PostDto(
+                id = "4",
+                content = "Another sample post",
+                spans = emptyList(),
+                likesCount = 5,
+                commentsCount = 0,
+                repostsCount = 0,
+                viewsCount = 50,
+                author = sampleAuthor,
+                attachments = emptyList(),
+                isLiked = true,
+                isReposted = false,
+                isOwner = false,
+                isViewed = true,
+                createdAt = "2023-10-27T11:00:00Z",
+                vs = ""
+            ),
+            PostDto(
+                id = "5",
+                content = "Another sample post",
+                spans = emptyList(),
+                likesCount = 5,
+                commentsCount = 0,
+                repostsCount = 0,
+                viewsCount = 50,
+                author = sampleAuthor,
+                attachments = emptyList(),
+                isLiked = true,
+                isReposted = false,
+                isOwner = false,
+                isViewed = true,
+                createdAt = "2023-10-27T11:00:00Z",
+                vs = ""
+            ),
+            PostDto(
+                id = "7",
                 content = "Another sample post",
                 spans = emptyList(),
                 likesCount = 5,
