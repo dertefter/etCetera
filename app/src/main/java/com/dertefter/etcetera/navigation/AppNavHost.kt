@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.dertefter.auth.AuthRoute
+import com.dertefter.banner_edit.BannerEditRoute
 import com.dertefter.comments.CommentsRoute
 import com.dertefter.feed.FeedRoute
 import com.dertefter.followers.FollowersRoute
@@ -62,6 +63,7 @@ fun RouteContent(route: Routes) {
         is Routes.NewPost -> NewPostRoute(route.wallRecipientId)
         is Routes.Followers -> FollowersRoute()
         is Routes.Notifications -> NotificationsRoute()
+        is Routes.BannerEdit -> BannerEditRoute()
         else -> {}
     }
 }
@@ -77,6 +79,10 @@ fun NavGraphBuilder.graph() {
 
     composable<Routes.Notifications> {
         RouteContent(Routes.Notifications)
+    }
+
+    composable<Routes.BannerEdit> {
+        RouteContent(Routes.BannerEdit)
     }
 
     composable<Routes.Comments> {
