@@ -6,5 +6,6 @@ import kotlinx.serialization.Serializable
 data class UpdateMeRequestDto(
     val displayName: String? = null,
     val username: String? = null,
-    val bio: String? = null
+    val bio: String? = null,
+    val bannerId: String? = null
 )
