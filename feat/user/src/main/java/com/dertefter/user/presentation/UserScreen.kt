@@ -327,8 +327,7 @@ fun UserScreen(
     ) { contentPadding ->
         PullToRefreshBox(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(contentPadding),
+                .fillMaxSize(),
             state = pullToRefreshState,
             isRefreshing = isRefreshing,
             onRefresh = {
@@ -347,6 +346,7 @@ fun UserScreen(
                     state = lazyListState,
                     modifier = Modifier
                         .fillMaxSize(),
+                    contentPadding = contentPadding,
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large),
                 ) {
@@ -506,12 +506,15 @@ fun UserScreen(
                 }
             } else {
                 if (uiState.isLoading) {
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Box(Modifier
+                        .padding(contentPadding)
+                        .fillMaxSize(), contentAlignment = Alignment.Center) {
                         AppLoadingIndicator()
                     }
                 } else if (uiState.error != null) {
-
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Box(Modifier
+                        .padding(contentPadding)
+                        .fillMaxSize(), contentAlignment = Alignment.Center) {
                         ErrorLarge(
                             onRetry = { onEvent(Event.OnRefresh(tabs.first())) }
                         )
