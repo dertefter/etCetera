@@ -81,29 +81,36 @@ fun Feed(
             label = "feed_state",
             modifier = Modifier
                 .fillMaxSize()
-                .padding(contentPadding)
         ){ state ->
             when (state) {
                 PaginatorUiState.Idle -> {
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Box(Modifier
+                        .padding(contentPadding)
+                        .fillMaxSize(), contentAlignment = Alignment.Center) {
                         AppLoadingIndicator()
                     }
                 }
 
                 is PaginatorUiState.Loading -> {
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Box(Modifier
+                        .padding(contentPadding)
+                        .fillMaxSize(), contentAlignment = Alignment.Center) {
                         AppLoadingIndicator()
                     }
                 }
 
                 is PaginatorUiState.Empty -> {
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Box(Modifier
+                        .padding(contentPadding)
+                        .fillMaxSize(), contentAlignment = Alignment.Center) {
                         Text("Постов пока нет")
                     }
                 }
 
                 is PaginatorUiState.Error -> {
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Box(Modifier
+                        .padding(contentPadding)
+                        .fillMaxSize(), contentAlignment = Alignment.Center) {
                         Text("Ошибка загрузки: ${state.exception.message}")
                     }
                 }
@@ -116,7 +123,8 @@ fun Feed(
                                 if (scrollBehavior != null) Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
                                 else Modifier
                             ),
-                        state = listState
+                        state = listState,
+                        contentPadding = contentPadding
                     ) {
                         paginated(paged) {
                             itemsIndexed(
