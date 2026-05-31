@@ -5,6 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class SearchDataDto(
-    @SerialName("users") val users: List<SearchUserDto>,
-    @SerialName("hashtags") val hashtags: List<SearchHashtagDto>
+    @SerialName("users") val users: List<SearchUserDto> = emptyList(),
+    @SerialName("hashtags") val hashtags: List<SearchHashtagDto> = emptyList()
 )

@@ -14,6 +14,7 @@ import com.dertefter.data.dto.me.UpdateMeRequestDto
 import com.dertefter.data.dto.me.UpdateMeResponseDto
 import com.dertefter.data.dto.new_post.NewPostRequestDto
 import com.dertefter.data.dto.notifications.NotificationsResponseDto
+import com.dertefter.data.dto.search.SearchHashtagDto
 import com.dertefter.data.dto.upload.AttachmentUploadResponseDto
 import com.dertefter.data.dto.user.FollowResponseDto
 import com.dertefter.data.dto.user.UserDto
@@ -64,4 +65,7 @@ interface RemoteDataSource {
     suspend fun getFollowing(userId: String, page: Int?): Result<FollowersResponseDataDto>
 
     suspend fun getNotifications(offset: Int?): Result<NotificationsResponseDto>
+
+    suspend fun getTrendingHashtags(): Result<List<SearchHashtagDto>>
+
 }

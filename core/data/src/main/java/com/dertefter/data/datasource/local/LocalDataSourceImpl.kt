@@ -3,6 +3,7 @@ package com.dertefter.data.datasource.local
 import com.dertefter.data.datasource.local.room.dao.CommentDao
 import com.dertefter.data.datasource.local.room.dao.PageDao
 import com.dertefter.data.datasource.local.room.dao.PostDao
+import com.dertefter.data.datasource.local.room.dao.SearchDao
 import com.dertefter.data.datasource.local.room.dao.UserDao
 import com.dertefter.data.datasource.local.room.entity.CommentEntity
 import com.dertefter.data.datasource.local.room.entity.PageEntity
@@ -15,6 +16,7 @@ import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.dto.followers.FollowerUserDto
 import com.dertefter.data.dto.me.MeDto
+import com.dertefter.data.dto.search.SearchHashtagDto
 import com.dertefter.data.dto.user.UserDto
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -26,7 +28,8 @@ class LocalDataSourceImpl @Inject constructor(
     private val pageDao: PageDao,
     private val userDao: UserDao,
     private val postDao: PostDao,
-    private val commentDao: CommentDao
+    private val commentDao: CommentDao,
+    private val searchDao: SearchDao
 ) : LocalDataSource {
 
     override val meDto: Flow<MeDto?> = userDao.getMe()
@@ -132,5 +135,13 @@ class LocalDataSourceImpl @Inject constructor(
 
     override suspend fun getUsersForPage(type: PageType, tab: String, self: String): List<FollowerUserDto> {
         return userDao.getUsersForPage(type, tab, self).map { it.asFollowerExternalModel() }
+    }
+
+    override fun getTrendingHashtags(): Flow<List<SearchHashtagDto>?> {
+        return searchDao.getTrendingHashtags().map { it.map { it.asExternalModel() } }
+    }
+
+    override suspend fun saveTrendingHashtags(hashtags: List<SearchHashtagDto>) {
+        searchDao.updateTrendingHashtags(hashtags.map { it.asEntity() })
     }
 }

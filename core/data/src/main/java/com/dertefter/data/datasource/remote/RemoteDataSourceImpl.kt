@@ -16,6 +16,7 @@ import com.dertefter.data.dto.me.UpdateMeResponseDto
 import com.dertefter.data.dto.poll.VotePollRequestDto
 import com.dertefter.data.dto.new_post.NewPostRequestDto
 import com.dertefter.data.dto.notifications.NotificationsResponseDto
+import com.dertefter.data.dto.search.SearchHashtagDto
 import com.dertefter.data.dto.upload.AttachmentUploadResponseDto
 import com.dertefter.data.dto.user.FollowResponseDto
 import com.dertefter.data.dto.user.UserDto
@@ -295,6 +296,17 @@ class RemoteDataSourceImpl @Inject constructor(
             val response = apiService.notifications(offset = offset)
             if (response.isSuccessful) {
                 response.body()!!
+            } else {
+                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
+            }
+        }
+    }
+
+    override suspend fun getTrendingHashtags(): Result<List<SearchHashtagDto>> {
+        return runCatching {
+            val response = apiService.trendingHashtags()
+            if (response.isSuccessful) {
+                response.body()!!.data.hashtags
             } else {
                 throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
             }

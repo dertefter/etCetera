@@ -6,6 +6,7 @@ import com.dertefter.data.datasource.local.room.AppDatabase
 import com.dertefter.data.datasource.local.room.dao.CommentDao
 import com.dertefter.data.datasource.local.room.dao.PageDao
 import com.dertefter.data.datasource.local.room.dao.PostDao
+import com.dertefter.data.datasource.local.room.dao.SearchDao
 import com.dertefter.data.datasource.local.room.dao.UserDao
 import dagger.Module
 import dagger.Provides
@@ -48,6 +49,11 @@ object DatabaseModule {
     @Provides
     fun provideCommentDao(database: AppDatabase): CommentDao {
         return database.commentDao()
+    }
+
+    @Provides
+    fun provideSearchDao(database: AppDatabase): SearchDao {
+        return database.searchDao()
     }
 
 }

@@ -18,6 +18,7 @@ import com.dertefter.data.dto.new_post.NewPostRequestDto
 import com.dertefter.data.dto.notifications.NotificationsResponseDto
 import com.dertefter.data.dto.poll.PollVoteResponseDto
 import com.dertefter.data.dto.poll.VotePollRequestDto
+import com.dertefter.data.dto.search.SearchResponseDto
 import com.dertefter.data.dto.upload.AttachmentUploadResponseDto
 import com.dertefter.data.dto.user.FollowResponseDto
 import com.dertefter.data.dto.user.UserDto
@@ -75,6 +76,11 @@ interface ApiService {
         @Query("tab") tab: String,
         @Query("cursor") cursor: String?
     ): Response<FeedResponseDto>
+
+    @GET("api/hashtags/trending")
+    suspend fun trendingHashtags(
+        @Query("limit") limit: Int = 10
+    ): Response<SearchResponseDto>
 
     @GET("api/posts/user/{userId}")
     suspend fun posts(

@@ -14,6 +14,8 @@ import com.dertefter.data.repository.NewPostRepository
 import com.dertefter.data.repository.NewPostRepositoryImpl
 import com.dertefter.data.repository.NotificationsRepository
 import com.dertefter.data.repository.NotificationsRepositoryImpl
+import com.dertefter.data.repository.SearchRepository
+import com.dertefter.data.repository.SearchRepositoryImpl
 import com.dertefter.data.repository.UserRepository
 import com.dertefter.data.repository.UserRepositoryImpl
 import dagger.Binds
@@ -73,4 +75,10 @@ abstract class RepositoryModule {
     abstract fun bindNotificationsRepository(
         notificationsRepositoryImpl: NotificationsRepositoryImpl
     ): NotificationsRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindSearchRepository(
+        searchRepoImpl: SearchRepositoryImpl
+    ): SearchRepository
 }
