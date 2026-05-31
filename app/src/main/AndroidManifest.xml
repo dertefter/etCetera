@@ -12,6 +12,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:enableOnBackInvokedCallback="true"
+        tools:targetApi="33"
         android:name=".EtCetera"
         android:theme="@style/Theme.EtCetera">
 
