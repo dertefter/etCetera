@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import android.graphics.Canvas
 import android.graphics.Paint
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -50,20 +51,22 @@ fun SmallEmojiAvatar(
     staticShape:  RoundedPolygon? = null,
     fontSize: TextUnit = 20.sp,
     angle: Int = 0,
-    containerColor: Color = MaterialTheme.colorScheme.secondaryContainer
+    containerColor: Color = MaterialTheme.colorScheme.secondaryContainer,
+    onClick: () -> Unit = {}
 ) {
 
     var detectedColor by remember { mutableStateOf(containerColor) }
 
     LaunchedEffect(emoji, containerColor) {
         val color = extractEmojiColor(emoji, containerColor.toArgb())
-        detectedColor = color.copy(alpha = 0.22f)
+        detectedColor = color.copy(alpha = 0.26f)
     }
 
 
     Box(
         modifier = modifier
             .clip(staticShape?.toShape(angle) ?: shapeForEmoji(emoji, angle))
+            .clickable(onClick = onClick)
             .background(detectedColor)
             .size(containerSize),
         contentAlignment = Alignment.Center
