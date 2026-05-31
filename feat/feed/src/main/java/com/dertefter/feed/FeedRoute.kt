@@ -2,6 +2,7 @@ package com.dertefter.feed
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -28,6 +29,8 @@ fun FeedRoute(
 
     val paginators = viewModel.tabs.associateWith { viewModel.getPaginator(it) }
 
+    val topAppBarState by viewModel.topBarUiState.collectAsStateWithLifecycle()
+
     LaunchedEffect(Unit) {
         viewModel.onEvent(Event.OnRefresh(selectedTab))
     }
@@ -35,6 +38,7 @@ fun FeedRoute(
     FeedScreen(
         onEvent = viewModel::onEvent,
         selectedTab = selectedTab,
+        topAppBarState = topAppBarState,
         uiStates = uiStates,
         paginators = paginators
     )

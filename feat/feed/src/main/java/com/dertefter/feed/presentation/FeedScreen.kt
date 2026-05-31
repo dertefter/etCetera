@@ -24,26 +24,22 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LargeFlexibleTopAppBar
-import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -57,6 +53,7 @@ import com.dertefter.design.theme.cornerShape
 import com.dertefter.design.theme.rounding
 import com.dertefter.design.theme.spacing
 import com.dertefter.feed.R
+import com.dertefter.feed.presentation.component.FeedAppBar
 import com.jamal_aliev.paginator.MutableCursorPaginator
 import com.jamal_aliev.paginator.bookmark.CursorBookmark
 import com.jamal_aliev.paginator.dsl.mutableCursorPaginator
@@ -70,7 +67,8 @@ fun FeedScreen(
     onEvent: (Event) -> Unit,
     selectedTab: FeedTab,
     uiStates: Map<FeedTab, PaginatorUiState<PostDto>>,
-    paginators: Map<FeedTab, MutableCursorPaginator<PostDto>>
+    paginators: Map<FeedTab, MutableCursorPaginator<PostDto>>,
+    topAppBarState: TopBarUiState
 ) {
     val tabs = FeedTab.entries
     val popularScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -147,15 +145,12 @@ fun FeedScreen(
             )
             Surface(color = containerColor) {
                 Column {
-                    LargeFlexibleTopAppBar(
-                        title = {
-                            Text(stringResource(R.string.feed_title))
-                        },
-                        colors = TopAppBarDefaults.topAppBarColors(
-                            containerColor = Color.Transparent,
-                            scrolledContainerColor = Color.Transparent
-                        ),
+                    FeedAppBar(
+                        profileEmoji = topAppBarState.avatarEmoji,
+                        popularHashtags = topAppBarState.trendingHashtags,
                         scrollBehavior = scrollBehavior,
+                        onProfileClick = { onEvent(Event.OnOpenUser(null)) },
+                        onNotificationsClick = { onEvent(Event.OnOpenNotifications) }
                     )
                     ButtonGroup(
                         overflowIndicator = { ButtonGroupDefaults.OverflowIndicator(it) },
@@ -286,8 +281,8 @@ fun FeedScreen(
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
-@Preview(showBackground = true, showSystemUi = true,
-    wallpaper = Wallpapers.GREEN_DOMINATED_EXAMPLE
+@Preview(showBackground = true,
+    wallpaper = Wallpapers.RED_DOMINATED_EXAMPLE
 )
 @Composable
 fun FeedScreenPreview() {
@@ -441,7 +436,8 @@ fun FeedScreenPreview() {
             onEvent = {},
             selectedTab = FeedTab.POPULAR,
             uiStates = uiStates,
-            paginators = paginators
+            topAppBarState = TopBarUiState(),
+            paginators = paginators,
         )
     }
 }

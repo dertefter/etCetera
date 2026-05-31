@@ -1,27 +1,30 @@
 package com.dertefter.feed
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.repository.FeedRepository
+import com.dertefter.data.repository.MeRepository
+import com.dertefter.data.repository.SearchRepository
 import com.dertefter.feed.presentation.Event
 import com.dertefter.feed.presentation.FeedTab
+import com.dertefter.feed.presentation.TopBarUiState
 import com.dertefter.navigation.Navigator
 import com.dertefter.navigation.Routes
-import com.dertefter.navigation.Routes.*
 import com.jamal_aliev.paginator.MutableCursorPaginator
-import com.jamal_aliev.paginator.page.PaginatorUiState
-import com.jamal_aliev.paginator.extension.uiState
-import com.jamal_aliev.paginator.extension.warmUpFromPersistent
 import com.jamal_aliev.paginator.extension.distinctBy
 import com.jamal_aliev.paginator.extension.prefetchController
+import com.jamal_aliev.paginator.extension.uiState
+import com.jamal_aliev.paginator.extension.warmUpFromPersistent
+import com.jamal_aliev.paginator.page.PaginatorUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -29,7 +32,10 @@ import javax.inject.Inject
 @HiltViewModel
 class FeedViewModel @Inject constructor(
     private val feedRepository: FeedRepository,
+    private val searchRepository: SearchRepository,
+    private val meRepository: MeRepository,
     private val navigator: Navigator
+
 ) : ViewModel() {
 
     val tabs = FeedTab.entries
@@ -41,7 +47,27 @@ class FeedViewModel @Inject constructor(
         feedRepository.getFeedPaginator(tab.value)
     }
 
+    private val _trendingHashtags = searchRepository.getTrendingHashtags()
+
+    private val _emojiAvatar = meRepository.meDto.map { it?.avatar }
+
     fun getPaginator(tab: FeedTab) = paginators[tab]!!
+
+
+    val topBarUiState: StateFlow<TopBarUiState> = combine(
+        _trendingHashtags,
+        _emojiAvatar
+    ) { hashtags, avatar ->
+        TopBarUiState(
+            trendingHashtags = hashtags,
+            avatarEmoji = avatar,
+            notificationsCount = null
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = TopBarUiState()
+    )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val uiStates: Map<FeedTab, StateFlow<PaginatorUiState<PostDto>>> = paginators.mapValues { (_, paginator) ->
@@ -55,6 +81,18 @@ class FeedViewModel @Inject constructor(
     init {
         paginators.values.forEach {
             setupPaginator(it)
+        }
+    }
+
+    private fun updateTrendingHashtags(){
+        viewModelScope.launch {
+            searchRepository.updateTrendingHashtags()
+        }
+    }
+
+    private fun updateMe(){
+        viewModelScope.launch {
+            meRepository.fetchMe()
         }
     }
 
@@ -108,13 +146,17 @@ class FeedViewModel @Inject constructor(
                 // Handled by prefetchController
             }
             is Event.OnRefresh -> {
+                updateTrendingHashtags()
+                updateMe()
                 viewModelScope.launch {
                     getPaginator(event.tab).restart()
                 }
             }
-            Event.OnNavigateBack -> { /* Handle */ }
+            Event.OnOpenNotifications -> {
+                navigator.navigate(Routes.Notifications)
+            }
             is Event.OnNavigateToComments -> {
-                navigator.openAsBottomSheet(Comments(event.postId))
+                navigator.openAsBottomSheet(Routes.Comments(event.postId))
             }
 
             is Event.OnOpenUser -> {

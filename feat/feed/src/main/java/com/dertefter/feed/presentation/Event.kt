@@ -3,16 +3,14 @@ package com.dertefter.feed.presentation
 sealed interface Event {
     data object OnLoadMore : Event
     data class OnRefresh(val tab: FeedTab) : Event
-    data object OnNavigateBack : Event
+    data object OnOpenNotifications : Event
     data class OnTabSelected(val tab: FeedTab) : Event
 
     data class OnLike(val postId: String) : Event
 
     data class OnUnlike(val postId: String) : Event
 
-
-
-    data class OnOpenUser(val userId: String) : Event
+    data class OnOpenUser(val userId: String?) : Event
 
     data object OnOpenNewPost : Event
 
