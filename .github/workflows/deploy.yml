@@ -1,4 +1,4 @@
-name: Deploy and Create Release
+name: Deploy to GitHub Releases
 
 on:
   push:
@@ -10,6 +10,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
+    # Даем права на запись контента, чтобы скрипт мог создать релиз на GitHub
     permissions:
       contents: write
 
@@ -26,7 +27,6 @@ jobs:
       - name: Decode Keystore
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > app/release.jks
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > app_wearable/release.jks
 
       - name: Make gradlew executable
         run: chmod +x gradlew
@@ -41,12 +41,11 @@ jobs:
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
-        if: startsWith(github.ref, 'refs/tags/')
+        if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
         with:
           files: |
             app/build/outputs/apk/release/app-release.apk
-            app_wearable/build/outputs/apk/release/app_wearable-release.apk
-          generate_release_notes: false
+          generate_release_notes: true
           prerelease: ${{ contains(github.ref_name, '-alpha') || contains(github.ref_name, '-beta') }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
