@@ -25,7 +25,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.dertefter.design.components.avatar.SmallEmojiAvatar
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
 import kotlin.math.absoluteValue
@@ -50,9 +52,7 @@ fun Header(
     }else{
         0f
     }
-    val avatarShape = MaterialShapes.Cookie6Sided.toShape((scrollFraction * 100).toInt())
     val avatarSize = avatarSize * (1 - scrollFraction)
-    val strokeWidth = MaterialTheme.spacing.medium
 
    Column(
         modifier = modifier
@@ -77,24 +77,12 @@ fun Header(
                 contentScale = ContentScale.Crop,
             )
 
-            Box(
-                modifier = Modifier
-                    .border(
-                        strokeWidth,
-                        MaterialTheme.colorScheme.background,
-                        avatarShape
-                    )
-                    .clip(avatarShape)
-                    .background(MaterialTheme.colorScheme.secondaryContainer)
-                    .size(avatarSize),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = emoji,
-                    style = MaterialTheme.typography.headlineLarge,
-                    textAlign = TextAlign.Center
-                )
-            }
+            SmallEmojiAvatar(
+                emoji = emoji,
+                containerSize = avatarSize,
+                fontSize = 32.sp,
+                strokeWidth = 4.dp + (scrollFraction * 10).dp
+            )
         }
 
         name?.let{ name ->

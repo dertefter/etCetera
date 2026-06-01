@@ -50,6 +50,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -140,7 +141,7 @@ fun UserScreen(
 
     val paged = paginators[uiState.selectedTab]?.rememberPaginated(state = lazyListState)
 
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(lazyListState)
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     val currentTabUiState = uiState.uiStates[uiState.selectedTab]
     val isRefreshing = uiState.isLoading || (currentTabUiState is PaginatorUiState.Content && currentTabUiState.prependState.isProgressState())
@@ -345,6 +346,7 @@ fun UserScreen(
                 LazyColumn(
                     state = lazyListState,
                     modifier = Modifier
+                        .nestedScroll(scrollBehavior.nestedScrollConnection)
                         .fillMaxSize(),
                     contentPadding = contentPadding,
                     horizontalAlignment = Alignment.CenterHorizontally,

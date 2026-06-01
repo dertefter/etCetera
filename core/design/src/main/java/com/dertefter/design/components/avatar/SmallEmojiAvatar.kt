@@ -4,11 +4,13 @@ import android.content.res.Configuration
 import android.graphics.Canvas
 import android.graphics.Paint
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -38,6 +40,7 @@ import androidx.core.graphics.createBitmap
 import androidx.graphics.shapes.RoundedPolygon
 import androidx.palette.graphics.Palette
 import com.dertefter.design.theme.AppTheme
+import com.materialkolor.ktx.harmonize
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.math.abs
@@ -49,35 +52,51 @@ fun SmallEmojiAvatar(
     emoji: String,
     containerSize: Dp = 48.dp,
     staticShape:  RoundedPolygon? = null,
+    strokeWidth: Dp = 0.dp,
+    strokeColor: Color  = MaterialTheme.colorScheme.background,
     fontSize: TextUnit = 20.sp,
-    angle: Int = 0,
     containerColor: Color = MaterialTheme.colorScheme.secondaryContainer,
     onClick: () -> Unit = {}
 ) {
 
     var detectedColor by remember { mutableStateOf(containerColor) }
 
+    val containerShape = staticShape?.toShape() ?: shapeForEmoji(emoji)
+
+    val primaryColor = MaterialTheme.colorScheme.primaryContainer
+
     LaunchedEffect(emoji, containerColor) {
         val color = extractEmojiColor(emoji, containerColor.toArgb())
-        detectedColor = color.copy(alpha = 0.26f)
+        detectedColor = color.harmonize(primaryColor, true)
     }
-
 
     Box(
         modifier = modifier
-            .clip(staticShape?.toShape(angle) ?: shapeForEmoji(emoji, angle))
+            .clip(containerShape)
             .clickable(onClick = onClick)
+            .border(
+                shape = containerShape,
+                width = strokeWidth,
+                color = strokeColor
+            )
+            .background(MaterialTheme.colorScheme.surfaceContainer)
             .background(detectedColor)
-            .size(containerSize),
+            .size(containerSize)
+        ,
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = emoji,
             maxLines = 1,
-            fontSize = fontSize
+            fontSize = fontSize,
+            modifier = Modifier
         )
     }
+
+
+
 }
+
 
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -109,7 +128,7 @@ private val avatarShapes = listOf(
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 private fun shapeForEmoji(
     emoji: String,
-    angle: Int
+    angle: Int = 0
 ): Shape {
     val index = abs(emoji.hashCode()) % avatarShapes.size
     return avatarShapes[index].toShape(angle)
@@ -128,14 +147,17 @@ fun SmallEmojiAvatarPreview() {
         Column(
             modifier = Modifier
                 .clip(RoundedCornerShape(24.dp))
-                .background(MaterialTheme.colorScheme.background)
+                .background(MaterialTheme.colorScheme.primary)
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             emojiList.chunked(6).forEach { rowEmojis ->
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     rowEmojis.forEach { emoji ->
-                        SmallEmojiAvatar(emoji = emoji)
+                        SmallEmojiAvatar(
+                            emoji = emoji,
+                            strokeWidth = 4.dp,
+                        )
                     }
                 }
             }
