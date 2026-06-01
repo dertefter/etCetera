@@ -59,6 +59,7 @@ dependencies {
     implementation(project(":feat:followers"))
     implementation(project(":feat:notifications"))
     implementation(project(":feat:banner_edit"))
+    implementation(project(":feat:crash_reports"))
 
     implementation(libs.core.ktx)
     implementation(libs.core.splashscreen)

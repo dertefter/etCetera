@@ -10,6 +10,9 @@ sealed interface Routes {
 
 
     @Serializable
+    data object CrashReports : Routes
+
+    @Serializable
     data object Feed : Routes
 
     @Serializable

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="followers_tab_followers">Followers</string>
+    <string name="followers_tab_following">Following</string>
+    <string name="followers_empty">No one here yet</string>
+</resources>

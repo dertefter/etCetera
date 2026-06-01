@@ -4,6 +4,8 @@ import com.dertefter.data.repository.AuthRepository
 import com.dertefter.data.repository.AuthRepositoryImpl
 import com.dertefter.data.repository.CommentsRepository
 import com.dertefter.data.repository.CommentsRepositoryImpl
+import com.dertefter.data.repository.CrashlyticsRepository
+import com.dertefter.data.repository.CrashlyticsRepositoryImpl
 import com.dertefter.data.repository.FeedRepository
 import com.dertefter.data.repository.FeedRepositoryImpl
 import com.dertefter.data.repository.FollowersRepository
@@ -81,4 +83,10 @@ abstract class RepositoryModule {
     abstract fun bindSearchRepository(
         searchRepoImpl: SearchRepositoryImpl
     ): SearchRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindCrashlyticsRepository(
+        crashlyticsRepositoryImpl: CrashlyticsRepositoryImpl
+    ): CrashlyticsRepository
 }

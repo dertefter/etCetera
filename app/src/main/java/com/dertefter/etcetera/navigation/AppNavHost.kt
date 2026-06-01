@@ -16,6 +16,7 @@ import androidx.navigation.toRoute
 import com.dertefter.auth.AuthRoute
 import com.dertefter.banner_edit.BannerEditRoute
 import com.dertefter.comments.CommentsRoute
+import com.dertefter.crash_reports.CrashReportsRoute
 import com.dertefter.feed.FeedRoute
 import com.dertefter.followers.FollowersRoute
 import com.dertefter.navigation.Routes
@@ -74,6 +75,7 @@ fun RouteContent(route: Routes) {
         is Routes.Followers -> FollowersRoute()
         is Routes.Notifications -> NotificationsRoute()
         is Routes.BannerEdit -> BannerEditRoute()
+        is Routes.CrashReports -> CrashReportsRoute()
     }
 }
 
