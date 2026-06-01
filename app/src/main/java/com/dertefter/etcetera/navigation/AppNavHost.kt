@@ -80,6 +80,11 @@ fun RouteContent(route: Routes) {
 }
 
 fun NavGraphBuilder.graph() {
+
+    composable<Routes.CrashReports> {
+        RouteContent(Routes.CrashReports)
+    }
+
     composable<Routes.Auth> {
         RouteContent(Routes.Auth)
     }
