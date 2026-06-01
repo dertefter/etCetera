@@ -33,6 +33,9 @@ class CrashReportsViewModel @Inject constructor(
             is Event.OnDeleteReport -> {
                 deleteReport(event.path)
             }
+            is Event.OnShareReport -> {
+                // Handled in Route
+            }
             is Event.OnDismissDialog -> {
                 _uiState.update { it.copy(selectedReportContent = null) }
             }

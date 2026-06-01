@@ -1,8 +1,8 @@
 package com.dertefter.crash_reports.presentation
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -25,7 +25,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.unit.dp
 import com.dertefter.design.icons.Icons
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -95,8 +94,13 @@ fun CrashReportsScreen(
                                 Text(text = report.path)
                             },
                             trailingContent = {
-                                IconButton(onClick = { onEvent(Event.OnDeleteReport(report.path)) }) {
-                                    Icon(imageVector = Icons.Delete, contentDescription = "Удалить")
+                                Row {
+                                    IconButton(onClick = { onEvent(Event.OnShareReport(report.path)) }) {
+                                        Icon(imageVector = Icons.Share, contentDescription = "Поделиться")
+                                    }
+                                    IconButton(onClick = { onEvent(Event.OnDeleteReport(report.path)) }) {
+                                        Icon(imageVector = Icons.Delete, contentDescription = "Удалить")
+                                    }
                                 }
                             }
                         )
