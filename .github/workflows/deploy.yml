@@ -44,7 +44,7 @@ jobs:
         with:
           files: |
             app/build/outputs/apk/release/app-release.apk
-          generate_release_notes: true
+          generate_release_notes: false
           prerelease: ${{ contains(github.ref_name, '-alpha') || contains(github.ref_name, '-beta') }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
