@@ -64,7 +64,7 @@ class CommentsViewModel @Inject constructor(
         viewModelScope.launch {
             paginator.warmUpFromPersistent()
             paginator.distinctBy { it.id }
-            paginator.restart()
+            paginator.restart(silentlyLoading = true)
         }
     }
 

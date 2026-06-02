@@ -1,8 +1,9 @@
 package com.dertefter.comments.presentation
 
-import android.widget.Space
+import android.util.Log
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.Crossfade
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -16,9 +17,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -59,20 +60,13 @@ fun Comments(
     onEvent: (Event) -> Unit,
     uiState: PaginatorUiState<CommentDto>,
     contentPadding: PaddingValues = PaddingValues(),
-    scrollBehavior: TopAppBarScrollBehavior? = null
+    scrollBehavior: TopAppBarScrollBehavior? = null,
+    header: (LazyListScope.() -> Unit)? = null
 ) {
     val listState = rememberLazyListState()
     val paged = paginator.rememberPaginated(state = listState)
 
-
-
-    AnimatedContent(
-        targetState = uiState,
-        contentKey = { it::class },
-        transitionSpec = {
-            fadeIn(animationSpec = tween(300)) togetherWith fadeOut(animationSpec = tween(300))
-        },
-        label = "feed_state",
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .verticalFadingEdges(
@@ -83,8 +77,8 @@ fun Comments(
                 gravity = FadingEdgesGravity.End,
                 length = contentPadding.calculateBottomPadding() + MaterialTheme.spacing.extraLarge
             )
-    ){ state ->
-        when (state) {
+    ) {
+        when (val state = uiState) {
             PaginatorUiState.Idle -> {
                 Box(
                     Modifier
@@ -108,24 +102,53 @@ fun Comments(
             }
 
             is PaginatorUiState.Empty -> {
-                Box(
+                LazyColumn(
                     Modifier
-                        .padding(MaterialTheme.spacing.large)
-                        .padding(contentPadding)
-                        .fillMaxSize(), contentAlignment = Alignment.TopCenter
+                        .fillMaxSize()
+                        .then(
+                            if (scrollBehavior != null) Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                            else Modifier
+                        ),
+                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large),
+                    state = listState,
+                    contentPadding = contentPadding
                 ) {
-                    Text(stringResource(R.string.comments_empty))
+                    header?.invoke(this)
+                    item {
+                        Box(
+                            Modifier
+                                .padding(MaterialTheme.spacing.large)
+                                .fillMaxSize(), contentAlignment = Alignment.TopCenter
+                        ) {
+                            Text(stringResource(R.string.comments_empty))
+                        }
+                    }
                 }
+
             }
 
             is PaginatorUiState.Error -> {
-                Box(
+                LazyColumn(
                     Modifier
-                        .padding(MaterialTheme.spacing.large)
-                        .padding(contentPadding)
-                        .fillMaxSize(), contentAlignment = Alignment.TopCenter
+                        .fillMaxSize()
+                        .then(
+                            if (scrollBehavior != null) Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                            else Modifier
+                        ),
+                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large),
+                    state = listState,
+                    contentPadding = contentPadding
                 ) {
-                    Text(stringResource(R.string.comments_failed_to_load))
+                    header?.invoke(this)
+                    item {
+                        Box(
+                            Modifier
+                                .padding(MaterialTheme.spacing.large)
+                                .fillMaxSize(), contentAlignment = Alignment.TopCenter
+                        ) {
+                            Text(stringResource(R.string.comments_failed_to_load))
+                        }
+                    }
                 }
             }
 
@@ -141,6 +164,8 @@ fun Comments(
                     state = listState,
                     contentPadding = contentPadding
                 ) {
+
+                    header?.invoke(this)
 
                     item {
                         Spacer(
