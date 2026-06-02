@@ -147,7 +147,8 @@ fun Feed(
                                     onUnlike = { onEvent(Event.OnUnlike(post.id)) },
                                     onCommentsClick = { onEvent(Event.OnNavigateToComments(post.id)) },
                                     onUserClick = { userId -> onEvent(Event.OnOpenUser(userId)) },
-                                    onVote = { optionIds -> onEvent(Event.OnVote(post.id, optionIds)) }
+                                    onVote = { optionIds -> onEvent(Event.OnVote(post.id, optionIds)) },
+                                    onOpenPost = {postId -> onEvent(Event.OnOpenPost(postId))}
                                 )
                                 if (index < state.items.lastIndex) {
                                     HorizontalDivider()

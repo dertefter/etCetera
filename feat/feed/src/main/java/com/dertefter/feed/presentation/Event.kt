@@ -16,6 +16,8 @@ sealed interface Event {
 
     data class OnNavigateToComments(val postId: String) : Event
 
+    data class OnOpenPost(val postId: String) : Event
+
     data class OnVote(val postId: String, val optionIds: List<String>) : Event
 
     data class OnUpdateStats(val ids: List<String>) : Event

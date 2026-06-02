@@ -165,6 +165,12 @@ class FeedViewModel @Inject constructor(
                 )
             }
 
+            is Event.OnOpenPost -> {
+                navigator.navigate(
+                    Routes.Post(event.postId)
+                )
+            }
+
             else -> {
                 navigator.openAsBottomSheet(Routes.NewPost(null))
             }
