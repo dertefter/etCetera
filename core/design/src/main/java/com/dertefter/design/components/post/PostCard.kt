@@ -42,10 +42,12 @@ fun PostCard(
     onEdit: () -> Unit = {},
     onPin: () -> Unit = {},
     onDelete: () -> Unit = {},
-    isOnMyWall: Boolean = false
+    isOnMyWall: Boolean = false,
+    onOpenPost: (String) -> Unit = {}
 ) {
     Box(
         modifier = modifier
+            .clickable(onClick = {onOpenPost(post.id)})
             .fillMaxWidth()
     ) {
         Column(
@@ -180,6 +182,7 @@ fun PostCard(
             post.originalPost?.let { originalPost ->
                 OriginalPostCard(
                     originalPost = originalPost,
+                    onOpenPost = {origId -> onOpenPost(origId)},
                     modifier = Modifier.padding(horizontal = MaterialTheme.spacing.large),
                 )
             }

@@ -2,6 +2,7 @@ package com.dertefter.design.components.post
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,12 +26,14 @@ import com.dertefter.design.theme.spacing
 @Composable
 fun OriginalPostCard(
     originalPost: OriginalPostUiModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onOpenPost: (String) -> Unit = {},
 ) {
     Box(
         modifier = modifier
             .fillMaxWidth()
             .clip(MaterialTheme.shapes.largeIncreased)
+            .clickable(onClick = {onOpenPost(originalPost.id)})
             .background(MaterialTheme.colorScheme.surfaceContainerLow)
             .border(
                 width = 1.dp,
