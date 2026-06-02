@@ -4,14 +4,14 @@ import com.dertefter.data.dto.auth.SignInRequest
 import com.dertefter.data.dto.auth.SignInResponse
 import com.dertefter.data.dto.comments.CommentsResponseDto
 import com.dertefter.data.dto.comments.RepliesResponseDto
-import com.dertefter.data.dto.feed.AttachmentDto
 import com.dertefter.data.dto.feed.FeedResponseDto
 import com.dertefter.data.dto.feed.PostDto
+import com.dertefter.data.dto.feed.PostResponseDto
 import com.dertefter.data.dto.feed.like.LikeResponseDto
-import com.dertefter.data.dto.me.MeDto
 import com.dertefter.data.dto.feed.stats.PostStatsRequest
 import com.dertefter.data.dto.feed.stats.PostStatsResponse
 import com.dertefter.data.dto.followers.FollowersResponseDto
+import com.dertefter.data.dto.me.MeDto
 import com.dertefter.data.dto.me.UpdateMeRequestDto
 import com.dertefter.data.dto.me.UpdateMeResponseDto
 import com.dertefter.data.dto.new_post.NewPostRequestDto
@@ -43,8 +43,14 @@ interface ApiService {
 
     @POST("api/v1/auth/refresh")
     suspend fun refreshToken(): Response<SignInResponse>
+
     @GET("api/users/me")
     suspend fun me(): Response<MeDto>
+
+    @GET("api/posts/{postId}")
+    suspend fun post(
+        @Path("postId") postId: String,
+    ): Response<PostResponseDto>
 
     @GET("api/notifications")
     suspend fun notifications(

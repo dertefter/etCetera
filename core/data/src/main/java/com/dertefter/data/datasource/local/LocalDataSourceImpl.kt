@@ -88,6 +88,10 @@ class LocalDataSourceImpl @Inject constructor(
         postDao.upsertPosts(listOf(post.asEntity()))
     }
 
+    override fun getPost(postId: String): Flow<PostDto?> {
+        return postDao.getPost(postId).map { it?.asExternalModel() }
+    }
+
     override suspend fun saveComments(type: PageType, tab: String, self: String, comments: List<CommentDto>) {
         val flatComments = mutableListOf<CommentEntity>()
         fun flatten(list: List<CommentDto>, parentId: String?) {
@@ -119,14 +123,11 @@ class LocalDataSourceImpl @Inject constructor(
         val flatComments = mutableListOf<CommentEntity>()
         fun flatten(dto: CommentDto, parentId: String?) {
             flatComments.add(dto.asEntity(parentId))
-            dto.replies?.let { replies ->
-                replies.forEach { flatten(it, dto.id) }
-            }
+            dto.replies?.forEach { flatten(it, dto.id) }
         }
-        // We don't know the parentId here if it's a sub-comment, but usually saveComment is used for updates where ID exists
-        // If it's a new comment, it should probably be saved via saveComments (page-context) or we need more info.
-        // For SSOT updates, we just need to upsert the comment itself.
-        commentDao.upsertComments(listOf(comment.asEntity()))
+        val existing = commentDao.getCommentById(comment.id)
+        flatten(comment, existing?.parentId)
+        commentDao.upsertComments(flatComments)
     }
 
     override suspend fun saveUsers(type: PageType, tab: String, self: String, users: List<FollowerUserDto>) {

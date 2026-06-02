@@ -28,6 +28,9 @@ interface CommentDao {
     @Query("SELECT * FROM comments WHERE parentId = :parentId")
     suspend fun getRepliesForComment(parentId: String): List<CommentEntity>
 
+    @Query("SELECT * FROM comments WHERE id = :commentId")
+    suspend fun getCommentById(commentId: String): CommentEntity?
+
     @Query("SELECT * FROM comments")
     suspend fun getAllComments(): List<CommentEntity>
 

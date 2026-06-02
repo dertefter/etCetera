@@ -13,6 +13,8 @@ import com.jamal_aliev.paginator.bookmark.CursorBookmark
 import com.jamal_aliev.paginator.cache.eviction.CursorMostRecentPagingCache
 import com.jamal_aliev.paginator.extension.updateWhere
 import com.jamal_aliev.paginator.load.CursorLoadResult
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filterNotNull
 import java.lang.ref.WeakReference
 import java.util.concurrent.CopyOnWriteArrayList
 import javax.inject.Inject
@@ -123,6 +125,20 @@ class FeedRepositoryImpl @Inject constructor(
             updateData(
                 predicate = { it.id == postId },
                 transform = { it.copy(poll = poll) }
+            )
+        }
+    }
+
+    override fun getPost(postId: String): Flow<PostDto> {
+        return localDataSource.getPost(postId).filterNotNull()
+    }
+
+    override suspend fun updatePost(postId: String): Result<PostDto> {
+        return remoteDataSource.getPost(postId).onSuccess { postDto ->
+            localDataSource.savePost(postDto)
+            updateData(
+                predicate = { it.id == postId },
+                transform = { postDto }
             )
         }
     }

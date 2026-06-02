@@ -16,6 +16,7 @@ import okhttp3.CookieJar
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.java.net.cookiejar.JavaNetCookieJar
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.net.CookieManager
@@ -52,25 +53,26 @@ object NetworkModule {
         val delegate = JavaNetCookieJar(cookieManager)
         return object : CookieJar {
             override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
+                Log.d("NetworkModule", "CookieJar: saveFromResponse from ${url.encodedPath}")
                 delegate.saveFromResponse(url, cookies)
                 val refreshCookies = cookies.filter { it.name == "refresh_token" }
                 if (refreshCookies.isNotEmpty()) {
                     val newToken = refreshCookies.find { it.value.isNotBlank() }?.value
-                    runBlocking {
-                        if (newToken != null) {
-                            tokenManager.saveRefreshToken(newToken)
-                        } else {
-                            tokenManager.deleteRefreshToken()
-                        }
+                    if (newToken != null) {
+                        tokenManager.saveRefreshToken(newToken)
+                    } else {
+                        tokenManager.deleteRefreshToken()
                     }
                 }
             }
 
             override fun loadForRequest(url: HttpUrl): List<Cookie> {
+                Log.d("NetworkModule", "CookieJar: loadForRequest for ${url.encodedPath}")
                 val cookies = delegate.loadForRequest(url).toMutableList()
                 if (url.encodedPath.contains("api/v1/auth")) {
-                    val refreshToken = runBlocking { tokenManager.getRefreshToken() }
+                    val refreshToken = tokenManager.getRefreshToken()
                     if (!refreshToken.isNullOrBlank()) {
+                        Log.d("NetworkModule", "CookieJar: injecting refresh_token")
                         val existing = cookies.find { it.name == "refresh_token" }
                         if (existing == null || existing.value.isBlank()) {
                             cookies.removeAll { it.name == "refresh_token" }
@@ -99,13 +101,17 @@ object NetworkModule {
         tokenManager: TokenManager,
         apiService: Lazy<ApiService>
     ): OkHttpClient {
+        val loggingInterceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
         return OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
             .addInterceptor { chain ->
                 val request = chain.request()
                 if (request.url.encodedPath.contains("api/v1/auth")) {
                     return@addInterceptor chain.proceed(request)
                 }
-                val accessToken = runBlocking { tokenManager.getAccessToken() }
+                val accessToken = tokenManager.getAccessToken()
                 val authenticatedRequest = request.newBuilder().apply {
                     accessToken?.let { addHeader("Authorization", "Bearer $it") }
                 }.build()
@@ -120,7 +126,7 @@ object NetworkModule {
                     try {
                         val signInResponse = Gson().fromJson(bodyString, com.dertefter.data.dto.auth.SignInResponse::class.java)
                         signInResponse?.accessToken?.let { token ->
-                            runBlocking { tokenManager.saveAccessToken(token) }
+                            tokenManager.saveAccessToken(token)
                         }
                     } catch (_: Exception) {
                         // ignore
@@ -134,7 +140,7 @@ object NetworkModule {
                 }
 
                 synchronized(this) {
-                    val accessToken = runBlocking { tokenManager.getAccessToken() }
+                    val accessToken = tokenManager.getAccessToken()
 
                     if (response.request.header("Authorization") != "Bearer $accessToken") {
                         Log.d("NetworkModule", "Authenticator: token already updated by another thread, retrying request")
@@ -150,7 +156,7 @@ object NetworkModule {
                     if (refreshResponse.isSuccessful) {
                         val newAccessToken = refreshResponse.body()?.accessToken
                         if (newAccessToken != null) {
-                            runBlocking { tokenManager.saveAccessToken(newAccessToken) }
+                            tokenManager.saveAccessToken(newAccessToken)
                             return@authenticator response.request.newBuilder()
                                 .header("Authorization", "Bearer $newAccessToken")
                                 .build()

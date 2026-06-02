@@ -29,6 +29,7 @@ interface LocalDataSource {
 
     suspend fun getAllPosts(): List<PostDto>
     suspend fun savePost(post: PostDto)
+    fun getPost(postId: String): Flow<PostDto?>
 
     suspend fun saveComments(type: PageType, tab: String, self: String, comments: List<CommentDto>)
     suspend fun getCommentsForPage(type: PageType, tab: String, self: String): List<CommentDto>

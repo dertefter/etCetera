@@ -1,52 +1,49 @@
 package com.dertefter.data.datasource.local
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
+import android.content.Context
+import android.content.SharedPreferences
+import android.util.Log
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
+import androidx.core.content.edit
 
 @Singleton
 class TokenManager @Inject constructor(
-    private val dataStore: DataStore<Preferences>
+    @ApplicationContext context: Context
 ) {
-    companion object {
-        private val ACCESS_TOKEN = stringPreferencesKey("access_token")
-        private val REFRESH_TOKEN = stringPreferencesKey("refresh_token")
+    private val prefs: SharedPreferences = context.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
+
+    private val _hasRefreshToken = MutableStateFlow(prefs.contains("refresh_token"))
+    val hasRefreshToken = _hasRefreshToken.asStateFlow()
+
+    fun saveAccessToken(token: String) {
+        Log.d("TokenManager", "Saving Access Token")
+        prefs.edit { putString("access_token", token) }
     }
 
-    val hasRefreshToken: Flow<Boolean> = dataStore.data
-        .map { preferences ->
-            preferences[REFRESH_TOKEN] != null
-        }
-        .distinctUntilChanged()
-
-    suspend fun saveAccessToken(token: String) {
-        dataStore.edit { it[ACCESS_TOKEN] = token }
+    fun getAccessToken(): String? {
+        return prefs.getString("access_token", null)
     }
 
-    suspend fun getAccessToken(): String? {
-        return dataStore.data.first()[ACCESS_TOKEN]
+    fun saveRefreshToken(token: String) {
+        Log.d("TokenManager", "Saving Refresh Token")
+        prefs.edit { putString("refresh_token", token) }
+        _hasRefreshToken.value = true
     }
 
-    suspend fun saveRefreshToken(token: String) {
-        dataStore.edit { it[REFRESH_TOKEN] = token }
+    fun getRefreshToken(): String? {
+        return prefs.getString("refresh_token", null)
     }
 
-    suspend fun getRefreshToken(): String? {
-        return dataStore.data.first()[REFRESH_TOKEN]
+    fun deleteAccessToken() {
+        prefs.edit { remove("access_token") }
     }
 
-    suspend fun deleteAccessToken() {
-        dataStore.edit { it.remove(ACCESS_TOKEN) }
-    }
-
-    suspend fun deleteRefreshToken() {
-        dataStore.edit { it.remove(REFRESH_TOKEN) }
+    fun deleteRefreshToken() {
+        prefs.edit { remove("refresh_token") }
+        _hasRefreshToken.value = false
     }
 }

@@ -8,6 +8,7 @@ import androidx.room.Transaction
 import com.dertefter.data.datasource.local.room.entity.PagePostEntity
 import com.dertefter.data.datasource.local.room.entity.PageType
 import com.dertefter.data.datasource.local.room.entity.PostEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PostDao {
@@ -36,6 +37,9 @@ interface PostDao {
 
     @Query("SELECT * FROM posts WHERE id = :postId")
     suspend fun getPostById(postId: String): PostEntity?
+
+    @Query("SELECT * FROM posts WHERE id = :postId")
+    fun getPost(postId: String): Flow<PostEntity?>
 
     @Transaction
     suspend fun savePageWithPosts(

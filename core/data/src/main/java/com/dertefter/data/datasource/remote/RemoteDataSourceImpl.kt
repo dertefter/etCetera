@@ -33,13 +33,23 @@ class RemoteDataSourceImpl @Inject constructor(
     
     override suspend fun signIn(signInRequest: SignInRequest): Result<Unit> {
         return runCatching {
-            apiService.signIn(signInRequest)
+            val response = apiService.signIn(signInRequest)
+            if (response.isSuccessful) {
+                Unit
+            } else {
+                throw Exception("Sign in failed: ${response.code()}")
+            }
         }
     }
 
     override suspend fun refreshToken(): Result<Unit> {
         return runCatching {
-            apiService.refreshToken()
+            val response = apiService.refreshToken()
+            if (response.isSuccessful) {
+                Unit
+            } else {
+                throw Exception("Refresh failed: ${response.code()}")
+            }
         }
     }
 
@@ -68,6 +78,17 @@ class RemoteDataSourceImpl @Inject constructor(
     override suspend fun getPosts(tab: String, cursor: String?): Result<PostDataDto> {
         return runCatching {
             val response = apiService.posts(tab = tab, cursor = cursor)
+            if (response.isSuccessful) {
+                response.body()!!.data
+            } else {
+                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
+            }
+        }
+    }
+
+    override suspend fun getPost(postId: String): Result<PostDto> {
+        return runCatching {
+            val response = apiService.post(postId)
             if (response.isSuccessful) {
                 response.body()!!.data
             } else {

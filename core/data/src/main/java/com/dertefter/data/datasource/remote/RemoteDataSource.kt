@@ -30,6 +30,8 @@ interface RemoteDataSource {
 
     suspend fun getPosts(tab: String, cursor: String?): Result<PostDataDto>
 
+    suspend fun getPost(postId: String): Result<PostDto>
+
     suspend fun getPosts(userId: String, sort: String, cursor: String?): Result<PostDataDto>
 
     suspend fun getLikedPosts(userId: String, cursor: String?): Result<PostDataDto>

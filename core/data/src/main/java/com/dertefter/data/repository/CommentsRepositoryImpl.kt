@@ -59,6 +59,16 @@ class CommentsRepositoryImpl @Inject constructor(
         }
     }
 
+    private suspend fun updateData(commentId: String, transform: (CommentDto) -> CommentDto) {
+        updateInMem {
+            it.updateWhere(
+                predicate = { item -> item.containsComment(commentId) },
+                transform = { item -> item.recursiveTransform(commentId, transform) }
+            )
+        }
+        updatePagesInDb(commentId, transform)
+    }
+
     override fun getCommentsPaginator(postId: String, sort: String): MutableCursorPaginator<CommentDto> {
         val cacheKey = "$postId:$sort"
         return mutableCursorPaginator(capacity = 100) {
@@ -125,13 +135,7 @@ class CommentsRepositoryImpl @Inject constructor(
                 val filteredNewReplies = newReplies.filter { it.id !in currentIds }
                 comment.copy(replies = currentReplies + filteredNewReplies)
             }
-            updatePagesInDb(commentId, transform)
-            updateInMem {
-                it.updateWhere(
-                    predicate = { item -> item.containsComment(commentId) },
-                    transform = { item -> item.recursiveTransform(commentId, transform) }
-                )
-            }
+            updateData(commentId, transform)
         }
     }
 
@@ -143,23 +147,11 @@ class CommentsRepositoryImpl @Inject constructor(
                 comment.copy(isLiked = liked, likesCount = newCount)
             }
         }
-        updatePagesInDb(commentId, transform)
-        updateInMem {
-            it.updateWhere(
-                predicate = { item -> item.containsComment(commentId) },
-                transform = { item -> item.recursiveTransform(commentId, transform) }
-            )
-        }
+        updateData(commentId, transform)
     }
 
     private suspend fun handleLikeResponse(commentId: String, response: LikeResponseDto) {
         val transform: (CommentDto) -> CommentDto = { it.copy(isLiked = response.liked, likesCount = response.likesCount) }
-        updatePagesInDb(commentId, transform)
-        updateInMem {
-            it.updateWhere(
-                predicate = { item -> item.containsComment(commentId) },
-                transform = { item -> item.recursiveTransform(commentId, transform) }
-            )
-        }
+        updateData(commentId, transform)
     }
 }
