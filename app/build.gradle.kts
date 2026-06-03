@@ -38,9 +38,33 @@ android {
     buildFeatures {
         compose = true
     }
+
+    signingConfigs {
+        create("release") {
+            val envKeystoreFile = System.getenv("ANDROID_KEYSTORE_FILE")
+            val envKeystorePassword = System.getenv("ANDROID_KEYSTORE_PASSWORD")
+            val envKeyAlias = System.getenv("ANDROID_KEY_ALIAS")
+            val envKeyPassword = System.getenv("ANDROID_KEY_PASSWORD")
+
+            if (envKeystoreFile != null && envKeystorePassword != null && envKeyAlias != null && envKeyPassword != null) {
+                storeFile = file(envKeystoreFile)
+                storePassword = envKeystorePassword
+                keyAlias = envKeyAlias
+                keyPassword = envKeyPassword
+            } else {
+                val debugConfig = signingConfigs.getByName("debug")
+                storeFile = debugConfig.storeFile
+                storePassword = debugConfig.storePassword
+                keyAlias = debugConfig.keyAlias
+                keyPassword = debugConfig.keyPassword
+            }
+        }
+    }
+
     buildTypes {
-        getByName("release") {
-            signingConfig = signingConfigs.getByName("debug")
+        release {
+            isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 }
