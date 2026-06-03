@@ -55,6 +55,10 @@ class PostViewModel @Inject constructor(
                 navigator.navigate(Routes.User(event.userId))
             }
 
+            is Event.OnOpenPost -> {
+                navigator.navigate(Routes.User(event.postId))
+            }
+
             is Event.OnRefresh -> {
                 viewModelScope.launch {
                     _isLoading.value = true

@@ -104,7 +104,8 @@ fun PostScreen(
                                     onLike = { onEvent(Event.OnLike) },
                                     onUnlike = { onEvent(Event.OnUnlike) },
                                     onUserClick = { userId -> onEvent(Event.OnOpenUser(userId)) },
-                                    onVote = { optionIds -> onEvent(Event.OnVote(optionIds)) }
+                                    onVote = { optionIds -> onEvent(Event.OnVote(optionIds)) },
+                                    onOpenPost = { onEvent(Event.OnOpenPost(it)) }
                                 )
                             }
                             item {
