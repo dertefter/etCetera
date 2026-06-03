@@ -44,7 +44,7 @@ fun PostCard(
     onDelete: () -> Unit = {},
     isOnMyWall: Boolean = false,
     onOpenPost: (String) -> Unit = {},
-    onAttachmentClick: (position: Int) -> Unit = {}
+    onAttachmentClick: (position: Int, urls: List<String>) -> Unit
 ) {
     Box(
         modifier = modifier
@@ -166,7 +166,9 @@ fun PostCard(
                 AttachmentsCarousel(
                     attachments = post.attachments,
                     itemShape = MaterialTheme.shapes.largeIncreased,
-                    onItemClick = {onAttachmentClick(it)}
+                    onItemClick = { position ->
+                        onAttachmentClick(position, post.attachments.mapNotNull { it.url })
+                    }
                 )
             }
             post.poll?.let { poll ->
@@ -263,7 +265,8 @@ fun PostCardPreview() {
                 originalPost = null,
                 poll = null,
             ),
-            isOnMyWall = true
+            isOnMyWall = true,
+            onAttachmentClick = {_,_ ->}
         )
     }
 }

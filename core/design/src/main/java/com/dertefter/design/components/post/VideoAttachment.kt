@@ -42,13 +42,20 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.SeekParameters
 import androidx.media3.ui.compose.PlayerSurface
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.layout.ContentScale
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.ui.compose.modifiers.resizeWithContentScale
+import androidx.media3.ui.compose.state.rememberPresentationState
 import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
 import kotlinx.coroutines.delay
 
+@UnstableApi
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun VideoAttachment(
@@ -59,14 +66,21 @@ fun VideoAttachment(
     val isInspectionMode = LocalInspectionMode.current
     val exoPlayer = remember {
         if (isInspectionMode) null
-        else ExoPlayer.Builder(context).build().apply {
-            repeatMode = Player.REPEAT_MODE_ALL
-            playWhenReady = true
-        }
+        else ExoPlayer.Builder(context)
+            .setMediaSourceFactory(VideoCache.createMediaSourceFactory(context))
+            .setLoadControl(VideoCache.createLoadControl())
+            .build().apply {
+                repeatMode = Player.REPEAT_MODE_ALL
+                playWhenReady = true
+                setSeekParameters(SeekParameters.CLOSEST_SYNC)
+            }
     }
+
+    var isFirstFrameRendered by remember { mutableStateOf(false) }
 
     LaunchedEffect(attachment.url) {
         attachment.url?.let {
+            isFirstFrameRendered = false
             val mediaItem = MediaItem.fromUri(it)
             exoPlayer?.setMediaItem(mediaItem)
             exoPlayer?.prepare()
@@ -88,6 +102,10 @@ fun VideoAttachment(
         val listener = object : Player.Listener {
             override fun onPlaybackStateChanged(playbackState: Int) {
                 isBuffering = playbackState == Player.STATE_BUFFERING
+            }
+
+            override fun onRenderedFirstFrame() {
+                isFirstFrameRendered = true
             }
         }
         exoPlayer?.addListener(listener)
@@ -122,6 +140,7 @@ fun VideoAttachment(
         isMuted = isMuted,
         showControls = showControls,
         isBuffering = isBuffering,
+        isFirstFrameRendered = isFirstFrameRendered,
         progress = progress,
         onToggleControls = { showControls = !showControls },
         onTogglePlayback = {
@@ -153,6 +172,7 @@ fun VideoAttachment(
     )
 }
 
+@UnstableApi
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun VideoAttachmentContent(
@@ -161,6 +181,7 @@ fun VideoAttachmentContent(
     isMuted: Boolean,
     showControls: Boolean,
     isBuffering: Boolean,
+    isFirstFrameRendered: Boolean,
     progress: Float,
     onToggleControls: () -> Unit,
     onTogglePlayback: () -> Unit,
@@ -169,23 +190,30 @@ fun VideoAttachmentContent(
     onSeekFinished: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val presentationState = rememberPresentationState(exoPlayer)
     Box(
         modifier = modifier
             .background(MaterialTheme.colorScheme.surfaceVariant)
-            .clickable { onToggleControls() },
+            .clickable { onToggleControls() }
+            .clipToBounds(),
         contentAlignment = Alignment.Center,
     ) {
         if (exoPlayer != null) {
             PlayerSurface(
                 player = exoPlayer,
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .alpha(if (isFirstFrameRendered) 1f else 0f)
+                    .resizeWithContentScale(
+                        contentScale = ContentScale.Crop,
+                        sourceSizeDp = presentationState.videoSizeDp
+                    ),
             )
         }
 
         if (isBuffering) {
             Box(
                 modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
                     .fillMaxSize(),
                 contentAlignment = Alignment.Center
             ){
@@ -261,6 +289,7 @@ fun VideoAttachmentContent(
     }
 }
 
+@UnstableApi
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
@@ -271,6 +300,7 @@ fun VideoAttachmentPreview() {
             isPlaying = true,
             showControls = true,
             isBuffering = false,
+            isFirstFrameRendered = true,
             progress = 0.5f,
             onToggleControls = {},
             onTogglePlayback = {},

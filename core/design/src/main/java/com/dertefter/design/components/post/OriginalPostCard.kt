@@ -28,6 +28,7 @@ fun OriginalPostCard(
     originalPost: OriginalPostUiModel,
     modifier: Modifier = Modifier,
     onOpenPost: (String) -> Unit = {},
+    onAttachmentClick: (position: Int, urls: List<String>) -> Unit = {_,_ ->}
 ) {
     Box(
         modifier = modifier
@@ -91,7 +92,10 @@ fun OriginalPostCard(
                     AttachmentsCarousel(
                         attachments = originalPost.attachments,
                         modifier = Modifier.fillMaxWidth(),
-                        itemHeight = 160.dp
+                        itemHeight = 160.dp,
+                        onItemClick = { position ->
+                            onAttachmentClick(position, originalPost.attachments.mapNotNull { it.url })
+                        }
                     )
                 }
             }
