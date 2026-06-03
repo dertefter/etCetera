@@ -21,7 +21,12 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.net.CookieManager
 import java.net.CookiePolicy
+import javax.inject.Qualifier
 import javax.inject.Singleton
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class InternalAuthApi
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -96,15 +101,41 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    @InternalAuthApi
+    fun provideInternalAuthApiService(
+        cookieJar: CookieJar
+    ): ApiService {
+        val loggingInterceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+        val client = OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .cookieJar(cookieJar)
+            .build()
+        return Retrofit.Builder()
+            .baseUrl("https://xn--d1ah4a.com/")
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
     fun provideOkHttpClient(
         cookieJar: CookieJar,
         tokenManager: TokenManager,
-        apiService: Lazy<ApiService>
+        @InternalAuthApi authApiService: ApiService
     ): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
+        val dispatcher = okhttp3.Dispatcher().apply {
+            maxRequests = 64
+            maxRequestsPerHost = 64
+        }
         return OkHttpClient.Builder()
+            .dispatcher(dispatcher)
             .addInterceptor(loggingInterceptor)
             .addInterceptor { chain ->
                 val request = chain.request()
@@ -150,7 +181,7 @@ object NetworkModule {
                     }
 
                     val refreshResponse = runBlocking {
-                        apiService.get().refreshToken()
+                        authApiService.refreshToken()
                     }
 
                     if (refreshResponse.isSuccessful) {
