@@ -181,7 +181,7 @@ class UserViewModel @Inject constructor(
         when (event) {
 
             is Event.OnOpenPost -> {
-                navigator.navigate(User(event.postId))
+                navigator.navigate(Post(event.postId))
             }
 
             Event.OnNavigateBack -> {
