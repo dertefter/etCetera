@@ -112,7 +112,8 @@ fun LazyListScope.feed(
                             isOnMyWall = isMe,
                             onUserClick = {
                                 onEvent(Event.OnOpenUser(it))
-                            }
+                            },
+                            onOpenPost = { onEvent(Event.OnOpenPost(it)) }
                         )
                     }
                     if (index < displayItems.lastIndex) {

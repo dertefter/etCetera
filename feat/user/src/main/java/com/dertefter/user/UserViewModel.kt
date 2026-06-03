@@ -11,6 +11,7 @@ import com.dertefter.data.repository.MeRepository
 import com.dertefter.data.repository.UserRepository
 import com.dertefter.navigation.Navigator
 import com.dertefter.navigation.Routes
+import com.dertefter.navigation.Routes.*
 import com.dertefter.navigation.Routes.Comments
 import com.dertefter.user.presentation.Event
 import com.dertefter.user.presentation.FeedTab
@@ -178,6 +179,11 @@ class UserViewModel @Inject constructor(
 
     fun onEvent(event: Event) {
         when (event) {
+
+            is Event.OnOpenPost -> {
+                navigator.navigate(User(event.postId))
+            }
+
             Event.OnNavigateBack -> {
                 navigator.navigateUp()
             }
@@ -253,14 +259,14 @@ class UserViewModel @Inject constructor(
 
             is Event.OnOpenUser -> {
                 navigator.navigate(
-                    Routes.User(event.userId)
+                    User(event.userId)
                 )
             }
 
             is Event.OnOpenNewPost -> {
                 uiState.value.userDto?.id.let{ id ->
                     navigator.openAsBottomSheet(
-                        Routes.NewPost(id)
+                        NewPost(id)
                     )
                 }
 
@@ -272,15 +278,16 @@ class UserViewModel @Inject constructor(
 
             is Event.OnOpenFollowers -> {
                 navigator.navigate(
-                    Routes.Followers(event.userId, false)
+                    Followers(event.userId, false)
                 )
             }
 
             is Event.OnOpenFollowing -> {
                 navigator.navigate(
-                    Routes.Followers(event.userId, true)
+                    Followers(event.userId, true)
                 )
             }
+
         }
     }
 

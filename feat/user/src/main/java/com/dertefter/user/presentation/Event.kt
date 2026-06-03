@@ -14,6 +14,7 @@ sealed interface Event {
 
     data class OnSaveBio(val bio: String) : Event
 
+    data class OnOpenPost(val postId: String) : Event
 
     data class OnOpenUser(val userId: String) : Event
 
