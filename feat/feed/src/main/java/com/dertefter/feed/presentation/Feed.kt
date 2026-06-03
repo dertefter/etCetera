@@ -149,9 +149,9 @@ fun Feed(
                                     onUserClick = { userId -> onEvent(Event.OnOpenUser(userId)) },
                                     onVote = { optionIds -> onEvent(Event.OnVote(post.id, optionIds)) },
                                     onOpenPost = {postId -> onEvent(Event.OnOpenPost(postId))},
-                                    onAttachmentClick = { pos ->
+                                    onAttachmentClick = { pos, urls ->
                                         onEvent(Event.OnOpenAttachmentsViewer(
-                                            urls = post.toUiModel().attachments.map { it.url ?: ""  },
+                                            urls = urls,
                                             position = pos
                                         ))
                                     }

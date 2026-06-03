@@ -51,6 +51,11 @@ class PostViewModel @Inject constructor(
 
     fun onEvent(event: Event) {
         when (event) {
+
+            is Event.OnOpenAttachmentsViewer -> {
+                navigator.navigate(Routes.ImageViewer(imageUrls = event.urls, viewPosition = event.position))
+            }
+
             is Event.OnOpenUser -> {
                 navigator.navigate(Routes.User(event.userId))
             }

@@ -113,7 +113,14 @@ fun LazyListScope.feed(
                             onUserClick = {
                                 onEvent(Event.OnOpenUser(it))
                             },
-                            onOpenPost = { onEvent(Event.OnOpenPost(it)) }
+                            onOpenPost = { onEvent(Event.OnOpenPost(it)) },
+                            onAttachmentClick = { pos, urls ->
+                                onEvent(
+                                    Event.OnOpenAttachmentsViewer(
+                                    urls = urls,
+                                    position = pos
+                                ))
+                            }
                         )
                     }
                     if (index < displayItems.lastIndex) {

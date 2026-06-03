@@ -30,4 +30,5 @@ sealed interface Event {
     data object OnBannerEdit : Event
 
     data class OnUnfollow(val userId: String) : Event
+    data class  OnOpenAttachmentsViewer(val urls: List<String>, val position: Int)  : Event
 }
