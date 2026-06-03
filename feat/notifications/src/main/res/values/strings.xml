@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="notifications_title">Notifications</string>
+    <string name="notifications_empty_state">No notifications yet</string>
+    <string name="notifications_load_error">Loading error: %1$s</string>
+    <string name="notifications_append_error">Error loading more notifications</string>
+    <string name="notification_type_follow">started following you</string>
+    <string name="notification_type_like">liked your post</string>
+    <string name="notification_type_comment">left a comment</string>
+    <string name="notification_type_wall_post">published a new post</string>
+    <string name="notification_type_repost">reposted</string>
+    <string name="notification_type_unknown">new notification</string>
 </resources>

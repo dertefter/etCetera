@@ -14,9 +14,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import com.dertefter.data.dto.notifications.ActorDto
+import com.dertefter.notifications.R
 import com.dertefter.data.dto.notifications.NotificationDto
 import com.dertefter.design.components.avatar.SmallEmojiAvatar
 import com.dertefter.design.theme.AppTheme
@@ -26,11 +29,11 @@ import com.dertefter.design.theme.spacing
 
 @Composable
 fun NotificationCard(
-
     modifier: Modifier = Modifier,
     notification: NotificationDto,
     isFirst: Boolean = false,
     isLast: Boolean = false,
+    onUserClick: () -> Unit = {},
     onClick: () -> Unit = {},
 ) {
 
@@ -53,7 +56,7 @@ fun NotificationCard(
             .fillMaxWidth()
             .clickable { onClick() }
             .clip(shape)
-            .background(MaterialTheme.colorScheme.surfaceContainerLow)
+            .background(MaterialTheme.colorScheme.surfaceContainer)
             .padding(MaterialTheme.spacing.large),
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large),
         verticalAlignment = Alignment.CenterVertically
@@ -61,18 +64,36 @@ fun NotificationCard(
         SmallEmojiAvatar(
             emoji = notification.actor.avatar,
             containerSize = 48.dp,
-            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+            onClick = onUserClick,
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+            modifier = Modifier
+                .align(Alignment.Top)
         )
-        Column(modifier = Modifier.weight(1f)) {
+        Column(
+            modifier = Modifier.weight(1f),
+        )
+        {
             Text(
                 text = notification.actor.displayName,
                 style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .clickable(onClick = onUserClick)
             )
             Text(
                 text = getNotificationText(notification),
                 style = MaterialTheme.typography.bodyMedium
             )
+            if (!notification.preview.isNullOrEmpty()){
+                Text(
+                    text = notification.preview!!,
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(top = MaterialTheme.spacing.small),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+
         }
     }
 }
@@ -80,11 +101,12 @@ fun NotificationCard(
 @Composable
 private fun getNotificationText(notification: NotificationDto): String {
     return when (notification.type) {
-        "follow" -> "подписался на вас"
-        "like" -> "поставил лайк вашему посту"
-        "comment" -> "оставил комментарий"
-        "wall_post" -> "опубликовал новый пост"
-        else -> "новое уведомление"
+        "follow" -> stringResource(R.string.notification_type_follow)
+        "like" -> stringResource(R.string.notification_type_like)
+        "comment" -> stringResource(R.string.notification_type_comment)
+        "wall_post" -> stringResource(R.string.notification_type_wall_post)
+        "repost" -> stringResource(R.string.notification_type_repost)
+        else -> stringResource(R.string.notification_type_unknown)
     }
 }
 
@@ -98,7 +120,7 @@ fun NotificationCardPreview() {
                 type = "follow",
                 targetType = null,
                 targetId = null,
-                preview = null,
+                preview = "Превтб",
                 readAt = null,
                 createdAt = "2023-10-27T10:00:00Z",
                 read = false,

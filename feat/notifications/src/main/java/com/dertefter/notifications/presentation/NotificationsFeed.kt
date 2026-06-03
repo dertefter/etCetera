@@ -31,6 +31,8 @@ import com.dertefter.design.components.PullToRefreshIndicator
 import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.theme.spacing
 import com.dertefter.notifications.presentation.component.NotificationCard
+import androidx.compose.ui.res.stringResource
+import com.dertefter.notifications.R
 import com.jamal_aliev.paginator.MutableCursorPaginator
 import com.jamal_aliev.paginator.compose.paginated
 import com.jamal_aliev.paginator.compose.rememberPaginated
@@ -51,7 +53,8 @@ fun NotificationsFeed(
     val listState = rememberLazyListState()
     val paged = paginator.rememberPaginated(state = listState)
     val pullToRefreshState = rememberPullToRefreshState()
-    val isRefreshing = (uiState is PaginatorUiState.Content) && (uiState.prependState.isProgressState())
+    val isRefreshing =
+        (uiState is PaginatorUiState.Content) && (uiState.prependState.isProgressState())
 
     PullToRefreshBox(
         modifier = modifier.fillMaxSize(),
@@ -60,43 +63,49 @@ fun NotificationsFeed(
         onRefresh = { onEvent(Event.OnRefresh) },
         indicator = {
             PullToRefreshIndicator(
-                modifier = Modifier.padding(top = contentPadding.calculateTopPadding()),
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(top = contentPadding.calculateTopPadding()),
                 state = pullToRefreshState,
                 isRefreshing = isRefreshing
             )
-        }
-    ) {
+        }) {
         AnimatedContent(
-            targetState = uiState,
-            contentKey = { it::class },
-            transitionSpec = {
-                fadeIn(animationSpec = tween(300)) togetherWith fadeOut(animationSpec = tween(300))
-            },
-            label = "notifications_feed_state",
-            modifier = Modifier.fillMaxSize()
+            targetState = uiState, contentKey = { it::class }, transitionSpec = {
+            fadeIn(animationSpec = tween(300)) togetherWith fadeOut(animationSpec = tween(300))
+        }, label = "notifications_feed_state", modifier = Modifier.fillMaxSize()
         ) { state ->
             when (state) {
                 PaginatorUiState.Idle, is PaginatorUiState.Loading -> {
-                    Box(Modifier
-                        .padding(contentPadding)
-                        .fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Box(
+                        Modifier
+                            .padding(contentPadding)
+                            .fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
                         AppLoadingIndicator()
                     }
                 }
 
                 is PaginatorUiState.Empty -> {
-                    Box(Modifier
-                        .padding(contentPadding)
-                        .fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text("Уведомлений пока нет")
+                    Box(
+                        Modifier
+                            .padding(contentPadding)
+                            .fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(stringResource(R.string.notifications_empty_state))
                     }
                 }
 
                 is PaginatorUiState.Error -> {
-                    Box(Modifier
-                        .padding(contentPadding)
-                        .fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text("Ошибка загрузки: ${state.exception.message}")
+                    Box(
+                        Modifier
+                            .padding(contentPadding)
+                            .fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(stringResource(R.string.notifications_load_error, state.exception.message ?: ""))
                     }
                 }
 
@@ -114,19 +123,30 @@ fun NotificationsFeed(
                     ) {
                         paginated(paged) {
                             itemsIndexed(
-                                state.items,
-                                key = { _, item -> item.id }
-                            ) { index, notification ->
+                                state.items, key = { _, item -> item.id }) { index, notification ->
                                 NotificationCard(
                                     notification = notification,
                                     isFirst = index == 0,
                                     isLast = index == state.items.lastIndex,
-                                    modifier = Modifier.padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
-                                ) {
-                                    if (notification.type == "follow") {
+                                    modifier = Modifier.padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
+                                    onClick = {
+                                        if (notification.type == "follow") {
+                                            onEvent(Event.OnOpenUser(notification.actor.id))
+                                        } else {
+                                            notification.targetId?.let { targetId ->
+                                                notification.targetType?.let { targetType ->
+                                                    if (targetType == "post") {
+                                                        onEvent(Event.OnOpenPost(targetId))
+                                                    }
+                                                }
+                                            }
+                                        }
+
+
+                                    },
+                                    onUserClick = {
                                         onEvent(Event.OnOpenUser(notification.actor.id))
-                                    }
-                                }
+                                    })
                             }
 
                             appendIndicator {
@@ -140,7 +160,7 @@ fun NotificationsFeed(
                                         if (appendState.isProgressState()) {
                                             CircularProgressIndicator()
                                         } else if (appendState.isErrorState()) {
-                                            Text("Ошибка загрузки дополнительных уведомлений")
+                                            Text(stringResource(R.string.notifications_append_error))
                                         }
                                     }
                                 }

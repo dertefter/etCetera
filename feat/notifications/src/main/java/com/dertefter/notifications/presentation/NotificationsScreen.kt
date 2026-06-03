@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.res.stringResource
 import com.dertefter.data.dto.notifications.NotificationDto
+import com.dertefter.design.components.buttons.AppNavigationIcon
 import com.dertefter.notifications.R
 import com.jamal_aliev.paginator.MutableCursorPaginator
 import com.jamal_aliev.paginator.page.PaginatorUiState
@@ -39,6 +40,13 @@ fun NotificationsScreen(
             Surface(color = containerColor) {
                 Column {
                     LargeFlexibleTopAppBar(
+                        navigationIcon = {
+                            AppNavigationIcon(
+                                onClick = {
+                                    onEvent(Event.OnNavigateBack)
+                                }
+                            )
+                        },
                         title = {
                             Text(stringResource(R.string.notifications_title))
                         },

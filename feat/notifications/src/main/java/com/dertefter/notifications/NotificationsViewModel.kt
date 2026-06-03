@@ -57,10 +57,16 @@ class NotificationsViewModel @Inject constructor(
             is Event.OnOpenUser -> {
                 navigator.navigate(Routes.User(event.userId))
             }
+            is Event.OnOpenPost -> {
+                navigator.navigate(Routes.Post(event.postId))
+            }
             is Event.OnRefresh -> {
                 viewModelScope.launch {
                     paginator.restart()
                 }
+            }
+            is Event.OnNavigateBack -> {
+                navigator.navigateUp()
             }
         }
     }
