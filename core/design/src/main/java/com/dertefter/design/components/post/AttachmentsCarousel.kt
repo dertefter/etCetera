@@ -27,7 +27,8 @@ fun AttachmentsCarousel(
     modifier: Modifier = Modifier,
     itemHeight: Dp = 260.dp,
     itemShape: CornerBasedShape = MaterialTheme.shapes.large,
-    contentPadding: PaddingValues = PaddingValues(horizontal = MaterialTheme.spacing.defaultScreenPadding)
+    contentPadding: PaddingValues = PaddingValues(horizontal = MaterialTheme.spacing.defaultScreenPadding),
+    onItemClick: (position: Int) -> Unit  = {}
 ) {
     if (attachments.isEmpty()) return
 
@@ -44,7 +45,10 @@ fun AttachmentsCarousel(
             attachment = attachments[index],
             modifier = Modifier
                 .height(itemHeight)
-                .maskClip(itemShape)
+                .maskClip(itemShape),
+            onClick = {
+                onItemClick(index)
+            }
         )
     }
 }

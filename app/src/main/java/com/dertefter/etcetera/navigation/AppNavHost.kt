@@ -19,6 +19,7 @@ import com.dertefter.comments.CommentsRoute
 import com.dertefter.crash_reports.CrashReportsRoute
 import com.dertefter.feed.FeedRoute
 import com.dertefter.followers.FollowersRoute
+import com.dertefter.image_viewer.ImageViewerRoute
 import com.dertefter.navigation.Routes
 import com.dertefter.new_post.NewPostRoute
 import com.dertefter.notifications.NotificationsRoute
@@ -73,6 +74,7 @@ fun RouteContent(route: Routes) {
         is Routes.Comments -> CommentsRoute(route.postId)
         is Routes.User -> UserRoute(route.userId)
         is Routes.NewPost -> NewPostRoute(route.wallRecipientId)
+        is Routes.ImageViewer -> ImageViewerRoute(route.imageUrls, route.viewPosition)
         is Routes.Followers -> FollowersRoute()
         is Routes.Notifications -> NotificationsRoute()
         is Routes.BannerEdit -> BannerEditRoute()
@@ -125,6 +127,11 @@ fun NavGraphBuilder.graph() {
 
     composable<Routes.Post> {
         val args = it.toRoute<Routes.Post>()
+        RouteContent(args)
+    }
+
+    composable<Routes.ImageViewer> {
+        val args = it.toRoute<Routes.ImageViewer>()
         RouteContent(args)
     }
 

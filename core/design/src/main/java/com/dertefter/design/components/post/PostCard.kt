@@ -43,7 +43,8 @@ fun PostCard(
     onPin: () -> Unit = {},
     onDelete: () -> Unit = {},
     isOnMyWall: Boolean = false,
-    onOpenPost: (String) -> Unit = {}
+    onOpenPost: (String) -> Unit = {},
+    onAttachmentClick: (position: Int) -> Unit = {}
 ) {
     Box(
         modifier = modifier
@@ -164,7 +165,8 @@ fun PostCard(
             if (post.attachments.isNotEmpty()) {
                 AttachmentsCarousel(
                     attachments = post.attachments,
-                    itemShape = MaterialTheme.shapes.largeIncreased
+                    itemShape = MaterialTheme.shapes.largeIncreased,
+                    onItemClick = {onAttachmentClick(it)}
                 )
             }
             post.poll?.let { poll ->

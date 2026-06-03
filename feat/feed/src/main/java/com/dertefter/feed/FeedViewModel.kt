@@ -111,6 +111,12 @@ class FeedViewModel @Inject constructor(
     fun onEvent(event: Event) {
         when (event) {
 
+            is Event.OnOpenAttachmentsViewer -> {
+                navigator.navigate(Routes.ImageViewer(
+                    event.urls, event.position
+                ))
+            }
+
             is Event.OnLike -> {
                 viewModelScope.launch {
                     feedRepository.likePost(event.postId)

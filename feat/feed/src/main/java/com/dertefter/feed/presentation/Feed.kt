@@ -148,7 +148,13 @@ fun Feed(
                                     onCommentsClick = { onEvent(Event.OnNavigateToComments(post.id)) },
                                     onUserClick = { userId -> onEvent(Event.OnOpenUser(userId)) },
                                     onVote = { optionIds -> onEvent(Event.OnVote(post.id, optionIds)) },
-                                    onOpenPost = {postId -> onEvent(Event.OnOpenPost(postId))}
+                                    onOpenPost = {postId -> onEvent(Event.OnOpenPost(postId))},
+                                    onAttachmentClick = { pos ->
+                                        onEvent(Event.OnOpenAttachmentsViewer(
+                                            urls = post.toUiModel().attachments.map { it.url ?: ""  },
+                                            position = pos
+                                        ))
+                                    }
                                 )
                                 if (index < state.items.lastIndex) {
                                     HorizontalDivider()

@@ -18,6 +18,8 @@ sealed interface Event {
 
     data class OnOpenPost(val postId: String) : Event
 
+    data class OnOpenAttachmentsViewer(val urls: List<String>, val position: Int? = null) : Event
+
     data class OnVote(val postId: String, val optionIds: List<String>) : Event
 
     data class OnUpdateStats(val ids: List<String>) : Event
