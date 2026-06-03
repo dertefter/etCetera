@@ -35,11 +35,10 @@ fun AttachmentsCarousel(
     HorizontalMultiBrowseCarousel(
         state = state,
         modifier = modifier
-            //.horizontalFadingEdges(length = MaterialTheme.spacing.defaultScreenPadding)
+            .padding(contentPadding)
             .fillMaxWidth(),
         itemSpacing = MaterialTheme.spacing.medium,
         preferredItemWidth = 260.dp,
-        contentPadding = contentPadding
     ) { index ->
         Attachment(
             attachment = attachments[index],
