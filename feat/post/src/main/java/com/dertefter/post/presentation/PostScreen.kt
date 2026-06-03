@@ -2,10 +2,7 @@ package com.dertefter.post.presentation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.LargeFlexibleTopAppBar
@@ -19,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -29,6 +27,7 @@ import com.dertefter.design.components.buttons.AppNavigationIcon
 import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.components.post.PostCard
 import com.dertefter.design.theme.spacing
+import com.dertefter.post.R
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -45,7 +44,7 @@ fun PostScreen(
         topBar = {
             LargeFlexibleTopAppBar(
                 title = {
-                    Text("Пост")
+                    Text(stringResource(R.string.post_title))
                 },
                 navigationIcon = {
                     AppNavigationIcon(
@@ -110,9 +109,9 @@ fun PostScreen(
                             }
                             item {
                                 Text(
-                                    modifier = Modifier.padding(horizontal = 16.dp),
-                                    text = "Комментарии",
-                                    style = MaterialTheme.typography.titleMedium
+                                    modifier = Modifier.padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
+                                    text = stringResource(R.string.post_comments),
+                                    style = MaterialTheme.typography.titleLarge
                                 )
                             }
                         }
