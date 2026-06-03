@@ -1,13 +1,5 @@
 package com.dertefter.comments.presentation
 
-import android.util.Log
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -78,7 +70,7 @@ fun Comments(
                 length = contentPadding.calculateBottomPadding() + MaterialTheme.spacing.extraLarge
             )
     ) {
-        when (val state = uiState) {
+        when (uiState) {
             PaginatorUiState.Idle -> {
                 Box(
                     Modifier
@@ -175,15 +167,16 @@ fun Comments(
 
                     paginated(paged) {
                         itemsIndexed(
-                            state.items,
+                            uiState.items,
                             key = { _, comment -> comment.id }) { index, comment ->
                             CommentCard(
                                 comment = comment,
                                 onLike = { onEvent(Event.OnLike(it)) },
                                 onUnlike = { onEvent(Event.OnUnlike(it)) },
                                 onLoadMoreReplies = { onEvent(Event.OnLoadMoreReplies(it)) },
+                                onUserClick = { onEvent(Event.OnOpenUser(it)) }
                             )
-                            if (index < state.items.lastIndex) {
+                            if (index < uiState.items.lastIndex) {
                                 HorizontalDivider(
                                     color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
                                 )
@@ -191,7 +184,7 @@ fun Comments(
                         }
 
                         appendIndicator {
-                            state.appendState?.let { appendState ->
+                            uiState.appendState?.let { appendState ->
                                 Box(
                                     Modifier
                                         .fillMaxWidth()

@@ -7,6 +7,7 @@ import com.dertefter.comments.presentation.Event
 import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.data.repository.CommentsRepository
 import com.dertefter.navigation.Navigator
+import com.dertefter.navigation.Routes
 import com.jamal_aliev.paginator.MutableCursorPaginator
 import com.jamal_aliev.paginator.extension.distinctBy
 import com.jamal_aliev.paginator.extension.uiState
@@ -105,6 +106,13 @@ class CommentsViewModel @Inject constructor(
                     paginators[key]?.restart(silentlyLoading = false)
                 }
             }
+
+            is Event.OnOpenUser -> {
+                navigator.navigate(
+                    Routes.User(event.userId)
+                )
+            }
+
         }
     }
 

@@ -11,4 +11,6 @@ sealed interface Event {
 
     data class OnLoadMoreReplies(val commentId: String) : Event
 
+    data class OnOpenUser(val userId: String?) : Event
+
 }

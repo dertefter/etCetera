@@ -41,7 +41,8 @@ fun CommentCard(
     modifier: Modifier = Modifier,
     onLike: (commentId: String) -> Unit = {},
     onUnlike: (commentId: String) -> Unit = {},
-    onLoadMoreReplies: (commentId: String) -> Unit = {}
+    onLoadMoreReplies: (commentId: String) -> Unit = {},
+    onUserClick: (userId: String) -> Unit = {},
 ) {
     var isExpanded by remember { mutableStateOf(false) }
     Box(
@@ -57,7 +58,9 @@ fun CommentCard(
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
+                modifier = Modifier
+                    .clickable(onClick = { onUserClick(comment.author.id) })
+                    .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large)
             ) {
                 SmallEmojiAvatar(
@@ -147,7 +150,8 @@ fun CommentCard(
                             comment = reply,
                             onLike = { onLike(reply.id) },
                             onUnlike = { onUnlike(reply.id) },
-                            onLoadMoreReplies = onLoadMoreReplies
+                            onLoadMoreReplies = onLoadMoreReplies,
+                            onUserClick = { onUserClick(it) }
                         )
                     }
                     if ((comment.repliesCount ?: 0) > (comment.replies?.size ?: 0)) {
