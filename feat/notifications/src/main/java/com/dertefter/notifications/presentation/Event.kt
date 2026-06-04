@@ -10,5 +10,7 @@ sealed interface Event {
 
     data class OnOpenPost(val postId: String) : Event
 
+    data class OnFilterChanged(val type: String?) : Event
+
 
 }

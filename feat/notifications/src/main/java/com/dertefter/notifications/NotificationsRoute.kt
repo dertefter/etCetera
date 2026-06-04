@@ -13,6 +13,7 @@ fun NotificationsRoute(
     viewModel: NotificationsViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val selectedFilter by viewModel.selectedFilter.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.onEvent(Event.OnRefresh)
@@ -21,6 +22,7 @@ fun NotificationsRoute(
     NotificationsScreen(
         onEvent = viewModel::onEvent,
         uiState = uiState,
-        paginator = viewModel.paginator
+        paginator = viewModel.paginator,
+        selectedFilter = selectedFilter
     )
 }

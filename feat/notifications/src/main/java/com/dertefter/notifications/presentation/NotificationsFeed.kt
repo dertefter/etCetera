@@ -12,8 +12,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -25,14 +25,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.dertefter.data.dto.notifications.NotificationDto
 import com.dertefter.design.components.PullToRefreshIndicator
 import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.theme.spacing
-import com.dertefter.notifications.presentation.component.NotificationCard
-import androidx.compose.ui.res.stringResource
 import com.dertefter.notifications.R
+import com.dertefter.notifications.presentation.component.NotificationCard
 import com.jamal_aliev.paginator.MutableCursorPaginator
 import com.jamal_aliev.paginator.compose.paginated
 import com.jamal_aliev.paginator.compose.rememberPaginated
@@ -50,7 +50,7 @@ fun NotificationsFeed(
     uiState: PaginatorUiState<NotificationDto>,
     onEvent: (Event) -> Unit,
 ) {
-    val listState = rememberLazyListState()
+    val listState = androidx.compose.runtime.remember(paginator) { LazyListState() }
     val paged = paginator.rememberPaginated(state = listState)
     val pullToRefreshState = rememberPullToRefreshState()
     val isRefreshing =

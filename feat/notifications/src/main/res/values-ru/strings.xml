@@ -10,4 +10,9 @@
     <string name="notification_type_wall_post">опубликовал(а) новый пост</string>
     <string name="notification_type_repost">сделал(а) репост</string>
     <string name="notification_type_unknown">новое уведомление</string>
+    <string name="filter_all">Все</string>
+    <string name="filter_follow">Подписки</string>
+    <string name="filter_like">Лайки</string>
+    <string name="filter_comment">Комментарии</string>
+    <string name="filter_repost">Репосты</string>
 </resources>

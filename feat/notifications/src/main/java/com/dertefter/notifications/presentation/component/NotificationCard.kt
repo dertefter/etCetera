@@ -47,15 +47,15 @@ fun NotificationCard(
         bottomEnd = if (isLast) largeRounding else smallRounding,
     )
 
-    val topPadding = if (isFirst) MaterialTheme.spacing.medium else 0.dp
-    val bottomPadding = if (isLast) MaterialTheme.spacing.medium else 0.dp
+    val topPadding = if (isFirst) MaterialTheme.spacing.small else 0.dp
+    val bottomPadding = if (isLast) MaterialTheme.spacing.small else 0.dp
 
     Row(
         modifier = modifier
             .padding(top = topPadding, bottom = bottomPadding)
             .fillMaxWidth()
-            .clickable { onClick() }
             .clip(shape)
+            .clickable { onClick() }
             .background(MaterialTheme.colorScheme.surfaceContainer)
             .padding(MaterialTheme.spacing.large),
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large),

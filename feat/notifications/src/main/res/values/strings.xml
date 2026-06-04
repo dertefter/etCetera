@@ -10,4 +10,9 @@
     <string name="notification_type_wall_post">published a new post</string>
     <string name="notification_type_repost">reposted</string>
     <string name="notification_type_unknown">new notification</string>
+    <string name="filter_all">All</string>
+    <string name="filter_follow">Follows</string>
+    <string name="filter_like">Likes</string>
+    <string name="filter_comment">Comments</string>
+    <string name="filter_repost">Reposts</string>
 </resources>
