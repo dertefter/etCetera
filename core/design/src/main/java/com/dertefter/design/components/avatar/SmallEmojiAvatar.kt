@@ -63,7 +63,7 @@ fun SmallEmojiAvatar(
 
     LaunchedEffect(emoji, containerColor) {
         val color = extractEmojiColor(emoji, containerColor.toArgb())
-        detectedColor = color.harmonize(harmonizeColor, false)
+        detectedColor = color
     }
 
     Box(
@@ -76,7 +76,7 @@ fun SmallEmojiAvatar(
                 color = strokeColor
             )
             .background(containerColor)
-            .background(detectedColor.copy(alpha = 0.24f))
+            .background(detectedColor.copy(alpha = 0.3f))
             .size(containerSize)
         ,
         contentAlignment = Alignment.Center
