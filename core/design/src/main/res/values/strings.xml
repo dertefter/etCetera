@@ -17,4 +17,10 @@
     <string name="design_new_poll_add_option">Add option</string>
     <string name="design_new_poll_multiple_choice">Multiple choice</string>
 
+    <string name="design_post_copy_link">Copy link</string>
+    <string name="design_post_edit">Edit</string>
+    <string name="design_post_pin">Pin</string>
+    <string name="design_post_unpin">Unpin</string>
+    <string name="design_post_delete">Delete</string>
+
 </resources>

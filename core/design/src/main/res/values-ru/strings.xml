@@ -19,4 +19,10 @@
     <string name="design_new_poll_add_option">Добавить вариант</string>
     <string name="design_new_poll_multiple_choice">Несколько вариантов ответа</string>
 
+    <string name="design_post_copy_link">Копировать ссылку</string>
+    <string name="design_post_edit">Редактировать</string>
+    <string name="design_post_pin">Закрепить</string>
+    <string name="design_post_unpin">Открепить</string>
+    <string name="design_post_delete">Удалить</string>
+
 </resources>

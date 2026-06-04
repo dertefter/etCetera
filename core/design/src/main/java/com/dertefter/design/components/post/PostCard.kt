@@ -1,5 +1,6 @@
 package com.dertefter.design.components.post
 
+import android.content.ClipData
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,16 +18,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalClipboard
+import androidx.compose.ui.platform.ClipEntry
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.dertefter.design.R
 import com.dertefter.design.components.avatar.SmallEmojiAvatar
 import com.dertefter.design.components.poll.PollCard
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
+import kotlinx.coroutines.launch
 
 @Composable
 fun PostCard(
@@ -38,7 +45,6 @@ fun PostCard(
     onRepostClick: () -> Unit = {},
     onUserClick: (userId: String) -> Unit = {},
     onVote: (optionIds: List<String>) -> Unit = {},
-    onCopyLink: () -> Unit = {},
     onEdit: () -> Unit = {},
     onPin: () -> Unit = {},
     onDelete: () -> Unit = {},
@@ -46,6 +52,8 @@ fun PostCard(
     onOpenPost: (String) -> Unit = {},
     onAttachmentClick: (position: Int, urls: List<String>) -> Unit
 ) {
+    val clipboard = LocalClipboard.current
+    val scope = rememberCoroutineScope()
     Box(
         modifier = modifier
             .clickable(onClick = {onOpenPost(post.id)})
@@ -98,9 +106,12 @@ fun PostCard(
                         onDismissRequest = { showMenu = false }
                     ) {
                         DropdownMenuItem(
-                            text = { Text("Копировать ссылку") },
+                            text = { Text(stringResource(R.string.design_post_copy_link)) },
                             onClick = {
-                                onCopyLink()
+                                val link = "https://xn--d1ah4a.com/@${post.author.username}/post/${post.id}"
+                                scope.launch {
+                                    clipboard.setClipEntry(ClipEntry(ClipData.newPlainText(null, link)))
+                                }
                                 showMenu = false
                             },
                             leadingIcon = {
@@ -109,7 +120,7 @@ fun PostCard(
                         )
                         if (post.isOwner) {
                             DropdownMenuItem(
-                                text = { Text("Редактировать") },
+                                text = { Text(stringResource(R.string.design_post_edit)) },
                                 onClick = {
                                     onEdit()
                                     showMenu = false
@@ -120,7 +131,12 @@ fun PostCard(
                             )
                             post.isPinned?.let {
                                 DropdownMenuItem(
-                                    text = { Text(if (post.isPinned) "Открепить" else "Закрепить") },
+                                    text = {
+                                        Text(
+                                            if (post.isPinned) stringResource(R.string.design_post_unpin)
+                                            else stringResource(R.string.design_post_pin)
+                                        )
+                                    },
                                     onClick = {
                                         onPin()
                                         showMenu = false
@@ -137,7 +153,7 @@ fun PostCard(
 
                         if (post.isOwner || isOnMyWall) {
                             DropdownMenuItem(
-                                text = { Text("Удалить") },
+                                text = { Text(stringResource(R.string.design_post_delete)) },
                                 onClick = {
                                     onDelete()
                                     showMenu = false
