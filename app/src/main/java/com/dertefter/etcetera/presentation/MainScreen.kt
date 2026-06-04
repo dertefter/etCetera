@@ -73,8 +73,8 @@ fun MainScreen(
 
     val hazeStyle = HazeBlurDefaults.style(
         backgroundColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-        blurRadius = 26.dp,
-        noiseFactor = 0.3f,
+        blurRadius = 28.dp,
+        noiseFactor = 0.6f,
     )
 
     LaunchedEffect(bottomSheetRoute) {
@@ -95,6 +95,7 @@ fun MainScreen(
         scaffoldState = scaffoldState,
         sheetPeekHeight = 500.dp,
         sheetContainerColor = Color.Transparent,
+        sheetContentColor = MaterialTheme.colorScheme.onSurface,
         sheetDragHandle = null,
         sheetShadowElevation = 0.dp,
         sheetContent = {

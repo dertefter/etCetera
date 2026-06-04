@@ -8,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.runtime.getValue
+import androidx.core.graphics.toColorLong
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.etcetera.presentation.MainScreen
@@ -32,7 +33,9 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val mainScreenState by viewModel.mainScreenState.collectAsStateWithLifecycle()
-            AppTheme {
+            AppTheme(
+                seedColor = Color.MAGENTA.toColorLong()
+            ) {
                 MainScreen(navigator, mainScreenState)
             }
         }
