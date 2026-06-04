@@ -32,6 +32,7 @@ import com.dertefter.design.components.post.LikeButton
 import com.dertefter.comments.presentation.mapper.toUiModel
 import com.dertefter.data.dto.feed.AttachmentDto
 import com.dertefter.data.dto.feed.AuthorDto
+import com.dertefter.design.components.avatar.DisplayName
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
 
@@ -68,9 +69,11 @@ fun CommentCard(
                     containerSize = 40.dp
                 )
                 Column {
-                    Text(
-                        text = comment.author.displayName,
-                        style = MaterialTheme.typography.titleSmall
+                    DisplayName(
+                        name = comment.author.displayName,
+                        verified = comment.author.verified,
+                        hasNuksta = comment.author.hasNuksta,
+                        pin = comment.author.pin?.toUiModel()
                     )
                     Text(
                         text = "@${comment.author.username}",
