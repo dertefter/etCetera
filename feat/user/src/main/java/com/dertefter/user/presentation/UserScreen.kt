@@ -72,6 +72,7 @@ import com.dertefter.user.R
 import com.dertefter.user.presentation.component.BioCard
 import com.dertefter.user.presentation.component.Header
 import com.dertefter.user.presentation.component.TitleValueCard
+import com.dertefter.user.presentation.mapper.toUiModel
 import com.jamal_aliev.paginator.MutableCursorPaginator
 import com.jamal_aliev.paginator.compose.rememberPaginated
 import com.jamal_aliev.paginator.extension.isProgressState
@@ -357,9 +358,7 @@ fun UserScreen(
                             bannerUrl = uiState.userDto.banner,
                             modifier = Modifier
                                 .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
-                            emoji = uiState.userDto.avatar,
-                            name = uiState.userDto.displayName,
-                            username = uiState.userDto.username,
+                            author = uiState.userDto.toUiModel(),
                             scrollBehavior = scrollBehavior,
                             onBannerClick = {
                                 if (uiState.isMe){

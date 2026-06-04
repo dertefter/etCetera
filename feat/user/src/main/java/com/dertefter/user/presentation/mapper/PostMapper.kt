@@ -3,15 +3,18 @@ package com.dertefter.user.presentation.mapper
 import com.dertefter.data.dto.feed.AttachmentDto
 import com.dertefter.data.dto.feed.AuthorDto
 import com.dertefter.data.dto.feed.OriginalPostDto
+import com.dertefter.data.dto.feed.PinDto
 import com.dertefter.data.dto.feed.PollDto
 import com.dertefter.data.dto.feed.PollOptionDto
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.dto.feed.ShortAuthorDto
+import com.dertefter.data.dto.user.UserDto
 import com.dertefter.design.components.poll.PollOptionUiModel
 import com.dertefter.design.components.poll.PollUiModel
 import com.dertefter.design.components.post.AttachmentUiModel
 import com.dertefter.design.components.post.AuthorUiModel
 import com.dertefter.design.components.post.OriginalPostUiModel
+import com.dertefter.design.components.post.PinUiModel
 import com.dertefter.design.components.post.PostUiModel
 import com.dertefter.navigation.AttachmentNavigationModel
 
@@ -52,8 +55,10 @@ fun PollOptionDto.toUiModel(isChecked: Boolean) = PollOptionUiModel(
 
 fun AttachmentUiModel.toNavigationModel() = AttachmentNavigationModel(id, type, url, mimeType)
 
-fun AuthorDto.toUiModel() = AuthorUiModel(id, username, displayName, avatar)
-fun ShortAuthorDto.toUiModel() = AuthorUiModel(id, username, displayName, avatar)
+fun UserDto.toUiModel() = AuthorUiModel(id, username, displayName, avatar, hasNuksta, verified, pin?.toUiModel())
+fun AuthorDto.toUiModel() = AuthorUiModel(id, username, displayName, avatar, hasNuksta, verified, pin?.toUiModel())
+fun ShortAuthorDto.toUiModel() = AuthorUiModel(id, username, displayName, avatar, hasNuksta, verified, pin?.toUiModel())
+fun PinDto.toUiModel() = PinUiModel(description, name, slug, url)
 fun AttachmentDto.toUiModel() = AttachmentUiModel(id, type, url, mimeType)
 fun OriginalPostDto.toUiModel() = OriginalPostUiModel(
     id = id,

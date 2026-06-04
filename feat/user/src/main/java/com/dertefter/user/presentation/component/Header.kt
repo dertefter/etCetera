@@ -27,7 +27,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.dertefter.design.components.avatar.DisplayName
 import com.dertefter.design.components.avatar.SmallEmojiAvatar
+import com.dertefter.design.components.post.AuthorUiModel
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
 import kotlin.math.absoluteValue
@@ -38,9 +40,7 @@ import kotlin.math.sqrt
 fun Header(
     modifier: Modifier = Modifier,
     bannerUrl: String?,
-    emoji: String,
-    name: String?,
-    username: String?,
+    author: AuthorUiModel,
     avatarSize: Dp = 120.dp,
     scrollBehavior: TopAppBarScrollBehavior? = null,
     onBannerClick: () -> Unit = {}
@@ -78,38 +78,26 @@ fun Header(
             )
 
             SmallEmojiAvatar(
-                emoji = emoji,
+                emoji = author.avatar,
                 containerSize = avatarSize,
                 fontSize = 32.sp,
                 strokeWidth = 4.dp + (scrollFraction * 10).dp
             )
         }
 
-        name?.let{ name ->
-            Text(
-                text = name,
-                style = MaterialTheme.typography.headlineSmall,
-            )
-        }
-        username?.let{ username ->
-            Text(
-                text = "@$username",
-                style = MaterialTheme.typography.labelLargeEmphasized,
-                color = MaterialTheme.colorScheme.secondary
-            )
-        }
-    }
-}
+       DisplayName(
+           name = author.displayName,
+           verified = author.verified,
+           hasNuksta = author.hasNuksta,
+           pin = author.pin,
+           textStyle = MaterialTheme.typography.displaySmall
+       )
+       Text(
+           text = "@${author.username}",
+           style = MaterialTheme.typography.labelLargeEmphasized,
+           color = MaterialTheme.colorScheme.secondary,
+           modifier = Modifier.padding(top = MaterialTheme.spacing.extraSmall)
+       )
 
-@Preview(showBackground = true)
-@Composable
-fun HeaderPreview() {
-    AppTheme {
-        Header(
-            bannerUrl = "https://cdn.xn--d1ah4a.com/images/296a35d4-fda1-4fa1-af83-c6fb68b4bdd1.jpg",
-            emoji = "🙃",
-            name = "Aboba",
-            username = "dljdjfvjkd",
-        )
     }
 }
