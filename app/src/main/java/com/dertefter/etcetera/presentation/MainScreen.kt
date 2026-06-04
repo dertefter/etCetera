@@ -1,5 +1,6 @@
 package com.dertefter.etcetera.presentation
 
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -71,9 +72,13 @@ fun MainScreen(
 
     val hazeState = rememberHazeState()
 
+    val blurRadius by animateDpAsState(
+        targetValue = if (scaffoldState.bottomSheetState.currentValue == SheetValue.Expanded)  40.dp else 26.dp
+    )
+
     val hazeStyle = HazeBlurDefaults.style(
         backgroundColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-        blurRadius = 28.dp,
+        blurRadius = blurRadius,
         noiseFactor = 0.6f,
     )
 
