@@ -1,5 +1,6 @@
 package com.dertefter.user.presentation
 
+import android.content.Intent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
@@ -24,7 +25,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonGroup
 import androidx.compose.material3.ButtonGroupDefaults
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -43,14 +43,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -79,6 +78,7 @@ import com.jamal_aliev.paginator.extension.isProgressState
 import com.jamal_aliev.paginator.page.PaginatorUiState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 import com.dertefter.design.R as DesignR
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class, ExperimentalFoundationApi::class)
@@ -87,14 +87,13 @@ fun UserScreen(
     onEvent: (Event) -> Unit,
     uiState: UiState,
     paginators: Map<FeedTab, MutableCursorPaginator<PostDto>> = emptyMap(),
-    showBack: Boolean = true,
 ) {
+
+    val context = LocalContext.current
 
     val lazyListState = rememberLazyListState()
 
     val scope = rememberCoroutineScope()
-
-    var showMenu by remember { mutableStateOf(false) }
 
     val isUpFabVisible by remember(lazyListState) {
         derivedStateOf {
@@ -149,7 +148,7 @@ fun UserScreen(
     val pullToRefreshState = rememberPullToRefreshState()
 
     LaunchedEffect(lazyListState) {
-        delay(2000)
+        delay(2000.milliseconds)
         while (true) {
             val visibleItems = lazyListState.layoutInfo.visibleItemsInfo
             val visibleIds = visibleItems.mapNotNull {
@@ -158,7 +157,7 @@ fun UserScreen(
             if (visibleIds.isNotEmpty()) {
                 onEvent(Event.OnUpdateStats(visibleIds))
             }
-            delay(5000)
+            delay(5000.milliseconds)
         }
     }
 
@@ -169,13 +168,11 @@ fun UserScreen(
             TopAppBar(
                 scrollBehavior = scrollBehavior,
                 navigationIcon = {
-                    if (showBack){
-                        AppNavigationIcon(
-                            icon = Icons.ArrowBack,
-                            onClick = { onEvent(Event.OnNavigateBack) },
-                            contentDescription = stringResource(DesignR.string.design_back_content_desc)
-                        )
-                    }
+                    AppNavigationIcon(
+                        icon = Icons.ArrowBack,
+                        onClick = { onEvent(Event.OnNavigateBack) },
+                        contentDescription = stringResource(DesignR.string.design_back_content_desc)
+                    )
 
                 },
                 title = {
@@ -202,15 +199,22 @@ fun UserScreen(
                     }
                 },
                 actions = {
-                    if (showBack){
-                        AppNavigationIcon(
-                            icon = Icons.Share,
-                            onClick = {
-                                uiState.userDto?.let { onEvent(Event.OnShare(it.id)) }
-                            },
-                            contentDescription = stringResource(R.string.user_share)
-                        )
-                    } else {
+                    AppNavigationIcon(
+                        icon = Icons.Share,
+                        onClick = {
+                            uiState.userDto?.let { user ->
+                                val sendIntent: Intent = Intent().apply {
+                                    action = Intent.ACTION_SEND
+                                    putExtra(Intent.EXTRA_TEXT, "https://итд.com/@${user.username}")
+                                    type = "text/plain"
+                                }
+                                val shareIntent = Intent.createChooser(sendIntent, null)
+                                context.startActivity(shareIntent)
+                            }
+                        },
+                        contentDescription = stringResource(R.string.user_share)
+                    )
+                    if (uiState.isMe){
                         AppNavigationIcon(
                             icon = Icons.Settings,
                             containerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -218,40 +222,6 @@ fun UserScreen(
                             onClick = {},
                             contentDescription = stringResource(R.string.user_settings)
                         )
-
-                        Box {
-                            AppNavigationIcon(
-                                icon = Icons.MoreVert,
-                                onClick = {
-                                    showMenu = true
-                                },
-                                contentDescription = stringResource(R.string.user_more)
-                            )
-                            DropdownMenu(
-                                expanded = showMenu,
-                                shape = MaterialTheme.shapes.large,
-                                onDismissRequest = { showMenu = false }
-                            ) {
-                                DropdownMenuItem(
-                                    text = { Text(stringResource(R.string.user_share)) },
-                                    leadingIcon = { Icon(Icons.Share, null) },
-                                    onClick = {
-                                        showMenu = false
-                                        uiState.userDto?.let { onEvent(Event.OnShare(it.id)) }
-                                    }
-                                )
-                                if (!uiState.isMe){
-                                    DropdownMenuItem(
-                                        text = { Text(stringResource(R.string.user_block)) },
-                                        leadingIcon = { Icon(Icons.Delete, null) },
-                                        onClick = {
-                                            showMenu = false
-                                            uiState.userDto?.let { onEvent(Event.OnBlock(it.id)) }
-                                        }
-                                    )
-                                }
-                            }
-                        }
                     }
                 }
             )
