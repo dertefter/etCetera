@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.dertefter.data.repository.FeedRepository
 import com.dertefter.navigation.Navigator
 import com.dertefter.navigation.Routes
+import com.dertefter.post.presentation.mapper.toNavigationModel
 import com.dertefter.post.presentation.mapper.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -53,7 +54,11 @@ class PostViewModel @Inject constructor(
         when (event) {
 
             is Event.OnOpenAttachmentsViewer -> {
-                navigator.navigate(Routes.ImageViewer(imageUrls = event.urls, viewPosition = event.position))
+                navigator.navigate(
+                    Routes.AttachmentsViewer(
+                        attachments = event.attachments.map {it.toNavigationModel()},
+                        viewPosition = event.position)
+                )
             }
 
             is Event.OnOpenUser -> {

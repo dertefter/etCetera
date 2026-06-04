@@ -1,7 +1,6 @@
 package com.dertefter.feed.presentation
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -149,11 +148,8 @@ fun Feed(
                                     onUserClick = { userId -> onEvent(Event.OnOpenUser(userId)) },
                                     onVote = { optionIds -> onEvent(Event.OnVote(post.id, optionIds)) },
                                     onOpenPost = {postId -> onEvent(Event.OnOpenPost(postId))},
-                                    onAttachmentClick = { pos, urls ->
-                                        onEvent(Event.OnOpenAttachmentsViewer(
-                                            urls = urls,
-                                            position = pos
-                                        ))
+                                    onAttachmentClick = { attachments, position ->
+                                        onEvent(Event.OnOpenAttachmentsViewer(attachments, position))
                                     }
                                 )
                                 if (index < state.items.lastIndex) {

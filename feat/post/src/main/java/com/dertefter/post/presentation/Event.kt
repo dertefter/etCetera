@@ -1,5 +1,7 @@
 package com.dertefter.post.presentation
 
+import com.dertefter.design.components.post.AttachmentUiModel
+
 sealed interface Event {
 
     data object OnRefresh : Event
@@ -13,6 +15,6 @@ sealed interface Event {
     data class OnOpenPost(val postId: String) : Event
     data class OnVote(val optionIds: List<String>) : Event
 
-    data class  OnOpenAttachmentsViewer(val urls: List<String>, val position: Int)  : Event
+    data class  OnOpenAttachmentsViewer(val attachments: List<AttachmentUiModel>, val position: Int = 0)  : Event
 
 }

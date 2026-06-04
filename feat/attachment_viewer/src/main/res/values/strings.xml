@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="attachment_viewer_download">Download</string>
+    <string name="attachment_viewer_download_failed">Failed to downlaod</string>
+</resources>

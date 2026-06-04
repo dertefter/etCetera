@@ -28,7 +28,7 @@ fun OriginalPostCard(
     originalPost: OriginalPostUiModel,
     modifier: Modifier = Modifier,
     onOpenPost: (String) -> Unit = {},
-    onAttachmentClick: (position: Int, urls: List<String>) -> Unit = {_,_ ->}
+    onAttachmentClick: (attachments: List<AttachmentUiModel>, position: Int) -> Unit
 ) {
     Box(
         modifier = modifier
@@ -94,7 +94,9 @@ fun OriginalPostCard(
                         modifier = Modifier.fillMaxWidth(),
                         itemHeight = 160.dp,
                         onItemClick = { position ->
-                            onAttachmentClick(position, originalPost.attachments.mapNotNull { it.url })
+                            onAttachmentClick(
+                                originalPost.attachments, position
+                            )
                         }
                     )
                 }
@@ -130,7 +132,8 @@ fun OriginalPostCardPreview() {
                     ),
                     isDeleted = false,
                     poll = null
-                )
+                ),
+                onAttachmentClick = {_,_ -> }
             )
         }
     }

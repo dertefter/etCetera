@@ -1,13 +1,13 @@
-package com.dertefter.image_viewer
+package com.dertefter.attachment_viewer
 
 import androidx.lifecycle.ViewModel
-import com.dertefter.image_viewer.presentation.Event
+import com.dertefter.attachment_viewer.presentation.Event
 import com.dertefter.navigation.Navigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class ImageViewerViewModel @Inject constructor(
+class AttachmentViewerViewModel @Inject constructor(
     private val navigator: Navigator
 ) : ViewModel() {
 
@@ -16,7 +16,6 @@ class ImageViewerViewModel @Inject constructor(
             is Event.OnNavigateBack -> {
                 navigator.navigateUp()
             }
-            else -> {}
         }
     }
 

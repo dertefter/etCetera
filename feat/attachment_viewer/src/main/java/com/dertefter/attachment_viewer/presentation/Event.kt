@@ -1,4 +1,4 @@
-package com.dertefter.image_viewer.presentation
+package com.dertefter.attachment_viewer.presentation
 
 sealed class Event {
     object OnNavigateBack : Event()

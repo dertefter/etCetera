@@ -31,7 +31,7 @@ sealed interface Routes {
     data class Post(val postId: String) : Routes
 
     @Serializable
-    data class ImageViewer(val imageUrls: List<String>, val viewPosition: Int? = null) : Routes
+    data class AttachmentsViewer(val attachments: List<AttachmentNavigationModel>, val viewPosition: Int = 0) : Routes
 
     @Serializable
     data class User(val userId: String?) : Routes

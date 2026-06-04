@@ -23,8 +23,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.ClipEntry
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.dertefter.design.R
@@ -50,18 +50,17 @@ fun PostCard(
     onDelete: () -> Unit = {},
     isOnMyWall: Boolean = false,
     onOpenPost: (String) -> Unit = {},
-    onAttachmentClick: (position: Int, urls: List<String>) -> Unit
+    onAttachmentClick: (attachments: List<AttachmentUiModel>, position: Int) -> Unit
 ) {
     val clipboard = LocalClipboard.current
     val scope = rememberCoroutineScope()
     Box(
         modifier = modifier
-            .clickable(onClick = {onOpenPost(post.id)})
+            .clickable(onClick = { onOpenPost(post.id) })
             .fillMaxWidth()
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large)
         ) {
             Row(
@@ -76,13 +75,10 @@ fun PostCard(
                     modifier = Modifier
                         .clip(MaterialTheme.shapes.small)
                         .clickable(
-                            onClick = { onUserClick(post.author.id) }
-                        )
-                        .weight(1f)
-                ){
+                            onClick = { onUserClick(post.author.id) })
+                        .weight(1f)) {
                     Text(
-                        text = post.author.displayName,
-                        style = MaterialTheme.typography.titleMedium
+                        text = post.author.displayName, style = MaterialTheme.typography.titleMedium
                     )
                     Text(
                         text = "@${post.author.username}",
@@ -93,31 +89,34 @@ fun PostCard(
                 var showMenu by remember { mutableStateOf(false) }
                 Box {
                     IconButton(
-                        onClick = { showMenu = true }
-                    ) {
+                        onClick = { showMenu = true }) {
                         Icon(
-                            imageVector = Icons.MoreHoriz,
-                            contentDescription = ""
+                            imageVector = Icons.MoreHoriz, contentDescription = ""
                         )
                     }
                     DropdownMenu(
                         expanded = showMenu,
                         shape = MaterialTheme.shapes.largeIncreased,
-                        onDismissRequest = { showMenu = false }
-                    ) {
+                        onDismissRequest = { showMenu = false }) {
                         DropdownMenuItem(
                             text = { Text(stringResource(R.string.design_post_copy_link)) },
                             onClick = {
-                                val link = "https://xn--d1ah4a.com/@${post.author.username}/post/${post.id}"
+                                val link =
+                                    "https://xn--d1ah4a.com/@${post.author.username}/post/${post.id}"
                                 scope.launch {
-                                    clipboard.setClipEntry(ClipEntry(ClipData.newPlainText(null, link)))
+                                    clipboard.setClipEntry(
+                                        ClipEntry(
+                                            ClipData.newPlainText(
+                                                null, link
+                                            )
+                                        )
+                                    )
                                 }
                                 showMenu = false
                             },
                             leadingIcon = {
                                 Icon(Icons.ContentCopy, contentDescription = null)
-                            }
-                        )
+                            })
                         if (post.isOwner) {
                             DropdownMenuItem(
                                 text = { Text(stringResource(R.string.design_post_edit)) },
@@ -127,27 +126,22 @@ fun PostCard(
                                 },
                                 leadingIcon = {
                                     Icon(Icons.Edit, contentDescription = null)
-                                }
-                            )
+                                })
                             post.isPinned?.let {
-                                DropdownMenuItem(
-                                    text = {
-                                        Text(
-                                            if (post.isPinned) stringResource(R.string.design_post_unpin)
-                                            else stringResource(R.string.design_post_pin)
-                                        )
-                                    },
-                                    onClick = {
-                                        onPin()
-                                        showMenu = false
-                                    },
-                                    leadingIcon = {
-                                        Icon(
-                                            if (post.isPinned) Icons.KeepOff else Icons.Keep,
-                                            contentDescription = null
-                                        )
-                                    }
-                                )
+                                DropdownMenuItem(text = {
+                                    Text(
+                                        if (post.isPinned) stringResource(R.string.design_post_unpin)
+                                        else stringResource(R.string.design_post_pin)
+                                    )
+                                }, onClick = {
+                                    onPin()
+                                    showMenu = false
+                                }, leadingIcon = {
+                                    Icon(
+                                        if (post.isPinned) Icons.KeepOff else Icons.Keep,
+                                        contentDescription = null
+                                    )
+                                })
                             }
                         }
 
@@ -164,16 +158,14 @@ fun PostCard(
                                         contentDescription = null,
                                         tint = MaterialTheme.colorScheme.error
                                     )
-                                }
-                            )
+                                })
                         }
                     }
                 }
             }
             if (post.content.isNotEmpty()) {
                 Text(
-                    modifier = Modifier
-                        .padding(horizontal = MaterialTheme.spacing.large),
+                    modifier = Modifier.padding(horizontal = MaterialTheme.spacing.large),
                     text = post.content,
                     style = MaterialTheme.typography.bodyMedium
                 )
@@ -183,9 +175,10 @@ fun PostCard(
                     attachments = post.attachments,
                     itemShape = MaterialTheme.shapes.largeIncreased,
                     onItemClick = { position ->
-                        onAttachmentClick(position, post.attachments.mapNotNull { it.url })
-                    }
-                )
+                        onAttachmentClick(
+                            post.attachments, position
+                        )
+                    })
             }
             post.poll?.let { poll ->
                 PollCard(
@@ -196,15 +189,16 @@ fun PostCard(
                     totalCount = poll.totalCount,
                     onVote = { optionIds ->
                         onVote(optionIds)
-                    }
-                )
+                    })
             }
             post.originalPost?.let { originalPost ->
                 OriginalPostCard(
                     originalPost = originalPost,
-                    onOpenPost = {origId -> onOpenPost(origId)},
+                    onOpenPost = { origId -> onOpenPost(origId) },
                     modifier = Modifier.padding(horizontal = MaterialTheme.spacing.large),
-                )
+                    onAttachmentClick = { attachments, position ->
+                        onAttachmentClick(attachments, position)
+                    })
             }
             Row(
                 modifier = Modifier
@@ -214,16 +208,19 @@ fun PostCard(
             ) {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
-                ){
+                ) {
 
                     LikeButton(
                         likes = post.likesCount,
                         isLiked = post.isLiked,
-                        onClick = if (post.isLiked) { onUnlike } else { onLike }
+                        onClick = if (post.isLiked) {
+                            onUnlike
+                        } else {
+                            onLike
+                        }
                     )
                     CommentsButton(
-                        comments = post.commentsCount,
-                        onClick = onCommentsClick
+                        comments = post.commentsCount, onClick = onCommentsClick
                     )
                     RepostButton(
                         reposts = post.repostsCount,
@@ -234,8 +231,8 @@ fun PostCard(
 
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
-                ){
-                    post.dominantEmoji?.let{ dominantEmoji ->
+                ) {
+                    post.dominantEmoji?.let { dominantEmoji ->
                         DominantEmoji(dominantEmoji = dominantEmoji)
                     }
 
@@ -257,16 +254,11 @@ fun PostCardPreview() {
                 id = "1",
                 content = "Hello, this is a sample post content!",
                 author = AuthorUiModel(
-                    id = "author1",
-                    username = "johndoe",
-                    displayName = "John Doe",
-                    avatar = "😐"
+                    id = "author1", username = "johndoe", displayName = "John Doe", avatar = "😐"
                 ),
                 attachments = listOf(
                     AttachmentUiModel(
-                        id = "1",
-                        type = "image",
-                        url = "https://picsum.photos/400/300"
+                        id = "1", type = "image", url = "https://picsum.photos/400/300"
                     )
                 ),
                 likesCount = 10,
@@ -280,9 +272,6 @@ fun PostCardPreview() {
                 isOwner = false,
                 originalPost = null,
                 poll = null,
-            ),
-            isOnMyWall = true,
-            onAttachmentClick = {_,_ ->}
-        )
+            ), isOnMyWall = true, onAttachmentClick = { _, _ -> })
     }
 }

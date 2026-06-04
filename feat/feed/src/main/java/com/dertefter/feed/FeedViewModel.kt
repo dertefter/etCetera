@@ -9,6 +9,7 @@ import com.dertefter.data.repository.SearchRepository
 import com.dertefter.feed.presentation.Event
 import com.dertefter.feed.presentation.FeedTab
 import com.dertefter.feed.presentation.TopBarUiState
+import com.dertefter.feed.presentation.mapper.toNavigationModel
 import com.dertefter.navigation.Navigator
 import com.dertefter.navigation.Routes
 import com.jamal_aliev.paginator.MutableCursorPaginator
@@ -55,13 +56,10 @@ class FeedViewModel @Inject constructor(
 
 
     val topBarUiState: StateFlow<TopBarUiState> = combine(
-        _trendingHashtags,
-        _emojiAvatar
+        _trendingHashtags, _emojiAvatar
     ) { hashtags, avatar ->
         TopBarUiState(
-            trendingHashtags = hashtags,
-            avatarEmoji = avatar,
-            notificationsCount = null
+            trendingHashtags = hashtags, avatarEmoji = avatar, notificationsCount = null
         )
     }.stateIn(
         scope = viewModelScope,
@@ -70,13 +68,14 @@ class FeedViewModel @Inject constructor(
     )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val uiStates: Map<FeedTab, StateFlow<PaginatorUiState<PostDto>>> = paginators.mapValues { (_, paginator) ->
-        paginator.uiState.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = PaginatorUiState.Idle
-        )
-    }
+    val uiStates: Map<FeedTab, StateFlow<PaginatorUiState<PostDto>>> =
+        paginators.mapValues { (_, paginator) ->
+            paginator.uiState.stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = PaginatorUiState.Idle
+            )
+        }
 
     init {
         paginators.values.forEach {
@@ -84,13 +83,13 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    private fun updateTrendingHashtags(){
+    private fun updateTrendingHashtags() {
         viewModelScope.launch {
             searchRepository.updateTrendingHashtags()
         }
     }
 
-    private fun updateMe(){
+    private fun updateMe() {
         viewModelScope.launch {
             meRepository.fetchMe()
         }
@@ -100,8 +99,7 @@ class FeedViewModel @Inject constructor(
         viewModelScope.launch {
             paginator.distinctBy { it.id }
             paginator.prefetchController(
-                scope = viewModelScope,
-                prefetchDistance = 3
+                scope = viewModelScope, prefetchDistance = 3
             )
             paginator.warmUpFromPersistent()
             paginator.restart(silentlyLoading = true)
@@ -112,9 +110,11 @@ class FeedViewModel @Inject constructor(
         when (event) {
 
             is Event.OnOpenAttachmentsViewer -> {
-                navigator.navigate(Routes.ImageViewer(
-                    event.urls, event.position
-                ))
+                navigator.navigate(
+                    Routes.AttachmentsViewer(
+                        event.attachments.map { it.toNavigationModel() }, event.position
+                    )
+                )
             }
 
             is Event.OnLike -> {
@@ -137,7 +137,7 @@ class FeedViewModel @Inject constructor(
 
             is Event.OnUpdateStats -> {
                 viewModelScope.launch {
-                    if (event.ids.isNotEmpty()){
+                    if (event.ids.isNotEmpty()) {
                         feedRepository.updatePostStats(event.ids)
                     }
                 }
@@ -148,9 +148,11 @@ class FeedViewModel @Inject constructor(
                     _selectedTab.value = event.tab
                 }
             }
+
             Event.OnLoadMore -> {
                 // Handled by prefetchController
             }
+
             is Event.OnRefresh -> {
                 updateTrendingHashtags()
                 updateMe()
@@ -158,9 +160,11 @@ class FeedViewModel @Inject constructor(
                     getPaginator(event.tab).restart()
                 }
             }
+
             Event.OnOpenNotifications -> {
                 navigator.navigate(Routes.Notifications)
             }
+
             is Event.OnNavigateToComments -> {
                 navigator.openAsBottomSheet(Routes.Comments(event.postId))
             }

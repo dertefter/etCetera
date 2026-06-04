@@ -14,7 +14,7 @@ plugins {
 }
 
 android {
-    namespace = "com.dertefter.image_viewer"
+    namespace = "com.dertefter.attachment_viewer"
     compileSdk = 37
 
     defaultConfig {

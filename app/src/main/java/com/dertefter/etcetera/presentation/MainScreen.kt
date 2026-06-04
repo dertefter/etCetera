@@ -109,14 +109,14 @@ fun MainScreen(
         startDestination = startDestination
     )
 
-    Button(
-        onClick = {
-            navigator.navigate(Routes.CrashReports)
-        },
-        modifier = Modifier.padding(48.dp).alpha(0.5f)
-    ){
-        Text("Логи")
-    }
+//    Button(
+//        onClick = {
+//            navigator.navigate(Routes.CrashReports)
+//        },
+//        modifier = Modifier.padding(48.dp).alpha(0.5f)
+//    ){
+//        Text("Логи")
+//    }
 
 
 }

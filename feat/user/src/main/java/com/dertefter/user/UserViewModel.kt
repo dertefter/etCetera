@@ -11,11 +11,11 @@ import com.dertefter.data.repository.MeRepository
 import com.dertefter.data.repository.UserRepository
 import com.dertefter.navigation.Navigator
 import com.dertefter.navigation.Routes
-import com.dertefter.navigation.Routes.*
 import com.dertefter.navigation.Routes.Comments
 import com.dertefter.user.presentation.Event
 import com.dertefter.user.presentation.FeedTab
 import com.dertefter.user.presentation.UiState
+import com.dertefter.user.presentation.mapper.toNavigationModel
 import com.jamal_aliev.paginator.MutableCursorPaginator
 import com.jamal_aliev.paginator.extension.distinctBy
 import com.jamal_aliev.paginator.extension.prefetchController
@@ -181,11 +181,16 @@ class UserViewModel @Inject constructor(
         when (event) {
 
             is Event.OnOpenAttachmentsViewer -> {
-                navigator.navigate(Routes.ImageViewer(imageUrls = event.urls, viewPosition = event.position))
+                navigator.navigate(
+                    Routes.AttachmentsViewer(
+                        attachments = event.attachments.map {it.toNavigationModel()},
+                        viewPosition = event.position
+                    )
+                )
             }
 
             is Event.OnOpenPost -> {
-                navigator.navigate(Post(event.postId))
+                navigator.navigate(Routes.Post(event.postId))
             }
 
             Event.OnNavigateBack -> {
@@ -263,14 +268,14 @@ class UserViewModel @Inject constructor(
 
             is Event.OnOpenUser -> {
                 navigator.navigate(
-                    User(event.userId)
+                    Routes.User(event.userId)
                 )
             }
 
             is Event.OnOpenNewPost -> {
                 uiState.value.userDto?.id.let{ id ->
                     navigator.openAsBottomSheet(
-                        NewPost(id)
+                        Routes.NewPost(id)
                     )
                 }
 
@@ -282,13 +287,13 @@ class UserViewModel @Inject constructor(
 
             is Event.OnOpenFollowers -> {
                 navigator.navigate(
-                    Followers(event.userId, false)
+                    Routes.Followers(event.userId, false)
                 )
             }
 
             is Event.OnOpenFollowing -> {
                 navigator.navigate(
-                    Followers(event.userId, true)
+                    Routes.Followers(event.userId, true)
                 )
             }
 

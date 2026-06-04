@@ -19,12 +19,14 @@ import com.dertefter.comments.CommentsRoute
 import com.dertefter.crash_reports.CrashReportsRoute
 import com.dertefter.feed.FeedRoute
 import com.dertefter.followers.FollowersRoute
-import com.dertefter.image_viewer.ImageViewerRoute
+import com.dertefter.attachment_viewer.AttachmentViewerRoute
+import com.dertefter.navigation.AttachmentNavigationModel
 import com.dertefter.navigation.Routes
 import com.dertefter.new_post.NewPostRoute
 import com.dertefter.notifications.NotificationsRoute
 import com.dertefter.post.PostRoute
 import com.dertefter.user.UserRoute
+import kotlin.reflect.typeOf
 
 
 @Composable
@@ -74,7 +76,7 @@ fun RouteContent(route: Routes) {
         is Routes.Comments -> CommentsRoute(route.postId)
         is Routes.User -> UserRoute(route.userId)
         is Routes.NewPost -> NewPostRoute(route.wallRecipientId)
-        is Routes.ImageViewer -> ImageViewerRoute(route.imageUrls, route.viewPosition)
+        is Routes.AttachmentsViewer -> AttachmentViewerRoute(route.attachments, route.viewPosition)
         is Routes.Followers -> FollowersRoute()
         is Routes.Notifications -> NotificationsRoute()
         is Routes.BannerEdit -> BannerEditRoute()
@@ -130,8 +132,10 @@ fun NavGraphBuilder.graph() {
         RouteContent(args)
     }
 
-    composable<Routes.ImageViewer> {
-        val args = it.toRoute<Routes.ImageViewer>()
+    composable<Routes.AttachmentsViewer>(
+        typeMap = mapOf(typeOf<List<AttachmentNavigationModel>>() to AttachmentListType)
+    ) {
+        val args = it.toRoute<Routes.AttachmentsViewer>()
         RouteContent(args)
     }
 

@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -28,7 +29,9 @@ import com.dertefter.design.theme.AppTheme
 @Composable
 fun ImageAttachment(
     attachment: AttachmentUiModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    contentScale: ContentScale = ContentScale.Crop,
+    containerColor: Color = MaterialTheme.colorScheme.surfaceVariant
 ) {
     var retryHash by remember { mutableIntStateOf(0) }
 
@@ -40,8 +43,8 @@ fun ImageAttachment(
             .build(),
         contentDescription = null,
         modifier = modifier
-            .background(MaterialTheme.colorScheme.surfaceVariant),
-        contentScale = ContentScale.Crop,
+            .background(containerColor),
+        contentScale = contentScale,
         error = {
             Box(
                 modifier = Modifier

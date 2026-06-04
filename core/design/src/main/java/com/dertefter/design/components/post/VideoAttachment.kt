@@ -61,6 +61,8 @@ import kotlinx.coroutines.delay
 fun VideoAttachment(
     attachment: AttachmentUiModel,
     modifier: Modifier = Modifier,
+    contentScale: ContentScale = ContentScale.Crop,
+    containerColor: Color = MaterialTheme.colorScheme.surfaceVariant
 ) {
     val context = LocalContext.current
     val isInspectionMode = LocalInspectionMode.current
@@ -168,6 +170,8 @@ fun VideoAttachment(
             }
             isSeeking = false
         },
+        contentScale = contentScale,
+        containerColor = containerColor,
         modifier = modifier
     )
 }
@@ -189,11 +193,13 @@ fun VideoAttachmentContent(
     onSeek: (Float) -> Unit,
     onSeekFinished: () -> Unit,
     modifier: Modifier = Modifier,
+    contentScale: ContentScale = ContentScale.Crop,
+    containerColor: Color = MaterialTheme.colorScheme.surfaceVariant
 ) {
     val presentationState = rememberPresentationState(exoPlayer)
     Box(
         modifier = modifier
-            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .background(containerColor)
             .clickable { onToggleControls() }
             .clipToBounds(),
         contentAlignment = Alignment.Center,
@@ -205,7 +211,7 @@ fun VideoAttachmentContent(
                     .fillMaxSize()
                     .alpha(if (isFirstFrameRendered) 1f else 0f)
                     .resizeWithContentScale(
-                        contentScale = ContentScale.Crop,
+                        contentScale = contentScale,
                         sourceSizeDp = presentationState.videoSizeDp
                     ),
             )

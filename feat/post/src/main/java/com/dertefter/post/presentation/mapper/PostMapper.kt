@@ -13,6 +13,7 @@ import com.dertefter.design.components.post.AttachmentUiModel
 import com.dertefter.design.components.post.AuthorUiModel
 import com.dertefter.design.components.post.OriginalPostUiModel
 import com.dertefter.design.components.post.PostUiModel
+import com.dertefter.navigation.AttachmentNavigationModel
 
 fun PostDto.toUiModel(): PostUiModel {
     return PostUiModel(
@@ -47,7 +48,7 @@ fun PollOptionDto.toUiModel(isChecked: Boolean) = PollOptionUiModel(
     votesCount = votesCount,
     isChecked = isChecked
 )
-
+fun AttachmentUiModel.toNavigationModel() = AttachmentNavigationModel(id, type, url, mimeType)
 fun AuthorDto.toUiModel() = AuthorUiModel(id, username, displayName, avatar)
 fun ShortAuthorDto.toUiModel() = AuthorUiModel(id, username, displayName, avatar)
 fun AttachmentDto.toUiModel() = AttachmentUiModel(id, type, url, mimeType)
