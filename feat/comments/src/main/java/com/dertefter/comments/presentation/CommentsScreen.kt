@@ -70,6 +70,7 @@ fun CommentsScreen(
                         .weight(1f),
                     style = MaterialTheme.typography.titleLarge,
                     text = stringResource(R.string.comments_title),
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
                 Box {
                     AppNavigationIcon(

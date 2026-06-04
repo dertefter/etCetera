@@ -29,6 +29,7 @@ class MainActivity : ComponentActivity() {
             statusBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT),
             navigationBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
         )
+
         setContent {
             val mainScreenState by viewModel.mainScreenState.collectAsStateWithLifecycle()
             AppTheme {

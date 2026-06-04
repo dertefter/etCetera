@@ -92,6 +92,7 @@ fun NewPostScreen(
                         .alpha(alpha)
                         .weight(1f),
                     style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
                     text = stringResource(R.string.new_post_title),
                 )
 
