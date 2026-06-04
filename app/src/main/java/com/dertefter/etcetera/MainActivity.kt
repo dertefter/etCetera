@@ -9,6 +9,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.runtime.getValue
 import androidx.core.graphics.toColorLong
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.etcetera.presentation.MainScreen
@@ -25,7 +26,11 @@ class MainActivity : ComponentActivity() {
     private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        installSplashScreen()
+
         super.onCreate(savedInstanceState)
+
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT),
             navigationBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
@@ -33,9 +38,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val mainScreenState by viewModel.mainScreenState.collectAsStateWithLifecycle()
-            AppTheme(
-                seedColor = Color.MAGENTA.toColorLong()
-            ) {
+            AppTheme {
                 MainScreen(navigator, mainScreenState)
             }
         }
