@@ -65,5 +65,7 @@ dependencies {
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.ui)
     implementation(libs.androidx.media3.ui.compose)
+    implementation(libs.haze)
+    implementation(libs.haze.blur)
 
 }

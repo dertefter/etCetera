@@ -1,9 +1,10 @@
 package com.dertefter.attachment_viewer.presentation
 
 import android.app.DownloadManager
-import android.widget.Toast
 import android.content.Context
 import android.os.Environment
+import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -11,6 +12,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,16 +21,18 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberAsyncImagePainter
-import com.dertefter.design.components.buttons.AppNavigationIcon
-import com.dertefter.design.theme.spacing
-import net.engawapg.lib.zoomable.rememberZoomState
-import net.engawapg.lib.zoomable.zoomable
 import androidx.core.net.toUri
+import com.dertefter.attachment_viewer.R
+import com.dertefter.design.components.buttons.AppNavigationIcon
 import com.dertefter.design.components.post.Attachment
 import com.dertefter.design.components.post.AttachmentUiModel
 import com.dertefter.design.icons.Icons
-import com.dertefter.attachment_viewer.R
+import com.dertefter.design.theme.circleShape
+import com.dertefter.design.theme.spacing
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.rememberHazeState
+import net.engawapg.lib.zoomable.rememberZoomState
+import net.engawapg.lib.zoomable.zoomable
 
 
 @Composable
@@ -43,6 +47,8 @@ fun AttachmentViewerScreen(
     )
     val context = LocalContext.current
 
+    val hazeState = rememberHazeState()
+
     Scaffold(
         containerColor = Color.Black
     ) { contentPadding ->
@@ -52,49 +58,26 @@ fun AttachmentViewerScreen(
         ) {
             HorizontalPager(
                 state = pagerState,
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .hazeSource(state = hazeState)
+                    .fillMaxSize(),
                 pageSpacing = 16.dp,
+                userScrollEnabled = true,
             ) { page ->
                 val attachment = attachments[page]
-                val isImage = attachment.type == "image" || attachment.mimeType?.startsWith("image") == true
-
-                Box(
-                    modifier = Modifier.fillMaxSize()
-                ){
-                    if (isImage){
-                        val painter = rememberAsyncImagePainter(attachment.url)
-                        val zoomState = rememberZoomState(contentSize = painter.intrinsicSize)
-                        Attachment(
-                            attachment = attachment,
-                            contentScale = ContentScale.Fit,
-                            containerColor = Color.Black,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .zoomable(zoomState)
+                val zoomState = rememberZoomState()
+                Attachment(
+                    attachment = attachment,
+                    contentScale = ContentScale.Fit,
+                    containerColor = Color.Black,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .then(
+                            if (attachment.type == "image") {
+                                Modifier.zoomable(zoomState)
+                            } else Modifier
                         )
-                    } else {
-                        Attachment(
-                            attachment = attachment,
-                            contentScale = ContentScale.Fit,
-                            containerColor = Color.Black,
-                            modifier = Modifier.fillMaxSize()
-                        )
-                    }
-
-                    AppNavigationIcon(
-                        onClick = {
-                            downloadAttachment(context, attachment)
-                        },
-                        modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .padding(contentPadding)
-                            .padding(MaterialTheme.spacing.defaultScreenPadding),
-                        containerColor = Color.Black.copy(alpha = 0.5f),
-                        icon = Icons.Download,
-                        contentDescription = stringResource(R.string.attachment_viewer_download),
-                        contentColor = Color.White
-                    )
-                }
+                )
 
             }
 
@@ -107,7 +90,37 @@ fun AttachmentViewerScreen(
                     .padding(contentPadding)
                     .padding(MaterialTheme.spacing.defaultScreenPadding),
                 containerColor = Color.Black.copy(alpha = 0.5f),
-                contentColor = Color.White
+                contentColor = Color.White,
+                hazeState = hazeState
+            )
+
+            if (attachments.size > 1) {
+                Text(
+                    text = "${pagerState.currentPage + 1} / ${attachments.size}",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = Color.White,
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(contentPadding)
+                        .padding(MaterialTheme.spacing.defaultScreenPadding)
+                        .background(Color.Black.copy(alpha = 0.5f), MaterialTheme.circleShape())
+                        .padding(horizontal = 12.dp, vertical = 4.dp)
+                )
+            }
+
+            AppNavigationIcon(
+                onClick = {
+                    downloadAttachment(context, attachments[pagerState.currentPage])
+                },
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(contentPadding)
+                    .padding(MaterialTheme.spacing.defaultScreenPadding),
+                containerColor = Color.Black.copy(alpha = 0.5f),
+                icon = Icons.Download,
+                contentDescription = stringResource(R.string.attachment_viewer_download),
+                contentColor = Color.White,
+                hazeState = hazeState
             )
         }
     }

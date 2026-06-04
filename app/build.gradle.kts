@@ -115,11 +115,11 @@ dependencies {
 
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.material.kolor)
-    implementation(libs.haze)
-    implementation(libs.haze.materials)
     implementation(libs.coil)
     implementation(libs.composefadingedges)
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
+    implementation(libs.haze)
+    implementation(libs.haze.blur)
 }

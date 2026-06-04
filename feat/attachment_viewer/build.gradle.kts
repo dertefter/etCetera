@@ -60,4 +60,6 @@ dependencies {
     implementation(libs.material.kolor)
     implementation(libs.lightspark.compose.qr.code)
     implementation(libs.zoomable)
+    implementation(libs.haze)
+    implementation(libs.haze.blur)
 }
