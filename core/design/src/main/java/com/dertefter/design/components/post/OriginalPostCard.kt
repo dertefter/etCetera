@@ -18,6 +18,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import com.dertefter.design.components.avatar.DisplayName
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.components.avatar.SmallEmojiAvatar
 import com.dertefter.design.components.poll.PollCard
@@ -67,9 +68,11 @@ fun OriginalPostCard(
                         containerSize = 32.dp
                     )
                     Column {
-                        Text(
-                            text = originalPost.author.displayName,
-                            style = MaterialTheme.typography.titleSmall
+                        DisplayName(
+                            name = originalPost.author.displayName,
+                            verified = originalPost.author.verified,
+                            hasNuksta = originalPost.author.hasNuksta,
+                            pin = originalPost.author.pin
                         )
                         Text(
                             text = "@${originalPost.author.username}",
@@ -121,7 +124,8 @@ fun OriginalPostCardPreview() {
                         id = "user1",
                         username = "johndoe",
                         displayName = "John Doe",
-                        avatar = "😊"
+                        avatar = "😊",
+                        true, true, null
                     ),
                     attachments = listOf(
                         AttachmentUiModel(

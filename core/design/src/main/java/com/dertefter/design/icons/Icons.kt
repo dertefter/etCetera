@@ -8,6 +8,9 @@ import com.dertefter.design.R
 @Suppress("unused")
 object Icons {
 
+    val VerifiedFilled: ImageVector
+        @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_verified_filled)
+
     val Download: ImageVector
         @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_download)
     val Keep: ImageVector

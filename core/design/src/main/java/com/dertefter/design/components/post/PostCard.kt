@@ -28,6 +28,7 @@ import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.dertefter.design.R
+import com.dertefter.design.components.avatar.DisplayName
 import com.dertefter.design.components.avatar.SmallEmojiAvatar
 import com.dertefter.design.components.poll.PollCard
 import com.dertefter.design.icons.Icons
@@ -77,8 +78,11 @@ fun PostCard(
                         .clickable(
                             onClick = { onUserClick(post.author.id) })
                         .weight(1f)) {
-                    Text(
-                        text = post.author.displayName, style = MaterialTheme.typography.titleMedium
+                    DisplayName(
+                        name = post.author.displayName,
+                        verified = post.author.verified,
+                        hasNuksta = post.author.hasNuksta,
+                        pin = post.author.pin
                     )
                     Text(
                         text = "@${post.author.username}",
@@ -254,7 +258,7 @@ fun PostCardPreview() {
                 id = "1",
                 content = "Hello, this is a sample post content!",
                 author = AuthorUiModel(
-                    id = "author1", username = "johndoe", displayName = "John Doe", avatar = "😐"
+                    id = "author1", username = "johndoe", displayName = "John Doe", avatar = "😐", hasNuksta = true, verified = true, pin = null
                 ),
                 attachments = listOf(
                     AttachmentUiModel(
