@@ -19,23 +19,44 @@ class NotificationsRepositoryImpl @Inject constructor(
 
     private val activePaginators = CopyOnWriteArrayList<WeakReference<MutableCursorPaginator<NotificationDto>>>()
 
-    override fun getNotificationsPaginator(): MutableCursorPaginator<NotificationDto> {
+    override fun getNotificationsPaginator(type: String?): MutableCursorPaginator<NotificationDto> {
         val pagingCore = CursorPagingCore<NotificationDto>(
-            cache = CursorMostRecentPagingCache(maxSize = 20)
+            cache = CursorMostRecentPagingCache(maxSize = 50)
         )
         return MutableCursorPaginator(
             core = pagingCore,
             load = { cursor ->
-                val offset = (cursor?.self as? String)?.toIntOrNull() ?: 0
-                val result = remoteDataSource.getNotifications(offset)
-                val data = result.getOrThrow()
+                val startOffset = (cursor?.self as? String)?.toIntOrNull() ?: 0
+                var currentOffset = startOffset
+                val accumulatedNotifications = mutableListOf<NotificationDto>()
+                var nextOffset: String? = null
+
+                while (true) {
+                    val result = remoteDataSource.getNotifications(currentOffset)
+                    val data = result.getOrThrow()
+
+                    val pageFiltered = if (type == null) {
+                        data.notifications
+                    } else {
+                        data.notifications.filter { it.type.equals(type, ignoreCase = true) }
+                    }
+
+                    accumulatedNotifications.addAll(pageFiltered)
+                    
+                    val fetchedSize = data.notifications.size
+                    currentOffset += if (fetchedSize > 0) fetchedSize else 20
+                    if (accumulatedNotifications.size >= 20 || !data.hasMore || (currentOffset - startOffset >= 1000)) {
+                        nextOffset = if (data.hasMore) currentOffset.toString() else null
+                        break
+                    }
+                }
 
                 CursorLoadResult(
-                    data = data.notifications,
+                    data = accumulatedNotifications,
                     bookmark = CursorBookmark(
-                        prev = if (offset > 0) (offset - 20).coerceAtLeast(0).toString() else null,
-                        self = offset.toString(),
-                        next = if (data.hasMore) (offset + data.notifications.size).toString() else null
+                        prev = if (startOffset > 0) (startOffset - 20).coerceAtLeast(0).toString() else null,
+                        self = startOffset.toString(),
+                        next = nextOffset
                     )
                 )
             }

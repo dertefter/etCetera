@@ -4,6 +4,6 @@ import com.dertefter.data.dto.notifications.NotificationDto
 import com.jamal_aliev.paginator.MutableCursorPaginator
 
 interface NotificationsRepository {
-    fun getNotificationsPaginator(): MutableCursorPaginator<NotificationDto>
+    fun getNotificationsPaginator(type: String? = null): MutableCursorPaginator<NotificationDto>
 
 }
