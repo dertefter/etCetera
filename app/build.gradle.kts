@@ -86,6 +86,7 @@ dependencies {
     implementation(project(":feat:crash_reports"))
     implementation(project(":feat:post"))
     implementation(project(":feat:attachment_viewer"))
+    implementation(project(":feat:search"))
 
     implementation(libs.core.ktx)
     implementation(libs.core.splashscreen)
