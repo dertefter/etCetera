@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.Flow
 interface FeedRepository {
     fun getFeedPaginator(tab: String): MutableCursorPaginator<PostDto>
 
+    fun getHashtagPaginator(hashtag: String): MutableCursorPaginator<PostDto>
+
     suspend fun updatePostStats(ids: List<String>): Result<List<PostStatsDto>>
 
     suspend fun likePost(postId: String): Result<LikeResponseDto>

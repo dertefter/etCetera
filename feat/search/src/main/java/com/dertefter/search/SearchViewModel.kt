@@ -50,6 +50,7 @@ class SearchViewModel @Inject constructor(
             }
             is Event.OnNavigateBack -> { navigator.navigateUp() }
             is Event.OnOpenUser -> { navigator.navigate(Routes.User(event.userId)) }
+            is Event.OnOpenHashtag -> { navigator.navigate(Routes.HashtagFeed(event.name)) }
         }
     }
 

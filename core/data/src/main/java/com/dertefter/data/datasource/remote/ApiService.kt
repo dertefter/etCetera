@@ -83,6 +83,14 @@ interface ApiService {
         @Query("cursor") cursor: String?
     ): Response<FeedResponseDto>
 
+    @GET("api/hashtags/{hashtagId}/posts")
+    suspend fun postsForHashtag(
+        @Path("hashtagId") hashtagId: String,
+        @Query("limit") limit: Int = 20,
+        @Query("cursor") cursor: String?
+    ): Response<FeedResponseDto>
+
+
     @GET("api/hashtags/trending")
     suspend fun trendingHashtags(
         @Query("limit") limit: Int = 10

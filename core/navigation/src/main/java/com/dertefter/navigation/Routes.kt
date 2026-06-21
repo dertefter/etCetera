@@ -45,4 +45,7 @@ sealed interface Routes {
         val startTabIsFollowing: Boolean = false
     ) : Routes
 
+    @Serializable
+    data class HashtagFeed(val hashtagName: String) : Routes
+
 }

@@ -20,6 +20,7 @@ import com.dertefter.crash_reports.CrashReportsRoute
 import com.dertefter.feed.FeedRoute
 import com.dertefter.followers.FollowersRoute
 import com.dertefter.attachment_viewer.AttachmentViewerRoute
+import com.dertefter.hashtag_feed.HashtagFeedRoute
 import com.dertefter.navigation.AttachmentNavigationModel
 import com.dertefter.navigation.Routes
 import com.dertefter.new_post.NewPostRoute
@@ -84,6 +85,7 @@ fun RouteContent(route: Routes) {
         is Routes.CrashReports -> CrashReportsRoute()
         is Routes.Post -> PostRoute()
         is Routes.Search -> SearchRoute()
+        is Routes.HashtagFeed -> HashtagFeedRoute(route.hashtagName)
     }
 }
 
@@ -135,6 +137,11 @@ fun NavGraphBuilder.graph() {
 
     composable<Routes.Post> {
         val args = it.toRoute<Routes.Post>()
+        RouteContent(args)
+    }
+
+    composable<Routes.HashtagFeed> {
+        val args = it.toRoute<Routes.HashtagFeed>()
         RouteContent(args)
     }
 

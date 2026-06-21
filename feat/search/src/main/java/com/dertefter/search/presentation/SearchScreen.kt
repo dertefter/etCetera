@@ -84,6 +84,9 @@ fun SearchScreen(
 
                     SearchBar(
                         state = searchBarState,
+                        colors = SearchBarDefaults.colors(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainer
+                        ),
                         modifier = Modifier
                             .padding(horizontal = 8.dp)
                             .fillMaxWidth(),
@@ -132,7 +135,11 @@ fun SearchScreen(
                 SearchHashtagCard(
                     hashtag = hashtag,
                     modifier = Modifier.padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
-                    onClick = {}
+                    onClick = {
+                        onEvent(
+                            Event.OnOpenHashtag(hashtag.name)
+                        )
+                    }
                 )
             }
             item{}

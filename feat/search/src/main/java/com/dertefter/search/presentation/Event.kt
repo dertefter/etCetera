@@ -8,5 +8,6 @@ sealed interface Event {
 
     data class OnOpenUser(val userId: String) : Event
 
+    data class OnOpenHashtag(val name: String) : Event
 
 }

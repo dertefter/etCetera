@@ -64,6 +64,31 @@ class FeedRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun getHashtagPaginator(hashtag: String): MutableCursorPaginator<PostDto> {
+        val pagingCore = CursorPagingCore(
+            cache = CursorMostRecentPagingCache(maxSize = 20),
+            persistentCache = PostPagingCache(hashtag, localDataSource)
+        )
+        return MutableCursorPaginator(
+            core = pagingCore,
+            load = { cursor ->
+                val result = remoteDataSource.getPostsForHashtag(hashtag, cursor?.self as? String)
+                val data = result.getOrThrow()
+
+                CursorLoadResult(
+                    data = data.posts,
+                    bookmark = CursorBookmark(
+                        prev = cursor?.prev,
+                        self = cursor?.self ?: "initial",
+                        next = if (data.pagination.hasMore) data.pagination.nextCursor else null
+                    )
+                )
+            }
+        ).also {
+            activePaginators.add(WeakReference(it))
+        }
+    }
+
     private suspend fun updatePagesInDb(predicate: (PostDto) -> Boolean, transform: (PostDto) -> PostDto) {
         val allPosts = localDataSource.getAllPosts()
         allPosts.forEach { post ->

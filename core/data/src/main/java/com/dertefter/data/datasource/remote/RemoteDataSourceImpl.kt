@@ -3,19 +3,19 @@ package com.dertefter.data.datasource.remote
 import com.dertefter.data.dto.auth.SignInRequest
 import com.dertefter.data.dto.comments.CommentsDataDto
 import com.dertefter.data.dto.comments.RepliesDataDto
+import com.dertefter.data.dto.feed.PollDto
 import com.dertefter.data.dto.feed.PostDataDto
 import com.dertefter.data.dto.feed.PostDto
-import com.dertefter.data.dto.feed.PollDto
 import com.dertefter.data.dto.feed.like.LikeResponseDto
-import com.dertefter.data.dto.me.MeDto
 import com.dertefter.data.dto.feed.stats.PostStatsDto
 import com.dertefter.data.dto.feed.stats.PostStatsRequest
 import com.dertefter.data.dto.followers.FollowersResponseDataDto
+import com.dertefter.data.dto.me.MeDto
 import com.dertefter.data.dto.me.UpdateMeRequestDto
 import com.dertefter.data.dto.me.UpdateMeResponseDto
-import com.dertefter.data.dto.poll.VotePollRequestDto
 import com.dertefter.data.dto.new_post.NewPostRequestDto
 import com.dertefter.data.dto.notifications.NotificationsResponseDto
+import com.dertefter.data.dto.poll.VotePollRequestDto
 import com.dertefter.data.dto.search.SearchDataDto
 import com.dertefter.data.dto.search.SearchHashtagDto
 import com.dertefter.data.dto.upload.AttachmentUploadResponseDto
@@ -79,6 +79,21 @@ class RemoteDataSourceImpl @Inject constructor(
     override suspend fun getPosts(tab: String, cursor: String?): Result<PostDataDto> {
         return runCatching {
             val response = apiService.posts(tab = tab, cursor = cursor)
+            if (response.isSuccessful) {
+                response.body()!!.data
+            } else {
+                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
+            }
+        }
+    }
+
+    override suspend fun getPostsForHashtag(
+        hashtagId: String,
+        cursor: String?
+    ): Result<PostDataDto> {
+        return runCatching {
+            val response = apiService.postsForHashtag(hashtagId = hashtagId, cursor = cursor)
+
             if (response.isSuccessful) {
                 response.body()!!.data
             } else {

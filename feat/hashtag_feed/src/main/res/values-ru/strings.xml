@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="user_title">Профиль</string>
+    <string name="user_edit">Редактировать</string>
+    <string name="user_settings">Настройки</string>
+    <string name="user_following">Подписки</string>
+    <string name="user_followers">Подписчики</string>
+    <string name="user_posts">Посты</string>
+    <string name="user_liked">Лайки</string>
+    <string name="user_save_bio">Сохранить</string>
+    <string name="user_cancel_bio">Отменить</string>
+    <string name="user_share">Поделиться</string>
+    <string name="user_more">Еще</string>
+    <string name="user_block">Заблокировать</string>
+    <string name="user_create_post">Создать пост</string>
+    <string name="user_scroll_to_top">Наверх</string>
+    <string name="user_unfollow">Отписаться</string>
+    <string name="user_follow">Подписаться</string>
+    <string name="user_no_posts">Постов пока нет</string>
+    <string name="user_loading_error">Ошибка загрузки: %1$s</string>
+    <string name="user_pinned_post">Закреплено</string>
+    <string name="user_append_error">Ошибка при загрузке новых постов</string>
+</resources>

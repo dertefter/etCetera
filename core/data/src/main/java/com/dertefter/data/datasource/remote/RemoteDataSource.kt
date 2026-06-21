@@ -30,6 +30,7 @@ interface RemoteDataSource {
     suspend fun getUser(userId: String): Result<UserDto>
 
     suspend fun getPosts(tab: String, cursor: String?): Result<PostDataDto>
+    suspend fun getPostsForHashtag(hashtagId: String, cursor: String?): Result<PostDataDto>
 
     suspend fun getPost(postId: String): Result<PostDto>
 
