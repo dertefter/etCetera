@@ -15,7 +15,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
+import com.dertefter.design.theme.AppTheme
 import com.dertefter.data.dto.followers.FollowerUserDto
+
 import com.dertefter.design.components.avatar.SmallEmojiAvatar
 import com.dertefter.design.theme.spacing
 
@@ -60,5 +63,39 @@ fun FollowerUserCard(
                 Text("Follow")
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun FollowerUserCardPreview() {
+    AppTheme {
+        FollowerUserCard(
+            followerUser = FollowerUserDto(
+                id = "1",
+                username = "johndoe",
+                displayName = "John Doe",
+                avatar = "👤",
+                verified = true,
+                isFollowing = false
+            )
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun FollowerUserCardFollowingPreview() {
+    AppTheme {
+        FollowerUserCard(
+            followerUser = FollowerUserDto(
+                id = "1",
+                username = "johndoe",
+                displayName = "John Doe",
+                avatar = "👤",
+                verified = true,
+                isFollowing = true
+            )
+        )
     }
 }
