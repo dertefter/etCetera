@@ -64,7 +64,7 @@ interface ApiService {
         @Query("q") query: String,
         @Query("userLimit") userLimit: Int = 10,
         @Query("hashtagLimit") hashtagLimit: Int = 5,
-    ): Response<UserDto>
+    ): Response<SearchResponseDto>
 
     @GET("api/users/{userId}")
     suspend fun user(

@@ -2,6 +2,7 @@ package com.dertefter.data.repository
 
 import com.dertefter.data.datasource.local.LocalDataSource
 import com.dertefter.data.datasource.remote.RemoteDataSource
+import com.dertefter.data.dto.search.SearchDataDto
 import com.dertefter.data.dto.search.SearchHashtagDto
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -20,5 +21,9 @@ class SearchRepositoryImpl @Inject constructor(
         return remoteDataSource.getTrendingHashtags().onSuccess {
             localDataSource.saveTrendingHashtags(it)
         }
+    }
+
+    override suspend fun getSearchResults(q: String): Result<SearchDataDto> {
+        return remoteDataSource.getSearchResults(q)
     }
 }
