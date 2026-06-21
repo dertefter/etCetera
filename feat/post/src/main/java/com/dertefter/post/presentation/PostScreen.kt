@@ -107,7 +107,8 @@ fun PostScreen(
                                     onOpenPost = { onEvent(Event.OnOpenPost(it)) },
                                     onAttachmentClick = { attachments, position ->
                                         onEvent(Event.OnOpenAttachmentsViewer(attachments, position))
-                                    }
+                                    },
+                                    showCommentsButton = false
                                 )
                             }
                             item {

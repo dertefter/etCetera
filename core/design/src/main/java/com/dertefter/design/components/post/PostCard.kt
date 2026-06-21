@@ -49,6 +49,7 @@ fun PostCard(
     onEdit: () -> Unit = {},
     onPin: () -> Unit = {},
     onDelete: () -> Unit = {},
+    showCommentsButton: Boolean = true,
     isOnMyWall: Boolean = false,
     onOpenPost: (String) -> Unit = {},
     onAttachmentClick: (attachments: List<AttachmentUiModel>, position: Int) -> Unit
@@ -223,9 +224,11 @@ fun PostCard(
                             onLike
                         }
                     )
-                    CommentsButton(
-                        comments = post.commentsCount, onClick = onCommentsClick
-                    )
+                    if (showCommentsButton){
+                        CommentsButton(
+                            comments = post.commentsCount, onClick = onCommentsClick
+                        )
+                    }
                     RepostButton(
                         reposts = post.repostsCount,
                         isReposted = post.isReposted,
