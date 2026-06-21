@@ -16,6 +16,8 @@ sealed interface Event {
 
     data object OnOpenNewPost : Event
 
+    data object OnOpenSearch: Event
+
     data class OnNavigateToComments(val postId: String) : Event
 
     data class OnOpenPost(val postId: String) : Event

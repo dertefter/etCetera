@@ -109,6 +109,10 @@ class FeedViewModel @Inject constructor(
     fun onEvent(event: Event) {
         when (event) {
 
+            is Event.OnOpenSearch -> {
+               navigator.navigate(Routes.Search)
+            }
+
             is Event.OnOpenAttachmentsViewer -> {
                 navigator.navigate(
                     Routes.AttachmentsViewer(

@@ -33,7 +33,6 @@ import androidx.compose.material3.ToggleButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -150,7 +149,8 @@ fun FeedScreen(
                         popularHashtags = topAppBarState.trendingHashtags,
                         scrollBehavior = scrollBehavior,
                         onProfileClick = { onEvent(Event.OnOpenUser(null)) },
-                        onNotificationsClick = { onEvent(Event.OnOpenNotifications) }
+                        onNotificationsClick = { onEvent(Event.OnOpenNotifications) },
+                        onSearchClick = { onEvent(Event.OnOpenSearch) }
                     )
                     ButtonGroup(
                         overflowIndicator = { ButtonGroupDefaults.OverflowIndicator(it) },
