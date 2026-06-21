@@ -4,17 +4,14 @@ import android.content.res.Configuration
 import android.graphics.Canvas
 import android.graphics.Paint
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -25,7 +22,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -33,14 +29,16 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.createBitmap
+import androidx.graphics.shapes.CornerRounding
 import androidx.graphics.shapes.RoundedPolygon
+import androidx.graphics.shapes.star
 import androidx.palette.graphics.Palette
+import com.dertefter.design.components.common.RoundedPolygonShape
 import com.dertefter.design.theme.AppTheme
 import com.materialkolor.PaletteStyle
-import com.materialkolor.ktx.harmonize
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlin.math.abs
+import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -59,7 +57,12 @@ fun SmallEmojiAvatar(
 
     var detectedColor by remember { mutableStateOf(containerColor) }
 
-    val containerShape = staticShape?.toShape() ?: shapeForEmoji(emoji)
+    val polygon = remember(emoji, staticShape) {
+        staticShape ?: getEmojiPolygon(emoji)
+    }
+    val clip = remember(polygon) {
+        RoundedPolygonShape(polygon = polygon)
+    }
 
     LaunchedEffect(emoji, containerColor) {
         val color = extractEmojiColor(emoji, containerColor.toArgb())
@@ -68,17 +71,14 @@ fun SmallEmojiAvatar(
 
     Box(
         modifier = modifier
-            .clip(containerShape)
-            .clickable(onClick = onClick)
-            .border(
-                shape = containerShape,
-                width = strokeWidth,
-                color = strokeColor
-            )
+            .size(containerSize)
+            .clip(clip)
+            .background(strokeColor)
+            .padding(strokeWidth)
+            .clip(clip)
             .background(containerColor)
             .background(detectedColor.copy(alpha = 0.3f))
-            .size(containerSize)
-        ,
+            .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
         Text(
@@ -88,45 +88,18 @@ fun SmallEmojiAvatar(
             modifier = Modifier
         )
     }
-
-
-
 }
 
-
-
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
-private val avatarShapes = listOf(
-    MaterialShapes.Cookie9Sided,
-    MaterialShapes.Cookie12Sided,
-    MaterialShapes.Circle,
-    MaterialShapes.Square,
-    MaterialShapes.Ghostish,
-    MaterialShapes.Clover4Leaf,
-    MaterialShapes.Clover8Leaf,
-    MaterialShapes.VerySunny,
-    MaterialShapes.Cookie7Sided,
-    MaterialShapes.SoftBurst,
-    MaterialShapes.Cookie4Sided,
-    MaterialShapes.SoftBoom,
-    MaterialShapes.Flower,
-    MaterialShapes.Slanted,
-    MaterialShapes.Arch,
-    MaterialShapes.Pill,
-    MaterialShapes.Sunny,
-    MaterialShapes.Cookie6Sided,
-    MaterialShapes.PuffyDiamond,
-    MaterialShapes.Bun,
-)
-
-@Composable
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
-private fun shapeForEmoji(
-    emoji: String,
-    angle: Int = 0
-): Shape {
-    val index = abs(emoji.hashCode()) % avatarShapes.size
-    return avatarShapes[index].toShape(angle)
+private fun getEmojiPolygon(emoji: String): RoundedPolygon {
+    val random = Random(emoji.hashCode().toLong())
+    val numVertices = (random.nextInt(4) + 2) * 2 // 4, 6, 8, 10
+    val innerRadius = 0.2f + random.nextFloat() * 0.4f // 0.2f to 0.6f
+    val rounding = 0.1f + random.nextFloat() * 0.6f // 0.1f to 0.7f
+    return RoundedPolygon.star(
+        numVerticesPerRadius = numVertices,
+        innerRadius = innerRadius,
+        rounding = CornerRounding(rounding)
+    )
 }
 
 private suspend fun extractEmojiColor(
@@ -176,6 +149,12 @@ fun PreviewAv(){
             )
             SmallEmojiAvatar(
                 emoji = "🪲"
+            )
+            SmallEmojiAvatar(
+                emoji = "🦊"
+            )
+            SmallEmojiAvatar(
+                emoji = "🚀"
             )
 
         }
