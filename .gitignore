@@ -12,3 +12,4 @@
 *.jks
 *.keystore
 secrets.properties
+/.kotlin/

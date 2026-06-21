@@ -1,5 +1,6 @@
 package com.dertefter.etcetera.presentation
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,12 +26,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -71,6 +74,14 @@ fun MainScreen(
     )
 
     val hazeState = rememberHazeState()
+
+    val scope = rememberCoroutineScope()
+
+    BackHandler(enabled = scaffoldState.bottomSheetState.currentValue != SheetValue.Hidden) {
+        scope.launch {
+            scaffoldState.bottomSheetState.hide()
+        }
+    }
 
     val blurRadius by animateDpAsState(
         targetValue = if (scaffoldState.bottomSheetState.currentValue == SheetValue.Expanded)  40.dp else 26.dp
