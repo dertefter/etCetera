@@ -8,6 +8,9 @@ sealed interface Routes {
     @Serializable
     data object Auth : Routes
 
+    @Serializable
+    data object Search : Routes
+
 
     @Serializable
     data object CrashReports : Routes
