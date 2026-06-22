@@ -29,7 +29,7 @@ import com.dertefter.data.datasource.local.room.entity.UserEntity
         PageUserEntity::class,
         SearchHashtagEntity::class
     ],
-    version = 41,
+    version = 42,
     exportSchema = false
 )
 
