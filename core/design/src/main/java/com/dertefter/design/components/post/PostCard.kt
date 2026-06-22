@@ -55,6 +55,7 @@ fun PostCard(
     showCommentsButton: Boolean = true,
     isOnMyWall: Boolean = false,
     onOpenPost: (String) -> Unit = {},
+    onHashtagClick: (hashtagId: String) -> Unit = {},
     onAttachmentClick: (attachments: List<AttachmentUiModel>, position: Int) -> Unit
 ) {
     val clipboard = LocalClipboard.current
@@ -182,12 +183,26 @@ fun PostCard(
                             detectTapGestures { offset ->
                                 layoutResult?.let { lr ->
                                     val tapOffset = lr.getOffsetForPosition(offset)
+                                    val hashtagAnnotations = annotatedString.getStringAnnotations(
+                                        tag = "HASHTAG",
+                                        start = tapOffset,
+                                        end = tapOffset
+                                    )
+                                    val mentionAnnotations = annotatedString.getStringAnnotations(
+                                        tag = "MENTION",
+                                        start = tapOffset,
+                                        end = tapOffset
+                                    )
                                     val spoilerAnnotations = annotatedString.getStringAnnotations(
                                         tag = "SPOILER",
                                         start = tapOffset,
                                         end = tapOffset
                                     )
-                                    if (spoilerAnnotations.isNotEmpty()) {
+                                    if (hashtagAnnotations.isNotEmpty()) {
+                                        onHashtagClick(hashtagAnnotations.first().item)
+                                    } else if (mentionAnnotations.isNotEmpty()) {
+                                        onUserClick(mentionAnnotations.first().item)
+                                    } else if (spoilerAnnotations.isNotEmpty()) {
                                         spoilerAnnotations.firstOrNull()?.let { annotation ->
                                             revealedSpoilers = revealedSpoilers + annotation.item.toInt()
                                         }
@@ -227,6 +242,8 @@ fun PostCard(
                 OriginalPostCard(
                     originalPost = originalPost,
                     onOpenPost = { origId -> onOpenPost(origId) },
+                    onHashtagClick = onHashtagClick,
+                    onUserClick = onUserClick,
                     modifier = Modifier.padding(horizontal = MaterialTheme.spacing.large),
                     onAttachmentClick = { attachments, position ->
                         onAttachmentClick(attachments, position)

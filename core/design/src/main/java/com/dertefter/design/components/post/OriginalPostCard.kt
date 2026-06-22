@@ -15,6 +15,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,6 +36,8 @@ fun OriginalPostCard(
     originalPost: OriginalPostUiModel,
     modifier: Modifier = Modifier,
     onOpenPost: (String) -> Unit = {},
+    onHashtagClick: (String) -> Unit = {},
+    onUserClick: (String) -> Unit = {},
     onAttachmentClick: (attachments: List<AttachmentUiModel>, position: Int) -> Unit
 ) {
     Box(
@@ -82,14 +91,50 @@ fun OriginalPostCard(
                     }
                 }
                 if (originalPost.content.isNotEmpty()) {
-                    val annotatedString = buildPostAnnotatedString(originalPost.content, originalPost.spans)
+                    var revealedSpoilers by remember { mutableStateOf(setOf<Int>()) }
+                    val annotatedString = buildPostAnnotatedString(originalPost.content, originalPost.spans, revealedSpoilers)
+                    var layoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
                     Text(
                         modifier = Modifier
-                            .padding(horizontal = MaterialTheme.spacing.large),
+                            .padding(horizontal = MaterialTheme.spacing.large)
+                            .pointerInput(originalPost.id, revealedSpoilers) {
+                                detectTapGestures { offset ->
+                                    layoutResult?.let { lr ->
+                                        val tapOffset = lr.getOffsetForPosition(offset)
+                                        val hashtagAnnotations = annotatedString.getStringAnnotations(
+                                            tag = "HASHTAG",
+                                            start = tapOffset,
+                                            end = tapOffset
+                                        )
+                                        val mentionAnnotations = annotatedString.getStringAnnotations(
+                                            tag = "MENTION",
+                                            start = tapOffset,
+                                            end = tapOffset
+                                        )
+                                        val spoilerAnnotations = annotatedString.getStringAnnotations(
+                                            tag = "SPOILER",
+                                            start = tapOffset,
+                                            end = tapOffset
+                                        )
+                                        if (hashtagAnnotations.isNotEmpty()) {
+                                            onHashtagClick(hashtagAnnotations.first().item)
+                                        } else if (mentionAnnotations.isNotEmpty()) {
+                                            onUserClick(mentionAnnotations.first().item)
+                                        } else if (spoilerAnnotations.isNotEmpty()) {
+                                            spoilerAnnotations.firstOrNull()?.let { annotation ->
+                                                revealedSpoilers = revealedSpoilers + annotation.item.toInt()
+                                            }
+                                        } else {
+                                            onOpenPost(originalPost.id)
+                                        }
+                                    }
+                                }
+                            },
                         text = annotatedString,
                         style = MaterialTheme.typography.bodyMedium,
                         maxLines = 3,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        onTextLayout = { layoutResult = it }
                     )
                 }
                 if (originalPost.attachments.isNotEmpty()) {
