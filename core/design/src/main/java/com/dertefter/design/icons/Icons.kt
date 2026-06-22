@@ -8,6 +8,23 @@ import com.dertefter.design.R
 @Suppress("unused")
 object Icons {
 
+    val FormatSpoiler: ImageVector
+        @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_visibility_off)
+
+    val FormatStrike: ImageVector
+        @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_strike)
+
+    val FormatMono: ImageVector
+        @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_code)
+
+    val FormatUnderlined: ImageVector
+        @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_format_underlined)
+
+    val FormatBold: ImageVector
+        @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_format_bold)
+
+    val FormatItalic: ImageVector
+        @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_format_italic)
     val VerifiedFilled: ImageVector
         @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_verified_filled)
 

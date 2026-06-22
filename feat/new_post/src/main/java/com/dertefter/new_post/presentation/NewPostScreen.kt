@@ -7,6 +7,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,6 +23,9 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.contextmenu.builder.TextContextMenuBuilderScope
+import androidx.compose.foundation.text.contextmenu.builder.item
+import androidx.compose.foundation.text.contextmenu.modifier.appendTextContextMenuComponents
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -35,8 +39,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -44,16 +52,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.components.poll.NewPollCard
+import com.dertefter.design.components.post.buildPostAnnotatedString
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
 import com.dertefter.new_post.R
+import com.dertefter.new_post.presentation.component.SpanCheckButton
 import com.dertefter.new_post.presentation.component.UploadCard
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -64,6 +75,28 @@ fun NewPostScreen(
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val scrollState = rememberScrollState()
+
+    var textFieldValue by remember {
+        mutableStateOf(TextFieldValue(uiState.content))
+    }
+
+    LaunchedEffect(uiState.content) {
+        if (uiState.content != textFieldValue.text) {
+            textFieldValue = textFieldValue.copy(text = uiState.content)
+        }
+    }
+
+    val selection = textFieldValue.selection
+
+    val menuBuilder: TextContextMenuBuilderScope.() -> Unit = {
+        item(label = "Bold", key = "bold", onClick = { onEvent(Event.OnSpanToggled("bold", selection.min, selection.max)) })
+        item(label = "Italic", key = "italic", onClick = { onEvent(Event.OnSpanToggled("italic", selection.min, selection.max)) })
+        item(label = "Underline", key = "underline", onClick = { onEvent(Event.OnSpanToggled("underline", selection.min, selection.max)) })
+        item(label = "Strikethrough", key = "strike", onClick = { onEvent(Event.OnSpanToggled("strike", selection.min, selection.max)) })
+        item(label = "Monospace", key = "monospace", onClick = { onEvent(Event.OnSpanToggled("monospace", selection.min, selection.max)) })
+        item(label = "Spoiler", key = "spoiler", onClick = { onEvent(Event.OnSpanToggled("spoiler", selection.min, selection.max)) })
+    }
+
 
     val alpha by animateFloatAsState(
         targetValue = if (scrollBehavior.state.contentOffset < 0f) 0f else 1f
@@ -86,7 +119,8 @@ fun NewPostScreen(
                 modifier = Modifier
                     .padding(bottom = MaterialTheme.spacing.defaultScreenPadding)
                     .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
-            ) {
+            )
+            {
                 Text(
                     modifier = Modifier
                         .alpha(alpha)
@@ -129,7 +163,7 @@ fun NewPostScreen(
                             uiState.poll?.isReady() ?: true
                             )
                 ) {
-                    if (uiState.isUploadingPost){
+                    if (uiState.isUploadingPost) {
                         AppLoadingIndicator(
                             color = MaterialTheme.colorScheme.onPrimary,
                             modifier = Modifier.size(34.dp)
@@ -139,7 +173,7 @@ fun NewPostScreen(
                     }
                 }
             }
-        }
+        },
     ) { contentPadding ->
         Column(
             modifier = Modifier
@@ -147,12 +181,21 @@ fun NewPostScreen(
                 .fillMaxSize()
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
                 .verticalScroll(scrollState),
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
+
         ) {
             BasicTextField(
-                value = uiState.content,
-                onValueChange = { onEvent(Event.OnContentChanged(it)) },
+                value = textFieldValue.copy(annotatedString = buildPostAnnotatedString(textFieldValue.text, uiState.spans)),
+                onValueChange = {
+                    textFieldValue = it
+                    if (it.text != uiState.content) {
+                        onEvent(Event.OnContentChanged(it.text))
+                    }
+                },
                 modifier = Modifier
+                    .appendTextContextMenuComponents {
+                        menuBuilder()
+                    }
                     .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
                     .fillMaxWidth(),
                 textStyle = MaterialTheme.typography.bodyLarge.copy(
@@ -229,7 +272,12 @@ fun NewPostScreen(
 private fun NewPostScreenPreview() {
     AppTheme {
         NewPostScreen(
-            uiState = UiState("Hello", emptyList(), isUploadingPost = true),
+            uiState = UiState(
+                content = "Hello",
+                spans = emptyList(),
+                uploads = emptyList(),
+                isUploadingPost = true
+            ),
             onEvent = {}
         )
     }

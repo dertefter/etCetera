@@ -12,9 +12,11 @@ import com.dertefter.new_post.presentation.Upload
 import com.dertefter.new_post.presentation.UploadStatus
 import com.dertefter.design.components.poll.NewPollUiModel
 import com.dertefter.design.components.poll.NewPollOptionUiModel
+import com.dertefter.design.components.post.SpanUiModel
 import com.dertefter.data.dto.new_post.NewPostRequestDto
 import com.dertefter.data.dto.new_post.NewPollDto
 import com.dertefter.data.dto.new_post.NewPollOptionDto
+import com.dertefter.data.dto.feed.SpanDto
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -37,6 +39,8 @@ class NewPostViewModel @Inject constructor(
 
     private val _poll = MutableStateFlow<NewPollUiModel?>(null)
 
+    private val _spans = MutableStateFlow<List<SpanUiModel>>(emptyList())
+
     private val _uploads = MutableStateFlow<List<Upload>>(emptyList())
 
     private val _content = MutableStateFlow("")
@@ -45,10 +49,11 @@ class NewPostViewModel @Inject constructor(
 
     private var wallRecipientId: String? = null
 
-    val uiState: StateFlow<UiState> = combine(_content, _uploads, _poll, _isUploadingPost) { content, uploads, poll, isUploadingPost ->
-        UiState(content, uploads, poll, isUploadingPost)
+    val uiState: StateFlow<UiState> = combine(_content, _spans, _uploads, _poll, _isUploadingPost) { content, spans, uploads, poll, isUploadingPost ->
+        UiState(content, spans, uploads, poll, isUploadingPost)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), UiState(
         "",
+        emptyList(),
         emptyList()
     ))
 
@@ -68,6 +73,21 @@ class NewPostViewModel @Inject constructor(
 
             is Event.OnContentChanged -> {
                 _content.value = event.content
+            }
+
+            is Event.OnSpanToggled -> {
+                val type = event.type
+                val start = event.start
+                val end = event.end
+                val length = end - start
+                _spans.update { spans ->
+                    val existing = spans.find { it.type == type && it.offset == start && it.length == length }
+                    if (existing != null) {
+                        spans - existing
+                    } else {
+                        spans + SpanUiModel(type, length, start)
+                    }
+                }
             }
 
             Event.OnAddPoll -> {
@@ -123,9 +143,7 @@ class NewPostViewModel @Inject constructor(
             }
 
             Event.OnSavePost -> {
-                wallRecipientId?.let{ wallRecipientId ->
-                    savePost(wallRecipientId)
-                }
+                savePost(wallRecipientId)
 
             }
         }
@@ -133,12 +151,13 @@ class NewPostViewModel @Inject constructor(
 
     fun clearAll() {
         _content.value = ""
+        _spans.value = emptyList()
         _uploads.value = emptyList()
         _poll.value = null
         _isUploadingPost.value = false
     }
 
-    private fun savePost(wallRecipientId: String) {
+    private fun savePost(wallRecipientId: String?) {
         viewModelScope.launch {
             _isUploadingPost.value = true
             val pollDto = _poll.value?.let { poll ->
@@ -154,6 +173,7 @@ class NewPostViewModel @Inject constructor(
 
             val request = NewPostRequestDto(
                 content = _content.value,
+                spans = _spans.value.map { SpanDto(it.type, it.length, it.offset, it.username, it.tag) },
                 poll = pollDto,
                 attachmentIds = attachmentIds,
                 wallRecipientId = wallRecipientId

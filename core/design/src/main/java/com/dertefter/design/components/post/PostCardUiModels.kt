@@ -5,6 +5,7 @@ import com.dertefter.design.components.poll.PollUiModel
 data class PostUiModel(
     val id: String,
     val content: String,
+    val spans: List<SpanUiModel>,
     val author: AuthorUiModel,
     val attachments: List<AttachmentUiModel>,
     val poll: PollUiModel?,
@@ -18,6 +19,14 @@ data class PostUiModel(
     val isPinned: Boolean? = null,
     val isOwner: Boolean,
     val originalPost: OriginalPostUiModel?
+)
+
+data class SpanUiModel(
+    val type: String,
+    val length: Int,
+    val offset: Int,
+    val username: String? = null,
+    val tag: String? = null
 )
 
 data class AuthorUiModel(
@@ -47,6 +56,7 @@ data class PinUiModel(
 data class OriginalPostUiModel(
     val id: String,
     val content: String,
+    val spans: List<SpanUiModel>,
     val author: AuthorUiModel,
     val attachments: List<AttachmentUiModel>,
     val poll: PollUiModel?,

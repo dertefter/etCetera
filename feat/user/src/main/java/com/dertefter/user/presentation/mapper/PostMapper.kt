@@ -8,6 +8,7 @@ import com.dertefter.data.dto.feed.PollDto
 import com.dertefter.data.dto.feed.PollOptionDto
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.dto.feed.ShortAuthorDto
+import com.dertefter.data.dto.feed.SpanDto
 import com.dertefter.data.dto.user.UserDto
 import com.dertefter.design.components.poll.PollOptionUiModel
 import com.dertefter.design.components.poll.PollUiModel
@@ -16,12 +17,14 @@ import com.dertefter.design.components.post.AuthorUiModel
 import com.dertefter.design.components.post.OriginalPostUiModel
 import com.dertefter.design.components.post.PinUiModel
 import com.dertefter.design.components.post.PostUiModel
+import com.dertefter.design.components.post.SpanUiModel
 import com.dertefter.navigation.AttachmentNavigationModel
 
 fun PostDto.toUiModel(isPinned: Boolean? = null): PostUiModel {
     return PostUiModel(
         id = id,
         content = content,
+        spans = spans.map { it.toUiModel() },
         author = author.toUiModel(),
         attachments = attachments.map { it.toUiModel() },
         poll = poll?.toUiModel(),
@@ -60,9 +63,13 @@ fun AuthorDto.toUiModel() = AuthorUiModel(id, username, displayName, avatar, has
 fun ShortAuthorDto.toUiModel() = AuthorUiModel(id, username, displayName, avatar, hasNuksta, verified, pin?.toUiModel())
 fun PinDto.toUiModel() = PinUiModel(description, name, slug, url)
 fun AttachmentDto.toUiModel() = AttachmentUiModel(id, type, url, mimeType)
+
+fun SpanDto.toUiModel() = SpanUiModel(type, length, offset, username, tag)
+
 fun OriginalPostDto.toUiModel() = OriginalPostUiModel(
     id = id,
     content = content,
+    spans = spans.map { it.toUiModel() },
     author = author.toUiModel(),
     attachments = attachments.map { it.toUiModel() },
     poll = poll?.toUiModel(),

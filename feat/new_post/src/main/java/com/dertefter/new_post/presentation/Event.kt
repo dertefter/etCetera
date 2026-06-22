@@ -11,6 +11,8 @@ sealed interface Event {
 
     data class OnContentChanged(val content: String) : Event
 
+    data class OnSpanToggled(val type: String, val start: Int, val end: Int) : Event
+
     data object OnAddPoll : Event
 
     data object OnRemovePoll : Event

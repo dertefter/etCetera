@@ -39,6 +39,7 @@ import com.jamal_aliev.paginator.extension.isErrorState
 import com.jamal_aliev.paginator.extension.isProgressState
 import com.jamal_aliev.paginator.page.PaginatorUiState
 import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,7 +58,7 @@ fun Feed(
 
     LaunchedEffect(listState) {
         while (true) {
-            delay(2000)
+            delay(2000.milliseconds)
             val visibleItems = listState.layoutInfo.visibleItemsInfo
             val visibleIds = visibleItems.map { it.key.toString() }
             onEvent(Event.OnUpdateStats(visibleIds))

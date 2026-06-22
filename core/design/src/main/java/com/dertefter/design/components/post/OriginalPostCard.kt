@@ -82,10 +82,11 @@ fun OriginalPostCard(
                     }
                 }
                 if (originalPost.content.isNotEmpty()) {
+                    val annotatedString = buildPostAnnotatedString(originalPost.content, originalPost.spans)
                     Text(
                         modifier = Modifier
                             .padding(horizontal = MaterialTheme.spacing.large),
-                        text = originalPost.content,
+                        text = annotatedString,
                         style = MaterialTheme.typography.bodyMedium,
                         maxLines = 3,
                         overflow = TextOverflow.Ellipsis
@@ -120,6 +121,7 @@ fun OriginalPostCardPreview() {
                 originalPost = OriginalPostUiModel(
                     id = "1",
                     content = "This is a sample post content with some text to see how it looks in the card.",
+                    spans = emptyList(),
                     author = AuthorUiModel(
                         id = "user1",
                         username = "johndoe",

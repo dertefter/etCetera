@@ -2,6 +2,7 @@ package com.dertefter.design.components.post
 
 import android.content.ClipData
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,9 +24,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.tooling.preview.Preview
 import com.dertefter.design.R
 import com.dertefter.design.components.avatar.DisplayName
@@ -169,10 +172,34 @@ fun PostCard(
                 }
             }
             if (post.content.isNotEmpty()) {
+                var revealedSpoilers by remember { mutableStateOf(setOf<Int>()) }
+                val annotatedString = buildPostAnnotatedString(post.content, post.spans, revealedSpoilers)
+                var layoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
                 Text(
-                    modifier = Modifier.padding(horizontal = MaterialTheme.spacing.large),
-                    text = post.content,
-                    style = MaterialTheme.typography.bodyMedium
+                    modifier = Modifier
+                        .padding(horizontal = MaterialTheme.spacing.large)
+                        .pointerInput(post.id, revealedSpoilers) {
+                            detectTapGestures { offset ->
+                                layoutResult?.let { lr ->
+                                    val tapOffset = lr.getOffsetForPosition(offset)
+                                    val spoilerAnnotations = annotatedString.getStringAnnotations(
+                                        tag = "SPOILER",
+                                        start = tapOffset,
+                                        end = tapOffset
+                                    )
+                                    if (spoilerAnnotations.isNotEmpty()) {
+                                        spoilerAnnotations.firstOrNull()?.let { annotation ->
+                                            revealedSpoilers = revealedSpoilers + annotation.item.toInt()
+                                        }
+                                    } else {
+                                        onOpenPost(post.id)
+                                    }
+                                }
+                            }
+                        },
+                    text = annotatedString,
+                    style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurface),
+                    onTextLayout = { layoutResult = it }
                 )
             }
             if (post.attachments.isNotEmpty()) {
@@ -259,7 +286,8 @@ fun PostCardPreview() {
         PostCard(
             post = PostUiModel(
                 id = "1",
-                content = "Hello, this is a sample post content!",
+                content = "#супермиликотики #каалиция #дым #живойуголоклучшийдссервер #цитата #potatopopular #potato #cakepopular",
+                spans = emptyList(),
                 author = AuthorUiModel(
                     id = "author1", username = "johndoe", displayName = "John Doe", avatar = "😐", hasNuksta = true, verified = true, pin = null
                 ),
