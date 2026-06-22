@@ -330,10 +330,13 @@ fun UserScreen(
                                 .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
                             author = uiState.userDto.toUiModel(),
                             scrollBehavior = scrollBehavior,
-                            onBannerClick = {
+                            onEditClick = {
                                 if (uiState.isMe){
                                     onEvent(Event.OnBannerEdit)
                                 }
+                            },
+                            onBannerClick = {
+
                             }
                         )
                     }
@@ -360,6 +363,21 @@ fun UserScreen(
                                 }
                             )
 
+                        }
+                    }
+
+                    if (
+                        uiState.isMe || !uiState.userDto.bio.isNullOrEmpty()
+                    ){
+                        item {
+                            BioCard(
+                                modifier = Modifier.padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
+                                canEdit = uiState.isMe,
+                                bio = uiState.userDto.bio ?: "",
+                                onSaveClick = {
+                                    onEvent(Event.OnSaveBio(it))
+                                }
+                            )
                         }
                     }
 
@@ -391,18 +409,6 @@ fun UserScreen(
                                 }
                             }
                         }
-                    }
-
-
-                    item {
-                        BioCard(
-                            modifier = Modifier.padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
-                            canEdit = uiState.isMe,
-                            bio = uiState.userDto.bio ?: "",
-                            onSaveClick = {
-                                onEvent(Event.OnSaveBio(it))
-                            }
-                        )
                     }
 
                     stickyHeader {

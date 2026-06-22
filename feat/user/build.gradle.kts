@@ -59,5 +59,7 @@ dependencies {
     implementation(libs.hilt.lifecycle.viewmodel.compose)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+    implementation(libs.haze)
+    implementation(libs.haze.blur)
 
 }
