@@ -317,7 +317,9 @@ class UserViewModel @Inject constructor(
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
-            userRepository.updateUser(userId)
+            userRepository.updateUser(userId).onSuccess {
+                initWithUserId(it.id)
+            }
                 .onFailure {
                     Log.e("UserViewModel", it.stackTraceToString())
                     _error.value = it.toAppError()
