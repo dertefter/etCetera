@@ -36,7 +36,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
 import com.dertefter.data.dto.search.SearchHashtagDto
+import com.dertefter.feed.R
 import com.dertefter.design.common.PrettifyInt
 import com.dertefter.design.components.avatar.SmallEmojiAvatar
 import com.dertefter.design.components.buttons.AppNavigationIcon
@@ -45,6 +47,7 @@ import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.circleShape
 import com.dertefter.design.theme.spacing
 import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun FeedAppBar(
@@ -58,17 +61,21 @@ fun FeedAppBar(
     scrollBehavior: TopAppBarScrollBehavior? = null,
     ){
 
-    var currentSearchText by remember { mutableStateOf("Поиск...") }
+    val searchHint = stringResource(id = R.string.feed_search_hint)
+    val hashtagFormat = stringResource(id = R.string.hashtag_search_item_format)
+    var currentSearchText by remember(searchHint) { mutableStateOf(searchHint) }
 
-    LaunchedEffect(popularHashtags) {
+    LaunchedEffect(popularHashtags, searchHint, hashtagFormat) {
         if (!popularHashtags.isNullOrEmpty()) {
-            val items = listOf("Поиск...") + popularHashtags.map { "#${it.name} • ${it.postsCount.PrettifyInt()} постов" }
+            val items = listOf(searchHint) + popularHashtags.map {
+                hashtagFormat.format(it.name, it.postsCount.PrettifyInt())
+            }
             while (true) {
-                delay(6000)
+                delay(6000.milliseconds)
                 currentSearchText = items.random()
             }
         } else {
-            currentSearchText = "Поиск..."
+            currentSearchText = searchHint
         }
     }
     TopAppBar(
@@ -83,22 +90,28 @@ fun FeedAppBar(
         navigationIcon = {
             NotificationIconWithBadge(
                 notificationCount = notificationCount,
-                onClick = onNotificationsClick
+                onClick = onNotificationsClick,
+            )
+        },
+        actions = {
+            SmallEmojiAvatar(
+                emoji = profileEmoji ?: "",
+                containerSize = 44.dp,
+                fontSize = 24.sp,
+                onClick = onProfileClick,
+                modifier = Modifier.padding(end = 5.dp)
             )
         },
         title = {
-            Row(
+            Box(
                 modifier = Modifier
-                    .padding(start = 4.dp)
-                    .height(60.dp)
+                    .height(52.dp)
                     .clip(MaterialTheme.circleShape())
                     .clickable(
                         onClick = onSearchClick
                     )
                     .background(MaterialTheme.colorScheme.surfaceContainer),
-                verticalAlignment = Alignment.CenterVertically,
-            )
-            {
+            ){
                 AnimatedContent(
                     targetState = currentSearchText,
                     transitionSpec = {
@@ -106,32 +119,22 @@ fun FeedAppBar(
                             slideOutVertically { height -> -height } + fadeOut()
                         )
                     },
+                    label = "SearchTextAnimation",
                     modifier = Modifier
-                        .padding(start = MaterialTheme.spacing.extraLarge)
-                        .weight(1f),
-                    label = "SearchTextAnimation"
+                        .padding(horizontal = MaterialTheme.spacing.large)
+                        .align(Alignment.Center)
+                        .fillMaxWidth()
                 ) { text ->
                     Text(
                         text,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 1,
-                        fontSize = 18.sp,
+                        fontSize = 16.sp,
                         overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.fillMaxWidth()
                     )
                 }
-                profileEmoji?.let{
-                    SmallEmojiAvatar(
-                        emoji = profileEmoji,
-                        containerSize = 50.dp,
-                        fontSize = 24.sp,
-                        onClick = onProfileClick,
-                        modifier = Modifier.padding(end = 5.dp)
-                    )
-                }
-
-
             }
+
         }
     )
 }
@@ -148,7 +151,7 @@ private fun NotificationIconWithBadge(
     ) {
         AppNavigationIcon(
             icon = Icons.Notifications,
-            contentDescription = "Уведомления",
+            contentDescription = stringResource(id = R.string.notifications_content_description),
             onClick = onClick,
             modifier = Modifier.size(60.dp),
             containerColor = MaterialTheme.colorScheme.secondaryContainer,

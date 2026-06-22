@@ -10,11 +10,13 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -31,6 +33,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -46,6 +50,7 @@ import androidx.compose.ui.tooling.preview.Wallpapers
 import androidx.compose.ui.unit.dp
 import com.dertefter.data.dto.feed.AuthorDto
 import com.dertefter.data.dto.feed.PostDto
+import com.dertefter.design.components.PullToRefreshIndicator
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.cornerShape
@@ -56,6 +61,7 @@ import com.dertefter.feed.presentation.component.FeedAppBar
 import com.jamal_aliev.paginator.MutableCursorPaginator
 import com.jamal_aliev.paginator.bookmark.CursorBookmark
 import com.jamal_aliev.paginator.dsl.mutableCursorPaginator
+import com.jamal_aliev.paginator.extension.isProgressState
 import com.jamal_aliev.paginator.load.CursorLoadResult
 import com.jamal_aliev.paginator.page.PaginatorUiState
 import kotlinx.coroutines.launch
@@ -94,6 +100,11 @@ fun FeedScreen(
         pageCount = { tabs.size },
         initialPage = tabs.indexOf(selectedTab).coerceAtLeast(0)
     )
+
+    val pullToRefreshState = rememberPullToRefreshState()
+    val currentTab = tabs[pagerState.currentPage]
+    val currentUiState = uiStates[currentTab]
+    val isRefreshing = currentUiState is PaginatorUiState.Content && currentUiState.prependState.isProgressState()
 
     LaunchedEffect(
         popularScrollBehavior.state.heightOffset,
@@ -134,150 +145,165 @@ fun FeedScreen(
         targetValue = if (isUpFabVisible) MaterialTheme.rounding.medium else MaterialTheme.rounding.largeIncreased
     )
 
-
-    Scaffold(
-        topBar = {
-            val containerColor = lerp(
-                MaterialTheme.colorScheme.surface,
-                MaterialTheme.colorScheme.surfaceContainer,
-                scrollBehavior.state.overlappedFraction
+    PullToRefreshBox(
+        modifier = Modifier.fillMaxSize(),
+        state = pullToRefreshState,
+        isRefreshing = isRefreshing,
+        onRefresh = { onEvent(Event.OnRefresh(currentTab)) },
+        indicator = {
+            PullToRefreshIndicator(
+                modifier = Modifier
+                    .align(Alignment.TopCenter),
+                state = pullToRefreshState,
+                isRefreshing = isRefreshing,
+                maxDistance = 100.dp
             )
-            Surface(color = containerColor) {
-                Column {
-                    FeedAppBar(
-                        profileEmoji = topAppBarState.avatarEmoji,
-                        popularHashtags = topAppBarState.trendingHashtags,
-                        scrollBehavior = scrollBehavior,
-                        onProfileClick = { onEvent(Event.OnOpenUser(null)) },
-                        onNotificationsClick = { onEvent(Event.OnOpenNotifications) },
-                        onSearchClick = { onEvent(Event.OnOpenSearch) }
-                    )
-                    ButtonGroup(
-                        overflowIndicator = { ButtonGroupDefaults.OverflowIndicator(it) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
-                            .padding(bottom = MaterialTheme.spacing.small),
-                        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
-                    ) {
-                    val groupScope = this
-                    tabs.forEachIndexed { index, title ->
+        }
+    ) {
+        Scaffold(
+            topBar = {
+                val containerColor = lerp(
+                    MaterialTheme.colorScheme.surface,
+                    MaterialTheme.colorScheme.surfaceContainer,
+                    scrollBehavior.state.overlappedFraction.coerceIn(0f,1f)
+                )
+                Surface(color = containerColor) {
+                    Column {
+                        FeedAppBar(
+                            profileEmoji = topAppBarState.avatarEmoji,
+                            popularHashtags = topAppBarState.trendingHashtags,
+                            scrollBehavior = scrollBehavior,
+                            onProfileClick = { onEvent(Event.OnOpenUser(null)) },
+                            onNotificationsClick = { onEvent(Event.OnOpenNotifications) },
+                            onSearchClick = { onEvent(Event.OnOpenSearch) }
+                        )
+                        ButtonGroup(
+                            overflowIndicator = { ButtonGroupDefaults.OverflowIndicator(it) },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
+                                .padding(bottom = MaterialTheme.spacing.small),
+                            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+                        ) {
+                            val groupScope = this
+                            tabs.forEachIndexed { index, title ->
 
-                        customItem(
-                            buttonGroupContent = {
-                                ToggleButton(
-                                    checked = pagerState.currentPage == index,
-                                    onCheckedChange = {
-                                        if (it) {
-                                            scope.launch {
-                                                pagerState.animateScrollToPage(index)
+                                customItem(
+                                    buttonGroupContent = {
+                                        ToggleButton(
+                                            checked = pagerState.currentPage == index,
+                                            onCheckedChange = {
+                                                if (it) {
+                                                    scope.launch {
+                                                        pagerState.animateScrollToPage(index)
+                                                    }
+                                                }
+                                            },
+                                            shapes = when (index) {
+                                                0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
+                                                tabs.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
+                                                else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
+                                            },
+                                            modifier = with(groupScope) { Modifier.weight(1f) }
+                                        ) {
+                                            val text = when (title) {
+                                                FeedTab.POPULAR -> stringResource(R.string.feed_popular)
+                                                FeedTab.CLAN -> stringResource(R.string.feed_clan)
+                                                FeedTab.FOLLOWING -> stringResource(R.string.feed_following)
                                             }
+                                            Text(text)
                                         }
                                     },
-                                    shapes = when (index) {
-                                        0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
-                                        tabs.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
-                                        else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
-                                    },
-                                    modifier = with(groupScope) { Modifier.weight(1f) }
-                                ) {
-                                    val text = when (title) {
-                                        FeedTab.POPULAR -> stringResource(R.string.feed_popular)
-                                        FeedTab.CLAN -> stringResource(R.string.feed_clan)
-                                        FeedTab.FOLLOWING -> stringResource(R.string.feed_following)
-                                    }
-                                    Text(text)
-                                }
-                            },
-                            menuContent = { menuState ->
-                                DropdownMenuItem(
-                                    text = {
-                                        val text = when (title) {
-                                            FeedTab.POPULAR -> stringResource(R.string.feed_popular)
-                                            FeedTab.CLAN -> stringResource(R.string.feed_clan)
-                                            FeedTab.FOLLOWING -> stringResource(R.string.feed_following)
-                                        }
-                                        Text(text)
-                                           },
-                                    onClick = {
-                                        scope.launch {
-                                            pagerState.animateScrollToPage(index)
-                                        }
-                                        menuState.dismiss()
+                                    menuContent = { menuState ->
+                                        DropdownMenuItem(
+                                            text = {
+                                                val text = when (title) {
+                                                    FeedTab.POPULAR -> stringResource(R.string.feed_popular)
+                                                    FeedTab.CLAN -> stringResource(R.string.feed_clan)
+                                                    FeedTab.FOLLOWING -> stringResource(R.string.feed_following)
+                                                }
+                                                Text(text)
+                                            },
+                                            onClick = {
+                                                scope.launch {
+                                                    pagerState.animateScrollToPage(index)
+                                                }
+                                                menuState.dismiss()
+                                            }
+                                        )
                                     }
                                 )
                             }
-                        )
+                        }
                     }
                 }
-            }
-        }
-    },
-        floatingActionButton = {
-            Column(
-                horizontalAlignment = Alignment.End,
-            ) {
-                SmallFloatingActionButton(
-                    modifier = Modifier.size(addFabSize),
-                    shape = MaterialTheme.cornerShape(addFabCornerRadius),
-                    onClick = { onEvent(Event.OnOpenNewPost) },
-                ) {
-                    Icon(Icons.Add, "Create post")
-                }
-
-                AnimatedVisibility(
-                    visible = isUpFabVisible,
-                    enter = fadeIn(
-                        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
-                    ) + scaleIn(
-                        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
-                    ) + expandVertically(
-                        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
-                    ),
-                    exit = fadeOut(
-                        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
-                    ) + scaleOut(
-                        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
-                    ) + shrinkVertically(
-                        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
-                    )
+            },
+            floatingActionButton = {
+                Column(
+                    horizontalAlignment = Alignment.End,
                 ) {
                     SmallFloatingActionButton(
-                        modifier = Modifier
-                            .padding(top = MaterialTheme.spacing.large)
-                            .size(64.dp),
-                        shape = MaterialTheme.cornerShape(MaterialTheme.rounding.largeIncreased),
-                        onClick = {
-                            scope.launch {
-                                currentListState.animateScrollToItem(0)
-                            }
-                        },
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                        contentColor = MaterialTheme.colorScheme.secondary
+                        modifier = Modifier.size(addFabSize),
+                        shape = MaterialTheme.cornerShape(addFabCornerRadius),
+                        onClick = { onEvent(Event.OnOpenNewPost) },
                     ) {
-                        Icon(Icons.ArrowWarmUp, "Scroll to top")
+                        Icon(Icons.Add, "Create post")
+                    }
+
+                    AnimatedVisibility(
+                        visible = isUpFabVisible,
+                        enter = fadeIn(
+                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
+                        ) + scaleIn(
+                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
+                        ) + expandVertically(
+                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
+                        ),
+                        exit = fadeOut(
+                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
+                        ) + scaleOut(
+                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
+                        ) + shrinkVertically(
+                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
+                        )
+                    ) {
+                        SmallFloatingActionButton(
+                            modifier = Modifier
+                                .padding(top = MaterialTheme.spacing.large)
+                                .size(64.dp),
+                            shape = MaterialTheme.cornerShape(MaterialTheme.rounding.largeIncreased),
+                            onClick = {
+                                scope.launch {
+                                    currentListState.animateScrollToItem(0)
+                                }
+                            },
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            contentColor = MaterialTheme.colorScheme.secondary
+                        ) {
+                            Icon(Icons.ArrowWarmUp, "Scroll to top")
+                        }
                     }
                 }
             }
-        }
-    ) { contentPadding ->
-        HorizontalPager(
-            state = pagerState,
-            modifier = Modifier.fillMaxSize(),
-        ) { page ->
-            val tab = tabs[page]
-            Feed(
-                paginator = paginators[tab]!!,
-                selectedTab = tab,
-                onEvent = onEvent,
-                uiState = uiStates[tab]!!,
-                contentPadding = contentPadding,
-                scrollBehavior = scrollBehaviors[tab]!!,
-                listState = listStates[tab]!!
-            )
+        ) { contentPadding ->
+            Box(Modifier.fillMaxSize()) {
+                HorizontalPager(
+                    state = pagerState,
+                    modifier = Modifier.fillMaxSize(),
+                ) { page ->
+                    val tab = tabs[page]
+                    Feed(
+                        paginator = paginators[tab]!!,
+                        onEvent = onEvent,
+                        uiState = uiStates[tab]!!,
+                        contentPadding = contentPadding,
+                        scrollBehavior = scrollBehaviors[tab]!!,
+                        listState = listStates[tab]!!
+                    )
+                }
+            }
         }
     }
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)

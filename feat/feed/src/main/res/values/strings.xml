@@ -4,4 +4,7 @@
     <string name="feed_clan">Clan</string>
     <string name="feed_following">Following</string>
     <string name="feed_title">Feed</string>
+    <string name="feed_search_hint">Search&#8230;</string>
+    <string name="notifications_content_description">Notifications</string>
+    <string name="hashtag_search_item_format">#%1$s • %2$s posts</string>
 </resources>

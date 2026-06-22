@@ -19,8 +19,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarScrollBehavior
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
-import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -28,7 +26,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import com.dertefter.data.dto.feed.PostDto
-import com.dertefter.design.components.PullToRefreshIndicator
 import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.components.post.PostCard
 import com.dertefter.feed.presentation.mapper.toUiModel
@@ -45,7 +42,6 @@ import kotlin.time.Duration.Companion.milliseconds
 @Composable
 fun Feed(
     paginator: MutableCursorPaginator<PostDto>,
-    selectedTab: FeedTab,
     onEvent: (Event) -> Unit,
     uiState: PaginatorUiState<PostDto>,
     contentPadding: PaddingValues = PaddingValues(),
@@ -53,8 +49,6 @@ fun Feed(
     listState: LazyListState = rememberLazyListState()
 ) {
     val paged = paginator.rememberPaginated(state = listState)
-    val pullToRefreshState = rememberPullToRefreshState()
-    val isRefreshing = uiState is PaginatorUiState.Content && uiState.prependState.isProgressState()
 
     LaunchedEffect(listState) {
         while (true) {
@@ -65,33 +59,16 @@ fun Feed(
         }
     }
 
-    PullToRefreshBox(
+    AnimatedContent(
+        targetState = uiState,
+        contentKey = { it::class },
+        transitionSpec = {
+            fadeIn(animationSpec = tween(300)) togetherWith fadeOut(animationSpec = tween(300))
+        },
+        label = "feed_state",
         modifier = Modifier
-            .fillMaxSize(),
-        state = pullToRefreshState,
-        isRefreshing = isRefreshing,
-        onRefresh = { onEvent(Event.OnRefresh(selectedTab)) },
-        indicator = {
-            PullToRefreshIndicator(
-                modifier = Modifier
-                    .padding(top = contentPadding.calculateTopPadding())
-                    .align(Alignment.TopCenter),
-                state = pullToRefreshState,
-                isRefreshing = isRefreshing
-            )
-        }
-    ) {
-
-        AnimatedContent(
-            targetState = uiState,
-            contentKey = { it::class },
-            transitionSpec = {
-                fadeIn(animationSpec = tween(300)) togetherWith fadeOut(animationSpec = tween(300))
-            },
-            label = "feed_state",
-            modifier = Modifier
-                .fillMaxSize()
-        ){ state ->
+            .fillMaxSize()
+    ){ state ->
             when (state) {
                 PaginatorUiState.Idle -> {
                     Box(Modifier
@@ -179,5 +156,4 @@ fun Feed(
                 }
             }
         }
-    }
 }

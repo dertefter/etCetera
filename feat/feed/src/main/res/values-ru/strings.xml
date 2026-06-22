@@ -4,4 +4,7 @@
     <string name="feed_clan">Лента клана</string>
     <string name="feed_following">Подписки</string>
     <string name="feed_title">Лента</string>
+    <string name="feed_search_hint">Поиск&#8230;</string>
+    <string name="notifications_content_description">Уведомления</string>
+    <string name="hashtag_search_item_format">#%1$s • %2$s постов</string>
 </resources>
