@@ -100,6 +100,7 @@ interface ApiService {
     suspend fun posts(
         @Path("userId") userId: String,
         @Query("limit") limit: Int = 20,
+        @Query("pinnedPostId") pinnedPostId: String?,
         @Query("sort") sort: String = "new",
         @Query("cursor") cursor: String?
     ): Response<FeedResponseDto>

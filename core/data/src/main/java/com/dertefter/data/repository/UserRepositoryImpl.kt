@@ -50,7 +50,7 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getPostsPaginator(userId: String, sort: String): MutableCursorPaginator<PostDto> {
+    override fun getPostsPaginator(userId: String, sort: String, pinnedPostId: String?): MutableCursorPaginator<PostDto> {
         val cacheKey = "user_$userId" + "_$sort"
         val pagingCore = CursorPagingCore(
             cache = CursorMostRecentPagingCache(maxSize = 20),
@@ -59,7 +59,10 @@ class UserRepositoryImpl @Inject constructor(
         return MutableCursorPaginator(
             core = pagingCore,
             load = { cursor ->
-                val result = remoteDataSource.getPosts(userId, sort, cursor?.self as? String)
+                val result = remoteDataSource.getPosts(
+                    userId, sort = sort, pinnedPostId = pinnedPostId,
+                    cursor = cursor?.self as? String
+                )
                 val data = result.getOrThrow()
 
                 CursorLoadResult(

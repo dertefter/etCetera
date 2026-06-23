@@ -121,7 +121,7 @@ class UserViewModel @Inject constructor(
                 if (user != null && _paginators.value.isEmpty()) {
                     val map = tabs.associateWith { tab ->
                         when (tab) {
-                            FeedTab.POSTS -> userRepository.getPostsPaginator(user.id)
+                            FeedTab.POSTS -> userRepository.getPostsPaginator(user.id, pinnedPostId = user.pinnedPostId)
                             FeedTab.LIKES -> userRepository.getLikedPostsPaginator(user.id)
                         }
                     }

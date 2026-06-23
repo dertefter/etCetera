@@ -14,7 +14,7 @@ interface UserRepository {
 
     suspend fun updateUser(userId: String): Result<UserDto>
 
-    fun getPostsPaginator(userId: String, sort: String = "new"): MutableCursorPaginator<PostDto>
+    fun getPostsPaginator(userId: String, sort: String = "new", pinnedPostId: String?): MutableCursorPaginator<PostDto>
 
     fun getLikedPostsPaginator(userId: String): MutableCursorPaginator<PostDto>
 

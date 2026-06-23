@@ -106,8 +106,7 @@ fun Header(
             SmallEmojiAvatar(
                 emoji = author.avatar,
                 containerSize = avatarSize,
-                fontSize = 32.sp,
-                strokeWidth = 6.dp + (scrollFraction * 10).dp
+                fontSize = 32.sp
             )
         }
 

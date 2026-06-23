@@ -72,12 +72,7 @@ fun LazyListScope.feed(
         }
 
         is PaginatorUiState.Content -> {
-            val pinnedPost = if (pinnedPostId != null) uiState.items.find { it.id == pinnedPostId } else null
-            val displayItems = if (pinnedPost != null) {
-                listOf(pinnedPost) + uiState.items.filter { it.id != pinnedPostId }
-            } else {
-                uiState.items
-            }
+            val displayItems = uiState.items
             paginated(paged) {
                 itemsIndexed(
                     displayItems,

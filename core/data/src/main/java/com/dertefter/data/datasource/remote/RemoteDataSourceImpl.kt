@@ -115,11 +115,12 @@ class RemoteDataSourceImpl @Inject constructor(
 
     override suspend fun getPosts(
         userId: String,
+        pinnedPostId: String?,
         sort: String,
         cursor: String?
     ): Result<PostDataDto> {
         return runCatching {
-            val response = apiService.posts(userId = userId, sort = sort, cursor = cursor)
+            val response = apiService.posts(userId = userId, pinnedPostId = pinnedPostId, sort = sort, cursor = cursor)
             if (response.isSuccessful) {
                 response.body()!!.data
             } else {
