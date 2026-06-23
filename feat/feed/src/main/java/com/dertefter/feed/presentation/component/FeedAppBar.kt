@@ -96,10 +96,10 @@ fun FeedAppBar(
         actions = {
             SmallEmojiAvatar(
                 emoji = profileEmoji ?: "",
-                containerSize = 44.dp,
+                containerSize = 56.dp,
                 fontSize = 24.sp,
                 onClick = onProfileClick,
-                modifier = Modifier.padding(end = 5.dp)
+                modifier = Modifier.padding(start = 2.dp)
             )
         },
         title = {
