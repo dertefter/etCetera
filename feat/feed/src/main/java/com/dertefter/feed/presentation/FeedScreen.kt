@@ -1,6 +1,8 @@
 package com.dertefter.feed.presentation
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -76,13 +78,15 @@ fun FeedScreen(
     topAppBarState: TopBarUiState
 ) {
     val tabs = FeedTab.entries
-    val popularScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-    val clanScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-    val followingScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+
 
     val popularListState = rememberLazyListState()
     val clanListState = rememberLazyListState()
     val followingListState = rememberLazyListState()
+
+    val popularScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(popularListState)
+    val clanScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(clanListState)
+    val followingScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(followingListState)
 
     val scrollBehaviors = mapOf(
         FeedTab.POPULAR to popularScrollBehavior,
@@ -162,10 +166,11 @@ fun FeedScreen(
     ) {
         Scaffold(
             topBar = {
-                val containerColor = lerp(
-                    MaterialTheme.colorScheme.surface,
-                    MaterialTheme.colorScheme.surfaceContainer,
-                    scrollBehavior.state.overlappedFraction.coerceIn(0f,1f)
+
+                Log.e("overlappedFraction,overlappedFraction", scrollBehavior.state.overlappedFraction.toString())
+
+                val containerColor by animateColorAsState(
+                    if (scrollBehavior.state.overlappedFraction <= 0.99f) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.surfaceContainer
                 )
                 Surface(color = containerColor) {
                     Column {
@@ -276,6 +281,8 @@ fun FeedScreen(
                                 scope.launch {
                                     currentListState.animateScrollToItem(0)
                                 }
+                                scrollBehavior.state.heightOffset = 0f
+                                scrollBehavior.state.contentOffset = 0f
                             },
                             containerColor = MaterialTheme.colorScheme.secondaryContainer,
                             contentColor = MaterialTheme.colorScheme.secondary
