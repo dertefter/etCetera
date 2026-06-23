@@ -88,6 +88,7 @@ dependencies {
     implementation(project(":feat:attachment_viewer"))
     implementation(project(":feat:search"))
     implementation(project(":feat:hashtag_feed"))
+    implementation(project(":feat:new_comment"))
 
     implementation(libs.core.ktx)
     implementation(libs.core.splashscreen)

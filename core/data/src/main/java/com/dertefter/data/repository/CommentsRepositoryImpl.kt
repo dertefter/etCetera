@@ -149,6 +149,13 @@ class CommentsRepositoryImpl @Inject constructor(
         return remoteDataSource.newComment(postId, newCommentRequestDto)
     }
 
+    override suspend fun newCommentReply(
+        commentId: String,
+        newCommentRequestDto: NewCommentRequestDto
+    ): Result<CommentDto> {
+        return remoteDataSource.newCommentReply(commentId, newCommentRequestDto)
+    }
+
     override suspend fun upload(file: File): Result<AttachmentUploadResponseDto> {
         return remoteDataSource.uploadMyFile(file)
     }

@@ -58,7 +58,12 @@ interface RemoteDataSource {
 
     suspend fun newPost(newPostRequest: NewPostRequestDto): Result<PostDto>
 
-    suspend fun newComment(postId: String, newPostRequest: NewCommentRequestDto): Result<CommentDto>
+    suspend fun newComment(postId: String, newCommentRequest: NewCommentRequestDto): Result<CommentDto>
+
+    suspend fun newCommentReply(
+        commentId: String,
+        newCommentRequest: NewCommentRequestDto
+    ): Result<CommentDto>
 
     suspend fun uploadMyFile(myFile: File): Result<AttachmentUploadResponseDto>
 

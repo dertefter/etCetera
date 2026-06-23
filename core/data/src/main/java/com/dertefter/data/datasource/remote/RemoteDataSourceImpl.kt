@@ -254,9 +254,23 @@ class RemoteDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun newComment(postId: String, newPostRequest: NewCommentRequestDto): Result<CommentDto> {
+    override suspend fun newComment(postId: String, newCommentRequest: NewCommentRequestDto): Result<CommentDto> {
         return runCatching {
-            val response = apiService.newComment(postId, newPostRequest)
+            val response = apiService.newComment(postId, newCommentRequest)
+            if (response.isSuccessful) {
+                response.body()!!
+            } else {
+                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
+            }
+        }
+    }
+
+    override suspend fun newCommentReply(
+        commentId: String,
+        newCommentRequest: NewCommentRequestDto
+    ): Result<CommentDto> {
+        return runCatching {
+            val response = apiService.newCommentReply(commentId, newCommentRequest)
             if (response.isSuccessful) {
                 response.body()!!
             } else {

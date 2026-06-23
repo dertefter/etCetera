@@ -33,6 +33,7 @@ import com.dertefter.post.R
 @Composable
 fun PostScreen(
     uiState: UiState,
+    meUserId: String?,
     onEvent: (Event) -> Unit,
     commentsViewModel: CommentsViewModel = hiltViewModel()
 ) {
@@ -88,6 +89,7 @@ fun PostScreen(
                     val commentsUiState by commentsViewModel.getUiState(post.id, selectedTab)
                         .collectAsStateWithLifecycle()
                     Comments(
+                        meUserId = meUserId,
                         postId = post.id,
                         paginator = commentsViewModel.getPaginator(post.id, selectedTab),
                         selectedTab = selectedTab,
@@ -118,7 +120,7 @@ fun PostScreen(
                                     style = MaterialTheme.typography.titleLarge
                                 )
                             }
-                        }
+                        },
                     )
                 }
             }

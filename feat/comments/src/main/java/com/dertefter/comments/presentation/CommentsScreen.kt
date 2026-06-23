@@ -1,6 +1,7 @@
 package com.dertefter.comments.presentation
 
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -41,6 +42,7 @@ import com.jamal_aliev.paginator.page.PaginatorUiState
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun CommentsScreen(
+    meUserId: String? = null,
     postId: String,
     onEvent: (Event) -> Unit,
     selectedTab: CommentSort,
@@ -60,23 +62,18 @@ fun CommentsScreen(
         topBar = {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
                 modifier = Modifier
                     .padding(bottom = MaterialTheme.spacing.defaultScreenPadding)
                     .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
             ){
-                Text(
-                    modifier = Modifier
-                        .alpha(alpha)
-                        .weight(1f),
-                    style = MaterialTheme.typography.titleLarge,
-                    text = stringResource(R.string.comments_title),
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
+
+
                 Box {
                     AppNavigationIcon(
                         onClick = { showMenu = true },
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
                         icon = Icons.SwapVert,
                         contentDescription = stringResource(R.string.comments_sort)
                     )
@@ -111,11 +108,32 @@ fun CommentsScreen(
                         }
                     }
                 }
+
+                Text(
+                    modifier = Modifier
+                        .alpha(alpha)
+                        .weight(1f),
+                    style = MaterialTheme.typography.titleLarge,
+                    text = stringResource(R.string.comments_title),
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+
+                AppNavigationIcon(
+                    onClick = {
+                        onEvent(Event.OnNewComment)
+                    },
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    icon = Icons.Add,
+                    contentDescription = "New comment"
+                )
+
             }
         }
     ) { contentPadding ->
         key(selectedTab) {
             Comments(
+                meUserId = meUserId,
                 postId = postId,
                 paginator = paginators[selectedTab]!!,
                 selectedTab = selectedTab,

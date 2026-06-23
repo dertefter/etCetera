@@ -43,6 +43,8 @@ import com.dertefter.etcetera.navigation.AppNavHost
 import com.dertefter.navigation.NavigationAction
 import com.dertefter.navigation.Navigator
 import com.dertefter.navigation.Routes
+import com.dertefter.new_comment.NewCommentReplyRoute
+import com.dertefter.new_comment.NewCommentRoute
 import com.dertefter.new_post.NewPostRoute
 import com.gigamole.composefadingedges.FadingEdgesGravity
 import com.gigamole.composefadingedges.fill.FadingEdgesFillType
@@ -135,6 +137,8 @@ fun MainScreen(
                 when (val route = bottomSheetRoute) {
                     is Routes.Comments -> CommentsRoute(route.postId)
                     is Routes.NewPost -> NewPostRoute(route.wallRecipientId)
+                    is Routes.NewComment -> NewCommentRoute(route.postId)
+                    is Routes.NewCommentReply -> NewCommentReplyRoute(route.postId, route.commentId, route.userId)
                     else -> {
                         Spacer(Modifier.height(1.dp))
                     }

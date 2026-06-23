@@ -53,7 +53,8 @@ fun Comments(
     uiState: PaginatorUiState<CommentDto>,
     contentPadding: PaddingValues = PaddingValues(),
     scrollBehavior: TopAppBarScrollBehavior? = null,
-    header: (LazyListScope.() -> Unit)? = null
+    header: (LazyListScope.() -> Unit)? = null,
+    meUserId: String?
 ) {
     val listState = rememberLazyListState()
     val paged = paginator.rememberPaginated(state = listState)
@@ -170,11 +171,19 @@ fun Comments(
                             uiState.items,
                             key = { _, comment -> comment.id }) { index, comment ->
                             CommentCard(
+                                meUserId = meUserId,
                                 comment = comment,
                                 onLike = { onEvent(Event.OnLike(it)) },
                                 onUnlike = { onEvent(Event.OnUnlike(it)) },
                                 onLoadMoreReplies = { onEvent(Event.OnLoadMoreReplies(it)) },
-                                onUserClick = { onEvent(Event.OnOpenUser(it)) }
+                                onUserClick = { onEvent(Event.OnOpenUser(it)) },
+                                onReplyClick = { commentId, userId ->
+                                    onEvent(
+                                        Event.OnReply(
+                                            commentId, userId
+                                        )
+                                    )
+                                }
                             )
                             if (index < uiState.items.lastIndex) {
                                 HorizontalDivider(
@@ -260,7 +269,8 @@ fun CommentsPreview() {
             paginator = samplePaginator,
             selectedTab = CommentSort.POPULAR,
             onEvent = {},
-            uiState = uiState
+            uiState = uiState,
+            meUserId = "",
         )
     }
 }

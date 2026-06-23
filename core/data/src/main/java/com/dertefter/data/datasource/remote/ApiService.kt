@@ -84,6 +84,12 @@ interface ApiService {
         @Body postRequest: NewCommentRequestDto
     ): Response<CommentDto>
 
+    @POST("api/comments/{commentId}/replies")
+    suspend fun newCommentReply(
+        @Path("commentId") commentId: String,
+        @Body postRequest: NewCommentRequestDto
+    ): Response<CommentDto>
+
     @GET("api/posts")
     suspend fun posts(
         @Query("limit") limit: Int = 20,

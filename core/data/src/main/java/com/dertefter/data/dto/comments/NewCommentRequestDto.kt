@@ -8,5 +8,6 @@ import kotlinx.serialization.Serializable
 data class NewCommentRequestDto(
     @SerialName("content") val content: String?,
     @SerialName("spans") val spans: List<SpanDto>? = null,
+    @SerialName("replyToUserId") val replyToUserId: String? = null,
     @SerialName("attachmentIds") val attachmentIds: List<String>? = null,
 )

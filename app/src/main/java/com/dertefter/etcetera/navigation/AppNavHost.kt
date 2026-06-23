@@ -23,6 +23,8 @@ import com.dertefter.attachment_viewer.AttachmentViewerRoute
 import com.dertefter.hashtag_feed.HashtagFeedRoute
 import com.dertefter.navigation.AttachmentNavigationModel
 import com.dertefter.navigation.Routes
+import com.dertefter.new_comment.NewCommentReplyRoute
+import com.dertefter.new_comment.NewCommentRoute
 import com.dertefter.new_post.NewPostRoute
 import com.dertefter.notifications.NotificationsRoute
 import com.dertefter.post.PostRoute
@@ -78,6 +80,8 @@ fun RouteContent(route: Routes) {
         is Routes.Comments -> CommentsRoute(route.postId)
         is Routes.User -> UserRoute(route.userId)
         is Routes.NewPost -> NewPostRoute(route.wallRecipientId)
+        is Routes.NewComment -> NewCommentRoute(route.postId)
+        is Routes.NewCommentReply -> NewCommentReplyRoute(route.postId, route.commentId, route.userId)
         is Routes.AttachmentsViewer -> AttachmentViewerRoute(route.attachments, route.viewPosition)
         is Routes.Followers -> FollowersRoute()
         is Routes.Notifications -> NotificationsRoute()
@@ -127,6 +131,16 @@ fun NavGraphBuilder.graph() {
 
     composable<Routes.NewPost> {
         val args = it.toRoute<Routes.NewPost>()
+        RouteContent(args)
+    }
+
+    composable<Routes.NewComment> {
+        val args = it.toRoute<Routes.NewComment>()
+        RouteContent(args)
+    }
+
+    composable<Routes.NewCommentReply> {
+        val args = it.toRoute<Routes.NewCommentReply>()
         RouteContent(args)
     }
 

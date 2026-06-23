@@ -6,6 +6,7 @@ import com.dertefter.comments.presentation.CommentSort
 import com.dertefter.comments.presentation.Event
 import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.data.repository.CommentsRepository
+import com.dertefter.data.repository.MeRepository
 import com.dertefter.navigation.Navigator
 import com.dertefter.navigation.Routes
 import com.jamal_aliev.paginator.MutableCursorPaginator
@@ -19,6 +20,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -26,8 +29,18 @@ import javax.inject.Inject
 @HiltViewModel
 class CommentsViewModel @Inject constructor(
     private val commentsRepository: CommentsRepository,
+    private val meRepository: MeRepository,
     private val navigator: Navigator
 ) : ViewModel() {
+
+    val meUserId: StateFlow<String?> = meRepository.meDto
+        .map { it?.id }
+        .distinctUntilChanged()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = null
+        )
 
     val sorts = CommentSort.entries
 
@@ -71,6 +84,23 @@ class CommentsViewModel @Inject constructor(
 
     fun onEvent(event: Event) {
         when (event) {
+
+            is Event.OnNewComment -> {
+                currentPostId?.let{ postId ->
+                    navigator.openAsBottomSheet(Routes.NewComment(postId = postId ))
+                }
+            }
+
+            is Event.OnReply -> {
+                currentPostId?.let{ postId ->
+                    navigator.openAsBottomSheet(Routes.NewCommentReply(
+                        postId = postId,
+                        commentId = event.commentId,
+                        userId = event.userId
+                    )
+                    )
+                }
+            }
 
             is Event.OnLike -> {
                 viewModelScope.launch {

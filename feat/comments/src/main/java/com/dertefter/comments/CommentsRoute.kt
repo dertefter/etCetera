@@ -16,6 +16,7 @@ fun CommentsRoute(
 ) {
 
     val selectedTab by viewModel.selectedTab.collectAsStateWithLifecycle()
+    val meUserId by viewModel.meUserId.collectAsStateWithLifecycle()
 
     val popularUiState by viewModel.getUiState(postId, CommentSort.POPULAR).collectAsStateWithLifecycle()
     val oldestUiState by viewModel.getUiState(postId, CommentSort.OLDEST).collectAsStateWithLifecycle()
@@ -36,6 +37,7 @@ fun CommentsRoute(
     }
 
     CommentsScreen(
+        meUserId = meUserId,
         postId = postId,
         onEvent = viewModel::onEvent,
         selectedTab = selectedTab,

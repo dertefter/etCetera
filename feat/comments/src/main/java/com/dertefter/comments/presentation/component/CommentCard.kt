@@ -9,6 +9,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,6 +37,7 @@ import com.dertefter.comments.presentation.mapper.toUiModel
 import com.dertefter.data.dto.feed.AttachmentDto
 import com.dertefter.data.dto.feed.AuthorDto
 import com.dertefter.design.components.avatar.DisplayName
+import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
 
@@ -44,8 +49,13 @@ fun CommentCard(
     onUnlike: (commentId: String) -> Unit = {},
     onLoadMoreReplies: (commentId: String) -> Unit = {},
     onUserClick: (userId: String) -> Unit = {},
+    onEdit: (commentId: String) -> Unit = {},
+    onDelete: (commentId: String) -> Unit = {},
+    onReplyClick: (commentId: String, userId: String) -> Unit = { _, _ -> },
+    meUserId: String? = null,
 ) {
     var isExpanded by remember { mutableStateOf(false) }
+
     Box(
         modifier = modifier
             .padding(bottom = MaterialTheme.spacing.large)
@@ -60,27 +70,89 @@ fun CommentCard(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .clickable(onClick = { onUserClick(comment.author.id) })
+                    .fillMaxWidth()
                     .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large)
             ) {
-                SmallEmojiAvatar(
-                    emoji = comment.author.avatar,
-                    containerSize = 40.dp
+                Row(
+                    modifier = Modifier
+                        .clickable(onClick = { onUserClick(comment.author.id) })
+                        .weight(1f)
                 )
-                Column {
-                    DisplayName(
-                        name = comment.author.displayName,
-                        verified = comment.author.verified,
-                        hasNuksta = comment.author.hasNuksta,
-                        pin = comment.author.pin?.toUiModel()
+                {
+                    SmallEmojiAvatar(
+                        emoji = comment.author.avatar,
+                        containerSize = 40.dp
                     )
-                    Text(
-                        text = "@${comment.author.username}",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    Column {
+                        DisplayName(
+                            name = comment.author.displayName,
+                            verified = comment.author.verified,
+                            hasNuksta = comment.author.hasNuksta,
+                            pin = comment.author.pin?.toUiModel()
+                        )
+                        Text(
+                            text = "@${comment.author.username}",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
+                var showMenu by remember { mutableStateOf(false) }
+
+                val isOwner = meUserId == comment.author.id
+
+                Box {
+                    IconButton(
+                        onClick = { showMenu = true }) {
+                        Icon(
+                            imageVector = Icons.MoreHoriz, contentDescription = ""
+                        )
+                    }
+                    DropdownMenu(
+                        expanded = showMenu,
+                        shape = MaterialTheme.shapes.largeIncreased,
+                        onDismissRequest = { showMenu = false }) {
+
+                        DropdownMenuItem(
+                            text = { Text("Пожаловаться") },
+                            onClick = {
+                                onEdit(comment.id)
+                                showMenu = false
+                            },
+                            leadingIcon = {
+                                Icon(Icons.Error, contentDescription = null)
+                            })
+
+                        if (isOwner) {
+                            DropdownMenuItem(
+                                text = { Text(stringResource(com.dertefter.design.R.string.design_post_edit)) },
+                                onClick = {
+                                    onEdit(comment.id)
+                                    showMenu = false
+                                },
+                                leadingIcon = {
+                                    Icon(Icons.Edit, contentDescription = null)
+                                })
+
+
+                            DropdownMenuItem(
+                                text = { Text(stringResource(com.dertefter.design.R.string.design_post_delete)) },
+                                onClick = {
+                                    onDelete(comment.id)
+                                    showMenu = false
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Delete,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.error
+                                    )
+                                })
+                        }
+                    }
+                }
+
             }
             if (comment.content.isNotEmpty()) {
                 Text(
@@ -102,7 +174,8 @@ fun CommentCard(
                 modifier = Modifier
                     .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
                     .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 LikeButton(
                     likes = comment.likesCount,
@@ -115,6 +188,7 @@ fun CommentCard(
                         style = MaterialTheme.typography.labelMediumEmphasized,
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier
+                            .weight(1f)
                             .align(Alignment.CenterVertically)
                             .clickable { isExpanded = !isExpanded },
                         text = pluralStringResource(
@@ -125,6 +199,21 @@ fun CommentCard(
                     )
                 }
                 }
+                Text(
+                    color = MaterialTheme.colorScheme.primary,
+                    text = "Ответить",
+                    style = MaterialTheme.typography.bodyMediumEmphasized,
+                    modifier = Modifier
+                        .clickable(
+                            onClick = {
+                                onReplyClick(
+                                    comment.id, comment.author.id
+                                )
+                            }
+
+                        )
+                        .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
+                )
 
             }
 
@@ -154,7 +243,14 @@ fun CommentCard(
                             onLike = { onLike(reply.id) },
                             onUnlike = { onUnlike(reply.id) },
                             onLoadMoreReplies = onLoadMoreReplies,
-                            onUserClick = { onUserClick(it) }
+                            onUserClick = { onUserClick(it) },
+                            onReplyClick = { commentId, userId ->
+                                onReplyClick(
+                                    commentId,
+                                    userId
+                                )
+                            },
+                            meUserId = meUserId,
                         )
                     }
                     if ((comment.repliesCount ?: 0) > (comment.replies?.size ?: 0)) {
@@ -222,7 +318,7 @@ fun CommentCardPreview() {
                         createdAt = "2023-10-27T13:00:00Z"
                     )
                 )
-            )
+            ),
         )
     }
 }

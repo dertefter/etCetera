@@ -28,6 +28,12 @@ sealed interface Routes {
     data class NewPost(val wallRecipientId: String?) : Routes
 
     @Serializable
+    data class NewComment(val postId: String) : Routes
+
+    @Serializable
+    data class NewCommentReply(val postId: String, val commentId: String, val userId: String) : Routes
+
+    @Serializable
     data class Comments(val postId: String) : Routes
 
     @Serializable

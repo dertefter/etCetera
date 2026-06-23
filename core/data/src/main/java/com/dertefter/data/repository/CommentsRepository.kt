@@ -20,6 +20,11 @@ interface CommentsRepository {
 
     suspend fun newComment(postId: String, newCommentRequestDto: NewCommentRequestDto): Result<CommentDto>
 
+    suspend fun newCommentReply(
+        commentId: String,
+        newCommentRequestDto: NewCommentRequestDto
+    ): Result<CommentDto>
+
     suspend fun upload(file: File): Result<AttachmentUploadResponseDto>
 
 }

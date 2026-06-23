@@ -14,6 +14,7 @@ fun PostRoute(
     viewModel: PostViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val meUserId by viewModel.meUserId.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.onEvent(Event.OnRefresh)
@@ -22,5 +23,6 @@ fun PostRoute(
     PostScreen(
         onEvent = viewModel::onEvent,
         uiState = uiState,
+        meUserId = meUserId
     )
 }
