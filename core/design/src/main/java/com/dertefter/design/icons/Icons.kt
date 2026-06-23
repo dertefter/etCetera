@@ -8,6 +8,12 @@ import com.dertefter.design.R
 @Suppress("unused")
 object Icons {
 
+    val Redo: ImageVector
+        @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_redo)
+
+    val Undo: ImageVector
+        @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_undo)
+
     val FormatSpoiler: ImageVector
         @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_visibility_off)
 
