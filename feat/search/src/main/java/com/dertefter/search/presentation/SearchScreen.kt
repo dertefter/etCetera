@@ -7,27 +7,26 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SearchBar
-import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberSearchBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dertefter.data.dto.search.SearchHashtagDto
@@ -38,9 +37,8 @@ import com.dertefter.design.theme.spacing
 import com.dertefter.search.R
 import com.dertefter.search.presentation.component.SearchHashtagCard
 import com.dertefter.search.presentation.component.SearchUserCard
-import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
     onEvent: (Event) -> Unit,
@@ -48,9 +46,7 @@ fun SearchScreen(
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
-    val searchBarState = rememberSearchBarState()
     val textFieldState = rememberTextFieldState()
-    val scope = rememberCoroutineScope()
 
     LaunchedEffect(textFieldState.text) {
         onEvent(Event.OnSearchQueryChanged(textFieldState.text.toString()))
@@ -74,7 +70,9 @@ fun SearchScreen(
                                 }
                             )
                         },
-                        title = {},
+                        title = {
+                            Text(text = stringResource(R.string.search_title))
+                        },
                         colors = TopAppBarDefaults.topAppBarColors(
                             containerColor = Color.Transparent,
                             scrolledContainerColor = Color.Transparent
@@ -82,32 +80,32 @@ fun SearchScreen(
                         scrollBehavior = scrollBehavior,
                     )
 
-                    SearchBar(
-                        state = searchBarState,
-                        colors = SearchBarDefaults.colors(
-                            containerColor = MaterialTheme.colorScheme.surfaceContainer
-                        ),
+                    TextField(
+                        state = textFieldState,
                         modifier = Modifier
-                            .padding(horizontal = 8.dp)
+                            .padding(horizontal = 16.dp)
+                            .padding(bottom = 8.dp)
                             .fillMaxWidth(),
-                        inputField = {
-                            SearchBarDefaults.InputField(
-                                modifier = Modifier
-                                    .padding(
-                                        horizontal = MaterialTheme.spacing.small,
-                                        vertical = MaterialTheme.spacing.extraSmall
-                                    ),
-                                textFieldState = textFieldState,
-                                searchBarState = searchBarState,
-                                onSearch = { scope.launch { searchBarState.animateToCollapsed() } },
-                                placeholder = {
-                                    Text(
-                                        modifier = Modifier.clearAndSetSemantics {},
-                                        text = stringResource(R.string.search_title)
-                                    )
-                                },
+                        placeholder = {
+                            Text(
+                                text = stringResource(R.string.search_title)
                             )
-                        }
+                        },
+                        leadingIcon = {
+                            Icon(
+                                painter = painterResource(com.dertefter.design.R.drawable.ic_search),
+                                contentDescription = null
+                            )
+                        },
+                        shape = CircleShape,
+                        colors = TextFieldDefaults.colors(
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            disabledIndicatorColor = Color.Transparent,
+                            errorIndicatorColor = Color.Transparent,
+                            focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                        )
                     )
                 }
             }
