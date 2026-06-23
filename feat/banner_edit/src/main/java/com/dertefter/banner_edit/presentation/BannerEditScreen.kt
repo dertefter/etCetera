@@ -59,6 +59,7 @@ import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.request.SuccessResult
 import com.dertefter.banner_edit.R
+import com.dertefter.design.components.buttons.AppNavigationIcon
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import uk.codecymru.drawbox.box.DrawBox
@@ -129,12 +130,9 @@ fun BannerEditScreen(
                     Text(stringResource(R.string.banner_edit_title))
                 },
                 navigationIcon = {
-                    IconButton(onClick = { onEvent(Event.OnBack) }) {
-                        Icon(
-                            imageVector = Icons.ArrowBack,
-                            contentDescription = "Назад"
-                        )
-                    }
+                    AppNavigationIcon(
+                        onClick = {onEvent(Event.OnBack)}
+                    )
                 },
                 actions = {
                     IconButton(
@@ -142,7 +140,7 @@ fun BannerEditScreen(
                         enabled = canUndo
                     ) {
                         Icon(
-                            imageVector = Icons.ArrowBack,
+                            imageVector = Icons.Undo,
                             contentDescription = "Отменить",
                             modifier = Modifier.size(24.dp)
                         )
@@ -152,7 +150,7 @@ fun BannerEditScreen(
                         enabled = canRedo
                     ) {
                         Icon(
-                            imageVector = Icons.ArrowForward,
+                            imageVector = Icons.Redo,
                             contentDescription = "Вернуть",
                             modifier = Modifier.size(24.dp)
                         )
@@ -212,13 +210,17 @@ fun BannerEditScreen(
                 shape = RoundedCornerShape(16.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Column(modifier = Modifier.padding(12.dp)) {
+                Column(
+                    modifier = Modifier.padding(vertical = 12.dp),
+                ) {
                     BannerColorPicker(
                         selectedColor = color,
                         onColorSelected = { drawController.color.value = it }
                     )
                     Spacer(modifier = Modifier.height(12.dp))
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             imageVector = Icons.Edit,
                             contentDescription = null,
@@ -264,7 +266,7 @@ fun BannerColorPicker(
 
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(horizontal = 4.dp)
+        contentPadding = PaddingValues(horizontal = 12.dp)
     ) {
         items(colors) { color ->
             Box(
