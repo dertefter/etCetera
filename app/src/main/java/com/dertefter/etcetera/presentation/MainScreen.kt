@@ -2,7 +2,10 @@ package com.dertefter.etcetera.presentation
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -141,22 +144,39 @@ fun MainScreen(
     ) {
         val startDestination = if (mainScreenState.isAuthorized) Routes.Feed else Routes.Auth
 
-        AppNavHost(
-            navController = navController,
-            modifier = Modifier
-                .hazeSource(hazeState)
-                .then(
-                    if (!isAttachmentViewer) {
-                        Modifier.verticalFadingEdges(
-                            fillType = FadingEdgesFillType.FadeColor(color = MaterialTheme.colorScheme.background),
-                            gravity = FadingEdgesGravity.End,
-                            length = navigationBarHeight + (navigationBarHeight * 0.5f)
-                        )
-                    } else Modifier
+        Box(Modifier.fillMaxSize()) {
+            AppNavHost(
+                navController = navController,
+                modifier = Modifier
+                    .hazeSource(hazeState)
+                    .then(
+                        if (!isAttachmentViewer) {
+                            Modifier.verticalFadingEdges(
+                                fillType = FadingEdgesFillType.FadeColor(color = MaterialTheme.colorScheme.background),
+                                gravity = FadingEdgesGravity.End,
+                                length = navigationBarHeight + (navigationBarHeight * 0.5f)
+                            )
+                        } else Modifier
+                    )
+                    .fillMaxSize(),
+                startDestination = startDestination
+            )
+
+            if (scaffoldState.bottomSheetState.currentValue != SheetValue.Hidden) {
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null
+                        ) {
+                            scope.launch {
+                                scaffoldState.bottomSheetState.hide()
+                            }
+                        }
                 )
-                .fillMaxSize(),
-            startDestination = startDestination
-        )
+            }
+        }
     }
 
     LaunchedEffect(Unit) {
