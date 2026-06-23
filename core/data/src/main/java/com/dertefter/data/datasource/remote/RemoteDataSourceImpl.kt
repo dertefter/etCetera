@@ -1,7 +1,9 @@
 package com.dertefter.data.datasource.remote
 
 import com.dertefter.data.dto.auth.SignInRequest
+import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.data.dto.comments.CommentsDataDto
+import com.dertefter.data.dto.comments.NewCommentRequestDto
 import com.dertefter.data.dto.comments.RepliesDataDto
 import com.dertefter.data.dto.feed.PollDto
 import com.dertefter.data.dto.feed.PostDataDto
@@ -24,6 +26,7 @@ import com.dertefter.data.dto.user.UserDto
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import org.w3c.dom.Comment
 import java.io.File
 import javax.inject.Inject
 
@@ -243,6 +246,17 @@ class RemoteDataSourceImpl @Inject constructor(
     override suspend fun newPost(newPostRequest: NewPostRequestDto): Result<PostDto> {
         return runCatching {
             val response = apiService.newPost(newPostRequest)
+            if (response.isSuccessful) {
+                response.body()!!
+            } else {
+                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
+            }
+        }
+    }
+
+    override suspend fun newComment(postId: String, newPostRequest: NewCommentRequestDto): Result<CommentDto> {
+        return runCatching {
+            val response = apiService.newComment(postId, newPostRequest)
             if (response.isSuccessful) {
                 response.body()!!
             } else {

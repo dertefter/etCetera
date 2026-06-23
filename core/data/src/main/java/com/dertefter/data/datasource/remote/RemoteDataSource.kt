@@ -1,7 +1,9 @@
 package com.dertefter.data.datasource.remote
 
 import com.dertefter.data.dto.auth.SignInRequest
+import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.data.dto.comments.CommentsDataDto
+import com.dertefter.data.dto.comments.NewCommentRequestDto
 import com.dertefter.data.dto.comments.RepliesDataDto
 import com.dertefter.data.dto.feed.PollDto
 import com.dertefter.data.dto.feed.PostDataDto
@@ -55,6 +57,8 @@ interface RemoteDataSource {
     suspend fun vote(postId: String, optionIds: List<String>): Result<PollDto>
 
     suspend fun newPost(newPostRequest: NewPostRequestDto): Result<PostDto>
+
+    suspend fun newComment(postId: String, newPostRequest: NewCommentRequestDto): Result<CommentDto>
 
     suspend fun uploadMyFile(myFile: File): Result<AttachmentUploadResponseDto>
 

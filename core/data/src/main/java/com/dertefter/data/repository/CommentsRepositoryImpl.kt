@@ -4,14 +4,17 @@ import com.dertefter.data.datasource.local.LocalDataSource
 import com.dertefter.data.datasource.local.room.CommentPagingCache
 import com.dertefter.data.datasource.remote.RemoteDataSource
 import com.dertefter.data.dto.comments.CommentDto
+import com.dertefter.data.dto.comments.NewCommentRequestDto
 import com.dertefter.data.dto.comments.RepliesDataDto
 import com.dertefter.data.dto.feed.like.LikeResponseDto
+import com.dertefter.data.dto.upload.AttachmentUploadResponseDto
 import com.jamal_aliev.paginator.MutableCursorPaginator
 import com.jamal_aliev.paginator.bookmark.CursorBookmark
 import com.jamal_aliev.paginator.cache.eviction.CursorMostRecentPagingCache
 import com.jamal_aliev.paginator.dsl.mutableCursorPaginator
 import com.jamal_aliev.paginator.extension.updateWhere
 import com.jamal_aliev.paginator.load.CursorLoadResult
+import java.io.File
 import java.lang.ref.WeakReference
 import java.util.concurrent.CopyOnWriteArrayList
 import javax.inject.Inject
@@ -137,6 +140,17 @@ class CommentsRepositoryImpl @Inject constructor(
             }
             updateData(commentId, transform)
         }
+    }
+
+    override suspend fun newComment(
+        postId: String,
+        newCommentRequestDto: NewCommentRequestDto
+    ): Result<CommentDto> {
+        return remoteDataSource.newComment(postId, newCommentRequestDto)
+    }
+
+    override suspend fun upload(file: File): Result<AttachmentUploadResponseDto> {
+        return remoteDataSource.uploadMyFile(file)
     }
 
     private suspend fun applyOptimisticLike(commentId: String, liked: Boolean) {

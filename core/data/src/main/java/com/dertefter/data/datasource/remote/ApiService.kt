@@ -2,7 +2,9 @@ package com.dertefter.data.datasource.remote
 
 import com.dertefter.data.dto.auth.SignInRequest
 import com.dertefter.data.dto.auth.SignInResponse
+import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.data.dto.comments.CommentsResponseDto
+import com.dertefter.data.dto.comments.NewCommentRequestDto
 import com.dertefter.data.dto.comments.RepliesResponseDto
 import com.dertefter.data.dto.feed.FeedResponseDto
 import com.dertefter.data.dto.feed.PostDto
@@ -75,6 +77,12 @@ interface ApiService {
     suspend fun newPost(
         @Body postRequest: NewPostRequestDto
     ): Response<PostDto>
+
+    @POST("api/posts/{postId}/comments")
+    suspend fun newComment(
+        @Path("postId") postId: String,
+        @Body postRequest: NewCommentRequestDto
+    ): Response<CommentDto>
 
     @GET("api/posts")
     suspend fun posts(
