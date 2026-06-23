@@ -135,7 +135,7 @@ fun FeedScreen(
 
     val isUpFabVisible by remember(currentListState) {
         derivedStateOf {
-            currentListState.firstVisibleItemIndex > 6
+            currentListState.firstVisibleItemIndex > 3
         }
     }
 
