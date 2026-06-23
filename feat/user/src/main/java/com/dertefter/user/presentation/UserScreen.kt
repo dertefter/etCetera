@@ -329,6 +329,7 @@ fun UserScreen(
                             modifier = Modifier
                                 .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
                             author = uiState.userDto.toUiModel(),
+                            isMe = uiState.isMe,
                             scrollBehavior = scrollBehavior,
                             onEditClick = {
                                 if (uiState.isMe){

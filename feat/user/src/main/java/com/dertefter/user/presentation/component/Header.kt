@@ -1,5 +1,6 @@
 package com.dertefter.user.presentation.component
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -94,11 +95,11 @@ fun Header(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(MaterialTheme.spacing.medium),
-                    containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
-                    contentColor = MaterialTheme.colorScheme.onSecondary,
+                    containerColor = MaterialTheme.colorScheme.surfaceDim.copy(alpha = 0.5f),
+                    contentColor = MaterialTheme.colorScheme.onSurface,
                     icon = Icons.Edit,
                     contentDescription = "Изменить баннер",
-                    hazeState = null
+                    hazeState = hazeState
                 )
             }
 
@@ -127,7 +128,9 @@ fun Header(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL
+)
 @Composable
 fun HeaderPreview() {
     AppTheme {
@@ -140,8 +143,9 @@ fun HeaderPreview() {
                 avatar = "😐",
                 hasNuksta = true,
                 verified = true,
-                pin = null
-            )
+                pin = null,
+            ),
+            isMe = true,
         )
     }
 }
