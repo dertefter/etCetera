@@ -183,6 +183,12 @@ fun Comments(
                                             commentId, userId
                                         )
                                     )
+                                },
+                                onDelete = { commentId ->
+                                    onEvent(
+                                        Event.OnDeleteComment(commentId)
+                                    )
+
                                 }
                             )
                             if (index < uiState.items.lastIndex) {

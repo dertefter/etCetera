@@ -85,6 +85,12 @@ class CommentsViewModel @Inject constructor(
     fun onEvent(event: Event) {
         when (event) {
 
+            is Event.OnDeleteComment -> {
+                viewModelScope.launch {
+                    commentsRepository.deleteComment(commentId = event.commentId)
+                }
+            }
+
             is Event.OnNewComment -> {
                 currentPostId?.let{ postId ->
                     navigator.openAsBottomSheet(Routes.NewComment(postId = postId ))

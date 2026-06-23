@@ -265,6 +265,17 @@ class RemoteDataSourceImpl @Inject constructor(
         }
     }
 
+    override suspend fun deleteComment(commentId: String): Result<Unit> {
+        return runCatching {
+            val response = apiService.deleteComment(commentId)
+            if (response.isSuccessful) {
+                Unit
+            } else {
+                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
+            }
+        }
+    }
+
     override suspend fun newCommentReply(
         commentId: String,
         newCommentRequest: NewCommentRequestDto

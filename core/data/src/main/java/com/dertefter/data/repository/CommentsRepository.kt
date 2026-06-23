@@ -18,6 +18,8 @@ interface CommentsRepository {
 
     suspend fun getReplies(commentId: String, page: String?): Result<RepliesDataDto>
 
+    suspend fun deleteComment(commentId: String): Result<Unit>
+
     suspend fun newComment(postId: String, newCommentRequestDto: NewCommentRequestDto): Result<CommentDto>
 
     suspend fun newCommentReply(

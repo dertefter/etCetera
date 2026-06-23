@@ -60,6 +60,8 @@ interface RemoteDataSource {
 
     suspend fun newComment(postId: String, newCommentRequest: NewCommentRequestDto): Result<CommentDto>
 
+    suspend fun deleteComment(commentId: String): Result<Unit>
+
     suspend fun newCommentReply(
         commentId: String,
         newCommentRequest: NewCommentRequestDto

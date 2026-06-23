@@ -84,6 +84,11 @@ interface ApiService {
         @Body postRequest: NewCommentRequestDto
     ): Response<CommentDto>
 
+    @DELETE("api/comments/{commentId}")
+    suspend fun deleteComment(
+        @Path("commentId") commentId: String
+    ): Response<Unit>
+
     @POST("api/comments/{commentId}/replies")
     suspend fun newCommentReply(
         @Path("commentId") commentId: String,

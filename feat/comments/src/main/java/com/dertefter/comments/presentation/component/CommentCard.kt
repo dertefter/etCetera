@@ -26,6 +26,11 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withLink
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dertefter.comments.R
@@ -34,6 +39,7 @@ import com.dertefter.design.components.avatar.SmallEmojiAvatar
 import com.dertefter.design.components.post.AttachmentsCarousel
 import com.dertefter.design.components.post.LikeButton
 import com.dertefter.comments.presentation.mapper.toUiModel
+import com.dertefter.data.dto.comments.ReplyToDto
 import com.dertefter.data.dto.feed.AttachmentDto
 import com.dertefter.data.dto.feed.AuthorDto
 import com.dertefter.design.components.avatar.DisplayName
@@ -155,8 +161,25 @@ fun CommentCard(
 
             }
             if (comment.content.isNotEmpty()) {
+                val annotatedString = buildAnnotatedString {
+                    comment.replyTo?.let { replyTo ->
+                        withLink(
+                            LinkAnnotation.Clickable(
+                                tag = "user",
+                                linkInteractionListener = {
+                                    onUserClick(replyTo.id)
+                                }
+                            )
+                        ) {
+                            withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary)) {
+                                append("@${replyTo.username}, ")
+                            }
+                        }
+                    }
+                    append(comment.content)
+                }
                 Text(
-                    text = comment.content,
+                    text = annotatedString,
                     modifier = Modifier.padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
                     style = MaterialTheme.typography.bodyMedium
                 )
@@ -246,10 +269,11 @@ fun CommentCard(
                             onUserClick = { onUserClick(it) },
                             onReplyClick = { commentId, userId ->
                                 onReplyClick(
-                                    commentId,
+                                    comment.id, // todo так как итд плохо поддерживает вложенность в коммах - сейчас это айди родителя коммента
                                     userId
                                 )
                             },
+                            onDelete = {onDelete(it)},
                             meUserId = meUserId,
                         )
                     }
@@ -288,6 +312,11 @@ fun CommentCardPreview() {
                 repliesCount = 3,
                 isLiked = false,
                 createdAt = "2023-10-27T12:00:00Z",
+                replyTo = ReplyToDto(
+                    id = "dddd",
+                    username = "ddddddd",
+                    displayName = "уииии"
+                ),
                 attachments = listOf(
                     AttachmentDto(
                         id = "1",

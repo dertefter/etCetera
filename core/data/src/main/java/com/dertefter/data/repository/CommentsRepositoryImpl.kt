@@ -142,6 +142,10 @@ class CommentsRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun deleteComment(commentId: String): Result<Unit> {
+        return remoteDataSource.deleteComment(commentId)
+    }
+
     override suspend fun newComment(
         postId: String,
         newCommentRequestDto: NewCommentRequestDto

@@ -17,4 +17,6 @@ sealed interface Event {
 
     data class OnReply(val commentId: String, val userId: String) : Event
 
+    data class OnDeleteComment(val commentId: String) : Event
+
 }
