@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.IndicatorBox
-import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.IndicatorMaxDistance
 import androidx.compose.material3.pulltorefresh.PullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,7 +24,7 @@ fun PullToRefreshIndicator(
     modifier: Modifier = Modifier,
     containerColor: Color = MaterialTheme.colorScheme.primaryContainer,
     indicatorColor: Color = MaterialTheme.colorScheme.onPrimaryContainer,
-    maxDistance: Dp = IndicatorMaxDistance,
+    maxDistance: Dp = 100.dp,
 ) {
 
     IndicatorBox(

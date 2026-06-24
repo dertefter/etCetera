@@ -157,8 +157,7 @@ fun FeedScreen(
                 modifier = Modifier
                     .align(Alignment.TopCenter),
                 state = pullToRefreshState,
-                isRefreshing = isRefreshing,
-                maxDistance = 100.dp
+                isRefreshing = isRefreshing
             )
         }
     ) {
