@@ -8,12 +8,12 @@ import com.dertefter.data.dto.feed.like.LikeResponseDto
 import com.dertefter.data.dto.feed.stats.PostStatsDto
 import com.dertefter.data.dto.user.FollowResponseDto
 import com.dertefter.data.dto.user.UserDto
-import com.jamal_aliev.paginator.CursorPagingCore
-import com.jamal_aliev.paginator.MutableCursorPaginator
-import com.jamal_aliev.paginator.bookmark.CursorBookmark
-import com.jamal_aliev.paginator.cache.eviction.CursorMostRecentPagingCache
-import com.jamal_aliev.paginator.extension.updateWhere
-import com.jamal_aliev.paginator.load.CursorLoadResult
+import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
+import com.jamal_aliev.paginator.cursor.bookmark.CursorBookmark
+import com.jamal_aliev.paginator.cursor.cache.eviction.CursorMostRecentPagingCache
+import com.jamal_aliev.paginator.cursor.dsl.mutableCursorPaginator
+import com.jamal_aliev.paginator.cursor.extension.updateWhere
+import com.jamal_aliev.paginator.cursor.load.CursorLoadResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import java.lang.ref.WeakReference
@@ -28,7 +28,7 @@ class UserRepositoryImpl @Inject constructor(
     private val followersRepository: FollowersRepository
 ) : UserRepository {
 
-    private val activePaginators = CopyOnWriteArrayList<WeakReference<MutableCursorPaginator<PostDto>>>()
+    private val activePaginators = CopyOnWriteArrayList<WeakReference<MutableCursorPaginator<String, PostDto>>>()
 
     private suspend fun updateInMem(predicate: (PostDto) -> Boolean, transform: (PostDto) -> PostDto) {
         activePaginators.removeIf { it.get() == null }
@@ -50,18 +50,16 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getPostsPaginator(userId: String, sort: String, pinnedPostId: String?): MutableCursorPaginator<PostDto> {
+    override fun getPostsPaginator(userId: String, sort: String, pinnedPostId: String?): MutableCursorPaginator<String, PostDto> {
         val cacheKey = "user_$userId" + "_$sort"
-        val pagingCore = CursorPagingCore(
-            cache = CursorMostRecentPagingCache(maxSize = 20),
+        return mutableCursorPaginator(capacity = 20) {
+            cache = CursorMostRecentPagingCache(maxSize = 20)
             persistentCache = PostPagingCache(cacheKey, localDataSource)
-        )
-        return MutableCursorPaginator(
-            core = pagingCore,
-            load = { cursor ->
+
+            load { cursor ->
                 val result = remoteDataSource.getPosts(
                     userId, sort = sort, pinnedPostId = pinnedPostId,
-                    cursor = cursor?.self as? String
+                    cursor = cursor?.self
                 )
                 val data = result.getOrThrow()
 
@@ -74,21 +72,20 @@ class UserRepositoryImpl @Inject constructor(
                     )
                 )
             }
-        ).also {
+            initialCursor = CursorBookmark(prev = null, self = "head", next = null)
+        }.also {
             activePaginators.add(WeakReference(it))
         }
     }
 
-    override fun getLikedPostsPaginator(userId: String): MutableCursorPaginator<PostDto> {
+    override fun getLikedPostsPaginator(userId: String): MutableCursorPaginator<String, PostDto> {
         val cacheKey = "liked_user_$userId"
-        val pagingCore = CursorPagingCore(
-            cache = CursorMostRecentPagingCache(maxSize = 20),
+        return mutableCursorPaginator(capacity = 20) {
+            cache = CursorMostRecentPagingCache(maxSize = 20)
             persistentCache = PostPagingCache(cacheKey, localDataSource)
-        )
-        return MutableCursorPaginator(
-            core = pagingCore,
-            load = { cursor ->
-                val result = remoteDataSource.getLikedPosts(userId, cursor?.self as? String)
+
+            load { cursor ->
+                val result = remoteDataSource.getLikedPosts(userId, cursor?.self)
                 val data = result.getOrThrow()
 
                 CursorLoadResult(
@@ -100,7 +97,8 @@ class UserRepositoryImpl @Inject constructor(
                     )
                 )
             }
-        ).also {
+            initialCursor = CursorBookmark(prev = null, self = "head", next = null)
+        }.also {
             activePaginators.add(WeakReference(it))
         }
     }

@@ -33,22 +33,20 @@ import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
 import com.gigamole.composefadingedges.FadingEdgesGravity
 import com.gigamole.composefadingedges.verticalFadingEdges
-import com.jamal_aliev.paginator.MutableCursorPaginator
-import com.jamal_aliev.paginator.bookmark.CursorBookmark
-import com.jamal_aliev.paginator.compose.paginated
-import com.jamal_aliev.paginator.compose.rememberPaginated
-import com.jamal_aliev.paginator.dsl.mutableCursorPaginator
-import com.jamal_aliev.paginator.extension.isErrorState
-import com.jamal_aliev.paginator.extension.isProgressState
-import com.jamal_aliev.paginator.load.CursorLoadResult
-import com.jamal_aliev.paginator.page.PaginatorUiState
+import com.jamal_aliev.paginator.core.extension.isErrorState
+import com.jamal_aliev.paginator.core.extension.isProgressState
+import com.jamal_aliev.paginator.core.page.PaginatorUiState
+import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
+import com.jamal_aliev.paginator.cursor.bookmark.CursorBookmark
+import com.jamal_aliev.paginator.compose.cursor.paginated
+import com.jamal_aliev.paginator.compose.cursor.rememberPaginated
+import com.jamal_aliev.paginator.cursor.dsl.mutableCursorPaginator
+import com.jamal_aliev.paginator.cursor.load.CursorLoadResult
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Comments(
-    postId: String,
-    paginator: MutableCursorPaginator<CommentDto>,
-    selectedTab: CommentSort,
+    paginator: MutableCursorPaginator<String, CommentDto>,
     onEvent: (Event) -> Unit,
     uiState: PaginatorUiState<CommentDto>,
     contentPadding: PaddingValues = PaddingValues(),
@@ -255,7 +253,7 @@ fun CommentsPreview() {
             )
         )
 
-        val samplePaginator = mutableCursorPaginator<CommentDto> {
+        val samplePaginator = mutableCursorPaginator {
             load {
                 CursorLoadResult(
                     data = sampleComments,
@@ -271,9 +269,7 @@ fun CommentsPreview() {
         )
 
         Comments(
-            postId = "1",
             paginator = samplePaginator,
-            selectedTab = CommentSort.POPULAR,
             onEvent = {},
             uiState = uiState,
             meUserId = "",

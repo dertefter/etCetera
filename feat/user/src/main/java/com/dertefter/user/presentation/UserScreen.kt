@@ -72,10 +72,10 @@ import com.dertefter.user.presentation.component.BioCard
 import com.dertefter.user.presentation.component.Header
 import com.dertefter.user.presentation.component.TitleValueCard
 import com.dertefter.user.presentation.mapper.toUiModel
-import com.jamal_aliev.paginator.MutableCursorPaginator
-import com.jamal_aliev.paginator.compose.rememberPaginated
-import com.jamal_aliev.paginator.extension.isProgressState
-import com.jamal_aliev.paginator.page.PaginatorUiState
+import com.jamal_aliev.paginator.compose.cursor.rememberPaginated
+import com.jamal_aliev.paginator.core.extension.isProgressState
+import com.jamal_aliev.paginator.core.page.PaginatorUiState
+import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
@@ -86,7 +86,7 @@ import com.dertefter.design.R as DesignR
 fun UserScreen(
     onEvent: (Event) -> Unit,
     uiState: UiState,
-    paginators: Map<FeedTab, MutableCursorPaginator<PostDto>> = emptyMap(),
+    paginators: Map<FeedTab, MutableCursorPaginator<String, PostDto>> = emptyMap(),
 ) {
 
     val context = LocalContext.current
@@ -139,7 +139,8 @@ fun UserScreen(
 
     val tabs = FeedTab.entries
 
-    val paged = paginators[uiState.selectedTab]?.rememberPaginated(state = lazyListState)
+    val paginator = paginators[uiState.selectedTab]
+    val paged = paginator?.rememberPaginated(state = lazyListState)
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 

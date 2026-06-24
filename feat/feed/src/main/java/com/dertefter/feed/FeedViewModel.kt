@@ -12,12 +12,12 @@ import com.dertefter.feed.presentation.TopBarUiState
 import com.dertefter.feed.presentation.mapper.toNavigationModel
 import com.dertefter.navigation.Navigator
 import com.dertefter.navigation.Routes
-import com.jamal_aliev.paginator.MutableCursorPaginator
-import com.jamal_aliev.paginator.extension.distinctBy
-import com.jamal_aliev.paginator.extension.prefetchController
-import com.jamal_aliev.paginator.extension.uiState
-import com.jamal_aliev.paginator.extension.warmUpFromPersistent
-import com.jamal_aliev.paginator.page.PaginatorUiState
+import com.jamal_aliev.paginator.core.page.PaginatorUiState
+import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
+import com.jamal_aliev.paginator.cursor.extension.distinctBy
+import com.jamal_aliev.paginator.cursor.extension.prefetchController
+import com.jamal_aliev.paginator.cursor.extension.uiState
+import com.jamal_aliev.paginator.cursor.extension.warmUpFromPersistent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -95,7 +95,7 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    private fun setupPaginator(paginator: MutableCursorPaginator<PostDto>) {
+    private fun setupPaginator(paginator: MutableCursorPaginator<String, PostDto>) {
         viewModelScope.launch {
             paginator.distinctBy { it.id }
             paginator.prefetchController(
@@ -193,6 +193,5 @@ class FeedViewModel @Inject constructor(
 
     override fun onCleared() {
         paginators.values.forEach { it.release() }
-        super.onCleared()
     }
 }

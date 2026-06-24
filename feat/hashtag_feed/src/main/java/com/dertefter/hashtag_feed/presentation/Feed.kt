@@ -18,11 +18,11 @@ import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.components.post.PostCard
 import com.dertefter.hashtag_feed.R
 import com.dertefter.hashtag_feed.presentation.mapper.toUiModel
-import com.jamal_aliev.paginator.compose.PaginatedLazyListHolder
-import com.jamal_aliev.paginator.compose.paginated
-import com.jamal_aliev.paginator.extension.isErrorState
-import com.jamal_aliev.paginator.extension.isProgressState
-import com.jamal_aliev.paginator.page.PaginatorUiState
+import com.jamal_aliev.paginator.compose.cursor.PaginatedLazyListHolder
+import com.jamal_aliev.paginator.compose.cursor.paginated
+import com.jamal_aliev.paginator.core.extension.isErrorState
+import com.jamal_aliev.paginator.core.extension.isProgressState
+import com.jamal_aliev.paginator.core.page.PaginatorUiState
 
 fun LazyListScope.feed(
     uiState: PaginatorUiState<PostDto>,
@@ -57,7 +57,7 @@ fun LazyListScope.feed(
         is PaginatorUiState.Error -> {
             item {
                 Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    Text(stringResource(R.string.user_loading_error, uiState.exception.message ?: ""))
+                    Text(stringResource(R.string.user_loading_error, uiState.state.exception.message ?: ""))
                 }
             }
         }

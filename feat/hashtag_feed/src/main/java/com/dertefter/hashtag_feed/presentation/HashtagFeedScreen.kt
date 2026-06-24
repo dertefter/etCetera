@@ -31,10 +31,10 @@ import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
-import com.jamal_aliev.paginator.MutableCursorPaginator
-import com.jamal_aliev.paginator.compose.rememberPaginated
-import com.jamal_aliev.paginator.extension.isProgressState
-import com.jamal_aliev.paginator.page.PaginatorUiState
+import com.jamal_aliev.paginator.core.extension.isProgressState
+import com.jamal_aliev.paginator.core.page.PaginatorUiState
+import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
+import com.jamal_aliev.paginator.compose.cursor.rememberPaginated
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
 import com.dertefter.design.R as DesignR
@@ -44,7 +44,7 @@ import com.dertefter.design.R as DesignR
 fun HashtagFeedScreen(
     onEvent: (Event) -> Unit,
     uiState: UiState,
-    paginator: MutableCursorPaginator<PostDto>? = null
+    paginator: MutableCursorPaginator<String, PostDto>? = null
 ) {
 
     val lazyListState = rememberLazyListState()
@@ -52,7 +52,7 @@ fun HashtagFeedScreen(
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     val paged = paginator?.rememberPaginated(state = lazyListState)
-    val isRefreshing = (uiState.uiState is PaginatorUiState.Content && uiState.uiState.prependState.isProgressState())
+    val isRefreshing = (uiState.uiState is PaginatorUiState.Content<PostDto> && uiState.uiState.prependState.isProgressState())
     val pullToRefreshState = rememberPullToRefreshState()
 
     LaunchedEffect(lazyListState) {

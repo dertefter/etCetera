@@ -8,12 +8,12 @@ import com.dertefter.data.dto.comments.NewCommentRequestDto
 import com.dertefter.data.dto.comments.RepliesDataDto
 import com.dertefter.data.dto.feed.like.LikeResponseDto
 import com.dertefter.data.dto.upload.AttachmentUploadResponseDto
-import com.jamal_aliev.paginator.MutableCursorPaginator
-import com.jamal_aliev.paginator.bookmark.CursorBookmark
-import com.jamal_aliev.paginator.cache.eviction.CursorMostRecentPagingCache
-import com.jamal_aliev.paginator.dsl.mutableCursorPaginator
-import com.jamal_aliev.paginator.extension.updateWhere
-import com.jamal_aliev.paginator.load.CursorLoadResult
+import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
+import com.jamal_aliev.paginator.cursor.bookmark.CursorBookmark
+import com.jamal_aliev.paginator.cursor.cache.eviction.CursorMostRecentPagingCache
+import com.jamal_aliev.paginator.cursor.dsl.mutableCursorPaginator
+import com.jamal_aliev.paginator.cursor.extension.updateWhere
+import com.jamal_aliev.paginator.cursor.load.CursorLoadResult
 import java.io.File
 import java.lang.ref.WeakReference
 import java.util.concurrent.CopyOnWriteArrayList
@@ -26,9 +26,9 @@ class CommentsRepositoryImpl @Inject constructor(
     private val localDataSource: LocalDataSource
 ) : CommentsRepository {
 
-    private val activePaginators = CopyOnWriteArrayList<WeakReference<MutableCursorPaginator<CommentDto>>>()
+    private val activePaginators = CopyOnWriteArrayList<WeakReference<MutableCursorPaginator<String, CommentDto>>>()
 
-    private suspend fun updateInMem(action: suspend (MutableCursorPaginator<CommentDto>) -> Unit) {
+    private suspend fun updateInMem(action: suspend (MutableCursorPaginator<String, CommentDto>) -> Unit) {
         activePaginators.removeIf { it.get() == null }
         activePaginators.forEach {
             it.get()?.let { paginator ->
@@ -72,14 +72,14 @@ class CommentsRepositoryImpl @Inject constructor(
         updatePagesInDb(commentId, transform)
     }
 
-    override fun getCommentsPaginator(postId: String, sort: String): MutableCursorPaginator<CommentDto> {
+    override fun getCommentsPaginator(postId: String, sort: String): MutableCursorPaginator<String, CommentDto> {
         val cacheKey = "$postId:$sort"
         return mutableCursorPaginator(capacity = 100) {
             cache = CursorMostRecentPagingCache(maxSize = 100)
             persistentCache = CommentPagingCache(cacheKey, localDataSource)
 
             load { cursor ->
-                val requestCursor = if (cursor?.self == "initial") null else cursor?.self as? String
+                val requestCursor = if (cursor?.self == "initial") null else cursor?.self
                 val result = remoteDataSource.getComments(postId, requestCursor, sort)
                 val data = result.getOrThrow()
 

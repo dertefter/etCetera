@@ -1,20 +1,11 @@
 package com.dertefter.followers.presentation
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -23,12 +14,8 @@ import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
@@ -36,25 +23,17 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.dertefter.data.dto.followers.FollowerUserDto
 import com.dertefter.design.components.buttons.AppNavigationIcon
-import com.dertefter.design.icons.Icons
-import com.dertefter.design.theme.cornerShape
-import com.dertefter.design.theme.rounding
 import com.dertefter.design.theme.spacing
 import com.dertefter.followers.R
-import com.jamal_aliev.paginator.MutableCursorPaginator
-import com.jamal_aliev.paginator.page.PaginatorUiState
+import com.jamal_aliev.paginator.core.page.PaginatorUiState
+import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class, ExperimentalFoundationApi::class)
@@ -63,7 +42,7 @@ fun FollowersScreen(
     onEvent: (Event) -> Unit,
     selectedTab: Tab,
     uiStates: Map<Tab, PaginatorUiState<FollowerUserDto>>,
-    paginators: Map<Tab, MutableCursorPaginator<FollowerUserDto>>
+    paginators: Map<Tab, MutableCursorPaginator<String, FollowerUserDto>>
 ) {
     val tabs = Tab.entries
 

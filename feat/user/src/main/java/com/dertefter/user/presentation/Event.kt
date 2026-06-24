@@ -11,6 +11,7 @@ sealed interface Event {
     data class OnUnlike(val postId: String) : Event
     data class OnNavigateToComments(val postId: String) : Event
     data class OnUpdateStats(val ids: List<String>) : Event
+    data class OnVote(val postId: String, val optionIds: List<String>) : Event
     data class OnShare(val userId: String) : Event
     data class OnBlock(val userId: String) : Event
 

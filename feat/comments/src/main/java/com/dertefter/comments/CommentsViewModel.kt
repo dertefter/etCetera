@@ -9,11 +9,11 @@ import com.dertefter.data.repository.CommentsRepository
 import com.dertefter.data.repository.MeRepository
 import com.dertefter.navigation.Navigator
 import com.dertefter.navigation.Routes
-import com.jamal_aliev.paginator.MutableCursorPaginator
-import com.jamal_aliev.paginator.extension.distinctBy
-import com.jamal_aliev.paginator.extension.uiState
-import com.jamal_aliev.paginator.extension.warmUpFromPersistent
-import com.jamal_aliev.paginator.page.PaginatorUiState
+import com.jamal_aliev.paginator.core.page.PaginatorUiState
+import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
+import com.jamal_aliev.paginator.cursor.extension.distinctBy
+import com.jamal_aliev.paginator.cursor.extension.uiState
+import com.jamal_aliev.paginator.cursor.extension.warmUpFromPersistent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +29,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CommentsViewModel @Inject constructor(
     private val commentsRepository: CommentsRepository,
-    private val meRepository: MeRepository,
+    meRepository: MeRepository,
     private val navigator: Navigator
 ) : ViewModel() {
 
@@ -47,12 +47,12 @@ class CommentsViewModel @Inject constructor(
     private val _selectedTab = MutableStateFlow(CommentSort.POPULAR)
     val selectedTab: StateFlow<CommentSort> = _selectedTab.asStateFlow()
 
-    private val paginators = mutableMapOf<String, MutableCursorPaginator<CommentDto>>()
+    private val paginators = mutableMapOf<String, MutableCursorPaginator<String, CommentDto>>()
     private val _uiStates = mutableMapOf<String, StateFlow<PaginatorUiState<CommentDto>>>()
 
     private var currentPostId: String? = null
 
-    fun getPaginator(postId: String, sort: CommentSort): MutableCursorPaginator<CommentDto> {
+    fun getPaginator(postId: String, sort: CommentSort): MutableCursorPaginator<String, CommentDto> {
         currentPostId = postId
         val key = "$postId-${sort.value}"
         return paginators.getOrPut(key) {
@@ -74,7 +74,7 @@ class CommentsViewModel @Inject constructor(
         }
     }
 
-    private fun setupPaginator(paginator: MutableCursorPaginator<CommentDto>) {
+    private fun setupPaginator(paginator: MutableCursorPaginator<String, CommentDto>) {
         viewModelScope.launch {
             paginator.warmUpFromPersistent()
             paginator.distinctBy { it.id }
@@ -154,6 +154,5 @@ class CommentsViewModel @Inject constructor(
 
     override fun onCleared() {
         paginators.values.forEach { it.release() }
-        super.onCleared()
     }
 }

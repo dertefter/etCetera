@@ -38,7 +38,6 @@ fun CommentsRoute(
 
     CommentsScreen(
         meUserId = meUserId,
-        postId = postId,
         onEvent = viewModel::onEvent,
         selectedTab = selectedTab,
         uiStates = uiStates,

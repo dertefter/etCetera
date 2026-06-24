@@ -4,28 +4,29 @@ import com.dertefter.data.datasource.local.LocalDataSource
 import com.dertefter.data.datasource.local.room.entity.PageEntity
 import com.dertefter.data.datasource.local.room.entity.PageType
 import com.dertefter.data.dto.followers.FollowerUserDto
-import com.jamal_aliev.paginator.bookmark.CursorBookmark
-import com.jamal_aliev.paginator.cache.persistent.CursorPersistentPagingCache
-import com.jamal_aliev.paginator.extension.isEmptyState
-import com.jamal_aliev.paginator.page.PageState
+import com.jamal_aliev.paginator.core.extension.isEmptyState
+import com.jamal_aliev.paginator.core.extension.isSuccessState
+import com.jamal_aliev.paginator.cursor.bookmark.CursorBookmark
+import com.jamal_aliev.paginator.cursor.cache.persistent.CursorPersistentPagingCache
+import com.jamal_aliev.paginator.cursor.page.CursorPageState
 
 class FollowerPagingCache(
     private val tab: String,
     private val localDataSource: LocalDataSource
-) : CursorPersistentPagingCache<FollowerUserDto> {
+) : CursorPersistentPagingCache<String, FollowerUserDto> {
 
     private val type = PageType.USER
 
-    override suspend fun save(cursor: CursorBookmark, state: PageState<FollowerUserDto>) {
-        if (state is PageState.SuccessPage) {
-            val self = cursor.self as String
+    override suspend fun save(cursor: CursorBookmark<String>, state: CursorPageState<String, FollowerUserDto>) {
+        if (state.isSuccessState()) {
+            val self = cursor.self
             localDataSource.upsertPage(
                 PageEntity(
                     type = type,
                     tab = tab,
                     self = self,
-                    prev = cursor.prev as? String,
-                    next = cursor.next as? String,
+                    prev = cursor.prev,
+                    next = cursor.next,
                     isEmpty = state.isEmptyState()
                 )
             )
@@ -33,38 +34,37 @@ class FollowerPagingCache(
         }
     }
 
-    override suspend fun saveAll(entries: List<Pair<CursorBookmark, PageState<FollowerUserDto>>>) {
+    override suspend fun saveAll(entries: List<Pair<CursorBookmark<String>, CursorPageState<String, FollowerUserDto>>>) {
         entries.forEach { (cursor, state) -> save(cursor, state) }
     }
 
-    override suspend fun load(self: Any): Pair<CursorBookmark, PageState<FollowerUserDto>>? {
-        val selfStr = self as String
-        val entity = localDataSource.getPage(type, tab, selfStr) ?: return null
+    override suspend fun load(self: String): Pair<CursorBookmark<String>, CursorPageState<String, FollowerUserDto>>? {
+        val entity = localDataSource.getPage(type, tab, self) ?: return null
         return try {
-            val data = localDataSource.getUsersForPage(type, tab, selfStr)
+            val data = localDataSource.getUsersForPage(type, tab, self)
             val bookmark = CursorBookmark(
                 prev = entity.prev,
                 self = entity.self,
                 next = entity.next
             )
-            bookmark to PageState.SuccessPage(0, data)
-        } catch (e: Exception) {
+            bookmark to CursorPageState.Success(bookmark, data)
+        } catch (_: Exception) {
             null
         }
     }
 
-    override suspend fun loadAll(): List<Pair<CursorBookmark, PageState<FollowerUserDto>>> =
+    override suspend fun loadAll(): List<Pair<CursorBookmark<String>, CursorPageState<String, FollowerUserDto>>> =
         localDataSource.getAllPages(type, tab).mapNotNull { load(it.self) }
 
-    override suspend fun remove(self: Any) = localDataSource.deletePage(type, tab, self as String)
+    override suspend fun remove(self: String) = localDataSource.deletePage(type, tab, self)
 
-    override suspend fun removeAll(selves: List<Any>) {
+    override suspend fun removeAll(selves: List<String>) {
         selves.forEach { remove(it) }
     }
 
     override suspend fun clear() = localDataSource.deleteAllPages(type, tab)
 
-    override suspend fun <R> transaction(block: suspend CursorPersistentPagingCache<FollowerUserDto>.() -> R): R {
+    override suspend fun <R> transaction(block: suspend CursorPersistentPagingCache<String, FollowerUserDto>.() -> R): R {
         return block()
     }
 }

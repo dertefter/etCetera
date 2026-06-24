@@ -3,7 +3,7 @@ package com.dertefter.user.presentation
 import com.dertefter.data.common.AppError
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.dto.user.UserDto
-import com.jamal_aliev.paginator.page.PaginatorUiState
+import com.jamal_aliev.paginator.core.page.PaginatorUiState
 
 data class UiState(
     val userDto: UserDto? = null,

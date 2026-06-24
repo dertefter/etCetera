@@ -33,21 +33,20 @@ import com.dertefter.design.components.buttons.AppNavigationIcon
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
-import com.jamal_aliev.paginator.MutableCursorPaginator
-import com.jamal_aliev.paginator.bookmark.CursorBookmark
-import com.jamal_aliev.paginator.dsl.mutableCursorPaginator
-import com.jamal_aliev.paginator.load.CursorLoadResult
-import com.jamal_aliev.paginator.page.PaginatorUiState
+import com.jamal_aliev.paginator.core.page.PaginatorUiState
+import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
+import com.jamal_aliev.paginator.cursor.bookmark.CursorBookmark
+import com.jamal_aliev.paginator.cursor.dsl.mutableCursorPaginator
+import com.jamal_aliev.paginator.cursor.load.CursorLoadResult
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun CommentsScreen(
     meUserId: String? = null,
-    postId: String,
     onEvent: (Event) -> Unit,
     selectedTab: CommentSort,
     uiStates: Map<CommentSort, PaginatorUiState<CommentDto>>,
-    paginators: Map<CommentSort, MutableCursorPaginator<CommentDto>>
+    paginators: Map<CommentSort, MutableCursorPaginator<String, CommentDto>>
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     var showMenu by remember { mutableStateOf(false) }
@@ -134,9 +133,7 @@ fun CommentsScreen(
         key(selectedTab) {
             Comments(
                 meUserId = meUserId,
-                postId = postId,
                 paginator = paginators[selectedTab]!!,
-                selectedTab = selectedTab,
                 onEvent = onEvent,
                 uiState = uiStates[selectedTab]!!,
                 contentPadding = contentPadding,
@@ -182,7 +179,7 @@ fun CommentsScreenPreview() {
             )
         )
 
-        val samplePaginator = mutableCursorPaginator<CommentDto> {
+        val samplePaginator = mutableCursorPaginator {
             load {
                 CursorLoadResult(
                     data = sampleComments,
@@ -208,7 +205,6 @@ fun CommentsScreenPreview() {
         )
 
         CommentsScreen(
-            postId = "1",
             onEvent = {},
             selectedTab = CommentSort.POPULAR,
             uiStates = uiStates,

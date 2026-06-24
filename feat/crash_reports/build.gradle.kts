@@ -58,8 +58,6 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
     implementation(libs.hilt.lifecycle.viewmodel.compose)
     implementation(platform(libs.jamal.wia.paginator.bom))
-    implementation(libs.jamal.wia.paginator)
-    implementation(libs.jamal.wia.paginator.compose)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 

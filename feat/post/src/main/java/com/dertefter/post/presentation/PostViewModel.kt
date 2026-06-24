@@ -23,7 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PostViewModel @Inject constructor(
     private val feedRepository: FeedRepository,
-    private val meRepository: MeRepository,
+    meRepository: MeRepository,
     private val navigator: Navigator,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -51,7 +51,7 @@ class PostViewModel @Inject constructor(
         )
     }.stateIn(
         viewModelScope,
-        SharingStarted.Companion.WhileSubscribed(5000),
+        SharingStarted.WhileSubscribed(5000),
         UiState(isLoading = true)
     )
 

@@ -5,12 +5,12 @@ import com.dertefter.data.dto.comments.NewCommentRequestDto
 import com.dertefter.data.dto.comments.RepliesDataDto
 import com.dertefter.data.dto.feed.like.LikeResponseDto
 import com.dertefter.data.dto.upload.AttachmentUploadResponseDto
-import com.jamal_aliev.paginator.MutableCursorPaginator
+import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
 import java.io.File
 
 interface CommentsRepository {
 
-    fun getCommentsPaginator(postId: String, sort: String): MutableCursorPaginator<CommentDto>
+    fun getCommentsPaginator(postId: String, sort: String): MutableCursorPaginator<String, CommentDto>
 
     suspend fun likeComment(commentId: String): Result<LikeResponseDto>
 

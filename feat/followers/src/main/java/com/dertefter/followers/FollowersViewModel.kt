@@ -11,12 +11,12 @@ import com.dertefter.followers.presentation.Event
 import com.dertefter.followers.presentation.Tab
 import com.dertefter.navigation.Navigator
 import com.dertefter.navigation.Routes.*
-import com.jamal_aliev.paginator.MutableCursorPaginator
-import com.jamal_aliev.paginator.page.PaginatorUiState
-import com.jamal_aliev.paginator.extension.uiState
-import com.jamal_aliev.paginator.extension.warmUpFromPersistent
-import com.jamal_aliev.paginator.extension.distinctBy
-import com.jamal_aliev.paginator.extension.prefetchController
+import com.jamal_aliev.paginator.core.page.PaginatorUiState
+import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
+import com.jamal_aliev.paginator.cursor.extension.distinctBy
+import com.jamal_aliev.paginator.cursor.extension.prefetchController
+import com.jamal_aliev.paginator.cursor.extension.uiState
+import com.jamal_aliev.paginator.cursor.extension.warmUpFromPersistent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,7 +31,7 @@ import javax.inject.Inject
 class FollowersViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val userRepository: UserRepository,
-    private val followersRepository: FollowersRepository,
+    followersRepository: FollowersRepository,
     private val navigator: Navigator
 ) : ViewModel() {
 
@@ -43,7 +43,7 @@ class FollowersViewModel @Inject constructor(
     private val _selectedTab = MutableStateFlow(if (args.startTabIsFollowing) Tab.FOLLOWING else Tab.FOLLOWERS)
     val selectedTab: StateFlow<Tab> = _selectedTab.asStateFlow()
 
-    private val paginators: Map<Tab, MutableCursorPaginator<FollowerUserDto>> = mapOf(
+    private val paginators: Map<Tab, MutableCursorPaginator<String, FollowerUserDto>> = mapOf(
         Tab.FOLLOWERS to followersRepository.getFollowersPaginator(userId),
         Tab.FOLLOWING to followersRepository.getFollowingPaginator(userId)
     )
@@ -65,7 +65,7 @@ class FollowersViewModel @Inject constructor(
         }
     }
 
-    private fun setupPaginator(paginator: MutableCursorPaginator<FollowerUserDto>) {
+    private fun setupPaginator(paginator: MutableCursorPaginator<String, FollowerUserDto>) {
         viewModelScope.launch {
             paginator.distinctBy { it.id }
             paginator.prefetchController(
@@ -108,6 +108,5 @@ class FollowersViewModel @Inject constructor(
 
     override fun onCleared() {
         paginators.values.forEach { it.release() }
-        super.onCleared()
     }
 }

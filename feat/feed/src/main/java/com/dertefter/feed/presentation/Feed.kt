@@ -29,19 +29,19 @@ import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.components.post.PostCard
 import com.dertefter.feed.presentation.mapper.toUiModel
-import com.jamal_aliev.paginator.MutableCursorPaginator
-import com.jamal_aliev.paginator.compose.paginated
-import com.jamal_aliev.paginator.compose.rememberPaginated
-import com.jamal_aliev.paginator.extension.isErrorState
-import com.jamal_aliev.paginator.extension.isProgressState
-import com.jamal_aliev.paginator.page.PaginatorUiState
+import com.jamal_aliev.paginator.core.extension.isErrorState
+import com.jamal_aliev.paginator.core.extension.isProgressState
+import com.jamal_aliev.paginator.core.page.PaginatorUiState
+import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
+import com.jamal_aliev.paginator.compose.cursor.paginated
+import com.jamal_aliev.paginator.compose.cursor.rememberPaginated
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Feed(
-    paginator: MutableCursorPaginator<PostDto>,
+    paginator: MutableCursorPaginator<String, PostDto>,
     onEvent: (Event) -> Unit,
     uiState: PaginatorUiState<PostDto>,
     contentPadding: PaddingValues = PaddingValues(),
@@ -98,7 +98,7 @@ fun Feed(
                     Box(Modifier
                         .padding(contentPadding)
                         .fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text("Ошибка загрузки: ${state.exception.message}")
+                        Text("Ошибка загрузки: ${state.state.exception.message}")
                     }
                 }
 

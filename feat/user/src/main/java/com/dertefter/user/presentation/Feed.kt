@@ -25,31 +25,28 @@ import com.dertefter.design.components.post.PostCard
 import com.dertefter.design.icons.Icons
 import com.dertefter.user.R
 import com.dertefter.user.presentation.mapper.toUiModel
-import com.jamal_aliev.paginator.compose.PaginatedLazyListHolder
-import com.jamal_aliev.paginator.compose.paginated
-import com.jamal_aliev.paginator.extension.isErrorState
-import com.jamal_aliev.paginator.extension.isProgressState
-import com.jamal_aliev.paginator.page.PaginatorUiState
+import com.jamal_aliev.paginator.compose.cursor.PaginatedLazyListHolder
+import com.jamal_aliev.paginator.compose.cursor.paginated
+import com.jamal_aliev.paginator.core.extension.isErrorState
+import com.jamal_aliev.paginator.core.extension.isProgressState
+import com.jamal_aliev.paginator.core.page.PaginatorUiState
 
 fun LazyListScope.feed(
     uiState: PaginatorUiState<PostDto>,
     paged: PaginatedLazyListHolder<*>,
     onEvent: (Event) -> Unit,
     pinnedPostId: String? = null,
-    isMe: Boolean = false
+    isMe: Boolean = false,
 ) {
     when (uiState) {
-        PaginatorUiState.Idle -> {
+        PaginatorUiState.Idle, is PaginatorUiState.Loading -> {
             item {
-                Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    AppLoadingIndicator()
-                }
-            }
-        }
-
-        is PaginatorUiState.Loading -> {
-            item {
-                Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
                     AppLoadingIndicator()
                 }
             }
@@ -57,7 +54,12 @@ fun LazyListScope.feed(
 
         is PaginatorUiState.Empty -> {
             item {
-                Box(Modifier.fillParentMaxSize(), contentAlignment = Alignment.Center) {
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
                     Text(stringResource(R.string.user_no_posts))
                 }
             }
@@ -65,23 +67,36 @@ fun LazyListScope.feed(
 
         is PaginatorUiState.Error -> {
             item {
-                Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    Text(stringResource(R.string.user_loading_error, uiState.exception.message ?: ""))
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        stringResource(
+                            R.string.user_loading_error,
+                            uiState.state.exception.message ?: ""
+                        )
+                    )
                 }
             }
         }
 
         is PaginatorUiState.Content -> {
-            val displayItems = uiState.items
             paginated(paged) {
                 itemsIndexed(
-                    displayItems,
-                    key = { _, post -> post.id }) { index, post ->
+                    uiState.items,
+                    key = { _, post -> post.id }
+                ) { index, post ->
                     val isPinned = post.id == pinnedPostId
                     Column {
                         if (isPinned) {
                             Row(
-                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                                modifier = Modifier.padding(
+                                    horizontal = 16.dp,
+                                    vertical = 8.dp
+                                ),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Icon(
@@ -105,16 +120,15 @@ fun LazyListScope.feed(
                             onUnlike = { onEvent(Event.OnUnlike(post.id)) },
                             onCommentsClick = { onEvent(Event.OnNavigateToComments(post.id)) },
                             isOnMyWall = isMe,
-                            onUserClick = {
-                                onEvent(Event.OnOpenUser(it))
-                            },
-                            onOpenPost = { onEvent(Event.OnOpenPost(it)) },
+                            onUserClick = { userId -> onEvent(Event.OnOpenUser(userId)) },
+                            onVote = { optionIds -> onEvent(Event.OnVote(post.id, optionIds)) },
+                            onOpenPost = { postId -> onEvent(Event.OnOpenPost(postId)) },
                             onAttachmentClick = { attachments, position ->
                                 onEvent(Event.OnOpenAttachmentsViewer(attachments, position))
                             }
                         )
                     }
-                    if (index < displayItems.lastIndex) {
+                    if (index < uiState.items.lastIndex) {
                         HorizontalDivider()
                     }
                 }
@@ -139,3 +153,4 @@ fun LazyListScope.feed(
         }
     }
 }
+

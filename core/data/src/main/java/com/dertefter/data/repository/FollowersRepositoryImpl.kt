@@ -4,12 +4,12 @@ import com.dertefter.data.datasource.local.LocalDataSource
 import com.dertefter.data.datasource.local.room.FollowerPagingCache
 import com.dertefter.data.datasource.remote.RemoteDataSource
 import com.dertefter.data.dto.followers.FollowerUserDto
-import com.jamal_aliev.paginator.CursorPagingCore
-import com.jamal_aliev.paginator.MutableCursorPaginator
-import com.jamal_aliev.paginator.bookmark.CursorBookmark
-import com.jamal_aliev.paginator.cache.eviction.CursorMostRecentPagingCache
-import com.jamal_aliev.paginator.extension.updateWhere
-import com.jamal_aliev.paginator.load.CursorLoadResult
+import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
+import com.jamal_aliev.paginator.cursor.bookmark.CursorBookmark
+import com.jamal_aliev.paginator.cursor.cache.eviction.CursorMostRecentPagingCache
+import com.jamal_aliev.paginator.cursor.dsl.mutableCursorPaginator
+import com.jamal_aliev.paginator.cursor.extension.updateWhere
+import com.jamal_aliev.paginator.cursor.load.CursorLoadResult
 import java.lang.ref.WeakReference
 import java.util.concurrent.CopyOnWriteArrayList
 import javax.inject.Inject
@@ -21,7 +21,7 @@ class FollowersRepositoryImpl @Inject constructor(
     private val localDataSource: LocalDataSource
 ) : FollowersRepository {
 
-    private val activePaginators = CopyOnWriteArrayList<WeakReference<MutableCursorPaginator<FollowerUserDto>>>()
+    private val activePaginators = CopyOnWriteArrayList<WeakReference<MutableCursorPaginator<String, FollowerUserDto>>>()
 
     private suspend fun updateInMem(predicate: (FollowerUserDto) -> Boolean, transform: (FollowerUserDto) -> FollowerUserDto) {
         activePaginators.removeIf { it.get() == null }
@@ -40,16 +40,14 @@ class FollowersRepositoryImpl @Inject constructor(
         )
     }
 
-    override fun getFollowersPaginator(userId: String): MutableCursorPaginator<FollowerUserDto> {
+    override fun getFollowersPaginator(userId: String): MutableCursorPaginator<String, FollowerUserDto> {
         val cacheKey = "followers_$userId"
-        val pagingCore = CursorPagingCore<FollowerUserDto>(
-            cache = CursorMostRecentPagingCache(maxSize = 20),
+        return mutableCursorPaginator(capacity = 20) {
+            cache = CursorMostRecentPagingCache(maxSize = 20)
             persistentCache = FollowerPagingCache(cacheKey, localDataSource)
-        )
-        return MutableCursorPaginator(
-            core = pagingCore,
-            load = { cursor ->
-                val page = (cursor?.self as? String)?.toIntOrNull() ?: 1
+
+            load { cursor ->
+                val page = (cursor?.self)?.toIntOrNull() ?: 1
                 val result = remoteDataSource.getFollowers(userId, page)
                 val data = result.getOrThrow()
 
@@ -62,21 +60,20 @@ class FollowersRepositoryImpl @Inject constructor(
                     )
                 )
             }
-        ).also {
+            initialCursor = CursorBookmark(prev = null, self = "1", next = null)
+        }.also {
             activePaginators.add(WeakReference(it))
         }
     }
 
-    override fun getFollowingPaginator(userId: String): MutableCursorPaginator<FollowerUserDto> {
+    override fun getFollowingPaginator(userId: String): MutableCursorPaginator<String, FollowerUserDto> {
         val cacheKey = "following_$userId"
-        val pagingCore = CursorPagingCore<FollowerUserDto>(
-            cache = CursorMostRecentPagingCache(maxSize = 20),
+        return mutableCursorPaginator(capacity = 20) {
+            cache = CursorMostRecentPagingCache(maxSize = 20)
             persistentCache = FollowerPagingCache(cacheKey, localDataSource)
-        )
-        return MutableCursorPaginator(
-            core = pagingCore,
-            load = { cursor ->
-                val page = (cursor?.self as? String)?.toIntOrNull() ?: 1
+
+            load { cursor ->
+                val page = (cursor?.self)?.toIntOrNull() ?: 1
                 val result = remoteDataSource.getFollowing(userId, page)
                 val data = result.getOrThrow()
 
@@ -89,7 +86,8 @@ class FollowersRepositoryImpl @Inject constructor(
                     )
                 )
             }
-        ).also {
+            initialCursor = CursorBookmark(prev = null, self = "1", next = null)
+        }.also {
             activePaginators.add(WeakReference(it))
         }
     }

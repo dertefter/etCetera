@@ -53,7 +53,10 @@ dependencies {
     implementation(libs.jsoup)
     implementation(libs.okhttp.java.net.cookiejar)
     implementation(libs.paging.runtime)
-    implementation(platform(libs.jamal.wia.paginator.bom))
-    implementation(libs.jamal.wia.paginator)
+
     implementation(libs.kotlinx.serialization.json)
+
+    implementation(platform(libs.jamal.wia.paginator.bom))
+    implementation(libs.paginator.offset)
+    implementation(libs.paginator.cursor)
 }

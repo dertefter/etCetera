@@ -33,12 +33,12 @@ import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.theme.spacing
 import com.dertefter.notifications.R
 import com.dertefter.notifications.presentation.component.NotificationCard
-import com.jamal_aliev.paginator.MutableCursorPaginator
-import com.jamal_aliev.paginator.compose.paginated
-import com.jamal_aliev.paginator.compose.rememberPaginated
-import com.jamal_aliev.paginator.extension.isErrorState
-import com.jamal_aliev.paginator.extension.isProgressState
-import com.jamal_aliev.paginator.page.PaginatorUiState
+import com.jamal_aliev.paginator.core.extension.isErrorState
+import com.jamal_aliev.paginator.core.extension.isProgressState
+import com.jamal_aliev.paginator.core.page.PaginatorUiState
+import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
+import com.jamal_aliev.paginator.compose.cursor.paginated
+import com.jamal_aliev.paginator.compose.cursor.rememberPaginated
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,7 +46,7 @@ fun NotificationsFeed(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
     scrollBehavior: TopAppBarScrollBehavior? = null,
-    paginator: MutableCursorPaginator<NotificationDto>,
+    paginator: MutableCursorPaginator<String, NotificationDto>,
     uiState: PaginatorUiState<NotificationDto>,
     onEvent: (Event) -> Unit,
 ) {
@@ -54,7 +54,7 @@ fun NotificationsFeed(
     val paged = paginator.rememberPaginated(state = listState)
     val pullToRefreshState = rememberPullToRefreshState()
     val isRefreshing =
-        (uiState is PaginatorUiState.Content) && (uiState.prependState.isProgressState())
+        (uiState is PaginatorUiState.Content<*>) && (uiState.prependState.isProgressState())
 
     PullToRefreshBox(
         modifier = modifier.fillMaxSize(),
@@ -105,7 +105,7 @@ fun NotificationsFeed(
                             .fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(stringResource(R.string.notifications_load_error, state.exception.message ?: ""))
+                        Text(stringResource(R.string.notifications_load_error, state.state.exception.message ?: ""))
                     }
                 }
 

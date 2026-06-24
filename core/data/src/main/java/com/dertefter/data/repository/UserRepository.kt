@@ -5,7 +5,7 @@ import com.dertefter.data.dto.feed.like.LikeResponseDto
 import com.dertefter.data.dto.feed.stats.PostStatsDto
 import com.dertefter.data.dto.user.FollowResponseDto
 import com.dertefter.data.dto.user.UserDto
-import com.jamal_aliev.paginator.MutableCursorPaginator
+import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
 import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
@@ -14,9 +14,9 @@ interface UserRepository {
 
     suspend fun updateUser(userId: String): Result<UserDto>
 
-    fun getPostsPaginator(userId: String, sort: String = "new", pinnedPostId: String?): MutableCursorPaginator<PostDto>
+    fun getPostsPaginator(userId: String, sort: String = "new", pinnedPostId: String?): MutableCursorPaginator<String, PostDto>
 
-    fun getLikedPostsPaginator(userId: String): MutableCursorPaginator<PostDto>
+    fun getLikedPostsPaginator(userId: String): MutableCursorPaginator<String, PostDto>
 
     suspend fun updatePostStats(ids: List<String>): Result<List<PostStatsDto>>
 

@@ -27,15 +27,15 @@ import com.dertefter.design.components.buttons.AppNavigationIcon
 import com.dertefter.design.theme.rounding
 import com.dertefter.design.theme.spacing
 import com.dertefter.notifications.R
-import com.jamal_aliev.paginator.MutableCursorPaginator
-import com.jamal_aliev.paginator.page.PaginatorUiState
+import com.jamal_aliev.paginator.core.page.PaginatorUiState
+import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun NotificationsScreen(
     onEvent: (Event) -> Unit,
     uiState: PaginatorUiState<NotificationDto>,
-    paginator: MutableCursorPaginator<NotificationDto>,
+    paginator: MutableCursorPaginator<String, NotificationDto>,
     selectedFilter: String? = null,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()

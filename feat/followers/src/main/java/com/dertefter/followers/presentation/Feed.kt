@@ -21,7 +21,6 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -32,18 +31,17 @@ import com.dertefter.design.components.PullToRefreshIndicator
 import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.followers.R
 import com.dertefter.followers.presentation.component.FollowerUserCard
-import com.jamal_aliev.paginator.MutableCursorPaginator
-import com.jamal_aliev.paginator.compose.paginated
-import com.jamal_aliev.paginator.compose.rememberPaginated
-import com.jamal_aliev.paginator.extension.isErrorState
-import com.jamal_aliev.paginator.extension.isProgressState
-import com.jamal_aliev.paginator.page.PaginatorUiState
-import kotlinx.coroutines.delay
+import com.jamal_aliev.paginator.core.extension.isErrorState
+import com.jamal_aliev.paginator.core.extension.isProgressState
+import com.jamal_aliev.paginator.core.page.PaginatorUiState
+import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
+import com.jamal_aliev.paginator.compose.cursor.paginated
+import com.jamal_aliev.paginator.compose.cursor.rememberPaginated
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Feed(
-    paginator: MutableCursorPaginator<FollowerUserDto>,
+    paginator: MutableCursorPaginator<String, FollowerUserDto>,
     selectedTab: Tab,
     onEvent: (Event) -> Unit,
     uiState: PaginatorUiState<FollowerUserDto>,
@@ -111,7 +109,7 @@ fun Feed(
                     Box(Modifier
                         .padding(contentPadding)
                         .fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text("Ошибка загрузки: ${state.exception.message}")
+                        Text("Ошибка загрузки: ${state.state.exception.message}")
                     }
                 }
 
@@ -129,7 +127,7 @@ fun Feed(
                         paginated(paged) {
                             itemsIndexed(
                                 state.items,
-                                key = { _, user -> user.id }) { index, followerUser ->
+                                key = { _, user -> user.id }) { _, followerUser ->
                                 FollowerUserCard(
                                     followerUser = followerUser,
                                     onClick = { onEvent(Event.OnOpenUser(followerUser.id)) },

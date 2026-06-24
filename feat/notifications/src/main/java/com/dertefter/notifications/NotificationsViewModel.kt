@@ -4,15 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dertefter.data.dto.notifications.NotificationDto
 import com.dertefter.data.repository.NotificationsRepository
-import com.dertefter.notifications.presentation.Event
 import com.dertefter.navigation.Navigator
 import com.dertefter.navigation.Routes
-import com.jamal_aliev.paginator.MutableCursorPaginator
-import com.jamal_aliev.paginator.extension.distinctBy
-import com.jamal_aliev.paginator.extension.prefetchController
-import com.jamal_aliev.paginator.extension.uiState
-import com.jamal_aliev.paginator.extension.warmUpFromPersistent
-import com.jamal_aliev.paginator.page.PaginatorUiState
+import com.dertefter.notifications.presentation.Event
+import com.jamal_aliev.paginator.core.page.PaginatorUiState
+import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
+import com.jamal_aliev.paginator.cursor.extension.distinctBy
+import com.jamal_aliev.paginator.cursor.extension.prefetchController
+import com.jamal_aliev.paginator.cursor.extension.uiState
+import com.jamal_aliev.paginator.cursor.extension.warmUpFromPersistent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,8 +33,8 @@ class NotificationsViewModel @Inject constructor(
     private val _selectedFilter = MutableStateFlow<String?>(null)
     val selectedFilter = _selectedFilter.asStateFlow()
 
-    private var _paginator: MutableCursorPaginator<NotificationDto>? = null
-    val paginator: MutableCursorPaginator<NotificationDto>
+    private var _paginator: MutableCursorPaginator<String, NotificationDto>? = null
+    val paginator: MutableCursorPaginator<String, NotificationDto>
         get() = _paginator ?: notificationsRepository.getNotificationsPaginator().also {
             _paginator = it
             setupPaginator(it)
@@ -53,7 +53,7 @@ class NotificationsViewModel @Inject constructor(
         initialValue = PaginatorUiState.Idle
     )
 
-    private fun setupPaginator(paginator: MutableCursorPaginator<NotificationDto>) {
+    private fun setupPaginator(paginator: MutableCursorPaginator<String, NotificationDto>) {
         viewModelScope.launch {
             paginator.distinctBy { it.id }
             paginator.prefetchController(
@@ -89,7 +89,5 @@ class NotificationsViewModel @Inject constructor(
 
     override fun onCleared() {
         _paginator?.release()
-        super.onCleared()
     }
-
 }

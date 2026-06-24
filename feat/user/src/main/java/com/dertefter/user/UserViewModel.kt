@@ -7,21 +7,20 @@ import com.dertefter.data.common.AppError
 import com.dertefter.data.common.toAppError
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.dto.me.UpdateMeRequestDto
+import com.dertefter.data.repository.FeedRepository
 import com.dertefter.data.repository.MeRepository
 import com.dertefter.data.repository.UserRepository
 import com.dertefter.navigation.Navigator
 import com.dertefter.navigation.Routes
-import com.dertefter.navigation.Routes.Comments
 import com.dertefter.user.presentation.Event
 import com.dertefter.user.presentation.FeedTab
 import com.dertefter.user.presentation.UiState
 import com.dertefter.user.presentation.mapper.toNavigationModel
-import com.jamal_aliev.paginator.MutableCursorPaginator
-import com.jamal_aliev.paginator.extension.distinctBy
-import com.jamal_aliev.paginator.extension.prefetchController
-import com.jamal_aliev.paginator.extension.uiState
-import com.jamal_aliev.paginator.extension.warmUpFromPersistent
-import com.jamal_aliev.paginator.page.PaginatorUiState
+import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
+import com.jamal_aliev.paginator.cursor.extension.distinctBy
+import com.jamal_aliev.paginator.cursor.extension.prefetchController
+import com.jamal_aliev.paginator.cursor.extension.uiState
+import com.jamal_aliev.paginator.cursor.extension.warmUpFromPersistent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -44,6 +43,7 @@ import javax.inject.Inject
 class UserViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val meRepository: MeRepository,
+    private val feedRepository: FeedRepository,
     private val navigator: Navigator
 ) : ViewModel() {
 
@@ -62,13 +62,13 @@ class UserViewModel @Inject constructor(
 
     val tabs = FeedTab.entries
 
-    private val _paginators = MutableStateFlow<Map<FeedTab, MutableCursorPaginator<PostDto>>>(emptyMap())
-    val paginators: StateFlow<Map<FeedTab, MutableCursorPaginator<PostDto>>> = _paginators.asStateFlow()
+    private val _paginators = MutableStateFlow<Map<FeedTab, MutableCursorPaginator<String, PostDto>>>(emptyMap())
+    val paginators: StateFlow<Map<FeedTab, MutableCursorPaginator<String, PostDto>>> = _paginators.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _uiStates = _paginators.flatMapLatest { paginatorsMap ->
         if (paginatorsMap.isEmpty()) {
-            flowOf(emptyMap<FeedTab, PaginatorUiState<PostDto>>())
+            flowOf(emptyMap())
         } else {
             combine(paginatorsMap.map { (tab, paginator) ->
                 paginator.uiState.map { tab to it }
@@ -165,7 +165,7 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    private fun setupPaginator(paginator: MutableCursorPaginator<PostDto>) {
+    private fun setupPaginator(paginator: MutableCursorPaginator<String, PostDto>) {
         viewModelScope.launch {
             paginator.distinctBy { it.id }
             paginator.prefetchController(
@@ -236,7 +236,7 @@ class UserViewModel @Inject constructor(
             }
 
             is Event.OnNavigateToComments -> {
-                navigator.openAsBottomSheet(Comments(event.postId))
+                navigator.openAsBottomSheet(Routes.Comments(event.postId))
             }
 
             is Event.OnShare -> {
@@ -297,6 +297,11 @@ class UserViewModel @Inject constructor(
                 )
             }
 
+            is Event.OnVote -> {
+                viewModelScope.launch {
+                    feedRepository.votePoll(event.postId, event.optionIds)
+                }
+            }
         }
     }
 
@@ -330,6 +335,5 @@ class UserViewModel @Inject constructor(
 
     override fun onCleared() {
         _paginators.value.values.forEach { it.release() }
-        super.onCleared()
     }
 }

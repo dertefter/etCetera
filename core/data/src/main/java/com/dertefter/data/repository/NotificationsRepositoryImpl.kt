@@ -2,11 +2,11 @@ package com.dertefter.data.repository
 
 import com.dertefter.data.datasource.remote.RemoteDataSource
 import com.dertefter.data.dto.notifications.NotificationDto
-import com.jamal_aliev.paginator.CursorPagingCore
-import com.jamal_aliev.paginator.MutableCursorPaginator
-import com.jamal_aliev.paginator.bookmark.CursorBookmark
-import com.jamal_aliev.paginator.cache.eviction.CursorMostRecentPagingCache
-import com.jamal_aliev.paginator.load.CursorLoadResult
+import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
+import com.jamal_aliev.paginator.cursor.bookmark.CursorBookmark
+import com.jamal_aliev.paginator.cursor.cache.eviction.CursorMostRecentPagingCache
+import com.jamal_aliev.paginator.cursor.dsl.mutableCursorPaginator
+import com.jamal_aliev.paginator.cursor.load.CursorLoadResult
 import java.lang.ref.WeakReference
 import java.util.concurrent.CopyOnWriteArrayList
 import javax.inject.Inject
@@ -17,19 +17,16 @@ class NotificationsRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource
 ) : NotificationsRepository {
 
-    private val activePaginators = CopyOnWriteArrayList<WeakReference<MutableCursorPaginator<NotificationDto>>>()
+    private val activePaginators = CopyOnWriteArrayList<WeakReference<MutableCursorPaginator<String, NotificationDto>>>()
 
-    override fun getNotificationsPaginator(type: String?): MutableCursorPaginator<NotificationDto> {
-        val pagingCore = CursorPagingCore<NotificationDto>(
+    override fun getNotificationsPaginator(type: String?): MutableCursorPaginator<String, NotificationDto> {
+        return mutableCursorPaginator<String, NotificationDto>(capacity = 20) {
             cache = CursorMostRecentPagingCache(maxSize = 50)
-        )
-        return MutableCursorPaginator(
-            core = pagingCore,
-            load = { cursor ->
-                val startOffset = (cursor?.self as? String)?.toIntOrNull() ?: 0
+            load { cursor ->
+                val startOffset = cursor?.self?.toIntOrNull() ?: 0
                 var currentOffset = startOffset
                 val accumulatedNotifications = mutableListOf<NotificationDto>()
-                var nextOffset: String? = null
+                var nextOffset: String?
 
                 while (true) {
                     val result = remoteDataSource.getNotifications(currentOffset)
@@ -60,7 +57,8 @@ class NotificationsRepositoryImpl @Inject constructor(
                     )
                 )
             }
-        ).also {
+            initialCursor = CursorBookmark(prev = null, self = "0", next = null)
+        }.also {
             activePaginators.add(WeakReference(it))
         }
     }

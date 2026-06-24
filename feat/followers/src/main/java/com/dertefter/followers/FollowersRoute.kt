@@ -7,7 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.dertefter.followers.presentation.Event
 import com.dertefter.followers.presentation.FollowersScreen
-import com.jamal_aliev.paginator.page.PaginatorUiState
+import com.jamal_aliev.paginator.core.page.PaginatorUiState
 
 @Composable
 fun FollowersRoute(

@@ -10,17 +10,16 @@ import com.dertefter.navigation.Routes.Comments
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.hashtag_feed.presentation.Event
 import com.dertefter.hashtag_feed.presentation.mapper.toNavigationModel
-import com.jamal_aliev.paginator.MutableCursorPaginator
-import com.jamal_aliev.paginator.extension.distinctBy
-import com.jamal_aliev.paginator.extension.prefetchController
-import com.jamal_aliev.paginator.extension.uiState
-import com.jamal_aliev.paginator.page.PaginatorUiState
+import com.jamal_aliev.paginator.core.page.PaginatorUiState
+import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
+import com.jamal_aliev.paginator.cursor.extension.distinctBy
+import com.jamal_aliev.paginator.cursor.extension.prefetchController
+import com.jamal_aliev.paginator.cursor.extension.uiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
@@ -36,7 +35,7 @@ class HashtagFeedViewModel @Inject constructor(
 
     private val _hashtagName = MutableStateFlow<String?>(null)
 
-    private var paginator: MutableCursorPaginator<PostDto>? = null
+    private var paginator: MutableCursorPaginator<String, PostDto>? = null
 
     val uiState: StateFlow<PaginatorUiState<PostDto>> = _hashtagName
         .filterNotNull()
@@ -56,7 +55,7 @@ class HashtagFeedViewModel @Inject constructor(
         _hashtagName.value = hashtagName
     }
 
-    private fun setupPaginator(paginator: MutableCursorPaginator<PostDto>) {
+    private fun setupPaginator(paginator: MutableCursorPaginator<String, PostDto>) {
         viewModelScope.launch {
             paginator.distinctBy { it.id }
             paginator.prefetchController(
@@ -137,6 +136,5 @@ class HashtagFeedViewModel @Inject constructor(
 
     override fun onCleared() {
         paginator?.release()
-        super.onCleared()
     }
 }

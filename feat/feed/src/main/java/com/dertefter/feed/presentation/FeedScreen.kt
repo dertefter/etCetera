@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -45,7 +44,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.Wallpapers
@@ -60,12 +58,12 @@ import com.dertefter.design.theme.rounding
 import com.dertefter.design.theme.spacing
 import com.dertefter.feed.R
 import com.dertefter.feed.presentation.component.FeedAppBar
-import com.jamal_aliev.paginator.MutableCursorPaginator
-import com.jamal_aliev.paginator.bookmark.CursorBookmark
-import com.jamal_aliev.paginator.dsl.mutableCursorPaginator
-import com.jamal_aliev.paginator.extension.isProgressState
-import com.jamal_aliev.paginator.load.CursorLoadResult
-import com.jamal_aliev.paginator.page.PaginatorUiState
+import com.jamal_aliev.paginator.core.extension.isProgressState
+import com.jamal_aliev.paginator.core.page.PaginatorUiState
+import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
+import com.jamal_aliev.paginator.cursor.bookmark.CursorBookmark
+import com.jamal_aliev.paginator.cursor.dsl.mutableCursorPaginator
+import com.jamal_aliev.paginator.cursor.load.CursorLoadResult
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class, ExperimentalFoundationApi::class)
@@ -74,7 +72,7 @@ fun FeedScreen(
     onEvent: (Event) -> Unit,
     selectedTab: FeedTab,
     uiStates: Map<FeedTab, PaginatorUiState<PostDto>>,
-    paginators: Map<FeedTab, MutableCursorPaginator<PostDto>>,
+    paginators: Map<FeedTab, MutableCursorPaginator<String, PostDto>>,
     topAppBarState: TopBarUiState
 ) {
     val tabs = FeedTab.entries
@@ -84,9 +82,9 @@ fun FeedScreen(
     val clanListState = rememberLazyListState()
     val followingListState = rememberLazyListState()
 
-    val popularScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(popularListState)
-    val clanScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(clanListState)
-    val followingScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(followingListState)
+    val popularScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val clanScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val followingScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     val scrollBehaviors = mapOf(
         FeedTab.POPULAR to popularScrollBehavior,
