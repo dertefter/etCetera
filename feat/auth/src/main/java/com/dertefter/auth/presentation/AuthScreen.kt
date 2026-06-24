@@ -14,12 +14,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.LoadingIndicator
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberBottomSheetState
 import androidx.compose.runtime.Composable
@@ -27,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -35,8 +37,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dertefter.auth.R
-import com.dertefter.design.components.appbar.AppToolbar
-import com.dertefter.design.components.buttons.AppNavigationIcon
+import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.components.text_fields.TextFieldItem
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
@@ -50,6 +51,7 @@ fun AuthScreen(onEvent: (Event) -> Unit, uiState: UiState) {
 
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val sheetState = rememberBottomSheetState(initialValue = SheetValue.Hidden)
+    val uriHandler = LocalUriHandler.current
 
     if (uiState.isTurnstileVisible) {
         ModalBottomSheet(
@@ -69,20 +71,15 @@ fun AuthScreen(onEvent: (Event) -> Unit, uiState: UiState) {
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar = {
-            AppToolbar(
-                scrollBehavior = scrollBehavior,
-                navigationIcon = {
-                    AppNavigationIcon(
-                        icon = Icons.ArrowBack,
-                        onClick = {
-                            onEvent(Event.OnNavigateBack)
-                        }
-                    )
-                },
-                title = stringResource(R.string.auth_login_title)
-            )
-        }
+        floatingActionButton = {
+            //TextButton(
+            //    onClick = { uriHandler.openUri("https://итд.com/register") },
+            //    modifier = Modifier.padding(vertical = MaterialTheme.spacing.extraLarge)
+            //) {
+            //    Text("Нет аккаунта? Создайте его на сайте ИТД!")
+           // }
+        },
+        floatingActionButtonPosition = FabPosition.Center
     )
     { contentPadding ->
         LazyColumn(
@@ -97,10 +94,30 @@ fun AuthScreen(onEvent: (Event) -> Unit, uiState: UiState) {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
                     modifier = Modifier
-                        .padding(top = LocalWindowInfo.current.containerDpSize.height / 6)
+                        .padding(top = LocalWindowInfo.current.containerDpSize.height / 5)
                         .widthIn(max = 400.dp)
                         .fillMaxWidth()
                 ) {
+
+                    Text(
+                        text = "Авторизация",
+                        style = MaterialTheme.typography.headlineMediumEmphasized,
+                        modifier = Modifier
+                            .padding(
+                            horizontal = MaterialTheme.spacing.large,
+                        )
+                    )
+
+                    Text(
+                        text = "Войдите в аккаунт ИТД",
+                        style = MaterialTheme.typography.labelLarge,
+                        modifier = Modifier
+                            .padding(
+                            horizontal = MaterialTheme.spacing.large
+                            )
+                            .padding(bottom = MaterialTheme.spacing.large)
+                    )
+
 
                     Column(
                         modifier = Modifier
@@ -129,23 +146,47 @@ fun AuthScreen(onEvent: (Event) -> Unit, uiState: UiState) {
                         )
                     }
 
+                    TextButton(
+                        onClick = { uriHandler.openUri("https://итд.com/forgot-password") },
+                        modifier = Modifier
+                            .align(Alignment.End),
+                    ) {
+                        Text("Забыли пароль?")
+                    }
+
 
                 }
             }
 
             item {
-                AnimatedVisibility(uiState.isError) {
-                    Text(
-                        color = MaterialTheme.colorScheme.error,
-                        text = stringResource(R.string.auth_error_login_failed),
-                        style = MaterialTheme.typography.labelLargeEmphasized,
-                        modifier = Modifier
-                            .padding(
-                                horizontal = MaterialTheme.rounding.large,
-                                vertical = MaterialTheme.spacing.small
+                AnimatedVisibility(uiState.error != null) {
+                    Column() {
+                        Text(
+                            color = MaterialTheme.colorScheme.error,
+                            text = stringResource(R.string.auth_error_login_failed),
+                            style = MaterialTheme.typography.labelLargeEmphasized,
+                            modifier = Modifier
+                                .padding(
+                                    horizontal = MaterialTheme.rounding.large,
+                                    vertical = MaterialTheme.spacing.small
+                                )
+                                .fillMaxWidth()
+                        )
+                        uiState.error?.message?.let{ message ->
+                            Text(
+                                color = MaterialTheme.colorScheme.error,
+                                text = message,
+                                style = MaterialTheme.typography.labelLargeEmphasized,
+                                modifier = Modifier
+                                    .padding(
+                                        horizontal = MaterialTheme.rounding.large,
+                                        vertical = MaterialTheme.spacing.small
+                                    )
+                                    .fillMaxWidth()
                             )
-                            .fillMaxWidth()
-                    )
+                        }
+                    }
+
                 }
             }
 
@@ -163,7 +204,7 @@ fun AuthScreen(onEvent: (Event) -> Unit, uiState: UiState) {
                         label = ""
                     ) { isLoading ->
                         if (isLoading) {
-                            LoadingIndicator(
+                            AppLoadingIndicator(
                                 modifier = Modifier.size(40.dp),
                                 color = MaterialTheme.colorScheme.onPrimary
                             )
@@ -187,7 +228,7 @@ fun AuthScreen(onEvent: (Event) -> Unit, uiState: UiState) {
 }
 
 
-@Preview(showBackground = true, widthDp = 500)
+@Preview(showBackground = true)
 @Composable
 fun AuthScreenPreview2() {
     AppTheme {

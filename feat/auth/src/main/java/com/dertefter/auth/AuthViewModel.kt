@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.dertefter.auth.presentation.Event
 import com.dertefter.auth.presentation.UiState
 import com.dertefter.auth.usecase.SignInUseCase
+import com.dertefter.data.common.AppError
+import com.dertefter.data.common.toAppError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -26,7 +28,7 @@ class AuthViewModel @Inject constructor(
 
     private val _isLoading = MutableStateFlow(false)
 
-    private val _isError = MutableStateFlow(false)
+    private val _error = MutableStateFlow<AppError?>(null)
     private val _isTurnstileVisible = MutableStateFlow(false)
 
 
@@ -35,14 +37,14 @@ class AuthViewModel @Inject constructor(
         _password,
         _isPasswordVisible,
         _isLoading,
-        _isError
-    ) { login, password, isPasswordVisible, isLoading, isError ->
+        _error
+    ) { login, password, isPasswordVisible, isLoading, error ->
         UiState(
             login = login,
             password = password,
             isPasswordVisible = isPasswordVisible,
             isLoading = isLoading,
-            isError = isError,
+            error = error,
         )
     }.combine(_isTurnstileVisible) { uiState, isTurnstileVisible ->
         uiState.copy(isTurnstileVisible = isTurnstileVisible)
@@ -95,7 +97,7 @@ class AuthViewModel @Inject constructor(
             val login = _login.value
             val password = _password.value
             _isLoading.value = true
-            _isError.value = false
+            _error.value = null
 
             signInUseCase(
                 login, password,
@@ -104,7 +106,8 @@ class AuthViewModel @Inject constructor(
                 Log.d("AUth", "OK")
             }.onFailure {
                 Log.e("AUth", it.stackTraceToString())
-                _isError.value = true
+                _error.value = it.toAppError()
+                Log.e("AUth", _error.value?.message.toString())
             }
             _isLoading.value = false
         }

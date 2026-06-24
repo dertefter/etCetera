@@ -41,7 +41,7 @@ class RemoteDataSourceImpl @Inject constructor(
             if (response.isSuccessful) {
                 Unit
             } else {
-                throw Exception("Sign in failed: ${response.code()}")
+                throw Exception("Sign in failed: ${response.errorBody()?.string()}")
             }
         }
     }
