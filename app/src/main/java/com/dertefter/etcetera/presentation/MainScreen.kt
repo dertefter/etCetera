@@ -156,9 +156,12 @@ fun MainScreen(
                     .then(
                         if (!isAttachmentViewer) {
                             Modifier.verticalFadingEdges(
-                                fillType = FadingEdgesFillType.FadeColor(color = MaterialTheme.colorScheme.background),
+                                fillType = FadingEdgesFillType.FadeColor(
+                                    color = MaterialTheme.colorScheme.background
+
+                                ),
                                 gravity = FadingEdgesGravity.End,
-                                length = navigationBarHeight + (navigationBarHeight * 0.5f)
+                                length = navigationBarHeight + 12.dp
                             )
                         } else Modifier
                     )
