@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -144,6 +145,24 @@ fun UserScreen(
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
+    val isScrolled by remember {
+        derivedStateOf {
+            lazyListState.firstVisibleItemIndex > 0 || lazyListState.firstVisibleItemScrollOffset > 0
+        }
+    }
+
+    val appBarTitleAlpha by animateFloatAsState(
+        targetValue = if (isScrolled) 1f else 0f,
+        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+        label = "appBarTitleAlpha"
+    )
+
+    val appBarContainerColor by animateColorAsState(
+        targetValue = if (isScrolled) MaterialTheme.colorScheme.surfaceContainer else MaterialTheme.colorScheme.surface,
+        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+        label = "appBarContainerColor"
+    )
+
     val currentTabUiState = uiState.uiStates[uiState.selectedTab]
     val isRefreshing = uiState.isLoading || (currentTabUiState is PaginatorUiState.Content && currentTabUiState.prependState.isProgressState())
     val pullToRefreshState = rememberPullToRefreshState()
@@ -162,163 +181,169 @@ fun UserScreen(
         }
     }
 
-    Scaffold(
+    PullToRefreshBox(
         modifier = Modifier
             .fillMaxSize(),
-        topBar = {
-            TopAppBar(
-                scrollBehavior = scrollBehavior,
-                navigationIcon = {
-                    AppNavigationIcon(
-                        icon = Icons.ArrowBack,
-                        onClick = { onEvent(Event.OnNavigateBack) },
-                        contentDescription = stringResource(DesignR.string.design_back_content_desc)
-                    )
+        state = pullToRefreshState,
+        isRefreshing = isRefreshing,
+        enabled = true,
+        onRefresh = {
+            onEvent(Event.OnRefresh(uiState.selectedTab))
+        },
+        indicator = {
+            PullToRefreshIndicator(
+                modifier = Modifier.align(Alignment.TopCenter),
+                state = pullToRefreshState,
+                isRefreshing = isRefreshing,
+            )
+        }
+    ) {
+        Scaffold(
+            modifier = Modifier
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
+                .fillMaxSize(),
+            topBar = {
+                TopAppBar(
+                    scrollBehavior = scrollBehavior,
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = appBarContainerColor,
+                        scrolledContainerColor = appBarContainerColor
+                    ),
+                    navigationIcon = {
+                        AppNavigationIcon(
+                            icon = Icons.ArrowBack,
+                            onClick = { onEvent(Event.OnNavigateBack) },
+                            contentDescription = stringResource(DesignR.string.design_back_content_desc)
+                        )
 
-                },
-                title = {
-                    uiState.userDto?.let {
-                        Row(
-                            modifier = Modifier
-                                .graphicsLayer(
-                                    alpha = scrollBehavior.state.overlappedFraction
-                                ),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
-                        ) {
-                            SmallEmojiAvatar(
-                                emoji = it.avatar,
-                                containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                                containerSize = 40.dp
-                            )
-                            Text(
-                                text = it.displayName,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
+                    },
+                    title = {
+                        uiState.userDto?.let {
+                            Row(
+                                modifier = Modifier
+                                    .graphicsLayer(
+                                        alpha = appBarTitleAlpha
+                                    ),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+                            ) {
+                                SmallEmojiAvatar(
+                                    emoji = it.avatar,
+                                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                                    containerSize = 40.dp
+                                )
+                                Text(
+                                    text = it.displayName,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+                            }
+                        }
+                    },
+                    actions = {
+                        AppNavigationIcon(
+                            icon = Icons.Share,
+                            onClick = {
+                                uiState.userDto?.let { user ->
+                                    val sendIntent: Intent = Intent().apply {
+                                        action = Intent.ACTION_SEND
+                                        putExtra(Intent.EXTRA_TEXT, "https://итд.com/@${user.username}")
+                                        type = "text/plain"
+                                    }
+                                    val shareIntent = Intent.createChooser(sendIntent, null)
+                                    context.startActivity(shareIntent)
+                                }
+                            },
+                            contentDescription = stringResource(R.string.user_share)
+                        )
+                        if (uiState.isMe){
+                            AppNavigationIcon(
+                                icon = Icons.Settings,
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                                onClick = {},
+                                contentDescription = stringResource(R.string.user_settings)
                             )
                         }
                     }
-                },
-                actions = {
-                    AppNavigationIcon(
-                        icon = Icons.Share,
-                        onClick = {
-                            uiState.userDto?.let { user ->
-                                val sendIntent: Intent = Intent().apply {
-                                    action = Intent.ACTION_SEND
-                                    putExtra(Intent.EXTRA_TEXT, "https://итд.com/@${user.username}")
-                                    type = "text/plain"
-                                }
-                                val shareIntent = Intent.createChooser(sendIntent, null)
-                                context.startActivity(shareIntent)
-                            }
-                        },
-                        contentDescription = stringResource(R.string.user_share)
-                    )
-                    if (uiState.isMe){
-                        AppNavigationIcon(
-                            icon = Icons.Settings,
-                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                            onClick = {},
-                            contentDescription = stringResource(R.string.user_settings)
-                        )
-                    }
-                }
-            )
-        },
-        floatingActionButton = {
-            Column(
-                horizontalAlignment = Alignment.End,
-            ) {
-
-                AnimatedVisibility(
-                    visible = isNewPostButtonShow,
-                    enter = fadeIn(
-                        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
-                    ) + scaleIn(
-                        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
-                    ) + expandVertically(
-                        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
-                    ),
-                    exit = fadeOut(
-                        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
-                    ) + scaleOut(
-                        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
-                    ) + shrinkVertically(
-                        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
-                    )
-                ) {
-                    SmallFloatingActionButton(
-                        modifier = Modifier.size(addFabSize),
-                        shape = MaterialTheme.cornerShape(addFabCornerRadius),
-                        onClick = {
-                            onEvent(Event.OnOpenNewPost)
-                        },
-                    ) {
-                        Icon(Icons.Add, stringResource(R.string.user_create_post))
-                    }
-                }
-
-
-                AnimatedVisibility(
-                    visible = isUpFabVisible,
-                    enter = fadeIn(
-                        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
-                    ) + scaleIn(
-                        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
-                    ) + expandVertically(
-                        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
-                    ),
-                    exit = fadeOut(
-                        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
-                    ) + scaleOut(
-                        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
-                    ) + shrinkVertically(
-                        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
-                    )
-                ) {
-                    SmallFloatingActionButton(
-                        modifier = Modifier
-                            .padding(top = MaterialTheme.spacing.large)
-                            .size(64.dp),
-                        shape = MaterialTheme.cornerShape(MaterialTheme.rounding.largeIncreased),
-                        onClick = {
-                            scope.launch {
-                                lazyListState.animateScrollToItem(0)
-                                scrollBehavior.state.contentOffset = 0f
-                            }
-                        },
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                        contentColor = MaterialTheme.colorScheme.secondary
-                    ) {
-                        Icon(Icons.ArrowWarmUp, stringResource(R.string.user_scroll_to_top))
-                    }
-                }
-            }
-        }
-    ) { contentPadding ->
-        PullToRefreshBox(
-            modifier = Modifier
-                .fillMaxSize(),
-            state = pullToRefreshState,
-            isRefreshing = isRefreshing,
-            onRefresh = {
-                onEvent(Event.OnRefresh(uiState.selectedTab))
-            },
-            indicator = {
-                PullToRefreshIndicator(
-                    modifier = Modifier.align(Alignment.TopCenter),
-                    state = pullToRefreshState,
-                    isRefreshing = isRefreshing
                 )
+            },
+            floatingActionButton = {
+                Column(
+                    horizontalAlignment = Alignment.End,
+                ) {
+
+                    AnimatedVisibility(
+                        visible = isNewPostButtonShow,
+                        enter = fadeIn(
+                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
+                        ) + scaleIn(
+                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
+                        ) + expandVertically(
+                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
+                        ),
+                        exit = fadeOut(
+                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
+                        ) + scaleOut(
+                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
+                        ) + shrinkVertically(
+                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
+                        )
+                    ) {
+                        SmallFloatingActionButton(
+                            modifier = Modifier.size(addFabSize),
+                            shape = MaterialTheme.cornerShape(addFabCornerRadius),
+                            onClick = {
+                                onEvent(Event.OnOpenNewPost)
+                            },
+                        ) {
+                            Icon(Icons.Add, stringResource(R.string.user_create_post))
+                        }
+                    }
+
+
+                    AnimatedVisibility(
+                        visible = isUpFabVisible,
+                        enter = fadeIn(
+                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
+                        ) + scaleIn(
+                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
+                        ) + expandVertically(
+                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
+                        ),
+                        exit = fadeOut(
+                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
+                        ) + scaleOut(
+                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
+                        ) + shrinkVertically(
+                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
+                        )
+                    ) {
+                        SmallFloatingActionButton(
+                            modifier = Modifier
+                                .padding(top = MaterialTheme.spacing.large)
+                                .size(64.dp),
+                            shape = MaterialTheme.cornerShape(MaterialTheme.rounding.largeIncreased),
+                            onClick = {
+                                scope.launch {
+                                    lazyListState.animateScrollToItem(0)
+                                    scrollBehavior.state.contentOffset = 0f
+                                }
+                            },
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            contentColor = MaterialTheme.colorScheme.secondary
+                        ) {
+                            Icon(Icons.ArrowWarmUp, stringResource(R.string.user_scroll_to_top))
+                        }
+                    }
+                }
             }
-        ) {
+        )
+        { contentPadding ->
             if (uiState.userDto != null) {
                 LazyColumn(
                     state = lazyListState,
                     modifier = Modifier
-                        .nestedScroll(scrollBehavior.nestedScrollConnection)
                         .fillMaxSize(),
                     contentPadding = contentPadding,
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -385,18 +410,18 @@ fun UserScreen(
 
                     if (!uiState.isMe){
                         if (uiState.userDto.isFollowing){
-                           item{
-                               FilledTonalButton(
-                                   onClick = {
-                                       onEvent(Event.OnUnfollow(uiState.userDto.id))
-                                   },
-                                   modifier = Modifier
-                                       .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
-                                       .fillMaxWidth()
-                               ) {
-                                   Text(stringResource(R.string.user_unfollow))
-                               }
-                           }
+                            item{
+                                FilledTonalButton(
+                                    onClick = {
+                                        onEvent(Event.OnUnfollow(uiState.userDto.id))
+                                    },
+                                    modifier = Modifier
+                                        .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
+                                        .fillMaxWidth()
+                                ) {
+                                    Text(stringResource(R.string.user_unfollow))
+                                }
+                            }
                         }else{
                             item{
                                 Button(
@@ -502,6 +527,8 @@ fun UserScreen(
             }
         }
     }
+
+
 
 }
 
