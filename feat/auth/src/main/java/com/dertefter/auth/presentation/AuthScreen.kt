@@ -15,8 +15,11 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FabPosition
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
@@ -26,7 +29,6 @@ import androidx.compose.material3.rememberBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.LocalWindowInfo
@@ -38,7 +40,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dertefter.auth.R
 import com.dertefter.design.components.loading.AppLoadingIndicator
-import com.dertefter.design.components.text_fields.TextFieldItem
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.circleShape
@@ -120,29 +121,35 @@ fun AuthScreen(onEvent: (Event) -> Unit, uiState: UiState) {
 
 
                     Column(
-                        modifier = Modifier
-                            .clip(MaterialTheme.shapes.large),
                         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
                     ) {
-                        TextFieldItem(
+                        OutlinedTextField(
                             value = uiState.login,
                             onValueChange = { onEvent(Event.OnLoginChanged(it)) },
-                            hint = stringResource(R.string.auth_login_hint),
+                            label = { Text(stringResource(R.string.auth_login_hint)) },
                             modifier = Modifier.fillMaxWidth(),
                             singleLine = true,
-                            enabled = !uiState.isLoading
+                            enabled = !uiState.isLoading,
+                            shape = MaterialTheme.shapes.large
                         )
 
-                        TextFieldItem(
+                        OutlinedTextField(
                             value = uiState.password,
                             onValueChange = { onEvent(Event.OnPasswordChanged(it)) },
-                            hint = stringResource(R.string.auth_password_hint),
+                            label = { Text(stringResource(R.string.auth_password_hint)) },
                             modifier = Modifier.fillMaxWidth(),
                             visualTransformation = if (uiState.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                             singleLine = true,
-                            trailingIcon = if (uiState.isPasswordVisible) Icons.VisibilityOff else Icons.Visibility,
-                            onTrailingIconClick = { onEvent(Event.OnTogglePasswordVisibility) },
-                            enabled = !uiState.isLoading
+                            trailingIcon = {
+                                IconButton(onClick = { onEvent(Event.OnTogglePasswordVisibility) }) {
+                                    Icon(
+                                        imageVector = if (uiState.isPasswordVisible) Icons.VisibilityOff else Icons.Visibility,
+                                        contentDescription = null
+                                    )
+                                }
+                            },
+                            enabled = !uiState.isLoading,
+                            shape = MaterialTheme.shapes.large
                         )
                     }
 
