@@ -1,6 +1,7 @@
 package com.dertefter.auth
 
 import android.util.Log
+import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dertefter.auth.presentation.Event
@@ -41,6 +42,7 @@ class AuthViewModel @Inject constructor(
     ) { login, password, isPasswordVisible, isLoading, error ->
         UiState(
             login = login,
+            isLoginValid = login.isEmpty() || password.isEmpty() || Patterns.EMAIL_ADDRESS.matcher(login).matches(),
             password = password,
             isPasswordVisible = isPasswordVisible,
             isLoading = isLoading,

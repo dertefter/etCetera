@@ -10,13 +10,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
@@ -31,7 +33,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -50,9 +51,10 @@ import com.dertefter.design.theme.spacing
 @Composable
 fun AuthScreen(onEvent: (Event) -> Unit, uiState: UiState) {
 
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val sheetState = rememberBottomSheetState(initialValue = SheetValue.Hidden)
     val uriHandler = LocalUriHandler.current
+
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     if (uiState.isTurnstileVisible) {
         ModalBottomSheet(
@@ -71,103 +73,78 @@ fun AuthScreen(onEvent: (Event) -> Unit, uiState: UiState) {
     }
 
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        floatingActionButton = {
-            //TextButton(
-            //    onClick = { uriHandler.openUri("https://итд.com/register") },
-            //    modifier = Modifier.padding(vertical = MaterialTheme.spacing.extraLarge)
-            //) {
-            //    Text("Нет аккаунта? Создайте его на сайте ИТД!")
-           // }
+        topBar = {
+            LargeFlexibleTopAppBar(
+                title = {
+                    Text(stringResource(R.string.auth_login_title))
+                },
+                subtitle = {
+                    Text(stringResource(R.string.auth_login_subtitle))
+                },
+                scrollBehavior = scrollBehavior
+            )
+
         },
         floatingActionButtonPosition = FabPosition.Center
     )
     { contentPadding ->
-        LazyColumn(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(contentPadding)
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
+                .verticalScroll(rememberScrollState())
                 .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
-            contentPadding = contentPadding,
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.Center,
         ) {
-            item {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
-                    modifier = Modifier
-                        .padding(top = LocalWindowInfo.current.containerDpSize.height / 5)
-                        .widthIn(max = 400.dp)
-                        .fillMaxWidth()
-                ) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
+                modifier = Modifier
+                    .padding(bottom = 140.dp)
+                    .widthIn(max = 400.dp)
+                    .fillMaxWidth()
+            ) {
 
-                    Text(
-                        text = "Авторизация",
-                        style = MaterialTheme.typography.headlineMediumEmphasized,
-                        modifier = Modifier
-                            .padding(
-                            horizontal = MaterialTheme.spacing.large,
-                        )
-                    )
+                OutlinedTextField(
+                    value = uiState.login,
+                    onValueChange = { onEvent(Event.OnLoginChanged(it)) },
+                    label = { Text(stringResource(R.string.auth_login_hint)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    enabled = !uiState.isLoading,
+                    isError = !uiState.isLoginValid,
+                    supportingText = {
+                        AnimatedVisibility(
+                            visible = !uiState.isLoginValid
+                        ) {
+                            Text(text = stringResource(R.string.auth_invalid_email))
+                        }
+                    },
+                    shape = MaterialTheme.shapes.large
+                )
 
-                    Text(
-                        text = "Войдите в аккаунт ИТД",
-                        style = MaterialTheme.typography.labelLarge,
-                        modifier = Modifier
-                            .padding(
-                            horizontal = MaterialTheme.spacing.large
+                OutlinedTextField(
+                    value = uiState.password,
+                    onValueChange = { onEvent(Event.OnPasswordChanged(it)) },
+                    label = { Text(stringResource(R.string.auth_password_hint)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    visualTransformation = if (uiState.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    singleLine = true,
+                    trailingIcon = {
+                        IconButton(onClick = { onEvent(Event.OnTogglePasswordVisibility) }) {
+                            Icon(
+                                imageVector = if (uiState.isPasswordVisible) Icons.VisibilityOff else Icons.Visibility,
+                                contentDescription = null
                             )
-                            .padding(bottom = MaterialTheme.spacing.large)
-                    )
+                        }
+                    },
+                    enabled = !uiState.isLoading,
+                    shape = MaterialTheme.shapes.large
+                )
 
-
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
-                    ) {
-                        OutlinedTextField(
-                            value = uiState.login,
-                            onValueChange = { onEvent(Event.OnLoginChanged(it)) },
-                            label = { Text(stringResource(R.string.auth_login_hint)) },
-                            modifier = Modifier.fillMaxWidth(),
-                            singleLine = true,
-                            enabled = !uiState.isLoading,
-                            shape = MaterialTheme.shapes.large
-                        )
-
-                        OutlinedTextField(
-                            value = uiState.password,
-                            onValueChange = { onEvent(Event.OnPasswordChanged(it)) },
-                            label = { Text(stringResource(R.string.auth_password_hint)) },
-                            modifier = Modifier.fillMaxWidth(),
-                            visualTransformation = if (uiState.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                            singleLine = true,
-                            trailingIcon = {
-                                IconButton(onClick = { onEvent(Event.OnTogglePasswordVisibility) }) {
-                                    Icon(
-                                        imageVector = if (uiState.isPasswordVisible) Icons.VisibilityOff else Icons.Visibility,
-                                        contentDescription = null
-                                    )
-                                }
-                            },
-                            enabled = !uiState.isLoading,
-                            shape = MaterialTheme.shapes.large
-                        )
-                    }
-
-                    TextButton(
-                        onClick = { uriHandler.openUri("https://итд.com/forgot-password") },
-                        modifier = Modifier
-                            .align(Alignment.End),
-                    ) {
-                        Text("Забыли пароль?")
-                    }
-
-
-                }
-            }
-
-            item {
                 AnimatedVisibility(uiState.error != null) {
-                    Column() {
+                    Column {
                         Text(
                             color = MaterialTheme.colorScheme.error,
                             text = stringResource(R.string.auth_error_login_failed),
@@ -195,19 +172,27 @@ fun AuthScreen(onEvent: (Event) -> Unit, uiState: UiState) {
                     }
 
                 }
-            }
 
-            item {
+                TextButton(
+                    onClick = { uriHandler.openUri("https://итд.com/forgot-password") },
+                    modifier = Modifier
+                        .align(Alignment.End),
+                ) {
+                    Text(stringResource(R.string.auth_forgot_password))
+                }
+
                 Button(
                     onClick = { onEvent(Event.OnSubmit) },
                     modifier = Modifier
+                        .padding(bottom = MaterialTheme.spacing.extraLarge)
                         .widthIn(max = 400.dp),
-                    enabled = uiState.login.isNotBlank() && uiState.password.isNotBlank(),
+                    enabled = uiState.login.isNotBlank() && uiState.password.isNotBlank() && uiState.isLoginValid,
                     shape = MaterialTheme.circleShape()
                 ) {
                     AnimatedContent(
                         targetState = uiState.isLoading,
-                        modifier = Modifier.padding(horizontal = MaterialTheme.spacing.small),
+                        modifier = Modifier
+                            .padding(horizontal = MaterialTheme.spacing.small),
                         label = ""
                     ) { isLoading ->
                         if (isLoading) {
@@ -227,7 +212,12 @@ fun AuthScreen(onEvent: (Event) -> Unit, uiState: UiState) {
                     }
 
                 }
+
             }
+
+
+
+
         }
     }
 
@@ -241,8 +231,8 @@ fun AuthScreenPreview2() {
     AppTheme {
         AuthScreen(
             onEvent = {},
-            uiState = UiState(isLoading = true,
-                login = "f",
+            uiState = UiState(isLoading = false,
+                login = "1",
                 password = "f"
             )
         )

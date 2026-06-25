@@ -14,8 +14,11 @@
     <string name="auth_your_account">Ваш аккаунт</string>
     <string name="auth_waiting_to_connect">Ожидание подключения</string>
     <string name="auth_login_title">Авторизация</string>
-    <string name="auth_login_hint">Логин</string>
+    <string name="auth_login_subtitle">Войдите в аккаунт ИТД</string>
+    <string name="auth_login_hint">Email</string>
     <string name="auth_password_hint">Пароль</string>
     <string name="auth_error_login_failed">Не удалось войти в аккаунт</string>
     <string name="auth_login_button">Войти</string>
+    <string name="auth_invalid_email">Введите корректный email</string>
+    <string name="auth_forgot_password">Забыли пароль?</string>
 </resources>
