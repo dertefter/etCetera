@@ -3,49 +3,35 @@ package com.dertefter.data.repository
 import com.dertefter.data.datasource.local.LocalDataSource
 import com.dertefter.data.datasource.local.room.PostPagingCache
 import com.dertefter.data.datasource.remote.RemoteDataSource
-import com.dertefter.data.dto.feed.PollDto
 import com.dertefter.data.dto.feed.PostDto
-import com.dertefter.data.dto.feed.like.LikeResponseDto
-import com.dertefter.data.dto.feed.stats.PostStatsDto
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
 import com.jamal_aliev.paginator.cursor.bookmark.CursorBookmark
 import com.jamal_aliev.paginator.cursor.cache.eviction.CursorMostRecentPagingCache
 import com.jamal_aliev.paginator.cursor.dsl.mutableCursorPaginator
-import com.jamal_aliev.paginator.cursor.extension.updateWhere
 import com.jamal_aliev.paginator.cursor.load.CursorLoadResult
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filterNotNull
-import java.lang.ref.WeakReference
-import java.util.concurrent.CopyOnWriteArrayList
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class FeedRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
-    private val localDataSource: LocalDataSource
+    private val localDataSource: LocalDataSource,
+    private val postRepository: PostRepository
 ) : FeedRepository {
-
-    private val activePaginators = CopyOnWriteArrayList<WeakReference<MutableCursorPaginator<String, PostDto>>>()
-
-    private suspend fun updateData(predicate: (PostDto) -> Boolean, transform: (PostDto) -> PostDto) {
-        activePaginators.removeIf { it.get() == null }
-        activePaginators.forEach { ref ->
-            ref.get()?.let { paginator ->
-                paginator.updateWhere(predicate = predicate, transform = transform)
-                paginator.flush()
-            }
-        }
-        updatePagesInDb(predicate, transform)
-    }
 
     override fun getFeedPaginator(tab: String): MutableCursorPaginator<String, PostDto> {
         return mutableCursorPaginator(capacity = 20) {
             cache = CursorMostRecentPagingCache(maxSize = 20)
             persistentCache = PostPagingCache(tab, localDataSource)
+            initialCursor = CursorBookmark(prev = null, self = "initial", next = null)
+
 
             load { cursor ->
-                val result = remoteDataSource.getPosts(tab, cursor?.self?.takeIf { it != "initial" })
+                val result = remoteDataSource.getPosts(
+                    tab,
+                    cursor?.self?.takeIf { it != "initial" }
+                )
+
                 val data = result.getOrThrow()
 
                 CursorLoadResult(
@@ -57,9 +43,9 @@ class FeedRepositoryImpl @Inject constructor(
                     )
                 )
             }
-            initialCursor = CursorBookmark(prev = null, self = "initial", next = null)
+
         }.also {
-            activePaginators.add(WeakReference(it))
+            postRepository.registerPaginator(it)
         }
     }
 
@@ -69,7 +55,7 @@ class FeedRepositoryImpl @Inject constructor(
             persistentCache = PostPagingCache(hashtag, localDataSource)
 
             load { cursor ->
-                val result = remoteDataSource.getPostsForHashtag(hashtag, cursor?.self?.takeIf { it != "initial" })
+                val result = remoteDataSource.getPostsForHashtag(hashtag, cursor?.self?.takeIf { it != "initial" } )
                 val data = result.getOrThrow()
 
                 CursorLoadResult(
@@ -83,98 +69,60 @@ class FeedRepositoryImpl @Inject constructor(
             }
             initialCursor = CursorBookmark(prev = null, self = "initial", next = null)
         }.also {
-            activePaginators.add(WeakReference(it))
+            postRepository.registerPaginator(it)
         }
     }
 
-    private suspend fun updatePagesInDb(predicate: (PostDto) -> Boolean, transform: (PostDto) -> PostDto) {
-        val allPosts = localDataSource.getAllPosts()
-        allPosts.forEach { post ->
-            if (predicate(post)) {
-                localDataSource.savePost(transform(post))
-            }
-        }
-    }
+    override fun getPostsPaginator(userId: String, sort: String, pinnedPostId: String?): MutableCursorPaginator<String, PostDto> {
+        val cacheKey = "user_$userId" + "_$sort"
+        return mutableCursorPaginator(capacity = 20) {
+            cache = CursorMostRecentPagingCache(maxSize = 20)
+            persistentCache = PostPagingCache(cacheKey, localDataSource)
 
-    override suspend fun updatePostStats(ids: List<String>): Result<List<PostStatsDto>> {
-        return runCatching {
-            val statsList = remoteDataSource.getStats(ids).getOrThrow()
-            val statsMap = statsList.associateBy { it.id }
+            load { cursor ->
+                val result = remoteDataSource.getPosts(
+                    userId, sort = sort, pinnedPostId = pinnedPostId,
+                    cursor = cursor?.self?.takeIf { it != "initial" }
+                )
+                val data = result.getOrThrow()
 
-            val predicate: (PostDto) -> Boolean = { statsMap.containsKey(it.id) }
-            val transform: (PostDto) -> PostDto = { post ->
-                statsMap[post.id]?.let { stats ->
-                    post.copy(
-                        likesCount = stats.likesCount,
-                        commentsCount = stats.commentsCount,
-                        repostsCount = stats.repostsCount,
-                        viewsCount = stats.viewsCount,
-                        dominantEmoji = stats.dominantEmoji
+                CursorLoadResult(
+                    data = data.posts,
+                    bookmark = CursorBookmark(
+                        prev = cursor?.prev,
+                        self = cursor?.self ?: "initial",
+                        next = if (data.pagination.hasMore) data.pagination.nextCursor else null
                     )
-                } ?: post
+                )
             }
-
-            updateData(predicate, transform)
-            statsList
+            initialCursor = CursorBookmark(prev = null, self = "initial", next = null)
+        }.also {
+            postRepository.registerPaginator(it)
         }
     }
 
-    override suspend fun likePost(postId: String): Result<LikeResponseDto> {
-        applyOptimisticLike(postId, true)
-        return remoteDataSource.likePost(postId).onSuccess { response ->
-            updateData(
-                predicate = { it.id == postId },
-                transform = { it.copy(isLiked = response.liked, likesCount = response.likesCount) }
-            )
-        }.onFailure {
-            applyOptimisticLike(postId, false)
-        }
-    }
+    override fun getLikedPostsPaginator(userId: String): MutableCursorPaginator<String, PostDto> {
+        val cacheKey = "liked_user_$userId"
+        return mutableCursorPaginator(capacity = 20) {
+            cache = CursorMostRecentPagingCache(maxSize = 20)
+            persistentCache = PostPagingCache(cacheKey, localDataSource)
 
-    override suspend fun unlikePost(postId: String): Result<LikeResponseDto> {
-        applyOptimisticLike(postId, false)
-        return remoteDataSource.unlikePost(postId).onSuccess { response ->
-            updateData(
-                predicate = { it.id == postId },
-                transform = { it.copy(isLiked = response.liked, likesCount = response.likesCount) }
-            )
-        }.onFailure {
-            applyOptimisticLike(postId, true)
-        }
-    }
+            load { cursor ->
+                val result = remoteDataSource.getLikedPosts(userId, cursor?.self?.takeIf { it != "initial" })
+                val data = result.getOrThrow()
 
-    override suspend fun votePoll(postId: String, optionIds: List<String>): Result<PollDto> {
-        return remoteDataSource.vote(postId, optionIds).onSuccess { poll ->
-            updateData(
-                predicate = { it.id == postId },
-                transform = { it.copy(poll = poll) }
-            )
-        }
-    }
-
-    override fun getPost(postId: String): Flow<PostDto> {
-        return localDataSource.getPost(postId).filterNotNull()
-    }
-
-    override suspend fun updatePost(postId: String): Result<PostDto> {
-        return remoteDataSource.getPost(postId).onSuccess { postDto ->
-            localDataSource.savePost(postDto)
-            updateData(
-                predicate = { it.id == postId },
-                transform = { postDto }
-            )
-        }
-    }
-
-    private suspend fun applyOptimisticLike(postId: String, liked: Boolean) {
-        val predicate: (PostDto) -> Boolean = { it.id == postId }
-        val transform: (PostDto) -> PostDto = { post ->
-            if (post.isLiked == liked) post
-            else {
-                val newCount = if (liked) post.likesCount + 1 else (post.likesCount - 1).coerceAtLeast(0)
-                post.copy(isLiked = liked, likesCount = newCount)
+                CursorLoadResult(
+                    data = data.posts,
+                    bookmark = CursorBookmark(
+                        prev = cursor?.prev,
+                        self = cursor?.self ?: "initial",
+                        next = if (data.pagination.hasMore) data.pagination.nextCursor else null
+                    )
+                )
             }
+            initialCursor = CursorBookmark(prev = null, self = "initial", next = null)
+        }.also {
+            postRepository.registerPaginator(it)
         }
-        updateData(predicate, transform)
     }
 }

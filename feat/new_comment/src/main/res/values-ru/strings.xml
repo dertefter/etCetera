@@ -2,5 +2,16 @@
 <resources>
 
     <string name="new_comment_title">Новый комментарий</string>
+    <string name="new_comment_bold">Жирный</string>
+    <string name="new_comment_italic">Курсив</string>
+    <string name="new_comment_underline">Подчеркнутый</string>
+    <string name="new_comment_strikethrough">Зачеркнутый</string>
+    <string name="new_comment_monospace">Моноширинный</string>
+    <string name="new_comment_spoiler">Спойлер</string>
+    <string name="new_comment_add_media">Добавить медиа</string>
+    <string name="new_comment_save">Сохранить</string>
+    <string name="new_comment_placeholder">Что нового?</string>
+    <string name="new_comment_remove_upload">Удалить вложение</string>
+    <string name="new_comment_retry_upload">Повторить загрузку</string>
 
 </resources>

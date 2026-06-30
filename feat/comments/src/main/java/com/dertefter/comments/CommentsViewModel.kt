@@ -11,7 +11,10 @@ import com.dertefter.navigation.Navigator
 import com.dertefter.navigation.Routes
 import com.jamal_aliev.paginator.core.page.PaginatorUiState
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
+import com.jamal_aliev.paginator.cursor.bookmark.CursorBookmark
 import com.jamal_aliev.paginator.cursor.extension.distinctBy
+import com.jamal_aliev.paginator.cursor.extension.prefetchController
+import com.jamal_aliev.paginator.cursor.extension.refreshAll
 import com.jamal_aliev.paginator.cursor.extension.uiState
 import com.jamal_aliev.paginator.cursor.extension.warmUpFromPersistent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -76,9 +79,17 @@ class CommentsViewModel @Inject constructor(
 
     private fun setupPaginator(paginator: MutableCursorPaginator<String, CommentDto>) {
         viewModelScope.launch {
-            paginator.warmUpFromPersistent()
             paginator.distinctBy { it.id }
-            paginator.restart(silentlyLoading = true)
+            paginator.prefetchController(
+                scope = viewModelScope, prefetchDistance = 3
+            )
+            val inserted = paginator.warmUpFromPersistent()
+            if (inserted > 0) {
+                paginator.jump(CursorBookmark(prev = null, self = "initial", next = null))
+                paginator.refreshAll()
+            } else {
+                paginator.restart()
+            }
         }
     }
 
@@ -139,7 +150,7 @@ class CommentsViewModel @Inject constructor(
             is Event.OnRefresh -> {
                 viewModelScope.launch {
                     val key = "${event.postId}-${event.tab.value}"
-                    paginators[key]?.restart(silentlyLoading = false)
+                    paginators[key]?.restart(silentlyLoading = true)
                 }
             }
 

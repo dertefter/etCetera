@@ -3,4 +3,6 @@
     <string name="followers_tab_followers">Followers</string>
     <string name="followers_tab_following">Following</string>
     <string name="followers_empty">No one here yet</string>
+    <string name="followers_follow">Follow</string>
+    <string name="followers_unfollow">Unfollow</string>
 </resources>

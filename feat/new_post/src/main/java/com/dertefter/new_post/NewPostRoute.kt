@@ -10,13 +10,14 @@ import com.dertefter.new_post.presentation.NewPostScreen
 @Composable
 fun NewPostRoute(
     wallRecipientId: String?,
+    postIdForRepost: String?,
     viewModel: NewPostViewModel = hiltViewModel(),
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(wallRecipientId) {
-        viewModel.initWithWalId(wallRecipientId)
+    LaunchedEffect(wallRecipientId, postIdForRepost) {
+        viewModel.initWith(wallRecipientId, postIdForRepost)
     }
 
     NewPostScreen(

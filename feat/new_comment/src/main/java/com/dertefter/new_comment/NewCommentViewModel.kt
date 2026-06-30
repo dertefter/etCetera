@@ -12,6 +12,7 @@ import com.dertefter.new_comment.presentation.Upload
 import com.dertefter.new_comment.presentation.UploadStatus
 import com.dertefter.design.components.post.SpanUiModel
 import com.dertefter.data.dto.feed.SpanDto
+import com.dertefter.data.repository.AttachmentsRepository
 import com.dertefter.data.repository.CommentsRepository
 import com.dertefter.navigation.Routes
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,6 +30,7 @@ import javax.inject.Inject
 class NewCommentViewModel @Inject constructor(
     private val application: Application,
     private val commentsRepository: CommentsRepository,
+    private val attachmentsRepository: AttachmentsRepository,
     private val navigator: Navigator
 ) : ViewModel() {
 
@@ -182,7 +184,7 @@ class NewCommentViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val file = uriToFile(upload.uri)
-                val result = commentsRepository.upload(file)
+                val result = attachmentsRepository.upload(file)
                 _uploads.update { uploads ->
                     uploads.map {
                         if (it.uri == upload.uri) {

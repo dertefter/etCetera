@@ -20,7 +20,7 @@ import com.dertefter.design.components.post.PostUiModel
 import com.dertefter.design.components.post.SpanUiModel
 import com.dertefter.navigation.AttachmentNavigationModel
 
-fun PostDto.toUiModel(isPinned: Boolean? = null): PostUiModel {
+fun PostDto.toUiModel(): PostUiModel {
     return PostUiModel(
         id = id,
         content = content,

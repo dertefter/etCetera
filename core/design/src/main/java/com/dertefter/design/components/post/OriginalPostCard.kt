@@ -3,6 +3,7 @@ package com.dertefter.design.components.post
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,23 +13,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.dertefter.design.components.avatar.DisplayName
-import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.components.avatar.SmallEmojiAvatar
-import com.dertefter.design.components.poll.PollCard
+import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
 
 @Composable
@@ -45,7 +44,7 @@ fun OriginalPostCard(
             .fillMaxWidth()
             .clip(MaterialTheme.shapes.largeIncreased)
             .clickable(onClick = {onOpenPost(originalPost.id)})
-            .background(MaterialTheme.colorScheme.surfaceContainerLow)
+            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
             .border(
                 width = 1.dp,
                 color = MaterialTheme.colorScheme.outlineVariant,
@@ -172,7 +171,7 @@ fun OriginalPostCardPreview() {
                         username = "johndoe",
                         displayName = "John Doe",
                         avatar = "😊",
-                        true, true, null
+                        hasNuksta = true, verified = true, pin = null
                     ),
                     attachments = listOf(
                         AttachmentUiModel(

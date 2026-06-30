@@ -29,6 +29,10 @@ interface RemoteDataSource {
     suspend fun refreshToken(): Result<Unit>
     suspend fun getMe(): Result<MeDto>
 
+    suspend fun unpinPost(postId: String): Result<Unit>
+
+    suspend fun pinPost(postId: String): Result<Unit>
+
     suspend fun getUser(userId: String): Result<UserDto>
 
     suspend fun getPosts(tab: String, cursor: String?): Result<PostDataDto>
@@ -58,9 +62,13 @@ interface RemoteDataSource {
 
     suspend fun newPost(newPostRequest: NewPostRequestDto): Result<PostDto>
 
+    suspend fun repost(postId: String, newPostRequest: NewPostRequestDto): Result<PostDto>
+
     suspend fun newComment(postId: String, newCommentRequest: NewCommentRequestDto): Result<CommentDto>
 
     suspend fun deleteComment(commentId: String): Result<Unit>
+
+    suspend fun deletePost(postId: String): Result<Unit>
 
     suspend fun newCommentReply(
         commentId: String,

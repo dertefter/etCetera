@@ -23,4 +23,13 @@
     <string name="design_post_unpin">Unpin</string>
     <string name="design_post_delete">Delete</string>
 
+    <string name="design_comment_actions">Comment actions</string>
+    <string name="design_comment_report">Report</string>
+    <string name="design_comment_reply">Reply</string>
+    <string name="design_comment_load_more">Load more</string>
+    <plurals name="design_comment_reply_count">
+        <item quantity="one">%d answer</item>
+        <item quantity="other">%d answers</item>
+    </plurals>
+
 </resources>

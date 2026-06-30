@@ -6,9 +6,20 @@ sealed interface Event {
     data object OnLoadMore : Event
     data class OnRefresh(val tab: FeedTab) : Event
     data object OnOpenNotifications : Event
+
+    data class OnPin(val postId: String) : Event
+
+    data class OnUnpin(val postId: String): Event
+
     data class OnTabSelected(val tab: FeedTab) : Event
 
     data class OnLike(val postId: String) : Event
+
+    data class OnRepost(val postId: String) : Event
+
+    data class OnDeletePost(val postId: String) : Event
+
+    data class OnOpenHashtag(val name: String) : Event
 
     data class OnUnlike(val postId: String) : Event
 

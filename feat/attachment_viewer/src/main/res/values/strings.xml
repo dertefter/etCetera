@@ -2,5 +2,5 @@
 <resources>
 
     <string name="attachment_viewer_download">Download</string>
-    <string name="attachment_viewer_download_failed">Failed to downlaod</string>
+    <string name="attachment_viewer_download_failed">Failed to Download</string>
 </resources>

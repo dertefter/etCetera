@@ -2,5 +2,16 @@
 <resources>
 
     <string name="new_post_title">Новый пост</string>
+    <string name="new_repost_title">Репост</string>
+    <string name="span_bold">Жирный</string>
+    <string name="span_italic">Курсив</string>
+    <string name="span_underline">Подчеркнутый</string>
+    <string name="span_strike">Зачеркнутый</string>
+    <string name="span_monospace">Моноширинный</string>
+    <string name="span_spoiler">Спойлер</string>
+    <string name="action_add_poll">Добавить опрос</string>
+    <string name="action_add_media">Добавить медиа</string>
+    <string name="action_save">Сохранить</string>
+    <string name="post_placeholder">Что нового?</string>
 
 </resources>

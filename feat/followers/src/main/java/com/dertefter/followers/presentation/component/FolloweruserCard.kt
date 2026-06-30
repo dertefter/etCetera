@@ -4,7 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -14,13 +13,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.dertefter.design.theme.AppTheme
+import androidx.compose.ui.unit.dp
 import com.dertefter.data.dto.followers.FollowerUserDto
-
+import com.dertefter.design.components.avatar.DisplayName
 import com.dertefter.design.components.avatar.SmallEmojiAvatar
+import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
+import com.dertefter.followers.R
 
 @Composable
 fun FollowerUserCard(
@@ -42,10 +43,14 @@ fun FollowerUserCard(
             emoji = followerUser.avatar,
             containerSize = 40.dp
         )
-        Column {
-            Text(
-                text = followerUser.displayName,
-                style = MaterialTheme.typography.titleSmall
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            DisplayName(
+                name = followerUser.displayName,
+                verified = followerUser.verified,
+                hasNuksta = false,
+                pin = null
             )
             Text(
                 text = "@${followerUser.username}",
@@ -53,14 +58,17 @@ fun FollowerUserCard(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
-        Spacer(Modifier.weight(1f))
         if (followerUser.isFollowing) {
-            OutlinedButton(onClick = { onUnfollow(followerUser.id) }) {
-                Text("Unfollow")
+            OutlinedButton(
+                onClick = { onUnfollow(followerUser.id) },
+            ) {
+                Text(stringResource(R.string.followers_unfollow))
             }
         } else {
-            Button(onClick = { onFollow(followerUser.id) }) {
-                Text("Follow")
+            Button(
+                onClick = { onFollow(followerUser.id) }
+            ) {
+                Text(stringResource(R.string.followers_follow))
             }
         }
     }

@@ -8,10 +8,10 @@ import com.dertefter.data.dto.feed.OriginalPostDto
 import com.dertefter.data.dto.feed.PinDto
 import com.dertefter.data.dto.feed.PollDto
 import com.dertefter.data.dto.feed.SpanDto
+import com.dertefter.data.dto.notifications.ActorDto
 import com.dertefter.data.dto.user.LastSeenDto
 import com.dertefter.data.dto.user.SubscriptionDto
 import com.dertefter.data.dto.user.VisibilityDto
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 class RoomConverters {
@@ -60,7 +60,7 @@ class RoomConverters {
         return value?.let {
             try {
                 VisibilityDto.valueOf(it.uppercase())
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 VisibilityDto.EVERYONE
             }
         } ?: VisibilityDto.EVERYONE
@@ -124,6 +124,16 @@ class RoomConverters {
     @TypeConverter
     fun toReplyToDto(replyToString: String?): ReplyToDto? {
         return replyToString?.let { json.decodeFromString(it) }
+    }
+
+    @TypeConverter
+    fun fromActorDto(actor: ActorDto): String {
+        return json.encodeToString(actor)
+    }
+
+    @TypeConverter
+    fun toActorDto(actorString: String): ActorDto {
+        return json.decodeFromString(actorString)
     }
 
 }

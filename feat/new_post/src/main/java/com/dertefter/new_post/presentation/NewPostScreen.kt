@@ -7,7 +7,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -40,7 +39,6 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -59,13 +57,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.components.poll.NewPollCard
+import com.dertefter.design.components.post.OriginalPostCard
 import com.dertefter.design.components.post.buildPostAnnotatedString
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
 import com.dertefter.new_post.R
-import com.dertefter.new_post.presentation.component.SpanCheckButton
 import com.dertefter.new_post.presentation.component.UploadCard
+import com.dertefter.new_post.presentation.mapper.toOriginalPostUiModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -87,14 +86,20 @@ fun NewPostScreen(
     }
 
     val selection = textFieldValue.selection
+    val boldLabel = stringResource(R.string.span_bold)
+    val italicLabel = stringResource(R.string.span_italic)
+    val underlineLabel = stringResource(R.string.span_underline)
+    val strikeLabel = stringResource(R.string.span_strike)
+    val monospaceLabel = stringResource(R.string.span_monospace)
+    val spoilerLabel = stringResource(R.string.span_spoiler)
 
     val menuBuilder: TextContextMenuBuilderScope.() -> Unit = {
-        item(label = "Bold", key = "bold", onClick = { onEvent(Event.OnSpanToggled("bold", selection.min, selection.max)) })
-        item(label = "Italic", key = "italic", onClick = { onEvent(Event.OnSpanToggled("italic", selection.min, selection.max)) })
-        item(label = "Underline", key = "underline", onClick = { onEvent(Event.OnSpanToggled("underline", selection.min, selection.max)) })
-        item(label = "Strikethrough", key = "strike", onClick = { onEvent(Event.OnSpanToggled("strike", selection.min, selection.max)) })
-        item(label = "Monospace", key = "monospace", onClick = { onEvent(Event.OnSpanToggled("monospace", selection.min, selection.max)) })
-        item(label = "Spoiler", key = "spoiler", onClick = { onEvent(Event.OnSpanToggled("spoiler", selection.min, selection.max)) })
+        item(label = boldLabel, key = "bold", onClick = { onEvent(Event.OnSpanToggled("bold", selection.min, selection.max)) })
+        item(label = italicLabel, key = "italic", onClick = { onEvent(Event.OnSpanToggled("italic", selection.min, selection.max)) })
+        item(label = underlineLabel, key = "underline", onClick = { onEvent(Event.OnSpanToggled("underline", selection.min, selection.max)) })
+        item(label = strikeLabel, key = "strike", onClick = { onEvent(Event.OnSpanToggled("strike", selection.min, selection.max)) })
+        item(label = monospaceLabel, key = "monospace", onClick = { onEvent(Event.OnSpanToggled("monospace", selection.min, selection.max)) })
+        item(label = spoilerLabel, key = "spoiler", onClick = { onEvent(Event.OnSpanToggled("spoiler", selection.min, selection.max)) })
     }
 
 
@@ -127,41 +132,44 @@ fun NewPostScreen(
                         .weight(1f),
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onSurface,
-                    text = stringResource(R.string.new_post_title),
+                    text = if (uiState.originalPost == null) stringResource(R.string.new_post_title) else stringResource(R.string.new_repost_title)
                 )
 
+                if (uiState.originalPost == null){
+                    FilledTonalIconButton(
+                        onClick = { onEvent(Event.OnAddPoll) },
+                        enabled = uiState.poll == null,
+                        colors = IconButtonDefaults.filledTonalIconButtonColors().copy(
+                            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                        ),
+                        shape = MaterialTheme.shapes.medium,
+                    ) {
+                        Icon(imageVector = Icons.Poll, contentDescription = stringResource(R.string.action_add_poll))
+                    }
 
-                FilledTonalIconButton(
-                    onClick = { onEvent(Event.OnAddPoll) },
-                    enabled = uiState.poll == null,
-                    colors = IconButtonDefaults.filledTonalIconButtonColors().copy(
-                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onTertiaryContainer
-                    ),
-                    shape = MaterialTheme.shapes.medium,
-                ) {
-                    Icon(imageVector = Icons.Poll, contentDescription = "Add poll")
+                    FilledTonalIconButton(
+                        onClick = {
+                            photoPickerLauncher.launch(
+                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                            )
+                        },
+                        shape = MaterialTheme.shapes.medium,
+                    ) {
+                        Icon(imageVector = Icons.AttachFile, contentDescription = stringResource(R.string.action_add_media))
+                    }
                 }
 
-                FilledTonalIconButton(
-                    onClick = {
-                        photoPickerLauncher.launch(
-                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                        )
-                    },
-                    shape = MaterialTheme.shapes.medium,
-                ) {
-                    Icon(imageVector = Icons.AttachFile, contentDescription = "Add media")
-                }
+
+
 
                 FilledIconButton(
                     onClick = { onEvent(Event.OnSavePost) },
                     shape = MaterialTheme.shapes.extraLargeIncreased,
                     enabled = (uiState.content.isNotBlank()
                             || uiState.uploads.isNotEmpty()
-                            || (uiState.poll?.isReady() == true)) && (
-                            uiState.poll?.isReady() ?: true
-                            )
+                            || ((uiState.poll != null)) && (uiState.poll.isReady()))
+                            || (uiState.originalPost != null)
                 ) {
                     if (uiState.isUploadingPost) {
                         AppLoadingIndicator(
@@ -169,7 +177,7 @@ fun NewPostScreen(
                             modifier = Modifier.size(34.dp)
                         )
                     } else {
-                        Icon(imageVector = Icons.Check, contentDescription = "Save")
+                        Icon(imageVector = Icons.Check, contentDescription = stringResource(R.string.action_save))
                     }
                 }
             }
@@ -184,6 +192,19 @@ fun NewPostScreen(
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
 
         ) {
+
+            uiState.originalPost?.let {
+                OriginalPostCard(
+                    modifier = Modifier
+                        .padding(MaterialTheme.spacing.defaultScreenPadding),
+                    originalPost = uiState.originalPost.toOriginalPostUiModel(),
+                    onOpenPost = {},
+                    onHashtagClick = {},
+                    onUserClick = {},
+                    onAttachmentClick = {_,_ -> }
+                )
+            }
+
             BasicTextField(
                 value = textFieldValue.copy(annotatedString = buildPostAnnotatedString(textFieldValue.text, uiState.spans)),
                 onValueChange = {
@@ -211,7 +232,7 @@ fun NewPostScreen(
                         singleLine = false,
                         visualTransformation = VisualTransformation.None,
                         interactionSource = remember { MutableInteractionSource() },
-                        placeholder = { Text("Что нового?") },
+                        placeholder = { Text(stringResource(R.string.post_placeholder)) },
                         colors = TextFieldDefaults.colors(
                             focusedContainerColor = Color.Transparent,
                             unfocusedContainerColor = Color.Transparent,

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.repository.FeedRepository
 import com.dertefter.data.repository.MeRepository
+import com.dertefter.data.repository.PostRepository
 import com.dertefter.data.repository.SearchRepository
 import com.dertefter.feed.presentation.Event
 import com.dertefter.feed.presentation.FeedTab
@@ -14,8 +15,10 @@ import com.dertefter.navigation.Navigator
 import com.dertefter.navigation.Routes
 import com.jamal_aliev.paginator.core.page.PaginatorUiState
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
+import com.jamal_aliev.paginator.cursor.bookmark.CursorBookmark
 import com.jamal_aliev.paginator.cursor.extension.distinctBy
 import com.jamal_aliev.paginator.cursor.extension.prefetchController
+import com.jamal_aliev.paginator.cursor.extension.refreshAll
 import com.jamal_aliev.paginator.cursor.extension.uiState
 import com.jamal_aliev.paginator.cursor.extension.warmUpFromPersistent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,6 +37,7 @@ import javax.inject.Inject
 class FeedViewModel @Inject constructor(
     private val feedRepository: FeedRepository,
     private val searchRepository: SearchRepository,
+    private val postRepository: PostRepository,
     private val meRepository: MeRepository,
     private val navigator: Navigator
 
@@ -101,16 +105,38 @@ class FeedViewModel @Inject constructor(
             paginator.prefetchController(
                 scope = viewModelScope, prefetchDistance = 3
             )
-            paginator.warmUpFromPersistent()
-            paginator.restart(silentlyLoading = true)
+            val inserted = paginator.warmUpFromPersistent()
+            if (inserted > 0) {
+                paginator.jump(CursorBookmark(prev = null, self = "initial", next = null))
+                paginator.refreshAll(loadingSilently = true)
+            } else {
+                paginator.restart(silentlyLoading = true)
+            }
         }
     }
 
     fun onEvent(event: Event) {
         when (event) {
-
+            
             is Event.OnOpenSearch -> {
                navigator.navigate(Routes.Search)
+            }
+
+            is Event.OnPin -> {
+                viewModelScope.launch {
+                    postRepository.pinPost(event.postId)
+                }
+            }
+
+            is Event.OnUnpin -> {
+                viewModelScope.launch {
+                    postRepository.unpinPost(event.postId)
+                }
+            }
+
+
+            is Event.OnOpenHashtag -> {
+                navigator.navigate(Routes.HashtagFeed(event.name))
             }
 
             is Event.OnOpenAttachmentsViewer -> {
@@ -123,26 +149,32 @@ class FeedViewModel @Inject constructor(
 
             is Event.OnLike -> {
                 viewModelScope.launch {
-                    feedRepository.likePost(event.postId)
+                    postRepository.likePost(event.postId)
                 }
             }
 
             is Event.OnUnlike -> {
                 viewModelScope.launch {
-                    feedRepository.unlikePost(event.postId)
+                    postRepository.unlikePost(event.postId)
                 }
             }
 
             is Event.OnVote -> {
                 viewModelScope.launch {
-                    feedRepository.votePoll(event.postId, event.optionIds)
+                    postRepository.votePoll(event.postId, event.optionIds)
                 }
+            }
+
+            is Event.OnRepost -> {
+                navigator.openAsBottomSheet(
+                    Routes.NewPost(postIdForRepost = event.postId)
+                )
             }
 
             is Event.OnUpdateStats -> {
                 viewModelScope.launch {
                     if (event.ids.isNotEmpty()) {
-                        feedRepository.updatePostStats(event.ids)
+                        postRepository.updatePostStats(event.ids)
                     }
                 }
             }
@@ -161,7 +193,8 @@ class FeedViewModel @Inject constructor(
                 updateTrendingHashtags()
                 updateMe()
                 viewModelScope.launch {
-                    getPaginator(event.tab).restart()
+                    val paginator = getPaginator(event.tab)
+                    paginator.restart()
                 }
             }
 
@@ -185,7 +218,13 @@ class FeedViewModel @Inject constructor(
                 )
             }
 
-            else -> {
+            is Event.OnDeletePost -> {
+                viewModelScope.launch {
+                    postRepository.deletePost(event.postId)
+                }
+            }
+
+            is Event.OnOpenNewPost -> {
                 navigator.openAsBottomSheet(Routes.NewPost(null))
             }
         }

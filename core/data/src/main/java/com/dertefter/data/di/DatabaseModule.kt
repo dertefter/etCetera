@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.dertefter.data.datasource.local.room.AppDatabase
 import com.dertefter.data.datasource.local.room.dao.CommentDao
+import com.dertefter.data.datasource.local.room.dao.NotificationDao
 import com.dertefter.data.datasource.local.room.dao.PageDao
 import com.dertefter.data.datasource.local.room.dao.PostDao
 import com.dertefter.data.datasource.local.room.dao.SearchDao
@@ -54,6 +55,11 @@ object DatabaseModule {
     @Provides
     fun provideSearchDao(database: AppDatabase): SearchDao {
         return database.searchDao()
+    }
+
+    @Provides
+    fun provideNotificationDao(database: AppDatabase): NotificationDao {
+        return database.notificationDao()
     }
 
 }

@@ -1,6 +1,7 @@
 package com.dertefter.data.datasource.local
 
 import com.dertefter.data.datasource.local.room.dao.CommentDao
+import com.dertefter.data.datasource.local.room.dao.NotificationDao
 import com.dertefter.data.datasource.local.room.dao.PageDao
 import com.dertefter.data.datasource.local.room.dao.PostDao
 import com.dertefter.data.datasource.local.room.dao.SearchDao
@@ -16,6 +17,7 @@ import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.dto.followers.FollowerUserDto
 import com.dertefter.data.dto.me.MeDto
+import com.dertefter.data.dto.notifications.NotificationDto
 import com.dertefter.data.dto.search.SearchHashtagDto
 import com.dertefter.data.dto.user.UserDto
 import kotlinx.coroutines.flow.Flow
@@ -29,7 +31,8 @@ class LocalDataSourceImpl @Inject constructor(
     private val userDao: UserDao,
     private val postDao: PostDao,
     private val commentDao: CommentDao,
-    private val searchDao: SearchDao
+    private val searchDao: SearchDao,
+    private val notificationDao: NotificationDao
 ) : LocalDataSource {
 
     override val meDto: Flow<MeDto?> = userDao.getMe()
@@ -88,6 +91,10 @@ class LocalDataSourceImpl @Inject constructor(
         postDao.upsertPosts(listOf(post.asEntity()))
     }
 
+    override suspend fun deletePost(postId: String) {
+        postDao.deletePost(postId)
+    }
+
     override fun getPost(postId: String): Flow<PostDto?> {
         return postDao.getPost(postId).map { it?.asExternalModel() }
     }
@@ -136,6 +143,14 @@ class LocalDataSourceImpl @Inject constructor(
 
     override suspend fun getUsersForPage(type: PageType, tab: String, self: String): List<FollowerUserDto> {
         return userDao.getUsersForPage(type, tab, self).map { it.asFollowerExternalModel() }
+    }
+
+    override suspend fun saveNotifications(type: PageType, tab: String, self: String, notifications: List<NotificationDto>) {
+        notificationDao.savePageWithNotifications(type, tab, self, notifications.map { it.asEntity() })
+    }
+
+    override suspend fun getNotificationsForPage(type: PageType, tab: String, self: String): List<NotificationDto> {
+        return notificationDao.getNotificationsForPage(type, tab, self).map { it.asExternalModel() }
     }
 
     override fun getTrendingHashtags(): Flow<List<SearchHashtagDto>?> {

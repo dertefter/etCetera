@@ -3,6 +3,7 @@ appcompat = "1.7.1"
 coilCompose = "2.7.0"
 composefadingedges = "1.0.4"
 composeQrCode = "1.0.1"
+composeShimmer = "1.4.0"
 coreKtx = "1.19.0"
 coreSplashscreen = "1.2.0"
 datastorePreferences = "1.2.1"
@@ -43,6 +44,7 @@ playServicesWearable = "20.0.1"
 
 
 [libraries]
+compose-shimmer = { module = "com.valentinilk.shimmer:compose-shimmer", version.ref = "composeShimmer" }
 encryptedprefs = { module = "dev.spght:encryptedprefs-ktx", version.ref = "encryptedprefs" }
 androidx-compose-adaptive = { module = "androidx.compose.material3.adaptive:adaptive" }
 androidx-compose-adaptive-layout = { module = "androidx.compose.material3.adaptive:adaptive-layout" }

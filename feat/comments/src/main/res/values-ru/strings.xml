@@ -8,13 +8,7 @@
     <string name="comments_sort">Сортировка</string>
     <string name="comments_failed_to_load">Ошибка при загрузке комментариев</string>
     <string name="comments_empty">Комментариев пока нет</string>
-    <string name="comments_load_more">Загрузить ещё</string>
-
-    <plurals name="comments_reply_count">
-        <item quantity="one">%d ответ</item>
-        <item quantity="few">%d ответа</item>
-        <item quantity="many">%d ответов</item>
-        <item quantity="other">%d ответа</item>
-    </plurals>
+    <string name="comments_selected">Выбрано</string>
+    <string name="comments_add">Написать комментарий</string>
 
 </resources>

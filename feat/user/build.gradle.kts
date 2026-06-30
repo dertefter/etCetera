@@ -42,6 +42,8 @@ dependencies {
     implementation(project(":core:design"))
     implementation(project(":core:data"))
 
+    implementation(project(":feat:feed"))
+
     implementation(libs.core.ktx)
     implementation(platform(libs.compose.bom))
     implementation(libs.androidx.compose.ui)

@@ -25,5 +25,7 @@ data class PostDto(
     @SerialName("poll") val poll: PollDto? = null,
     @SerialName("dominantEmoji") val dominantEmoji: String? = null,
     @SerialName("editedAt") val editedAt: String? = null,
-    @SerialName("vs") val vs: String? = null
+    @SerialName("vs") val vs: String? = null,
+
+    val isPinned: Boolean = false
 )

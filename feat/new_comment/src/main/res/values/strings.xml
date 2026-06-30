@@ -2,6 +2,17 @@
 <resources>
 
     <string name="new_comment_title">New comment</string>
+    <string name="new_comment_bold">Bold</string>
+    <string name="new_comment_italic">Italic</string>
+    <string name="new_comment_underline">Underline</string>
+    <string name="new_comment_strikethrough">Strikethrough</string>
+    <string name="new_comment_monospace">Monospace</string>
+    <string name="new_comment_spoiler">Spoiler</string>
+    <string name="new_comment_add_media">Add media</string>
+    <string name="new_comment_save">Save</string>
+    <string name="new_comment_placeholder">What\'s new?</string>
+    <string name="new_comment_remove_upload">Remove upload</string>
+    <string name="new_comment_retry_upload">Retry upload</string>
 
 
 </resources>

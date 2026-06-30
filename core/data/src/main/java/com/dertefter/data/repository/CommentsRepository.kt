@@ -4,9 +4,7 @@ import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.data.dto.comments.NewCommentRequestDto
 import com.dertefter.data.dto.comments.RepliesDataDto
 import com.dertefter.data.dto.feed.like.LikeResponseDto
-import com.dertefter.data.dto.upload.AttachmentUploadResponseDto
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
-import java.io.File
 
 interface CommentsRepository {
 
@@ -26,7 +24,5 @@ interface CommentsRepository {
         commentId: String,
         newCommentRequestDto: NewCommentRequestDto
     ): Result<CommentDto>
-
-    suspend fun upload(file: File): Result<AttachmentUploadResponseDto>
 
 }

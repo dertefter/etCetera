@@ -1,4 +1,4 @@
-package com.dertefter.comments.presentation.component
+package com.dertefter.design.components.comment
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
@@ -33,23 +33,20 @@ import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.dertefter.comments.R
-import com.dertefter.data.dto.comments.CommentDto
+import com.dertefter.design.R
+import com.dertefter.design.components.avatar.DisplayName
 import com.dertefter.design.components.avatar.SmallEmojiAvatar
 import com.dertefter.design.components.post.AttachmentsCarousel
+import com.dertefter.design.components.post.AuthorUiModel
+import com.dertefter.design.components.post.AttachmentUiModel
 import com.dertefter.design.components.post.LikeButton
-import com.dertefter.comments.presentation.mapper.toUiModel
-import com.dertefter.data.dto.comments.ReplyToDto
-import com.dertefter.data.dto.feed.AttachmentDto
-import com.dertefter.data.dto.feed.AuthorDto
-import com.dertefter.design.components.avatar.DisplayName
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
 
 @Composable
 fun CommentCard(
-    comment: CommentDto,
+    comment: CommentUiModel,
     modifier: Modifier = Modifier,
     onLike: (commentId: String) -> Unit = {},
     onUnlike: (commentId: String) -> Unit = {},
@@ -83,7 +80,8 @@ fun CommentCard(
                 Row(
                     modifier = Modifier
                         .clickable(onClick = { onUserClick(comment.author.id) })
-                        .weight(1f)
+                        .weight(1f),
+                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
                 )
                 {
                     SmallEmojiAvatar(
@@ -95,7 +93,7 @@ fun CommentCard(
                             name = comment.author.displayName,
                             verified = comment.author.verified,
                             hasNuksta = comment.author.hasNuksta,
-                            pin = comment.author.pin?.toUiModel()
+                            pin = comment.author.pin
                         )
                         Text(
                             text = "@${comment.author.username}",
@@ -112,7 +110,8 @@ fun CommentCard(
                     IconButton(
                         onClick = { showMenu = true }) {
                         Icon(
-                            imageVector = Icons.MoreHoriz, contentDescription = ""
+                            imageVector = Icons.MoreHoriz,
+                            contentDescription = stringResource(R.string.design_comment_actions)
                         )
                     }
                     DropdownMenu(
@@ -121,29 +120,33 @@ fun CommentCard(
                         onDismissRequest = { showMenu = false }) {
 
                         DropdownMenuItem(
-                            text = { Text("Пожаловаться") },
+                            text = { Text(stringResource(R.string.design_comment_report)) },
                             onClick = {
                                 onEdit(comment.id)
                                 showMenu = false
                             },
                             leadingIcon = {
-                                Icon(Icons.Error, contentDescription = null)
+                                Icon(Icons.Error,
+                                    contentDescription = stringResource(R.string.design_comment_report)
+                                )
                             })
 
                         if (isOwner) {
                             DropdownMenuItem(
-                                text = { Text(stringResource(com.dertefter.design.R.string.design_post_edit)) },
+                                text = { Text(stringResource(R.string.design_post_edit)) },
                                 onClick = {
                                     onEdit(comment.id)
                                     showMenu = false
                                 },
                                 leadingIcon = {
-                                    Icon(Icons.Edit, contentDescription = null)
+                                    Icon(Icons.Edit,
+                                        contentDescription = stringResource(R.string.design_post_edit)
+                                    )
                                 })
 
 
                             DropdownMenuItem(
-                                text = { Text(stringResource(com.dertefter.design.R.string.design_post_delete)) },
+                                text = { Text(stringResource(R.string.design_post_delete)) },
                                 onClick = {
                                     onDelete(comment.id)
                                     showMenu = false
@@ -151,7 +154,7 @@ fun CommentCard(
                                 leadingIcon = {
                                     Icon(
                                         imageVector = Icons.Delete,
-                                        contentDescription = null,
+                                        contentDescription = stringResource(R.string.design_post_delete),
                                         tint = MaterialTheme.colorScheme.error
                                     )
                                 })
@@ -187,7 +190,7 @@ fun CommentCard(
 
             if (comment.attachments.isNotEmpty()) {
                 AttachmentsCarousel(
-                    attachments = comment.attachments.map { it.toUiModel() },
+                    attachments = comment.attachments,
                     itemShape = MaterialTheme.shapes.medium,
                     itemHeight = 160.dp
                 )
@@ -215,7 +218,7 @@ fun CommentCard(
                             .align(Alignment.CenterVertically)
                             .clickable { isExpanded = !isExpanded },
                         text = pluralStringResource(
-                            R.plurals.comments_reply_count,
+                            R.plurals.design_comment_reply_count,
                             repliesCount,
                             repliesCount
                         )
@@ -224,7 +227,7 @@ fun CommentCard(
                 }
                 Text(
                     color = MaterialTheme.colorScheme.primary,
-                    text = "Ответить",
+                    text = stringResource(R.string.design_comment_reply),
                     style = MaterialTheme.typography.bodyMediumEmphasized,
                     modifier = Modifier
                         .clickable(
@@ -267,9 +270,9 @@ fun CommentCard(
                             onUnlike = { onUnlike(reply.id) },
                             onLoadMoreReplies = onLoadMoreReplies,
                             onUserClick = { onUserClick(it) },
-                            onReplyClick = { commentId, userId ->
+                            onReplyClick = { _, userId ->
                                 onReplyClick(
-                                    comment.id, // todo так как итд плохо поддерживает вложенность в коммах - сейчас это айди родителя коммента
+                                    comment.id,
                                     userId
                                 )
                             },
@@ -279,7 +282,7 @@ fun CommentCard(
                     }
                     if ((comment.repliesCount ?: 0) > (comment.replies?.size ?: 0)) {
                         Text(
-                            text = stringResource(R.string.comments_load_more),
+                            text = stringResource(R.string.design_comment_load_more),
                             style = MaterialTheme.typography.labelMediumEmphasized,
                             color = MaterialTheme.colorScheme.primary,
                             modifier = Modifier
@@ -297,49 +300,47 @@ fun CommentCard(
 fun CommentCardPreview() {
     AppTheme {
         CommentCard(
-            comment = CommentDto(
+            comment = CommentUiModel(
                 id = "1",
                 content = "This is a sample comment content. It can be long enough to span multiple lines and test the layout of the CommentCard.",
-                author = AuthorDto(
+                author = AuthorUiModel(
                     id = "author1",
                     avatar = "😊",
                     username = "johndoe",
                     verified = true,
                     hasNuksta = false,
-                    displayName = "John Doe"
+                    displayName = "John Doe",
+                    pin = null
                 ),
                 likesCount = 42,
                 repliesCount = 3,
                 isLiked = false,
                 createdAt = "2023-10-27T12:00:00Z",
-                replyTo = ReplyToDto(
+                replyTo = ReplyToUiModel(
                     id = "dddd",
                     username = "ddddddd",
                     displayName = "уииии"
                 ),
                 attachments = listOf(
-                    AttachmentDto(
+                    AttachmentUiModel(
                         id = "1",
                         type = "image",
                         url = "https://picsum.photos/400/300",
-                        width = 400,
-                        height = 300,
-                        mimeType = "image/jpeg",
-                        filename = "image1.jpg",
-                        size = 1000
+                        mimeType = "image/jpeg"
                     )
                 ),
                 replies = listOf(
-                    CommentDto(
+                    CommentUiModel(
                         id = "2",
                         content = "This is a reply to the first comment.",
-                        author = AuthorDto(
+                        author = AuthorUiModel(
                             id = "author2",
                             avatar = "😎",
                             username = "janedoe",
                             verified = false,
                             hasNuksta = false,
-                            displayName = "Jane Doe"
+                            displayName = "Jane Doe",
+                            pin = null
                         ),
                         likesCount = 5,
                         repliesCount = 0,

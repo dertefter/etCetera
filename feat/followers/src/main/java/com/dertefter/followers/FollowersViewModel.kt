@@ -84,7 +84,7 @@ class FollowersViewModel @Inject constructor(
             }
             is Event.OnRefresh -> {
                 viewModelScope.launch {
-                    paginators[event.tab]?.restart()
+                    paginators[event.tab]?.restart(silentlyLoading = true)
                 }
             }
             Event.OnBackClick -> {

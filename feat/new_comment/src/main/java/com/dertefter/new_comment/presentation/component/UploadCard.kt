@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -27,6 +28,7 @@ import com.dertefter.design.components.post.AttachmentUiModel
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
+import com.dertefter.new_comment.R
 import com.dertefter.new_comment.presentation.Upload
 import com.dertefter.new_comment.presentation.UploadStatus
 
@@ -88,7 +90,7 @@ fun UploadCard(
                 ) {
                     Icon(
                         imageVector = Icons.Refresh,
-                        contentDescription = null,
+                        contentDescription = stringResource(R.string.new_comment_retry_upload),
                     )
                 }
             }
@@ -107,7 +109,7 @@ fun UploadCard(
             )
         ) {
             Icon(
-                contentDescription = null,
+                contentDescription = stringResource(R.string.new_comment_remove_upload),
                 imageVector = Icons.Close
             )
         }

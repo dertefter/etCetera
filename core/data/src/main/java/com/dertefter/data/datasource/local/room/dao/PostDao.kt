@@ -41,6 +41,9 @@ interface PostDao {
     @Query("SELECT * FROM posts WHERE id = :postId")
     fun getPost(postId: String): Flow<PostEntity?>
 
+    @Query("DELETE FROM posts WHERE id = :postId")
+    suspend fun deletePost(postId: String)
+
     @Transaction
     suspend fun savePageWithPosts(
         type: PageType,

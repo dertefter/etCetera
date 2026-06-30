@@ -35,7 +35,8 @@ fun PostDto.toUiModel(): PostUiModel {
         dominantEmoji = dominantEmoji,
         poll = poll?.toUiModel(),
         originalPost = originalPost?.toUiModel(),
-        isOwner = isOwner
+        isOwner = isOwner,
+        isPinned = isPinned
     )
 }
 

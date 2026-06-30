@@ -2,6 +2,16 @@
 <resources>
 
     <string name="new_post_title">New post</string>
-
+    <string name="new_repost_title">Repost</string>
+    <string name="span_bold">Bold</string>
+    <string name="span_italic">Italic</string>
+    <string name="span_underline">Underline</string>
+    <string name="span_strike">Strikethrough</string>
+    <string name="span_monospace">Monospace</string>
+    <string name="span_spoiler">Spoiler</string>
+    <string name="action_add_poll">Add poll</string>
+    <string name="action_add_media">Add media</string>
+    <string name="action_save">Save</string>
+    <string name="post_placeholder">What\'s new?</string>
 
 </resources>

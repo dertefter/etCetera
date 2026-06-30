@@ -99,7 +99,7 @@ fun CommentsScreen(
                                     if (selectedTab == tab) {
                                         Icon(
                                             imageVector = Icons.Check,
-                                            contentDescription = null
+                                            contentDescription = stringResource(R.string.comments_selected)
                                         )
                                     }
                                 }
@@ -124,14 +124,14 @@ fun CommentsScreen(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                     icon = Icons.Add,
-                    contentDescription = "New comment"
+                    contentDescription = stringResource(R.string.comments_add)
                 )
 
             }
         }
     ) { contentPadding ->
         key(selectedTab) {
-            Comments(
+            CommentsFeed(
                 meUserId = meUserId,
                 paginator = paginators[selectedTab]!!,
                 onEvent = onEvent,

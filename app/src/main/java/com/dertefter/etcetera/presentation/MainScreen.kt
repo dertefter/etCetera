@@ -92,7 +92,7 @@ fun MainScreen(
     )
 
     val hazeStyle = HazeBlurDefaults.style(
-        backgroundColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+        backgroundColor = MaterialTheme.colorScheme.surfaceContainer,
         blurRadius = blurRadius,
         noiseFactor = 0.6f,
     )
@@ -124,7 +124,7 @@ fun MainScreen(
                 modifier = Modifier
                     .statusBarsPadding()
                     .fillMaxSize()
-                    .clip(MaterialTheme.shapes.extraLarge)
+                    .clip(BottomSheetDefaults.ExpandedShape)
                     .hazeEffect(state = hazeState) {
                         blurEffect {
                             style = hazeStyle
@@ -136,7 +136,7 @@ fun MainScreen(
                 BottomSheetDefaults.DragHandle()
                 when (val route = bottomSheetRoute) {
                     is Routes.Comments -> CommentsRoute(route.postId)
-                    is Routes.NewPost -> NewPostRoute(route.wallRecipientId)
+                    is Routes.NewPost -> NewPostRoute(route.wallRecipientId, route.postIdForRepost)
                     is Routes.NewComment -> NewCommentRoute(route.postId)
                     is Routes.NewCommentReply -> NewCommentReplyRoute(route.postId, route.commentId, route.userId)
                     else -> {

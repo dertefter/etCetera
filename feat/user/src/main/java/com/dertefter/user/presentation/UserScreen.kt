@@ -86,7 +86,9 @@ import com.dertefter.design.R as DesignR
 @Composable
 fun UserScreen(
     onEvent: (Event) -> Unit,
-    uiState: UiState,
+    userUiState: UserUiState,
+    selectedTab: FeedTab,
+    uiStates: Map<FeedTab, PaginatorUiState<PostDto>>,
     paginators: Map<FeedTab, MutableCursorPaginator<String, PostDto>> = emptyMap(),
 ) {
 
@@ -122,11 +124,11 @@ fun UserScreen(
     }
 
 
-    val isNewPostButtonShow by remember(uiState) {
+    val isNewPostButtonShow by remember(userUiState) {
         derivedStateOf {
-            val user = uiState.userDto
+            val user = userUiState.userDto
             if (user != null) {
-                uiState.isMe || when (user.wallAccess) {
+                userUiState.isMe || when (user.wallAccess) {
                     VisibilityDto.EVERYONE -> true
                     VisibilityDto.FOLLOWERS -> user.isFollowedBy
                     VisibilityDto.MUTUAL -> user.isFollowedBy && user.isFollowing
@@ -140,7 +142,7 @@ fun UserScreen(
 
     val tabs = FeedTab.entries
 
-    val paginator = paginators[uiState.selectedTab]
+    val paginator = paginators[selectedTab]
     val paged = paginator?.rememberPaginated(state = lazyListState)
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -163,8 +165,8 @@ fun UserScreen(
         label = "appBarContainerColor"
     )
 
-    val currentTabUiState = uiState.uiStates[uiState.selectedTab]
-    val isRefreshing = uiState.isLoading || (currentTabUiState is PaginatorUiState.Content && currentTabUiState.prependState.isProgressState())
+    val currentTabUiState = uiStates[selectedTab]
+    val isRefreshing = userUiState.isLoading || (currentTabUiState is PaginatorUiState.Content && currentTabUiState.prependState.isProgressState())
     val pullToRefreshState = rememberPullToRefreshState()
 
     LaunchedEffect(lazyListState) {
@@ -188,7 +190,7 @@ fun UserScreen(
         isRefreshing = isRefreshing,
         enabled = true,
         onRefresh = {
-            onEvent(Event.OnRefresh(uiState.selectedTab))
+            onEvent(Event.OnRefresh(selectedTab))
         },
         indicator = {
             PullToRefreshIndicator(
@@ -218,7 +220,7 @@ fun UserScreen(
 
                     },
                     title = {
-                        uiState.userDto?.let {
+                        userUiState.userDto?.let {
                             Row(
                                 modifier = Modifier
                                     .graphicsLayer(
@@ -244,7 +246,7 @@ fun UserScreen(
                         AppNavigationIcon(
                             icon = Icons.Share,
                             onClick = {
-                                uiState.userDto?.let { user ->
+                                userUiState.userDto?.let { user ->
                                     val sendIntent: Intent = Intent().apply {
                                         action = Intent.ACTION_SEND
                                         putExtra(Intent.EXTRA_TEXT, "https://итд.com/@${user.username}")
@@ -256,7 +258,7 @@ fun UserScreen(
                             },
                             contentDescription = stringResource(R.string.user_share)
                         )
-                        if (uiState.isMe){
+                        if (userUiState.isMe){
                             AppNavigationIcon(
                                 icon = Icons.Settings,
                                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -340,7 +342,7 @@ fun UserScreen(
             }
         )
         { contentPadding ->
-            if (uiState.userDto != null) {
+            if (userUiState.userDto != null) {
                 LazyColumn(
                     state = lazyListState,
                     modifier = Modifier
@@ -351,14 +353,14 @@ fun UserScreen(
                 ) {
                     item {
                         Header(
-                            bannerUrl = uiState.userDto.banner,
+                            bannerUrl = userUiState.userDto.banner,
                             modifier = Modifier
                                 .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
-                            author = uiState.userDto.toUiModel(),
-                            isMe = uiState.isMe,
+                            author = userUiState.userDto.toUiModel(),
+                            isMe = userUiState.isMe,
                             scrollBehavior = scrollBehavior,
                             onEditClick = {
-                                if (uiState.isMe){
+                                if (userUiState.isMe){
                                     onEvent(Event.OnBannerEdit)
                                 }
                             },
@@ -376,17 +378,17 @@ fun UserScreen(
                         ) {
                             TitleValueCard(
                                 title = stringResource(R.string.user_followers),
-                                value = uiState.userDto.followersCount,
+                                value = userUiState.userDto.followersCount,
                                 onClick = {
-                                    onEvent(Event.OnOpenFollowers(userId = uiState.userDto.id))
+                                    onEvent(Event.OnOpenFollowers(userId = userUiState.userDto.id))
                                 }
                             )
 
                             TitleValueCard(
                                 title = stringResource(R.string.user_following),
-                                value = uiState.userDto.followingCount,
+                                value = userUiState.userDto.followingCount,
                                 onClick = {
-                                    onEvent(Event.OnOpenFollowing(userId = uiState.userDto.id))
+                                    onEvent(Event.OnOpenFollowing(userId = userUiState.userDto.id))
                                 }
                             )
 
@@ -394,13 +396,13 @@ fun UserScreen(
                     }
 
                     if (
-                        uiState.isMe || !uiState.userDto.bio.isNullOrEmpty()
+                        userUiState.isMe || !userUiState.userDto.bio.isNullOrEmpty()
                     ){
                         item {
                             BioCard(
                                 modifier = Modifier.padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
-                                canEdit = uiState.isMe,
-                                bio = uiState.userDto.bio ?: "",
+                                canEdit = userUiState.isMe,
+                                bio = userUiState.userDto.bio ?: "",
                                 onSaveClick = {
                                     onEvent(Event.OnSaveBio(it))
                                 }
@@ -408,12 +410,12 @@ fun UserScreen(
                         }
                     }
 
-                    if (!uiState.isMe){
-                        if (uiState.userDto.isFollowing){
+                    if (!userUiState.isMe){
+                        if (userUiState.userDto.isFollowing){
                             item{
                                 FilledTonalButton(
                                     onClick = {
-                                        onEvent(Event.OnUnfollow(uiState.userDto.id))
+                                        onEvent(Event.OnUnfollow(userUiState.userDto.id))
                                     },
                                     modifier = Modifier
                                         .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
@@ -426,7 +428,7 @@ fun UserScreen(
                             item{
                                 Button(
                                     onClick = {
-                                        onEvent(Event.OnFollow(uiState.userDto.id))
+                                        onEvent(Event.OnFollow(userUiState.userDto.id))
                                     },
                                     modifier = Modifier
                                         .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
@@ -458,7 +460,7 @@ fun UserScreen(
                                 customItem(
                                     buttonGroupContent = {
                                         ToggleButton(
-                                            checked = uiState.selectedTab == title,
+                                            checked = selectedTab == title,
                                             onCheckedChange = {
                                                 if (it) {
                                                     onEvent(Event.OnTabSelected(title))
@@ -501,21 +503,20 @@ fun UserScreen(
                     if (currentTabUiState != null && paged != null) {
                         feed(
                             uiState = currentTabUiState,
-                            isMe = uiState.isMe && uiState.selectedTab == FeedTab.POSTS,
+                            isMe = userUiState.isMe && selectedTab == FeedTab.POSTS,
                             paged = paged,
-                            onEvent = onEvent,
-                            pinnedPostId = if (uiState.selectedTab == FeedTab.POSTS) uiState.userDto.pinnedPostId else null
+                            onEvent = onEvent
                         )
                     }
                 }
             } else {
-                if (uiState.isLoading) {
+                if (userUiState.isLoading) {
                     Box(Modifier
                         .padding(contentPadding)
                         .fillMaxSize(), contentAlignment = Alignment.Center) {
                         AppLoadingIndicator()
                     }
-                } else if (uiState.error != null) {
+                } else if (userUiState.error != null) {
                     Box(Modifier
                         .padding(contentPadding)
                         .fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -538,7 +539,7 @@ fun UserScreenPreview() {
     AppTheme {
         UserScreen(
             onEvent = {},
-            uiState = UiState(
+            userUiState = UserUiState(
                 userDto = UserDto(
                     avatar = "🥳",
                     banner = "https://example.com/banner.png",
@@ -563,6 +564,9 @@ fun UserScreenPreview() {
                 ),
                 isLoading = false
             ),
+            selectedTab = FeedTab.POSTS,
+            uiStates = emptyMap(),
+            paginators = emptyMap()
         )
     }
 }

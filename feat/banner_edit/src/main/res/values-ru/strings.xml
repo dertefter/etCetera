@@ -2,5 +2,9 @@
 <resources>
 
     <string name="banner_edit_title">Изменить баннер</string>
+    <string name="banner_edit_undo">Отменить</string>
+    <string name="banner_edit_redo">Вернуть</string>
+    <string name="banner_edit_select_file">Выбрать файл</string>
+    <string name="banner_edit_save">Сохранить</string>
 
 </resources>

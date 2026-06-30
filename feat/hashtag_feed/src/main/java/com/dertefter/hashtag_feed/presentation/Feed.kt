@@ -6,15 +6,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.dertefter.data.dto.feed.PostDto
-import com.dertefter.design.components.loading.AppLoadingIndicator
+import com.dertefter.design.components.post.FeedLoadingShimmer
 import com.dertefter.design.components.post.PostCard
 import com.dertefter.hashtag_feed.R
 import com.dertefter.hashtag_feed.presentation.mapper.toUiModel
@@ -30,22 +30,6 @@ fun LazyListScope.feed(
     onEvent: (Event) -> Unit,
 ) {
     when (uiState) {
-        PaginatorUiState.Idle -> {
-            item {
-                Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    AppLoadingIndicator()
-                }
-            }
-        }
-
-        is PaginatorUiState.Loading -> {
-            item {
-                Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    AppLoadingIndicator()
-                }
-            }
-        }
-
         is PaginatorUiState.Empty -> {
             item {
                 Box(Modifier.fillParentMaxSize(), contentAlignment = Alignment.Center) {
@@ -54,58 +38,80 @@ fun LazyListScope.feed(
             }
         }
 
-        is PaginatorUiState.Error -> {
-            item {
-                Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    Text(stringResource(R.string.user_loading_error, uiState.state.exception.message ?: ""))
+        else -> {
+            val items = when (uiState) {
+                is PaginatorUiState.Loading -> uiState.state.data
+                is PaginatorUiState.Error -> uiState.state.data
+                is PaginatorUiState.Content -> uiState.items
+                PaginatorUiState.Idle -> emptyList()
+            }
+
+            paginated(paged) {
+                postItems(items, onEvent)
+
+                appendIndicator {
+                    HashtagFeedAppendIndicator(uiState)
                 }
             }
         }
+    }
+}
 
-        is PaginatorUiState.Content -> {
-            val displayItems =  uiState.items
-            paginated(paged) {
-                itemsIndexed(
-                    displayItems,
-                    key = { _, post -> post.id }) { index, post ->
-                    Column {
-                        PostCard(
-                            post = post.toUiModel(),
-                            modifier = Modifier.padding(vertical = 16.dp),
-                            onLike = { onEvent(Event.OnLike(post.id)) },
-                            onUnlike = { onEvent(Event.OnUnlike(post.id)) },
-                            onCommentsClick = { onEvent(Event.OnNavigateToComments(post.id)) },
-                            onUserClick = {
-                                onEvent(Event.OnOpenUser(it))
-                            },
-                            onOpenPost = { onEvent(Event.OnOpenPost(it)) },
-                            onAttachmentClick = { attachments, position ->
-                                onEvent(Event.OnOpenAttachmentsViewer(attachments, position))
-                            }
-                        )
-                    }
-                    if (index < displayItems.lastIndex) {
-                        HorizontalDivider()
-                    }
-                }
+private fun LazyListScope.postItems(
+    items: List<PostDto>,
+    onEvent: (Event) -> Unit
+) {
+    itemsIndexed(items, key = { _, post -> post.id }) { index, post ->
+        Column(Modifier.animateItem()) {
+            PostCard(
+                post = post.toUiModel(),
+                modifier = Modifier.padding(vertical = 16.dp),
+                onLike = { onEvent(Event.OnLike(post.id)) },
+                onUnlike = { onEvent(Event.OnUnlike(post.id)) },
+                onCommentsClick = { onEvent(Event.OnNavigateToComments(post.id)) },
+                onUserClick = { onEvent(Event.OnOpenUser(it)) },
+                onOpenPost = { onEvent(Event.OnOpenPost(it)) },
+                onAttachmentClick = { attachments, position ->
+                    onEvent(Event.OnOpenAttachmentsViewer(attachments, position))
+                },
+                onHashtagClick = {
+                    onEvent(Event.OnOpenHashtag(it))
+                },
+                onDelete = { onEvent(Event.OnDeletePost(post.id)) },
+                onPin = { onEvent(Event.OnPin(post.id)) },
+                onUnpin = { onEvent(Event.OnUnpin(post.id)) },
+                onVote = { optionIds -> onEvent(Event.OnVote(post.id, optionIds)) },
+                onRepostClick = { onEvent(Event.OnRepost(post.id)) }
+            )
+            if (index < items.lastIndex) {
+                HorizontalDivider()
+            }
+        }
+    }
+}
 
-                appendIndicator {
-                    uiState.appendState?.let { appendState ->
-                        Box(
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            if (appendState.isProgressState()) {
-                                CircularProgressIndicator()
-                            } else if (appendState.isErrorState()) {
-                                Text(stringResource(R.string.user_append_error))
-                            }
-                        }
+@Composable
+private fun HashtagFeedAppendIndicator(state: PaginatorUiState<PostDto>) {
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        when (state) {
+            is PaginatorUiState.Loading -> FeedLoadingShimmer()
+            is PaginatorUiState.Error -> Text(stringResource(R.string.user_loading_error, state.state.exception.message ?: ""))
+            is PaginatorUiState.Content -> {
+                state.appendState?.let { appendState ->
+                    if (appendState.isProgressState()) {
+                        FeedLoadingShimmer()
+                    } else if (appendState.isErrorState()) {
+                        Text(stringResource(R.string.user_append_error))
                     }
                 }
             }
+            is PaginatorUiState.Idle -> FeedLoadingShimmer()
+            else -> {}
         }
     }
 }

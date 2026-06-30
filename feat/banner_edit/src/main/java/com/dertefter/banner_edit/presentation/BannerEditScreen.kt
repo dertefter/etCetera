@@ -141,7 +141,7 @@ fun BannerEditScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Undo,
-                            contentDescription = "Отменить",
+                            contentDescription = stringResource(R.string.banner_edit_undo),
                             modifier = Modifier.size(24.dp)
                         )
                     }
@@ -151,7 +151,7 @@ fun BannerEditScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Redo,
-                            contentDescription = "Вернуть",
+                            contentDescription = stringResource(R.string.banner_edit_redo),
                             modifier = Modifier.size(24.dp)
                         )
                     }
@@ -165,7 +165,7 @@ fun BannerEditScreen(
                     ) {
                         Icon(
                             imageVector = Icons.AttachFile,
-                            contentDescription = "Выбрать файл"
+                            contentDescription = stringResource(R.string.banner_edit_select_file)
                         )
                     }
                 }
@@ -247,7 +247,7 @@ fun BannerEditScreen(
                 },
                 enabled = uiState.uploadStatus != UploadStatus.UPLOADING
             ) {
-                Text("Сохранить")
+                Text(stringResource(R.string.banner_edit_save))
             }
         }
     }

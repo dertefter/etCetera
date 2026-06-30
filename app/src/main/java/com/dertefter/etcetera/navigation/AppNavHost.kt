@@ -79,7 +79,7 @@ fun RouteContent(route: Routes) {
         is Routes.Feed -> FeedRoute()
         is Routes.Comments -> CommentsRoute(route.postId)
         is Routes.User -> UserRoute(route.userId)
-        is Routes.NewPost -> NewPostRoute(route.wallRecipientId)
+        is Routes.NewPost -> NewPostRoute(route.wallRecipientId, route.postIdForRepost)
         is Routes.NewComment -> NewCommentRoute(route.postId)
         is Routes.NewCommentReply -> NewCommentReplyRoute(route.postId, route.commentId, route.userId)
         is Routes.AttachmentsViewer -> AttachmentViewerRoute(route.attachments, route.viewPosition)

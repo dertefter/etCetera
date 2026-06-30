@@ -17,16 +17,21 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.res.stringResource
 import com.dertefter.data.dto.notifications.NotificationDto
+import com.dertefter.design.components.PullToRefreshIndicator
 import com.dertefter.design.components.buttons.AppNavigationIcon
 import com.dertefter.design.theme.rounding
 import com.dertefter.design.theme.spacing
 import com.dertefter.notifications.R
+import com.jamal_aliev.paginator.core.extension.isProgressState
 import com.jamal_aliev.paginator.core.page.PaginatorUiState
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
 
@@ -39,53 +44,69 @@ fun NotificationsScreen(
     selectedFilter: String? = null,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val pullToRefreshState = rememberPullToRefreshState()
+    val isRefreshing = (uiState is PaginatorUiState.Content<*>) && (uiState.prependState.isProgressState())
 
-    Scaffold(
-        topBar = {
-            val containerColor = lerp(
-                MaterialTheme.colorScheme.surface,
-                MaterialTheme.colorScheme.surfaceContainer,
-                scrollBehavior.state.overlappedFraction
+    PullToRefreshBox(
+        modifier = Modifier.fillMaxSize(),
+        state = pullToRefreshState,
+        isRefreshing = isRefreshing,
+        onRefresh = { onEvent(Event.OnRefresh) },
+        indicator = {
+            PullToRefreshIndicator(
+                modifier = Modifier.align(Alignment.TopCenter),
+                state = pullToRefreshState,
+                isRefreshing = isRefreshing
             )
-            Surface(color = containerColor) {
-                Column {
-                    LargeFlexibleTopAppBar(
-                        navigationIcon = {
-                            AppNavigationIcon(
-                                onClick = {
-                                    onEvent(Event.OnNavigateBack)
-                                }
-                            )
-                        },
-                        title = {
-                            Text(stringResource(R.string.notifications_title))
-                        },
-                        colors = TopAppBarDefaults.topAppBarColors(
-                            containerColor = Color.Transparent,
-                            scrolledContainerColor = Color.Transparent
-                        ),
-                        scrollBehavior = scrollBehavior,
-                    )
+        }
+    ) {
+        Scaffold(
+            topBar = {
+                val containerColor = lerp(
+                    MaterialTheme.colorScheme.surface,
+                    MaterialTheme.colorScheme.surfaceContainer,
+                    scrollBehavior.state.overlappedFraction
+                )
+                Surface(color = containerColor) {
+                    Column {
+                        LargeFlexibleTopAppBar(
+                            navigationIcon = {
+                                AppNavigationIcon(
+                                    onClick = {
+                                        onEvent(Event.OnNavigateBack)
+                                    }
+                                )
+                            },
+                            title = {
+                                Text(stringResource(R.string.notifications_title))
+                            },
+                            colors = TopAppBarDefaults.topAppBarColors(
+                                containerColor = Color.Transparent,
+                                scrolledContainerColor = Color.Transparent
+                            ),
+                            scrollBehavior = scrollBehavior,
+                        )
 
-                    NotificationFilters(
-                        selectedFilter = selectedFilter,
-                        onFilterClick = { type ->
-                            onEvent(Event.OnFilterChanged(type))
-                        }
-                    )
+                        NotificationFilters(
+                            selectedFilter = selectedFilter,
+                            onFilterClick = { type ->
+                                onEvent(Event.OnFilterChanged(type))
+                            }
+                        )
+                    }
                 }
             }
+        ) { padding ->
+            NotificationsFeed(
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentPadding = padding,
+                paginator = paginator,
+                uiState = uiState,
+                onEvent = onEvent,
+                scrollBehavior = scrollBehavior
+            )
         }
-    ) { padding ->
-        NotificationsFeed(
-            modifier = Modifier
-                .fillMaxSize(),
-            contentPadding = padding,
-            paginator = paginator,
-            uiState = uiState,
-            onEvent = onEvent,
-            scrollBehavior = scrollBehavior
-        )
     }
 }
 

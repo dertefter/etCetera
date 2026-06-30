@@ -1,5 +1,7 @@
 package com.dertefter.data.di
 
+import com.dertefter.data.repository.AttachmentsRepository
+import com.dertefter.data.repository.AttachmentsRepositoryImpl
 import com.dertefter.data.repository.AuthRepository
 import com.dertefter.data.repository.AuthRepositoryImpl
 import com.dertefter.data.repository.CommentsRepository
@@ -12,10 +14,10 @@ import com.dertefter.data.repository.FollowersRepository
 import com.dertefter.data.repository.FollowersRepositoryImpl
 import com.dertefter.data.repository.MeRepository
 import com.dertefter.data.repository.MeRepositoryImpl
-import com.dertefter.data.repository.NewPostRepository
-import com.dertefter.data.repository.NewPostRepositoryImpl
 import com.dertefter.data.repository.NotificationsRepository
 import com.dertefter.data.repository.NotificationsRepositoryImpl
+import com.dertefter.data.repository.PostRepository
+import com.dertefter.data.repository.PostRepositoryImpl
 import com.dertefter.data.repository.SearchRepository
 import com.dertefter.data.repository.SearchRepositoryImpl
 import com.dertefter.data.repository.UserRepository
@@ -38,6 +40,12 @@ abstract class RepositoryModule {
 
     @Binds
     @Singleton
+    abstract fun bindAttachmentsRepository(
+        attachmentsRepositoryImpl: AttachmentsRepositoryImpl
+    ): AttachmentsRepository
+
+    @Binds
+    @Singleton
     abstract fun bindMeRepository(
         meRepositoryImpl: MeRepositoryImpl
     ): MeRepository
@@ -47,6 +55,12 @@ abstract class RepositoryModule {
     abstract fun bindFeedRepository(
         feedRepositoryImpl: FeedRepositoryImpl
     ): FeedRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindPostRepository(
+        postRepositoryImpl: PostRepositoryImpl
+    ): PostRepository
 
     @Binds
     @Singleton
@@ -65,12 +79,6 @@ abstract class RepositoryModule {
     abstract fun bindFollowersRepository(
         followersRepositoryImpl: FollowersRepositoryImpl
     ): FollowersRepository
-
-    @Binds
-    @Singleton
-    abstract fun bindNewPostRepository(
-        newPostRepository: NewPostRepositoryImpl
-    ): NewPostRepository
 
     @Binds
     @Singleton

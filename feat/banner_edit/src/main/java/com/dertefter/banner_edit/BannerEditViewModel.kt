@@ -9,8 +9,8 @@ import com.dertefter.banner_edit.presentation.Event
 import com.dertefter.banner_edit.presentation.UiState
 import com.dertefter.banner_edit.presentation.UploadStatus
 import com.dertefter.data.dto.me.UpdateMeRequestDto
+import com.dertefter.data.repository.AttachmentsRepository
 import com.dertefter.data.repository.MeRepository
-import com.dertefter.data.repository.NewPostRepository
 import com.dertefter.navigation.Navigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,12 +25,10 @@ import javax.inject.Inject
 @HiltViewModel
 class BannerEditViewModel @Inject constructor(
     private val application: Application,
-    private val newPostRepository: NewPostRepository,
+    private val attachmentsRepository: AttachmentsRepository,
     private val meRepository: MeRepository,
     private val navigator: Navigator
 ) : ViewModel() {
-
-
 
 
     private val _uploadingStatus = MutableStateFlow<UploadStatus?>(null)
@@ -60,26 +58,6 @@ class BannerEditViewModel @Inject constructor(
         }
     }
 
-
-
-    private fun uploadFile(uri: Uri) {
-        viewModelScope.launch {
-            try {
-                _uploadingStatus.value = UploadStatus.UPLOADING
-                val file = uriToFile(uri)
-                newPostRepository.upload(file).onFailure {
-                    _uploadingStatus.value = UploadStatus.ERROR
-                }.onSuccess {
-                    _id.value = it.id
-                    _uploadingStatus.value = UploadStatus.SUCCESS
-                    saveBannerId(it.id)
-                }
-            } catch (e: Exception) {
-                _uploadingStatus.value = UploadStatus.ERROR
-            }
-        }
-    }
-
     private fun uploadBitmap(bitmap: Bitmap) {
         viewModelScope.launch {
             try {
@@ -88,14 +66,14 @@ class BannerEditViewModel @Inject constructor(
                 file.outputStream().use { out ->
                     bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
                 }
-                newPostRepository.upload(file).onFailure {
+                attachmentsRepository.upload(file).onFailure {
                     _uploadingStatus.value = UploadStatus.ERROR
                 }.onSuccess {
                     _id.value = it.id
                     _uploadingStatus.value = UploadStatus.SUCCESS
                     saveBannerId(it.id)
                 }
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 _uploadingStatus.value = UploadStatus.ERROR
             }
         }
@@ -111,17 +89,6 @@ class BannerEditViewModel @Inject constructor(
                 navigator.navigateUp()
             }
         }
-    }
-
-    private fun uriToFile(uri: Uri): File {
-        val inputStream = application.contentResolver.openInputStream(uri)
-        val file = File(application.cacheDir, "banner.png")
-        inputStream?.use { input ->
-            file.outputStream().use { output ->
-                input.copyTo(output)
-            }
-        }
-        return file
     }
 
 }

@@ -9,8 +9,10 @@ import com.dertefter.navigation.Routes
 import com.dertefter.notifications.presentation.Event
 import com.jamal_aliev.paginator.core.page.PaginatorUiState
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
+import com.jamal_aliev.paginator.cursor.bookmark.CursorBookmark
 import com.jamal_aliev.paginator.cursor.extension.distinctBy
 import com.jamal_aliev.paginator.cursor.extension.prefetchController
+import com.jamal_aliev.paginator.cursor.extension.refreshAll
 import com.jamal_aliev.paginator.cursor.extension.uiState
 import com.jamal_aliev.paginator.cursor.extension.warmUpFromPersistent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -57,11 +59,15 @@ class NotificationsViewModel @Inject constructor(
         viewModelScope.launch {
             paginator.distinctBy { it.id }
             paginator.prefetchController(
-                scope = viewModelScope,
-                prefetchDistance = 5
+                scope = viewModelScope, prefetchDistance = 3
             )
-            paginator.warmUpFromPersistent()
-            paginator.restart(silentlyLoading = true)
+            val inserted = paginator.warmUpFromPersistent()
+            if (inserted > 0) {
+                paginator.jump(CursorBookmark(prev = null, self = "initial", next = null))
+                paginator.refreshAll()
+            } else {
+                paginator.restart()
+            }
         }
     }
 
@@ -78,7 +84,7 @@ class NotificationsViewModel @Inject constructor(
             }
             is Event.OnRefresh -> {
                 viewModelScope.launch {
-                    paginator.restart()
+                    paginator.restart(silentlyLoading = true)
                 }
             }
             is Event.OnNavigateBack -> {

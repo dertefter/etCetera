@@ -20,7 +20,7 @@ import com.dertefter.design.components.post.PostUiModel
 import com.dertefter.design.components.post.SpanUiModel
 import com.dertefter.navigation.AttachmentNavigationModel
 
-fun PostDto.toUiModel(isPinned: Boolean? = null): PostUiModel {
+fun PostDto.toUiModel(): PostUiModel {
     return PostUiModel(
         id = id,
         content = content,
@@ -57,8 +57,6 @@ fun PollOptionDto.toUiModel(isChecked: Boolean) = PollOptionUiModel(
 )
 
 fun AttachmentUiModel.toNavigationModel() = AttachmentNavigationModel(id, type, url, mimeType)
-
-fun UserDto.toUiModel() = AuthorUiModel(id, username, displayName, avatar, hasNuksta, verified, pin?.toUiModel())
 fun AuthorDto.toUiModel() = AuthorUiModel(id, username, displayName, avatar, hasNuksta, verified, pin?.toUiModel())
 fun ShortAuthorDto.toUiModel() = AuthorUiModel(id, username, displayName, avatar, hasNuksta, verified, pin?.toUiModel())
 fun PinDto.toUiModel() = PinUiModel(description, name, slug, url)

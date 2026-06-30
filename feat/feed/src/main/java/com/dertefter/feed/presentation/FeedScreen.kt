@@ -249,7 +249,7 @@ fun FeedScreen(
                         shape = MaterialTheme.cornerShape(addFabCornerRadius),
                         onClick = { onEvent(Event.OnOpenNewPost) },
                     ) {
-                        Icon(Icons.Add, "Create post")
+                        Icon(Icons.Add, stringResource(R.string.feed_create_post))
                     }
 
                     AnimatedVisibility(
@@ -284,7 +284,7 @@ fun FeedScreen(
                             containerColor = MaterialTheme.colorScheme.secondaryContainer,
                             contentColor = MaterialTheme.colorScheme.secondary
                         ) {
-                            Icon(Icons.ArrowWarmUp, "Scroll to top")
+                            Icon(Icons.ArrowWarmUp, stringResource(R.string.feed_scroll_to_top))
                         }
                     }
                 }

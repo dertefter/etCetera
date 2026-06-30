@@ -1,5 +1,6 @@
 package com.dertefter.data.datasource.remote
 
+import android.util.Log
 import com.dertefter.data.dto.auth.SignInRequest
 import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.data.dto.comments.CommentsDataDto
@@ -29,6 +30,7 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import org.w3c.dom.Comment
 import java.io.File
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 class RemoteDataSourceImpl @Inject constructor(
     private val apiService: ApiService
@@ -68,6 +70,28 @@ class RemoteDataSourceImpl @Inject constructor(
         }
     }
 
+    override suspend fun unpinPost(postId: String): Result<Unit> {
+        return runCatching {
+            val response = apiService.unpinPost(postId)
+            if (response.isSuccessful) {
+                Unit
+            } else {
+                throw Exception("Refresh failed: ${response.code()}")
+            }
+        }
+    }
+
+    override suspend fun pinPost(postId: String): Result<Unit> {
+        return runCatching {
+            val response = apiService.pinPost(postId)
+            if (response.isSuccessful) {
+                Unit
+            } else {
+                throw Exception("Refresh failed: ${response.code()}")
+            }
+        }
+    }
+
     override suspend fun getUser(userId: String): Result<UserDto> {
         return runCatching {
             val response = apiService.user(userId)
@@ -81,6 +105,10 @@ class RemoteDataSourceImpl @Inject constructor(
 
     override suspend fun getPosts(tab: String, cursor: String?): Result<PostDataDto> {
         return runCatching {
+            Log.e("sss getPosts","tab: $tab , cursor: $cursor")
+            if (cursor == null || cursor == "initial"){ //fake error
+              // throw NullPointerException()
+            }
             val response = apiService.posts(tab = tab, cursor = cursor)
             if (response.isSuccessful) {
                 response.body()!!.data
@@ -125,7 +153,12 @@ class RemoteDataSourceImpl @Inject constructor(
         return runCatching {
             val response = apiService.posts(userId = userId, pinnedPostId = pinnedPostId, sort = sort, cursor = cursor)
             if (response.isSuccessful) {
-                response.body()!!.data
+                val data = response.body()!!.data
+                data.copy(
+                    posts = data.posts.map { post ->
+                        if (post.id == pinnedPostId) post.copy(isPinned = true) else post
+                    }
+                )
             } else {
                 throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
             }
@@ -254,6 +287,17 @@ class RemoteDataSourceImpl @Inject constructor(
         }
     }
 
+    override suspend fun repost(postId: String, newPostRequest: NewPostRequestDto): Result<PostDto> {
+        return runCatching {
+            val response = apiService.repost(postId, newPostRequest)
+            if (response.isSuccessful) {
+                response.body()!!
+            } else {
+                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
+            }
+        }
+    }
+
     override suspend fun newComment(postId: String, newCommentRequest: NewCommentRequestDto): Result<CommentDto> {
         return runCatching {
             val response = apiService.newComment(postId, newCommentRequest)
@@ -268,6 +312,17 @@ class RemoteDataSourceImpl @Inject constructor(
     override suspend fun deleteComment(commentId: String): Result<Unit> {
         return runCatching {
             val response = apiService.deleteComment(commentId)
+            if (response.isSuccessful) {
+                Unit
+            } else {
+                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
+            }
+        }
+    }
+
+    override suspend fun deletePost(postId: String): Result<Unit> {
+        return runCatching {
+            val response = apiService.deletePost(postId)
             if (response.isSuccessful) {
                 Unit
             } else {

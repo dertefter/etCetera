@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dertefter.data.repository.FeedRepository
+import com.dertefter.data.repository.PostRepository
 import com.dertefter.navigation.Navigator
 import com.dertefter.navigation.Routes
 import com.dertefter.navigation.Routes.Comments
@@ -12,9 +13,12 @@ import com.dertefter.hashtag_feed.presentation.Event
 import com.dertefter.hashtag_feed.presentation.mapper.toNavigationModel
 import com.jamal_aliev.paginator.core.page.PaginatorUiState
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
+import com.jamal_aliev.paginator.cursor.bookmark.CursorBookmark
 import com.jamal_aliev.paginator.cursor.extension.distinctBy
 import com.jamal_aliev.paginator.cursor.extension.prefetchController
+import com.jamal_aliev.paginator.cursor.extension.refreshAll
 import com.jamal_aliev.paginator.cursor.extension.uiState
+import com.jamal_aliev.paginator.cursor.extension.warmUpFromPersistent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,6 +34,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HashtagFeedViewModel @Inject constructor(
     private val feedRepository: FeedRepository,
+    private val postRepository: PostRepository,
     private val navigator: Navigator
 ) : ViewModel() {
 
@@ -61,7 +66,13 @@ class HashtagFeedViewModel @Inject constructor(
             paginator.prefetchController(
                 scope = viewModelScope, prefetchDistance = 3
             )
-            paginator.restart()
+            val inserted = paginator.warmUpFromPersistent()
+            if (inserted > 0) {
+                paginator.jump(CursorBookmark(prev = null, self = "initial", next = null))
+                paginator.refreshAll()
+            } else {
+                paginator.restart()
+            }
         }
     }
 
@@ -79,6 +90,40 @@ class HashtagFeedViewModel @Inject constructor(
                 )
             }
 
+            is Event.OnPin -> {
+                viewModelScope.launch {
+                    postRepository.pinPost(event.postId)
+                }
+            }
+
+            is Event.OnUnpin -> {
+                viewModelScope.launch {
+                    postRepository.unpinPost(event.postId)
+                }
+            }
+
+            is Event.OnVote -> {
+                viewModelScope.launch {
+                    postRepository.votePoll(event.postId, event.optionIds)
+                }
+            }
+
+            is Event.OnRepost -> {
+                navigator.openAsBottomSheet(
+                    Routes.NewPost(postIdForRepost = event.postId)
+                )
+            }
+
+            is Event.OnOpenHashtag -> {
+                navigator.navigate(Routes.HashtagFeed(event.name))
+            }
+
+            is Event.OnDeletePost -> {
+                viewModelScope.launch {
+                    postRepository.deletePost(event.postId)
+                }
+            }
+
             is Event.OnOpenPost -> {
                 navigator.navigate(Routes.Post(event.postId))
             }
@@ -89,20 +134,20 @@ class HashtagFeedViewModel @Inject constructor(
 
             is Event.OnLike -> {
                 viewModelScope.launch {
-                    feedRepository.likePost(event.postId)
+                    postRepository.likePost(event.postId)
                 }
             }
 
             is Event.OnUnlike -> {
                 viewModelScope.launch {
-                    feedRepository.unlikePost(event.postId)
+                    postRepository.unlikePost(event.postId)
                 }
             }
 
             is Event.OnUpdateStats -> {
                 viewModelScope.launch {
                     if (event.ids.isNotEmpty()) {
-                        feedRepository.updatePostStats(event.ids).onFailure {
+                        postRepository.updatePostStats(event.ids).onFailure {
                             Log.e("HashtagFeedViewModel", it.stackTraceToString())
                         }
                     }
@@ -115,7 +160,7 @@ class HashtagFeedViewModel @Inject constructor(
 
             is Event.OnRefresh -> {
                 viewModelScope.launch {
-                    paginator?.restart()
+                    paginator?.restart(silentlyLoading = true)
                 }
             }
 

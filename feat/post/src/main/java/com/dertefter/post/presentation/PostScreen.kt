@@ -1,5 +1,6 @@
 package com.dertefter.post.presentation
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,12 +34,11 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dertefter.comments.CommentsViewModel
 import com.dertefter.comments.presentation.CommentSort
-import com.dertefter.comments.presentation.Comments
+import com.dertefter.comments.presentation.CommentsFeed
 import com.dertefter.comments.presentation.Event as CommentsEvent
 import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.design.components.PullToRefreshIndicator
 import com.dertefter.design.components.buttons.AppNavigationIcon
-import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.components.post.AuthorUiModel
 import com.dertefter.design.components.post.PostCard
 import com.dertefter.design.components.post.PostUiModel
@@ -71,7 +71,7 @@ fun PostScreen(
         uiState = uiState,
         meUserId = meUserId,
         onEvent = onEvent,
-        selectedTab = selectedTab,
+        commentSort = selectedTab,
         commentsUiState = commentsUiState,
         commentsPaginator = if (uiState.post != null) commentsViewModel.getPaginator(
             uiState.post.id,
@@ -87,7 +87,7 @@ fun PostScreenContent(
     uiState: UiState,
     meUserId: String?,
     onEvent: (Event) -> Unit,
-    selectedTab: CommentSort,
+    commentSort: CommentSort,
     commentsUiState: PaginatorUiState<CommentDto>,
     commentsPaginator: MutableCursorPaginator<String, CommentDto>?,
     onCommentsEvent: (CommentsEvent) -> Unit,
@@ -96,153 +96,152 @@ fun PostScreenContent(
     val pullToRefreshState = rememberPullToRefreshState()
     var showMenu by remember { mutableStateOf(false) }
 
-    Scaffold(
-        containerColor = Color.Transparent,
-        topBar = {
-            LargeFlexibleTopAppBar(
-                title = {
-                    Text(stringResource(R.string.post_title))
-                },
-                navigationIcon = {
-                    AppNavigationIcon(
-                        onClick = { onEvent(Event.OnNavigateBack) }
-                    )
-                },
-                scrollBehavior = scrollBehavior,
+    Log.e("posttttt", uiState.post.toString())
+
+    PullToRefreshBox(
+        modifier = Modifier.fillMaxSize(),
+        state = pullToRefreshState,
+        isRefreshing = uiState.isLoading,
+        onRefresh = {
+            onEvent(Event.OnRefresh)
+            uiState.post?.let { post ->
+                onCommentsEvent(CommentsEvent.OnRefresh(commentSort, post.id))
+            }
+        },
+        indicator = {
+            PullToRefreshIndicator(
+                modifier = Modifier
+                    .align(Alignment.TopCenter),
+                state = pullToRefreshState,
+                isRefreshing = uiState.isLoading
             )
         }
-    ) { contentPadding ->
-        PullToRefreshBox(
-            modifier = Modifier.fillMaxSize(),
-            state = pullToRefreshState,
-            isRefreshing = uiState.isLoading,
-            onRefresh = {
-                onEvent(Event.OnRefresh)
-                uiState.post?.let { post ->
-                    onCommentsEvent(CommentsEvent.OnRefresh(selectedTab, post.id))
-                }
-            },
-            indicator = {
-                PullToRefreshIndicator(
-                    modifier = Modifier
-                        .padding(top = contentPadding.calculateTopPadding())
-                        .align(Alignment.TopCenter),
-                    state = pullToRefreshState,
-                    isRefreshing = uiState.isLoading
+    ) {
+        Scaffold(
+            containerColor = Color.Transparent,
+            topBar = {
+                LargeFlexibleTopAppBar(
+                    title = {
+                        Text(stringResource(R.string.post_title))
+                    },
+                    navigationIcon = {
+                        AppNavigationIcon(
+                            onClick = { onEvent(Event.OnNavigateBack) }
+                        )
+                    },
+                    scrollBehavior = scrollBehavior,
                 )
             }
-        ) {
-            if (uiState.isLoading && uiState.post == null) {
-                Box(
-                    Modifier
-                        .padding(contentPadding)
-                        .fillMaxSize(), contentAlignment = Alignment.Center
-                ) {
-                    AppLoadingIndicator()
-                }
-            } else {
-                uiState.post?.let { post ->
-                    key(selectedTab) {
-                        if (commentsPaginator != null) {
-                            Comments(
-                                meUserId = meUserId,
-                                paginator = commentsPaginator,
-                                onEvent = onCommentsEvent,
-                                uiState = commentsUiState,
-                                contentPadding = contentPadding,
-                                scrollBehavior = scrollBehavior,
-                                header = {
-                                    item {
-                                        PostCard(
-                                            post = post,
-                                            modifier = Modifier.padding(vertical = 16.dp),
-                                            onLike = { onEvent(Event.OnLike) },
-                                            onUnlike = { onEvent(Event.OnUnlike) },
-                                            onUserClick = { userId -> onEvent(Event.OnOpenUser(userId)) },
-                                            onVote = { optionIds -> onEvent(Event.OnVote(optionIds)) },
-                                            onOpenPost = { onEvent(Event.OnOpenPost(it)) },
-                                            onAttachmentClick = { attachments, position ->
-                                                onEvent(
-                                                    Event.OnOpenAttachmentsViewer(
-                                                        attachments,
-                                                        position
-                                                    )
+        ) { contentPadding ->
+            uiState.post?.let { post ->
+                key(commentSort) {
+                    if (commentsPaginator != null) {
+                        CommentsFeed(
+                            meUserId = meUserId,
+                            paginator = commentsPaginator,
+                            onEvent = onCommentsEvent,
+                            uiState = commentsUiState,
+                            contentPadding = contentPadding,
+                            scrollBehavior = scrollBehavior,
+                            header = {
+                                item {
+                                    PostCard(
+                                        post = post,
+                                        modifier = Modifier.padding(vertical = 16.dp),
+                                        onLike = { onEvent(Event.OnLike) },
+                                        onUnlike = { onEvent(Event.OnUnlike) },
+                                        onUserClick = { userId -> onEvent(Event.OnOpenUser(userId)) },
+                                        onVote = { optionIds -> onEvent(Event.OnVote(optionIds)) },
+                                        onOpenPost = { onEvent(Event.OnOpenPost(it)) },
+                                        onAttachmentClick = { attachments, position ->
+                                            onEvent(
+                                                Event.OnOpenAttachmentsViewer(
+                                                    attachments,
+                                                    position
                                                 )
-                                            },
-                                            showCommentsButton = false
-                                        )
-                                    }
-                                    item {
-                                        Row(
-                                            modifier = Modifier
-                                                .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
-                                                .fillMaxWidth(),
-                                            verticalAlignment = Alignment.CenterVertically,
-                                        ){
+                                            )
+                                        },
+                                        onHashtagClick = {
+                                            onEvent(Event.OnOpenHashtag(it))
+                                        },
+                                        showCommentsButton = false,
+                                        onDelete = { onEvent(Event.OnDeletePost(post.id)) },
+                                        onCommentsClick = {},
+                                        onPin = { onEvent(Event.OnPin(post.id)) },
+                                        onUnpin = { onEvent(Event.OnUnpin(post.id)) },
+                                        onRepostClick = { onEvent(Event.OnRepost(post.id)) }
+                                    )
+                                }
+                                item {
+                                    Row(
+                                        modifier = Modifier
+                                            .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
+                                            .fillMaxWidth(),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                    ) {
 
-                                            Box {
-                                                AppNavigationIcon(
-                                                    onClick = { showMenu = true },
-                                                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                                                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                                    icon = Icons.SwapVert,
-                                                    contentDescription = stringResource(com.dertefter.comments.R.string.comments_sort)
-                                                )
-                                                DropdownMenu(
-                                                    expanded = showMenu,
-                                                    shape = MaterialTheme.shapes.large,
-                                                    onDismissRequest = { showMenu = false }
-                                                ) {
-                                                    CommentSort.entries.forEach { tab ->
+                                        Box {
+                                            AppNavigationIcon(
+                                                onClick = { showMenu = true },
+                                                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                                contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                icon = Icons.SwapVert,
+                                                contentDescription = stringResource(com.dertefter.comments.R.string.comments_sort)
+                                            )
+                                            DropdownMenu(
+                                                expanded = showMenu,
+                                                shape = MaterialTheme.shapes.large,
+                                                onDismissRequest = { showMenu = false }
+                                            ) {
+                                                CommentSort.entries.forEach { tab ->
 
-                                                        val text = when (tab) {
-                                                            CommentSort.POPULAR -> stringResource(com.dertefter.comments.R.string.comments_popular)
-                                                            CommentSort.OLDEST -> stringResource(com.dertefter.comments.R.string.comments_oldest)
-                                                            CommentSort.NEWEST -> stringResource(com.dertefter.comments.R.string.comments_newest)
-                                                        }
-
-                                                        DropdownMenuItem(
-                                                            text = { Text(text) },
-                                                            onClick = {
-                                                                onCommentsEvent(CommentsEvent.OnTabSelected(tab))
-                                                                showMenu = false
-                                                            },
-                                                            trailingIcon = {
-                                                                if (selectedTab == tab) {
-                                                                    Icon(
-                                                                        imageVector = Icons.Check,
-                                                                        contentDescription = null
-                                                                    )
-                                                                }
-                                                            }
-                                                        )
+                                                    val text = when (tab) {
+                                                        CommentSort.POPULAR -> stringResource(com.dertefter.comments.R.string.comments_popular)
+                                                        CommentSort.OLDEST -> stringResource(com.dertefter.comments.R.string.comments_oldest)
+                                                        CommentSort.NEWEST -> stringResource(com.dertefter.comments.R.string.comments_newest)
                                                     }
+
+                                                    DropdownMenuItem(
+                                                        text = { Text(text) },
+                                                        onClick = {
+                                                            onCommentsEvent(CommentsEvent.OnTabSelected(tab))
+                                                            showMenu = false
+                                                        },
+                                                        trailingIcon = {
+                                                            if (commentSort == tab) {
+                                                                Icon(
+                                                                    imageVector = Icons.Check,
+                                                                    contentDescription = null
+                                                                )
+                                                            }
+                                                        }
+                                                    )
                                                 }
                                             }
-
-                                            Text(
-                                                text = stringResource(R.string.post_comments),
-                                                style = MaterialTheme.typography.titleLarge,
-                                                modifier = Modifier
-                                                    .padding(horizontal = MaterialTheme.spacing.large)
-                                                    .weight(1f)
-                                            )
-
-                                            AppNavigationIcon(
-                                                onClick = {
-                                                    onCommentsEvent(CommentsEvent.OnNewComment)
-                                                },
-                                                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                                                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                                                icon = Icons.Add,
-                                                contentDescription = "New comment"
-                                            )
                                         }
 
+                                        Text(
+                                            text = stringResource(R.string.post_comments),
+                                            style = MaterialTheme.typography.titleLarge,
+                                            modifier = Modifier
+                                                .padding(horizontal = MaterialTheme.spacing.large)
+                                                .weight(1f)
+                                        )
+
+                                        AppNavigationIcon(
+                                            onClick = {
+                                                onCommentsEvent(CommentsEvent.OnNewComment)
+                                            },
+                                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                            icon = Icons.Add,
+                                            contentDescription = "New comment"
+                                        )
                                     }
-                                },
-                            )
-                        }
+
+                                }
+                            },
+                        )
                     }
                 }
             }
@@ -320,7 +319,7 @@ fun PostScreenPreview() {
             uiState = uiState,
             meUserId = "author1",
             onEvent = {},
-            selectedTab = CommentSort.POPULAR,
+            commentSort = CommentSort.POPULAR,
             commentsUiState = PaginatorUiState.Content(
                 prependState = null,
                 items = sampleComments,

@@ -1,7 +1,13 @@
 package com.dertefter.comments.presentation
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,10 +31,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dertefter.comments.R
-import com.dertefter.comments.presentation.component.CommentCard
+import com.dertefter.design.components.comment.CommentCard
+import com.dertefter.design.components.comment.CommentCardShimmer
+import com.dertefter.design.components.comment.CommentsLoadingShimmer
+import com.dertefter.comments.presentation.mapper.toUiModel
 import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.data.dto.feed.AuthorDto
-import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
 import com.gigamole.composefadingedges.FadingEdgesGravity
@@ -45,7 +53,7 @@ import com.jamal_aliev.paginator.cursor.load.CursorLoadResult
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Comments(
+fun CommentsFeed(
     paginator: MutableCursorPaginator<String, CommentDto>,
     onEvent: (Event) -> Unit,
     uiState: PaginatorUiState<CommentDto>,
@@ -57,7 +65,19 @@ fun Comments(
     val listState = rememberLazyListState()
     val paged = paginator.rememberPaginated(state = listState)
 
-    Box(
+    AnimatedContent(
+        targetState = uiState,
+        contentKey = {
+            when (it) {
+                PaginatorUiState.Idle -> 0
+                is PaginatorUiState.Empty -> 1
+                else -> 2
+            }
+        },
+        transitionSpec = {
+            fadeIn(animationSpec = tween(300)) togetherWith fadeOut(animationSpec = tween(300))
+        },
+        label = "comments_feed_state",
         modifier = Modifier
             .fillMaxSize()
             .verticalFadingEdges(
@@ -68,8 +88,8 @@ fun Comments(
                 gravity = FadingEdgesGravity.End,
                 length = contentPadding.calculateBottomPadding() + MaterialTheme.spacing.extraLarge
             )
-    ) {
-        when (uiState) {
+    ) { state ->
+        when (state) {
             PaginatorUiState.Idle -> {
                 Box(
                     Modifier
@@ -77,24 +97,13 @@ fun Comments(
                         .padding(contentPadding)
                         .fillMaxSize(), contentAlignment = Alignment.TopCenter
                 ) {
-                    AppLoadingIndicator()
-                }
-            }
-
-            is PaginatorUiState.Loading -> {
-                Box(
-                    Modifier
-                        .padding(MaterialTheme.spacing.large)
-                        .padding(contentPadding)
-                        .fillMaxSize(), contentAlignment = Alignment.TopCenter
-                ) {
-                    AppLoadingIndicator()
+                    CommentsLoadingShimmer()
                 }
             }
 
             is PaginatorUiState.Empty -> {
                 LazyColumn(
-                    Modifier
+                    modifier = Modifier
                         .fillMaxSize()
                         .then(
                             if (scrollBehavior != null) Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
@@ -115,37 +124,17 @@ fun Comments(
                         }
                     }
                 }
-
             }
 
-            is PaginatorUiState.Error -> {
-                LazyColumn(
-                    Modifier
-                        .fillMaxSize()
-                        .then(
-                            if (scrollBehavior != null) Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                            else Modifier
-                        ),
-                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large),
-                    state = listState,
-                    contentPadding = contentPadding
-                ) {
-                    header?.invoke(this)
-                    item {
-                        Box(
-                            Modifier
-                                .padding(MaterialTheme.spacing.large)
-                                .fillMaxSize(), contentAlignment = Alignment.TopCenter
-                        ) {
-                            Text(stringResource(R.string.comments_failed_to_load))
-                        }
-                    }
+            else -> {
+                val items = when (state) {
+                    is PaginatorUiState.Loading -> state.state.data
+                    is PaginatorUiState.Error -> state.state.data
+                    is PaginatorUiState.Content -> state.items
                 }
-            }
 
-            is PaginatorUiState.Content -> {
                 LazyColumn(
-                    Modifier
+                    modifier = Modifier
                         .fillMaxSize()
                         .then(
                             if (scrollBehavior != null) Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
@@ -166,51 +155,40 @@ fun Comments(
 
                     paginated(paged) {
                         itemsIndexed(
-                            uiState.items,
+                            items,
                             key = { _, comment -> comment.id }) { index, comment ->
-                            CommentCard(
-                                meUserId = meUserId,
-                                comment = comment,
-                                onLike = { onEvent(Event.OnLike(it)) },
-                                onUnlike = { onEvent(Event.OnUnlike(it)) },
-                                onLoadMoreReplies = { onEvent(Event.OnLoadMoreReplies(it)) },
-                                onUserClick = { onEvent(Event.OnOpenUser(it)) },
-                                onReplyClick = { commentId, userId ->
-                                    onEvent(
-                                        Event.OnReply(
-                                            commentId, userId
+                            Column(Modifier.animateItem()) {
+                                CommentCard(
+                                    meUserId = meUserId,
+                                    comment = comment.toUiModel(meUserId),
+                                    onLike = { onEvent(Event.OnLike(it)) },
+                                    onUnlike = { onEvent(Event.OnUnlike(it)) },
+                                    onLoadMoreReplies = { onEvent(Event.OnLoadMoreReplies(it)) },
+                                    onUserClick = { onEvent(Event.OnOpenUser(it)) },
+                                    onReplyClick = { commentId, userId ->
+                                        onEvent(
+                                            Event.OnReply(
+                                                commentId, userId
+                                            )
                                         )
-                                    )
-                                },
-                                onDelete = { commentId ->
-                                    onEvent(
-                                        Event.OnDeleteComment(commentId)
-                                    )
+                                    },
+                                    onDelete = { commentId ->
+                                        onEvent(
+                                            Event.OnDeleteComment(commentId)
+                                        )
 
-                                }
-                            )
-                            if (index < uiState.items.lastIndex) {
-                                HorizontalDivider(
-                                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+                                    }
                                 )
+                                if (index < items.lastIndex) {
+                                    HorizontalDivider(
+                                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+                                    )
+                                }
                             }
                         }
 
                         appendIndicator {
-                            uiState.appendState?.let { appendState ->
-                                Box(
-                                    Modifier
-                                        .fillMaxWidth()
-                                        .padding(16.dp),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    if (appendState.isProgressState()) {
-                                        AppLoadingIndicator()
-                                    } else if (appendState.isErrorState()) {
-                                        Text(stringResource(R.string.comments_failed_to_load))
-                                    }
-                                }
-                            }
+                            CommentAppendIndicator(state)
                         }
                     }
                 }
@@ -219,9 +197,37 @@ fun Comments(
     }
 }
 
+@Composable
+private fun CommentAppendIndicator(state: PaginatorUiState<CommentDto>) {
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        when (state) {
+            is PaginatorUiState.Loading -> CommentCardShimmer()
+            is PaginatorUiState.Error -> Text(stringResource(R.string.comments_failed_to_load))
+            is PaginatorUiState.Content -> {
+                state.appendState?.let { appendState ->
+                    if (appendState.isProgressState()) {
+                        CommentCardShimmer()
+                    } else if (appendState.isErrorState()) {
+                        Text(stringResource(R.string.comments_failed_to_load))
+                    }
+                }
+            }
+
+            is PaginatorUiState.Idle -> CommentCardShimmer()
+
+            else -> {}
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
-fun CommentsPreview() {
+fun CommentsFeedPreview() {
     AppTheme {
         val sampleAuthor = AuthorDto(
             id = "1",
@@ -268,7 +274,7 @@ fun CommentsPreview() {
             appendState = null
         )
 
-        Comments(
+        CommentsFeed(
             paginator = samplePaginator,
             onEvent = {},
             uiState = uiState,

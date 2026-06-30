@@ -8,11 +8,7 @@
     <string name="comments_sort">Sort</string>
     <string name="comments_failed_to_load">Unable to load comments</string>
     <string name="comments_empty">No comments yet</string>
-    <string name="comments_load_more">Load more</string>
-
-    <plurals name="comments_reply_count">
-        <item quantity="one">%d answer</item>
-        <item quantity="other">%d answers</item>
-    </plurals>
+    <string name="comments_selected">Selected</string>
+    <string name="comments_add">Add comment</string>
 
 </resources>

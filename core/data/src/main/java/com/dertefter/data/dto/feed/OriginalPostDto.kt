@@ -18,5 +18,5 @@ data class OriginalPostDto(
     @SerialName("dominantEmoji") val dominantEmoji: String? = null,
     @SerialName("poll") val poll: PollDto? = null,
     @SerialName("isDeleted") val isDeleted: Boolean,
-    @SerialName("vs") val vs: String
+    @SerialName("vs") val vs: String? = null
 )

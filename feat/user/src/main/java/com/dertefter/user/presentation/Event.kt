@@ -5,6 +5,9 @@ import com.dertefter.design.components.post.AttachmentUiModel
 sealed interface Event {
     data object OnLoadMore : Event
     data class OnRefresh(val tab: FeedTab) : Event
+
+    data class OnRepost(val postId: String) : Event
+
     data object OnNavigateBack : Event
     data class OnTabSelected(val tab: FeedTab) : Event
     data class OnLike(val postId: String) : Event
@@ -12,6 +15,8 @@ sealed interface Event {
     data class OnNavigateToComments(val postId: String) : Event
     data class OnUpdateStats(val ids: List<String>) : Event
     data class OnVote(val postId: String, val optionIds: List<String>) : Event
+
+    data class OnDeletePost(val postId: String) : Event
     data class OnShare(val userId: String) : Event
     data class OnBlock(val userId: String) : Event
 
@@ -30,7 +35,13 @@ sealed interface Event {
 
     data class OnFollow(val userId: String) : Event
 
+    data class OnPin(val postId: String) : Event
+
+    data class OnUnpin(val postId: String) : Event
+
     data object OnBannerEdit : Event
+
+    data class OnOpenHashtag(val name: String) : Event
 
     data class OnUnfollow(val userId: String) : Event
     data class  OnOpenAttachmentsViewer(val attachments: List<AttachmentUiModel>, val position: Int = 0)  : Event

@@ -7,4 +7,7 @@
     <string name="feed_search_hint">Поиск&#8230;</string>
     <string name="notifications_content_description">Уведомления</string>
     <string name="hashtag_search_item_format">#%1$s • %2$s постов</string>
+    <string name="feed_error_loading">Ошибка при загрузке новых постов</string>
+    <string name="feed_create_post">Создать пост</string>
+    <string name="feed_scroll_to_top">Наверх</string>
 </resources>

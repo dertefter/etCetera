@@ -78,6 +78,12 @@ interface ApiService {
         @Body postRequest: NewPostRequestDto
     ): Response<PostDto>
 
+    @POST("api/posts/{postId}/repost")
+    suspend fun repost(
+        @Path("postId") postId: String,
+        @Body postRequest: NewPostRequestDto
+    ): Response<PostDto>
+
     @POST("api/posts/{postId}/comments")
     suspend fun newComment(
         @Path("postId") postId: String,
@@ -87,6 +93,21 @@ interface ApiService {
     @DELETE("api/comments/{commentId}")
     suspend fun deleteComment(
         @Path("commentId") commentId: String
+    ): Response<Unit>
+
+    @DELETE("api/posts/{postId}")
+    suspend fun deletePost(
+        @Path("postId") postId: String
+    ): Response<Unit>
+
+    @DELETE("api/posts/{postId}/pin")
+    suspend fun unpinPost(
+        @Path("postId") postId: String
+    ): Response<Unit>
+
+    @POST("api/posts/{postId}/pin")
+    suspend fun pinPost(
+        @Path("postId") postId: String
     ): Response<Unit>
 
     @POST("api/comments/{commentId}/replies")

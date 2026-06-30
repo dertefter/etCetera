@@ -4,7 +4,9 @@ import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dertefter.data.repository.NewPostRepository
+import com.dertefter.data.dto.feed.PostDto
+import com.dertefter.data.repository.AttachmentsRepository
+import com.dertefter.data.repository.PostRepository
 import com.dertefter.navigation.Navigator
 import com.dertefter.new_post.presentation.Event
 import com.dertefter.new_post.presentation.UiState
@@ -18,10 +20,13 @@ import com.dertefter.data.dto.new_post.NewPollDto
 import com.dertefter.data.dto.new_post.NewPollOptionDto
 import com.dertefter.data.dto.feed.SpanDto
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -32,7 +37,8 @@ import javax.inject.Inject
 @HiltViewModel
 class NewPostViewModel @Inject constructor(
     private val application: Application,
-    private val newPostRepository: NewPostRepository,
+    private val postRepository: PostRepository,
+    private val attachmentsRepository: AttachmentsRepository,
     private val navigator: Navigator
 ) : ViewModel() {
 
@@ -49,13 +55,38 @@ class NewPostViewModel @Inject constructor(
 
     private var wallRecipientId: String? = null
 
-    val uiState: StateFlow<UiState> = combine(_content, _spans, _uploads, _poll, _isUploadingPost) { content, spans, uploads, poll, isUploadingPost ->
-        UiState(content, spans, uploads, poll, isUploadingPost)
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), UiState(
-        "",
-        emptyList(),
-        emptyList()
-    ))
+    private val _postIdForRepost = MutableStateFlow<String?>(null)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val _originalPost = _postIdForRepost.flatMapLatest { id ->
+        if (id == null) flowOf(null)
+        else postRepository.getPost(id)
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    val uiState: StateFlow<UiState> = combine(
+        _content,
+        _spans,
+        _uploads,
+        _poll,
+        _isUploadingPost,
+        _originalPost
+    ) { flows ->
+        UiState(
+            content = flows[0] as String,
+            spans = flows[1] as List<SpanUiModel>,
+            uploads = flows[2] as List<Upload>,
+            poll = flows[3] as NewPollUiModel?,
+            isUploadingPost = flows[4] as Boolean,
+            originalPost = flows[5] as PostDto?
+        )
+    }.stateIn(
+        viewModelScope, SharingStarted.WhileSubscribed(5000), UiState(
+            "",
+            emptyList(),
+            emptyList()
+        )
+    )
 
     fun onEvent(event: Event) {
         when (event) {
@@ -179,7 +210,10 @@ class NewPostViewModel @Inject constructor(
                 wallRecipientId = wallRecipientId
             )
 
-            val result = newPostRepository.newPost(request)
+            val result = _postIdForRepost.value?.let {
+                postRepository.repost(it, request)
+            } ?: postRepository.newPost(request)
+
             if (result.isSuccess) {
                 clearAll()
                 navigator.hideBottomSheet()
@@ -213,7 +247,7 @@ class NewPostViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val file = uriToFile(upload.uri)
-                val result = newPostRepository.upload(file)
+                val result = attachmentsRepository.upload(file)
                 _uploads.update { uploads ->
                     uploads.map {
                         if (it.uri == upload.uri) {
@@ -225,7 +259,7 @@ class NewPostViewModel @Inject constructor(
                         } else it
                     }
                 }
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 _uploads.update { uploads ->
                     uploads.map {
                         if (it.uri == upload.uri) it.copy(uploadStatus = UploadStatus.ERROR) else it
@@ -246,9 +280,14 @@ class NewPostViewModel @Inject constructor(
         return file
     }
 
-    fun initWithWalId(wallRecipientId: String?) {
-        if (this.wallRecipientId == wallRecipientId) return
+    fun initWith(wallRecipientId: String?, postIdForRepost: String?) {
         this.wallRecipientId = wallRecipientId
+        this._postIdForRepost.value = postIdForRepost
+        postIdForRepost?.let { postIdForRepost ->
+            viewModelScope.launch {
+                postRepository.updatePost(postIdForRepost)
+            }
+        }
         clearAll()
     }
 

@@ -6,6 +6,7 @@ import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.dto.followers.FollowerUserDto
 import com.dertefter.data.dto.me.MeDto
+import com.dertefter.data.dto.notifications.NotificationDto
 import com.dertefter.data.dto.search.SearchHashtagDto
 import com.dertefter.data.dto.user.UserDto
 import kotlinx.coroutines.flow.Flow
@@ -29,6 +30,7 @@ interface LocalDataSource {
 
     suspend fun getAllPosts(): List<PostDto>
     suspend fun savePost(post: PostDto)
+    suspend fun deletePost(postId: String)
     fun getPost(postId: String): Flow<PostDto?>
 
     suspend fun saveComments(type: PageType, tab: String, self: String, comments: List<CommentDto>)
@@ -38,6 +40,9 @@ interface LocalDataSource {
 
     suspend fun saveUsers(type: PageType, tab: String, self: String, users: List<FollowerUserDto>)
     suspend fun getUsersForPage(type: PageType, tab: String, self: String): List<FollowerUserDto>
+
+    suspend fun saveNotifications(type: PageType, tab: String, self: String, notifications: List<NotificationDto>)
+    suspend fun getNotificationsForPage(type: PageType, tab: String, self: String): List<NotificationDto>
 
     fun getTrendingHashtags(): Flow<List<SearchHashtagDto>?>
     suspend fun saveTrendingHashtags(hashtags: List<SearchHashtagDto>)

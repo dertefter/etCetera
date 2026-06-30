@@ -7,4 +7,7 @@
     <string name="feed_search_hint">Search&#8230;</string>
     <string name="notifications_content_description">Notifications</string>
     <string name="hashtag_search_item_format">#%1$s • %2$s posts</string>
+    <string name="feed_error_loading">Error loading new posts</string>
+    <string name="feed_create_post">Create post</string>
+    <string name="feed_scroll_to_top">Scroll to top</string>
 </resources>

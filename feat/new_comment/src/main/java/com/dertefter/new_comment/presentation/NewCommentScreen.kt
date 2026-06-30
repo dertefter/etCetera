@@ -3,10 +3,7 @@ package com.dertefter.new_comment.presentation
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -55,7 +52,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dertefter.design.components.loading.AppLoadingIndicator
-import com.dertefter.design.components.poll.NewPollCard
 import com.dertefter.design.components.post.buildPostAnnotatedString
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
@@ -84,13 +80,20 @@ fun NewCommentScreen(
 
     val selection = textFieldValue.selection
 
+    val boldLabel = stringResource(R.string.new_comment_bold)
+    val italicLabel = stringResource(R.string.new_comment_italic)
+    val underlineLabel = stringResource(R.string.new_comment_underline)
+    val strikeLabel = stringResource(R.string.new_comment_strikethrough)
+    val monospaceLabel = stringResource(R.string.new_comment_monospace)
+    val spoilerLabel = stringResource(R.string.new_comment_spoiler)
+
     val menuBuilder: TextContextMenuBuilderScope.() -> Unit = {
-        item(label = "Bold", key = "bold", onClick = { onEvent(Event.OnSpanToggled("bold", selection.min, selection.max)) })
-        item(label = "Italic", key = "italic", onClick = { onEvent(Event.OnSpanToggled("italic", selection.min, selection.max)) })
-        item(label = "Underline", key = "underline", onClick = { onEvent(Event.OnSpanToggled("underline", selection.min, selection.max)) })
-        item(label = "Strikethrough", key = "strike", onClick = { onEvent(Event.OnSpanToggled("strike", selection.min, selection.max)) })
-        item(label = "Monospace", key = "monospace", onClick = { onEvent(Event.OnSpanToggled("monospace", selection.min, selection.max)) })
-        item(label = "Spoiler", key = "spoiler", onClick = { onEvent(Event.OnSpanToggled("spoiler", selection.min, selection.max)) })
+        item(label = boldLabel, key = "bold", onClick = { onEvent(Event.OnSpanToggled("bold", selection.min, selection.max)) })
+        item(label = italicLabel, key = "italic", onClick = { onEvent(Event.OnSpanToggled("italic", selection.min, selection.max)) })
+        item(label = underlineLabel, key = "underline", onClick = { onEvent(Event.OnSpanToggled("underline", selection.min, selection.max)) })
+        item(label = strikeLabel, key = "strike", onClick = { onEvent(Event.OnSpanToggled("strike", selection.min, selection.max)) })
+        item(label = monospaceLabel, key = "monospace", onClick = { onEvent(Event.OnSpanToggled("monospace", selection.min, selection.max)) })
+        item(label = spoilerLabel, key = "spoiler", onClick = { onEvent(Event.OnSpanToggled("spoiler", selection.min, selection.max)) })
     }
 
 
@@ -134,7 +137,7 @@ fun NewCommentScreen(
                     },
                     shape = MaterialTheme.shapes.medium,
                 ) {
-                    Icon(imageVector = Icons.AttachFile, contentDescription = "Add media")
+                    Icon(imageVector = Icons.AttachFile, contentDescription = stringResource(R.string.new_comment_add_media))
                 }
 
                 FilledIconButton(
@@ -150,7 +153,7 @@ fun NewCommentScreen(
                             modifier = Modifier.size(34.dp)
                         )
                     } else {
-                        Icon(imageVector = Icons.Check, contentDescription = "Save")
+                        Icon(imageVector = Icons.Check, contentDescription = stringResource(R.string.new_comment_save))
                     }
                 }
             }
@@ -192,7 +195,7 @@ fun NewCommentScreen(
                         singleLine = false,
                         visualTransformation = VisualTransformation.None,
                         interactionSource = remember { MutableInteractionSource() },
-                        placeholder = { Text("Что нового?") },
+                        placeholder = { Text(stringResource(R.string.new_comment_placeholder)) },
                         colors = TextFieldDefaults.colors(
                             focusedContainerColor = Color.Transparent,
                             unfocusedContainerColor = Color.Transparent,

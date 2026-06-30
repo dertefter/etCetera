@@ -3,8 +3,8 @@ package com.dertefter.post.presentation
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dertefter.data.repository.FeedRepository
 import com.dertefter.data.repository.MeRepository
+import com.dertefter.data.repository.PostRepository
 import com.dertefter.navigation.Navigator
 import com.dertefter.navigation.Routes
 import com.dertefter.post.presentation.mapper.toNavigationModel
@@ -22,7 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PostViewModel @Inject constructor(
-    private val feedRepository: FeedRepository,
+    private val postRepository: PostRepository,
     meRepository: MeRepository,
     private val navigator: Navigator,
     savedStateHandle: SavedStateHandle
@@ -42,11 +42,11 @@ class PostViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(false)
 
     val uiState: StateFlow<UiState> = combine(
-        feedRepository.getPost(postId),
+        postRepository.getPost(postId),
         _isLoading
     ) { post, isLoading ->
         UiState(
-            post = post.toUiModel(),
+            post = post?.toUiModel(),
             isLoading = isLoading
         )
     }.stateIn(
@@ -58,7 +58,7 @@ class PostViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             _isLoading.value = true
-            feedRepository.updatePost(postId)
+            postRepository.updatePost(postId)
             _isLoading.value = false
         }
     }
@@ -82,17 +82,49 @@ class PostViewModel @Inject constructor(
                 navigator.navigate(Routes.User(event.postId))
             }
 
+            is Event.OnOpenHashtag -> {
+                navigator.navigate(Routes.HashtagFeed(event.name))
+            }
+
+            is Event.OnDeletePost -> {
+                viewModelScope.launch {
+                    postRepository.deletePost(event.postId).onSuccess {
+                        navigator.navigateUp()
+                    }
+                }
+
+            }
+
+            is Event.OnPin -> {
+                viewModelScope.launch {
+                    postRepository.pinPost(event.postId)
+                }
+            }
+
+            is Event.OnUnpin -> {
+                viewModelScope.launch {
+                    postRepository.unpinPost(event.postId)
+                }
+            }
+
+            is Event.OnRepost -> {
+                navigator.openAsBottomSheet(
+                    Routes.NewPost(postIdForRepost = event.postId)
+                )
+            }
+
+
             is Event.OnRefresh -> {
                 viewModelScope.launch {
                     _isLoading.value = true
-                    feedRepository.updatePost(postId)
+                    postRepository.updatePost(postId)
                     _isLoading.value = false
                 }
             }
 
             is Event.OnLike -> {
                 viewModelScope.launch {
-                    feedRepository.likePost(postId)
+                    postRepository.likePost(postId)
                 }
             }
 
@@ -102,13 +134,13 @@ class PostViewModel @Inject constructor(
 
             is Event.OnUnlike -> {
                 viewModelScope.launch {
-                    feedRepository.unlikePost(postId)
+                    postRepository.unlikePost(postId)
                 }
             }
 
             is Event.OnVote -> {
                 viewModelScope.launch {
-                    feedRepository.votePoll(postId, event.optionIds)
+                    postRepository.votePoll(postId, event.optionIds)
                 }
             }
         }

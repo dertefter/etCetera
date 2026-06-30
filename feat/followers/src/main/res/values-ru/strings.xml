@@ -3,4 +3,6 @@
     <string name="followers_tab_followers">Подписчики</string>
     <string name="followers_tab_following">Подписки</string>
     <string name="followers_empty">Тут пусто</string>
+    <string name="followers_follow">Подписаться</string>
+    <string name="followers_unfollow">Отписаться</string>
 </resources>
