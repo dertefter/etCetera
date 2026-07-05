@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="comments_title">Comments</string>
+    <string name="comments_popular">Popular</string>
+    <string name="comments_oldest">Oldest</string>
+    <string name="comments_newest">Newest</string>
+    <string name="comments_sort">Sort</string>
+    <string name="comments_failed_to_load">Unable to load comments</string>
+    <string name="comments_empty">No comments yet</string>
+    <string name="comments_selected">Selected</string>
+    <string name="comments_add">Add comment</string>
+
+</resources>
