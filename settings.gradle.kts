@@ -1,4 +1,7 @@
 @file:Suppress("UnstableApiUsage", "UnstableApiUsage", "UnstableApiUsage", "UnstableApiUsage")
+
+
+
 pluginManagement {
     repositories {
         google {
@@ -35,23 +38,38 @@ dependencyResolutionManagement {
 
 rootProject.name = "etCetera"
 
-include(":app")
 
-include(":core:data")
-include(":core:design")
-include(":core:navigation")
 
-include(":feat:auth")
-include(":feat:user")
-include(":feat:feed")
-include(":feat:comments")
-include(":feat:new_post")
-include(":feat:new_comment")
-include(":feat:followers")
-include(":feat:notifications")
-include(":feat:banner_edit")
-include(":feat:crash_reports")
-include(":feat:post")
-include(":feat:search")
-include(":feat:hashtag_feed")
-include(":feat:attachment_viewer")
+//common
+include(":common:data")
+include(":common:navigation")
+
+
+//mobile
+include(":app_mobile")
+
+include(":app_mobile:design")
+
+include(":app_mobile:feat:auth")
+include(":app_mobile:feat:user")
+include(":app_mobile:feat:feed")
+include(":app_mobile:feat:comments")
+include(":app_mobile:feat:new_post")
+include(":app_mobile:feat:new_comment")
+include(":app_mobile:feat:followers")
+include(":app_mobile:feat:notifications")
+include(":app_mobile:feat:banner_edit")
+include(":app_mobile:feat:crash_reports")
+include(":app_mobile:feat:post")
+include(":app_mobile:feat:search")
+include(":app_mobile:feat:hashtag_feed")
+include(":app_mobile:feat:attachment_viewer")
+
+
+//wearable
+include(":app_wearable")
+include(":app_wearable:design")
+include(":app_wearable:feat:feed")
+include(":app_wearable:feat:user")
+include(":app_wearable:feat:followers")
+include(":app_wearable:feat:comments")
