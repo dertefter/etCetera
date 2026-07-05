@@ -25,6 +25,7 @@ import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.spacing
 import com.dertefter.feed.FeedRoute
 import com.dertefter.followers.FollowersRoute
+import com.dertefter.hashtag_feed.HashtagFeedRoute
 import com.dertefter.navigation.Routes
 import com.dertefter.user.UserRoute
 
@@ -113,7 +114,11 @@ fun AppNavHost(
                 FollowersRoute(route)
             }
             entry<Routes.Post> { }
-            entry<Routes.HashtagFeed> { }
+            entry<Routes.HashtagFeed> { route ->
+                HashtagFeedRoute(
+                    hashtagName = route.hashtagName
+                )
+            }
             entry<Routes.User> { route ->
                 UserRoute(
                     userId = route.userId
