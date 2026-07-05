@@ -60,12 +60,13 @@ fun MainScreen(
     navigator: Navigator,
     mainScreenState: MainScreenState
 ){
+    val isAuthorized = mainScreenState.isAuthorized ?: return
 
-    val startDestination = if (mainScreenState.isAuthorized) Routes.Feed else Routes.Auth
+    val startDestination = if (isAuthorized) Routes.Feed else Routes.Auth
     val backStack = rememberNavBackStack(startDestination)
 
-    LaunchedEffect(mainScreenState.isAuthorized) {
-        if (mainScreenState.isAuthorized) {
+    LaunchedEffect(isAuthorized) {
+        if (isAuthorized) {
             if (backStack.contains(Routes.Auth)) {
                 backStack.clear()
                 backStack.add(Routes.Feed)

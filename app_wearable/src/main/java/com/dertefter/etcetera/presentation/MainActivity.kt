@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.wear.compose.material3.AppScaffold
@@ -26,16 +27,23 @@ class MainActivity : ComponentActivity() {
     private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
         viewModel // Force initialization to start listening for data changes
+
+        splashScreen.setKeepOnScreenCondition {
+            viewModel.mainScreenState.value.isAuthorized == null
+        }
+
         setContent {
             val mainScreenState by viewModel.mainScreenState.collectAsStateWithLifecycle()
+            val isAuthorized = mainScreenState.isAuthorized ?: return@setContent
             WearableTheme {
-                val startDestination = if (mainScreenState.isAuthorized) Routes.Feed else Routes.Auth
+                val startDestination = if (isAuthorized) Routes.Feed else Routes.Auth
                 val backStack = rememberNavBackStack(startDestination)
 
-                LaunchedEffect(mainScreenState.isAuthorized) {
-                    if (mainScreenState.isAuthorized) {
+                LaunchedEffect(isAuthorized) {
+                    if (isAuthorized) {
                         if (backStack.contains(Routes.Auth)) {
                             backStack.clear()
                             backStack.add(Routes.Feed)

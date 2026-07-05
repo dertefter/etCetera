@@ -21,6 +21,8 @@ import org.junit.Test
 class MainViewModelTest {
 
     private val authRepository: AuthRepository = mockk()
+    private val tokenManager: com.dertefter.data.datasource.local.TokenManager = mockk()
+    private val context: android.content.Context = mockk()
     private val testDispatcher = StandardTestDispatcher()
 
     private lateinit var viewModel: MainViewModel
@@ -28,6 +30,7 @@ class MainViewModelTest {
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
+        every { authRepository.isAuthorized } returns MutableStateFlow(false)
     }
 
     @After
@@ -41,16 +44,23 @@ class MainViewModelTest {
         val isAuthorizedFlow = MutableStateFlow(false)
         every { authRepository.isAuthorized } returns isAuthorizedFlow
         
-        viewModel = MainViewModel(authRepository)
+        viewModel = MainViewModel(authRepository, tokenManager, context)
 
-        // Then: Initial state should be false
-        assertEquals(MainScreenState(isAuthorized = false), viewModel.mainScreenState.value)
+        // Then: Initial state should be null (loading)
+        assertEquals(MainScreenState(isAuthorized = null), viewModel.mainScreenState.value)
+
+        // When: Authorization status changes
+        // The stateIn will collect from authRepository.isAuthorized
+        // Since we provided isAuthorizedFlow, it will eventually emit false
+        
+        val firstState = viewModel.mainScreenState.first { it.isAuthorized != null }
+        assertEquals(MainScreenState(isAuthorized = false), firstState)
 
         // When: Authorization status changes to true
         isAuthorizedFlow.value = true
 
         // Then: State should update
-        val updatedState = viewModel.mainScreenState.first { it.isAuthorized }
+        val updatedState = viewModel.mainScreenState.first { it.isAuthorized == true }
         assertEquals(MainScreenState(isAuthorized = true), updatedState)
     }
 }

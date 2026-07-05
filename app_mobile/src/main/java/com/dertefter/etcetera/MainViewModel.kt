@@ -36,12 +36,14 @@ class MainViewModel @Inject constructor(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = MainScreenState(isAuthorized = false)
+            initialValue = MainScreenState(isAuthorized = null)
         )
 
     init {
-        authRepository.isAuthorized.onEach {
-            syncTokensToWearable()
+        authRepository.isAuthorized.onEach { isAuthorized ->
+            if (isAuthorized) {
+                syncTokensToWearable()
+            }
         }.launchIn(viewModelScope)
     }
 

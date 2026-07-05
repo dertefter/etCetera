@@ -5,9 +5,9 @@
         parent="@style/Theme.Material3.DynamicColors.DayNight.NoActionBar">
     </style>
 
-    <style name="Theme.EtCetera.Splash" parent="Theme.SplashScreen">
+    <style name="Theme.EtCetera.Splash" parent="Theme.SplashScreen.IconBackground">
         <item name="windowSplashScreenAnimatedIcon">@drawable/splash_icon_animated</item>
-        <item name="windowSplashScreenAnimationDuration">3000</item>
+        <item name="windowSplashScreenIconBackgroundColor">@color/splash_bg</item>
         <item name="postSplashScreenTheme">@style/Theme.EtCetera</item>
     </style>
 
