@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.EtCetera"
+        parent="@style/Theme.Material3.DynamicColors.DayNight.NoActionBar">
+    </style>
+
+    <style name="Theme.EtCetera.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_icon_animated</item>
+        <item name="windowSplashScreenAnimationDuration">3000</item>
+        <item name="postSplashScreenTheme">@style/Theme.EtCetera</item>
+    </style>
+
+</resources>
