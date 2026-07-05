@@ -27,6 +27,7 @@ import com.dertefter.feed.FeedRoute
 import com.dertefter.followers.FollowersRoute
 import com.dertefter.hashtag_feed.HashtagFeedRoute
 import com.dertefter.navigation.Routes
+import com.dertefter.post.PostRoute
 import com.dertefter.user.UserRoute
 
 @Composable
@@ -113,7 +114,11 @@ fun AppNavHost(
             entry<Routes.Followers> { route ->
                 FollowersRoute(route)
             }
-            entry<Routes.Post> { }
+            entry<Routes.Post> { route ->
+                PostRoute(
+                    postId = route.postId
+                )
+            }
             entry<Routes.HashtagFeed> { route ->
                 HashtagFeedRoute(
                     hashtagName = route.hashtagName
