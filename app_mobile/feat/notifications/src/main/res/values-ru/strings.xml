@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notifications_title">Уведомления</string>
+    <string name="notifications_empty_state">Уведомлений пока нет</string>
+    <string name="notifications_load_error">Ошибка загрузки: %1$s</string>
+    <string name="notifications_append_error">Ошибка загрузки дополнительных уведомлений</string>
+    <string name="notification_type_follow">подписался(-ась) на вас</string>
+    <string name="notification_type_like">поставил(а) лайк вашему посту</string>
+    <string name="notification_type_comment">оставил(а) комментарий</string>
+    <string name="notification_type_wall_post">опубликовал(а) новый пост</string>
+    <string name="notification_type_repost">сделал(а) репост</string>
+    <string name="notification_type_unknown">новое уведомление</string>
+    <string name="filter_all">Все</string>
+    <string name="filter_follow">Подписки</string>
+    <string name="filter_like">Лайки</string>
+    <string name="filter_comment">Комментарии</string>
+    <string name="filter_repost">Репосты</string>
+</resources>
