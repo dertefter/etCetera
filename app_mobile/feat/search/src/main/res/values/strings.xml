@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="search_title">Search</string>
+    <string name="navigate_back">Back</string>
+    <string name="posts_count">%s posts</string>
+</resources>
