@@ -1,0 +1,76 @@
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.serialization)
+}
+
+android {
+    namespace = "com.dertefter.etcetera"
+    compileSdk = 37
+
+    defaultConfig {
+        applicationId = "com.dertefter.etcetera"
+        minSdk = 30
+        targetSdk = 37
+        versionCode = 1
+        versionName = "1.0"
+
+    }
+
+    buildTypes {
+        release {
+            optimization {
+                enable = false
+            }
+        }
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    useLibrary("wear-sdk")
+    buildFeatures {
+        compose = true
+    }
+}
+
+dependencies {
+
+    implementation(project(":common:data"))
+    implementation(project(":common:navigation"))
+
+    implementation(project(":app_wearable:design"))
+
+    implementation(project(":app_wearable:feat:feed"))
+    implementation(project(":app_wearable:feat:user"))
+    implementation(project(":app_wearable:feat:followers"))
+    implementation(project(":app_wearable:feat:comments"))
+
+    implementation(libs.navigation.compose)
+    implementation(libs.navigation3.runtime)
+    implementation(libs.navigation3.ui)
+    implementation(libs.lifecycle.viewmodel.navigation3)
+    implementation(libs.hilt.navigation.compose)
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+    implementation(libs.kotlinx.serialization.json)
+
+    implementation(libs.compose.wear.navigation)
+    implementation(libs.compose.wear.navigation3)
+    implementation(platform(libs.compose.bom.alpha))
+    implementation(libs.activity.compose)
+    implementation(libs.compose.wear.foundation)
+    implementation(libs.compose.ui)
+    implementation(libs.compose.ui.graphics)
+    implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.androidx.wear.tooling.preview)
+    implementation(libs.compose.wear.material3)
+    implementation(libs.compose.wear.ui.tooling)
+    implementation(libs.core.splashscreen)
+    implementation(libs.play.services.wearable)
+    androidTestImplementation(libs.compose.ui.test.junit4)
+    debugImplementation(libs.compose.ui.test.manifest)
+    debugImplementation(libs.compose.ui.tooling)
+}
