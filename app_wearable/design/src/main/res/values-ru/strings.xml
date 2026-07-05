@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="design_update_failed">Не удалось загрузить данные</string>
+    <string name="design_retry">Повторить попытку</string>
+    <string name="design_back_content_desc">Вернуться назад</string>
+    <string name="design_like_button_like">Лайкнуть</string>
+    <string name="design_like_button_unlike">Убрать лайк</string>
+    <string name="design_repost">Репост</string>
+    <string name="design_unrepost">Убрать репост</string>
+    <string name="design_comments">Комментарии</string>
+
+    <string name="design_poll_total_votes">Всего голосов: %1$d</string>
+    <string name="design_poll_select_one">Выберите один ответ</string>
+    <string name="design_poll_select_multiple">Выберите несколько ответов</string>
+    <string name="design_poll_save">Сохранить</string>
+    <string name="design_poll_change_vote">Изменить голос</string>
+
+    <string name="design_new_poll_title_placeholder">Название опроса…</string>
+    <string name="design_new_poll_add_option">Добавить вариант</string>
+    <string name="design_new_poll_multiple_choice">Несколько вариантов ответа</string>
+
+    <string name="design_post_copy_link">Копировать ссылку</string>
+    <string name="design_post_edit">Редактировать</string>
+    <string name="design_post_pin">Закрепить</string>
+    <string name="design_post_unpin">Открепить</string>
+    <string name="design_post_delete">Удалить</string>
+
+    <string name="design_comment_actions">Действия над комментарием</string>
+    <string name="design_comment_report">Пожаловаться</string>
+    <string name="design_comment_reply">Ответить</string>
+    <string name="design_comment_load_more">Загрузить ещё</string>
+    <plurals name="design_comment_reply_count">
+        <item quantity="one">%d ответ</item>
+        <item quantity="few">%d ответа</item>
+        <item quantity="many">%d ответов</item>
+        <item quantity="other">%d ответа</item>
+    </plurals>
+
+</resources>
