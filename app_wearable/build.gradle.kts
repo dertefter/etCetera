@@ -49,6 +49,7 @@ dependencies {
     implementation(project(":app_wearable:feat:comments"))
     implementation(project(":app_wearable:feat:hashtag_feed"))
     implementation(project(":app_wearable:feat:post"))
+    implementation(project(":app_wearable:feat:attachment_viewer"))
 
     implementation(libs.navigation.compose)
     implementation(libs.navigation3.runtime)

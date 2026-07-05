@@ -19,6 +19,7 @@ import androidx.wear.compose.material3.ScreenScaffold
 import androidx.wear.compose.material3.Text
 import androidx.wear.compose.material3.lazy.rememberTransformationSpec
 import androidx.wear.compose.navigation3.rememberSwipeDismissableSceneStrategy
+import com.dertefter.attachment_viewer.AttachmentViewerRoute
 import com.dertefter.comments.CommentsRoute
 import com.dertefter.design.components.common.TransformingListItem
 import com.dertefter.design.icons.Icons
@@ -135,7 +136,11 @@ fun AppNavHost(
                 )
             }
 
-            entry<Routes.AttachmentsViewer> { }
+            entry<Routes.AttachmentsViewer> { route ->
+                AttachmentViewerRoute(
+                    attachments = route.attachments
+                )
+            }
         }
     )
 }
