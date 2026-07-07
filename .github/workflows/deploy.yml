@@ -1,10 +1,21 @@
-name: Deploy to GitHub Releases
+name: Deploy to Google Play
 
 on:
   push:
     tags:
       - 'v*'
   workflow_dispatch:
+    inputs:
+      manual_track:
+        description: 'track'
+        required: true
+        default: 'internal'
+        type: choice
+        options:
+          - internal
+          - alpha
+          - beta
+          - production
 
 jobs:
   deploy:
@@ -25,25 +36,71 @@ jobs:
 
       - name: Decode Keystore
         run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > app/release.jks
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > app_wearable/release.jks
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > app_mobile/release.jks
 
       - name: Make gradlew executable
         run: chmod +x gradlew
 
-      - name: Build & Sign Release APK
-        run: ./gradlew assembleRelease
+      - name: Determine Google Play Track
+        id: determine_track
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            MOBILE="${{ inputs.manual_track }}"
+            WEAR="wear:${{ inputs.manual_track }}"
+          else
+            TAG="${{ github.ref_name }}"
+            if [[ "$TAG" == *"-alpha"* ]]; then
+              MOBILE="alpha"
+              WEAR="wear:alpha"
+            elif [[ "$TAG" == *"-beta"* ]]; then
+              MOBILE="beta"
+              WEAR="wear:beta"
+            else
+              MOBILE="production"
+              WEAR="wear:production"
+            fi
+          fi
+          
+          echo "mobile_track=$MOBILE" >> $GITHUB_OUTPUT
+          echo "wear_track=$WEAR" >> $GITHUB_OUTPUT
+          
+          echo "Determined mobile track: $MOBILE"
+          echo "Determined wearable track: $WEAR"
+
+      - name: Build & Sign Release AAB and APK
+        run: ./gradlew bundleRelease assembleRelease
         env:
           ANDROID_KEYSTORE_FILE: release.jks
-          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           ANDROID_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           ANDROID_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+
+      - name: Upload Mobile to Google Play
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_KEY }}
+          packageName: com.dertefter.etcetera
+          releaseFiles: app_mobile/build/outputs/bundle/release/app_mobile-release.aab
+          status: draft
+          tracks: ${{ steps.determine_track.outputs.mobile_track }}
+
+      - name: Upload Wearable to Google Play
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_KEY }}
+          packageName: com.dertefter.etcetera
+          releaseFiles: app_wearable/build/outputs/bundle/release/app_wearable-release.aab
+          status: draft
+          tracks: ${{ steps.determine_track.outputs.wear_track }}
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v3
-        if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
+        if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            app/build/outputs/apk/release/app-release.apk
+            app_mobile/build/outputs/apk/release/app_mobile-release.apk
+            app_wearable/build/outputs/apk/release/app_wearable-release.apk
           generate_release_notes: false
           prerelease: ${{ contains(github.ref_name, '-alpha') || contains(github.ref_name, '-beta') }}
         env:
