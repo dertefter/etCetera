@@ -24,8 +24,8 @@ android {
         applicationId = "com.dertefter.etcetera"
         minSdk = 30
         targetSdk = 37
-        versionCode = 15
-        versionName = "0.0.9.5-alpha"
+        versionCode = project.property("appVersionCode").toString().toInt()
+        versionName = project.property("appVersionName").toString()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
