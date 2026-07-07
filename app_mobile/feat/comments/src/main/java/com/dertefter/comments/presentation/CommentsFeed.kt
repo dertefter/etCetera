@@ -32,11 +32,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dertefter.comments.R
 import com.dertefter.design.components.comment.CommentCard
-import com.dertefter.design.components.comment.CommentCardShimmer
-import com.dertefter.design.components.comment.CommentsLoadingShimmer
 import com.dertefter.comments.presentation.mapper.toUiModel
 import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.data.dto.feed.AuthorDto
+import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
 import com.gigamole.composefadingedges.FadingEdgesGravity
@@ -97,7 +96,7 @@ fun CommentsFeed(
                         .padding(contentPadding)
                         .fillMaxSize(), contentAlignment = Alignment.TopCenter
                 ) {
-                    CommentsLoadingShimmer()
+                    AppLoadingIndicator()
                 }
             }
 
@@ -206,19 +205,19 @@ private fun CommentAppendIndicator(state: PaginatorUiState<CommentDto>) {
         contentAlignment = Alignment.Center
     ) {
         when (state) {
-            is PaginatorUiState.Loading -> CommentCardShimmer()
+            is PaginatorUiState.Loading -> AppLoadingIndicator()
             is PaginatorUiState.Error -> Text(stringResource(R.string.comments_failed_to_load))
             is PaginatorUiState.Content -> {
                 state.appendState?.let { appendState ->
                     if (appendState.isProgressState()) {
-                        CommentCardShimmer()
+                        AppLoadingIndicator()
                     } else if (appendState.isErrorState()) {
                         Text(stringResource(R.string.comments_failed_to_load))
                     }
                 }
             }
 
-            is PaginatorUiState.Idle -> CommentCardShimmer()
+            is PaginatorUiState.Idle -> AppLoadingIndicator()
 
             else -> {}
         }

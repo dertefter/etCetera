@@ -22,9 +22,9 @@ import com.dertefter.design.theme.spacing
 fun AttachmentsCarousel(
     attachments: List<AttachmentUiModel>,
     modifier: Modifier = Modifier,
-    itemHeight: Dp = 260.dp,
+    itemHeight: Dp = 220.dp,
     itemShape: CornerBasedShape = MaterialTheme.shapes.large,
-    contentPadding: PaddingValues = PaddingValues(horizontal = MaterialTheme.spacing.defaultScreenPadding),
+    contentPadding: PaddingValues = PaddingValues(),
     onItemClick: (position: Int) -> Unit  = {}
 ) {
     if (attachments.isEmpty()) return
@@ -36,7 +36,7 @@ fun AttachmentsCarousel(
             .padding(contentPadding)
             .fillMaxWidth(),
         itemSpacing = MaterialTheme.spacing.medium,
-        preferredItemWidth = 260.dp,
+        preferredItemWidth = 284.dp,
     ) { index ->
         Attachment(
             attachment = attachments[index],
@@ -63,19 +63,43 @@ fun AttachmentsCarouselPreview() {
                     mimeType = "image/jpeg"
                 ),
                 AttachmentUiModel(
-                    id = "1",
+                    id = "1222",
                     type = "image",
                     url = "https://picsum.photos/400/300",
                     mimeType = "image/jpeg"
                 ),
                 AttachmentUiModel(
-                    id = "1",
+                    id = "122222",
                     type = "image",
                     url = "https://picsum.photos/400/300",
                     mimeType = "image/jpeg"
                 ),
                 AttachmentUiModel(
-                    id = "2",
+                    id = "222",
+                    type = "video",
+                    url = "https://example.com/video.mp4",
+                    mimeType = "video/mp4"
+                ),
+                AttachmentUiModel(
+                    id = "3",
+                    type = "unknown",
+                    url = null,
+                    mimeType = "application/pdf"
+                ),
+                AttachmentUiModel(
+                    id = "1222",
+                    type = "image",
+                    url = "https://picsum.photos/400/300",
+                    mimeType = "image/jpeg"
+                ),
+                AttachmentUiModel(
+                    id = "122222",
+                    type = "image",
+                    url = "https://picsum.photos/400/300",
+                    mimeType = "image/jpeg"
+                ),
+                AttachmentUiModel(
+                    id = "222",
                     type = "video",
                     url = "https://example.com/video.mp4",
                     mimeType = "video/mp4"

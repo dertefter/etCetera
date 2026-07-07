@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -41,6 +42,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.font.FontWeight
 import com.dertefter.design.R
 import com.dertefter.design.common.PrettifyInt
 import com.dertefter.design.icons.Icons
@@ -68,12 +70,12 @@ fun LikeButton(
     }
 
     val containerColor by animateColorAsState(
-        if (isLiked) MaterialTheme.customColors.successContainer else MaterialTheme.colorScheme.surfaceContainer,
+        if (isLiked) MaterialTheme.customColors.likeContainerColor else MaterialTheme.colorScheme.surfaceVariant,
         label = "containerColor"
     )
 
     val contentColor by animateColorAsState(
-        if (isLiked) MaterialTheme.customColors.onSuccessContainer else MaterialTheme.colorScheme.onSurfaceVariant,
+        if (isLiked) MaterialTheme.customColors.onLikeContainerColor else MaterialTheme.colorScheme.onSurfaceVariant,
         label = "contentColor"
     )
 
@@ -95,7 +97,7 @@ fun LikeButton(
 
     Row(
         modifier = modifier
-            .clip(MaterialTheme.shapes.large)
+            .clip(CircleShape)
             .clickable(
                 onClick = onClick,
             )
@@ -104,7 +106,8 @@ fun LikeButton(
             }
             .background(containerColor)
             .padding(
-                all = MaterialTheme.spacing.medium
+                horizontal = MaterialTheme.spacing.medium,
+                vertical = MaterialTheme.spacing.small + MaterialTheme.spacing.extraSmall,
             ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
@@ -142,10 +145,11 @@ fun LikeButton(
                 },
                 label = "likes"
             ) { count ->
+                val fontWeight = if (isLiked) FontWeight.Bold else FontWeight.Medium
                 Text(
                     text = count.PrettifyInt(),
                     color = contentColor,
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = fontWeight)
                 )
             }
         }
@@ -156,7 +160,7 @@ fun LikeButton(
 @Preview(showBackground = true, widthDp = 100, heightDp = 100)
 @Composable
 fun LikeButtonPreview() {
-    AppTheme {
+    AppTheme() {
         val values = listOf(1, 2, 6, 10, 100, 200, 1000, 10000, 0)
         var index by remember { mutableIntStateOf(0) }
         var isLiked by remember { mutableStateOf(true) }

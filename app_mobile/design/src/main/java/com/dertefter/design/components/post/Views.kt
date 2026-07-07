@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -49,10 +50,11 @@ fun Views(
 
     Row(
         modifier = modifier
-            .clip(MaterialTheme.shapes.large)
+            .clip(CircleShape)
             .background(containerColor)
             .padding(
-                all = MaterialTheme.spacing.medium
+                horizontal = MaterialTheme.spacing.medium,
+                vertical = MaterialTheme.spacing.small + MaterialTheme.spacing.extraSmall,
             ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)

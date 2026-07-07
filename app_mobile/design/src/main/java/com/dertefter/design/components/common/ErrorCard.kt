@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import com.dertefter.design.R
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
-import com.dertefter.design.theme.cornerShape
 import com.dertefter.design.theme.spacing
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -38,7 +37,7 @@ fun ErrorCard(
 
     Row(
         modifier = modifier
-            .clip(MaterialTheme.cornerShape(MaterialTheme.spacing.extraLarge))
+            .clip(RoundedCornerShape(MaterialTheme.spacing.extraLarge))
             .background(MaterialTheme.colorScheme.errorContainer)
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically

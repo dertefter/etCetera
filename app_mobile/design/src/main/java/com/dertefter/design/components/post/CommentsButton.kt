@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -43,7 +44,7 @@ fun CommentsButton(
     val floatSpec = MaterialTheme.motionScheme.slowEffectsSpec<Float>()
     val intOffsetSpec = MaterialTheme.motionScheme.slowEffectsSpec<IntOffset>()
 
-    val containerColor = MaterialTheme.colorScheme.surfaceContainer
+    val containerColor = MaterialTheme.colorScheme.surfaceVariant
 
     val contentColor = MaterialTheme.colorScheme.onSurfaceVariant
 
@@ -54,14 +55,15 @@ fun CommentsButton(
 
     Row(
         modifier = modifier
-            .clip(MaterialTheme.shapes.large)
+            .clip(CircleShape)
             .clickable(onClick = onClick)
             .semantics {
                 contentDescription = desc
             }
             .background(containerColor)
             .padding(
-                all = MaterialTheme.spacing.medium
+                horizontal = MaterialTheme.spacing.medium,
+                vertical = MaterialTheme.spacing.small + MaterialTheme.spacing.extraSmall,
             ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)

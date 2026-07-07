@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -21,6 +22,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonGroup
 import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.DropdownMenuItem
@@ -45,6 +47,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.Wallpapers
 import androidx.compose.ui.unit.dp
@@ -53,7 +58,6 @@ import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.design.components.PullToRefreshIndicator
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
-import com.dertefter.design.theme.cornerShape
 import com.dertefter.design.theme.rounding
 import com.dertefter.design.theme.spacing
 import com.dertefter.feed.R
@@ -208,12 +212,34 @@ fun FeedScreen(
                                             },
                                             modifier = with(groupScope) { Modifier.weight(1f) }
                                         ) {
+
+                                            val checked = pagerState.currentPage == index
+
                                             val text = when (title) {
                                                 FeedTab.POPULAR -> stringResource(R.string.feed_popular)
                                                 FeedTab.CLAN -> stringResource(R.string.feed_clan)
                                                 FeedTab.FOLLOWING -> stringResource(R.string.feed_following)
                                             }
-                                            Text(text)
+
+                                            val animatedWeight by animateFloatAsState(
+                                                targetValue = if (checked) 900f else 500f,
+                                                label = "WeightAnimation"
+                                            )
+
+                                            val variableFontFamily = FontFamily(
+                                                Font(
+                                                    resId = com.dertefter.design.R.font.google_sans,
+                                                    variationSettings = FontVariation.Settings(
+                                                        FontVariation.weight(animatedWeight.toInt()),
+                                                    )
+                                                )
+                                            )
+
+                                            Text(
+                                                text,
+                                                fontFamily = variableFontFamily,
+                                                style = MaterialTheme.typography.bodyMedium
+                                            )
                                         }
                                     },
                                     menuContent = { menuState ->
@@ -246,7 +272,7 @@ fun FeedScreen(
                 ) {
                     SmallFloatingActionButton(
                         modifier = Modifier.size(addFabSize),
-                        shape = MaterialTheme.cornerShape(addFabCornerRadius),
+                        shape = RoundedCornerShape(addFabCornerRadius),
                         onClick = { onEvent(Event.OnOpenNewPost) },
                     ) {
                         Icon(Icons.Add, stringResource(R.string.feed_create_post))
@@ -273,7 +299,7 @@ fun FeedScreen(
                             modifier = Modifier
                                 .padding(top = MaterialTheme.spacing.large)
                                 .size(64.dp),
-                            shape = MaterialTheme.cornerShape(MaterialTheme.rounding.largeIncreased),
+                            shape = MaterialTheme.shapes.largeIncreased,
                             onClick = {
                                 scope.launch {
                                     currentListState.animateScrollToItem(0)

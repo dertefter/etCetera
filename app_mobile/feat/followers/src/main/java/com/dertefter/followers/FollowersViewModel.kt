@@ -1,9 +1,7 @@
 package com.dertefter.followers
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
 import com.dertefter.data.dto.followers.FollowerUserDto
 import com.dertefter.data.repository.FollowersRepository
 import com.dertefter.data.repository.UserRepository
@@ -23,44 +21,54 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class FollowersViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
     private val userRepository: UserRepository,
-    followersRepository: FollowersRepository,
+    private val followersRepository: FollowersRepository,
     private val navigator: Navigator
 ) : ViewModel() {
 
-    private val args = savedStateHandle.toRoute<Followers>()
-    val userId = args.userId
+    private val _userId = MutableStateFlow<String?>(null)
+    val userId: String get() = _userId.value ?: ""
 
     val tabs = Tab.entries
 
-    private val _selectedTab = MutableStateFlow(if (args.startTabIsFollowing) Tab.FOLLOWING else Tab.FOLLOWERS)
+    private val _selectedTab = MutableStateFlow(Tab.FOLLOWERS)
     val selectedTab: StateFlow<Tab> = _selectedTab.asStateFlow()
 
-    private val paginators: Map<Tab, MutableCursorPaginator<String, FollowerUserDto>> = mapOf(
-        Tab.FOLLOWERS to followersRepository.getFollowersPaginator(userId),
-        Tab.FOLLOWING to followersRepository.getFollowingPaginator(userId)
-    )
+    private val _paginators = MutableStateFlow<Map<Tab, MutableCursorPaginator<String, FollowerUserDto>>>(emptyMap())
 
-    fun getPaginator(tab: Tab) = paginators[tab]!!
+    fun getPaginator(tab: Tab) = _paginators.value[tab]
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val uiStates: Map<Tab, StateFlow<PaginatorUiState<FollowerUserDto>>> = paginators.mapValues { (_, paginator) ->
-        paginator.uiState.stateIn(
+    val uiStates: Map<Tab, StateFlow<PaginatorUiState<FollowerUserDto>>> = Tab.entries.associateWith { tab ->
+        _paginators.flatMapLatest { paginatorsMap ->
+            paginatorsMap[tab]?.uiState ?: flowOf(PaginatorUiState.Idle)
+        }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = PaginatorUiState.Idle
         )
     }
 
-    init {
-        paginators.values.forEach {
+    fun init(userId: String, startTabIsFollowing: Boolean) {
+        if (_userId.value == userId) return
+        _userId.value = userId
+        _selectedTab.value = if (startTabIsFollowing) Tab.FOLLOWING else Tab.FOLLOWERS
+
+        _paginators.value.values.forEach { it.release() }
+        val map = mapOf(
+            Tab.FOLLOWERS to followersRepository.getFollowersPaginator(userId),
+            Tab.FOLLOWING to followersRepository.getFollowingPaginator(userId)
+        )
+        _paginators.value = map
+        map.values.forEach {
             setupPaginator(it)
         }
     }
@@ -84,7 +92,7 @@ class FollowersViewModel @Inject constructor(
             }
             is Event.OnRefresh -> {
                 viewModelScope.launch {
-                    paginators[event.tab]?.restart(silentlyLoading = true)
+                    _paginators.value[event.tab]?.restart(silentlyLoading = true)
                 }
             }
             Event.OnBackClick -> {
@@ -107,6 +115,6 @@ class FollowersViewModel @Inject constructor(
     }
 
     override fun onCleared() {
-        paginators.values.forEach { it.release() }
+        _paginators.value.values.forEach { it.release() }
     }
 }

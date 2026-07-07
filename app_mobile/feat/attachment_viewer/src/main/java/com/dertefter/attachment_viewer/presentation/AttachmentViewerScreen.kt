@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -27,7 +28,6 @@ import com.dertefter.design.components.buttons.AppNavigationIcon
 import com.dertefter.design.components.post.Attachment
 import com.dertefter.design.components.post.AttachmentUiModel
 import com.dertefter.design.icons.Icons
-import com.dertefter.design.theme.circleShape
 import com.dertefter.design.theme.spacing
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
@@ -103,7 +103,7 @@ fun AttachmentViewerScreen(
                         .align(Alignment.TopCenter)
                         .padding(contentPadding)
                         .padding(MaterialTheme.spacing.defaultScreenPadding)
-                        .background(Color.Black.copy(alpha = 0.5f), MaterialTheme.circleShape())
+                        .background(Color.Black.copy(alpha = 0.5f), CircleShape)
                         .padding(horizontal = 12.dp, vertical = 4.dp)
                 )
             }

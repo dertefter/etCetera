@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -33,6 +34,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -54,7 +56,7 @@ fun RepostButton(
     val intOffsetSpec = MaterialTheme.motionScheme.slowEffectsSpec<IntOffset>()
 
     val containerColor by animateColorAsState(
-        if (isReposted) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainer,
+        if (isReposted) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant,
         label = "containerColor"
     )
 
@@ -90,14 +92,15 @@ fun RepostButton(
 
     Row(
         modifier = modifier
-            .clip(MaterialTheme.shapes.large)
+            .clip(CircleShape)
             .clickable(onClick = onClick)
             .semantics {
                 contentDescription = desc
             }
             .background(containerColor)
             .padding(
-                all = MaterialTheme.spacing.medium
+                horizontal = MaterialTheme.spacing.medium,
+                vertical = MaterialTheme.spacing.small + MaterialTheme.spacing.extraSmall,
             ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
@@ -124,10 +127,11 @@ fun RepostButton(
                 },
                 label = "reposts"
             ) { count ->
+                val fontWeight = if (isReposted) FontWeight.Bold else FontWeight.Medium
                 Text(
                     text = count.PrettifyInt(),
                     color = contentColor,
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = fontWeight)
                 )
             }
         }

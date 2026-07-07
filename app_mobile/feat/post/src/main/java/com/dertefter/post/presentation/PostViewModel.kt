@@ -63,9 +63,7 @@ class PostViewModel @Inject constructor(
         if (_postId.value != null) return
         _postId.value = id
         viewModelScope.launch {
-            _isLoading.value = true
             postRepository.updatePost(id)
-            _isLoading.value = false
         }
     }
 

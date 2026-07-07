@@ -29,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dertefter.comments.CommentsViewModel
@@ -147,7 +146,8 @@ fun PostScreenContent(
                                 item {
                                     PostCard(
                                         post = post,
-                                        modifier = Modifier.padding(vertical = 16.dp),
+                                        modifier = Modifier
+                                            .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
                                         onLike = { onEvent(Event.OnLike) },
                                         onUnlike = { onEvent(Event.OnUnlike) },
                                         onUserClick = { userId -> onEvent(Event.OnOpenUser(userId)) },

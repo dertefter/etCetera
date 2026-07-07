@@ -39,10 +39,7 @@ fun DominantEmoji(
     Row(
         modifier = modifier
             .clip(MaterialTheme.shapes.large)
-            .background(containerColor)
-            .padding(
-                vertical = MaterialTheme.spacing.medium
-            ),
+            .background(containerColor),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
     ){

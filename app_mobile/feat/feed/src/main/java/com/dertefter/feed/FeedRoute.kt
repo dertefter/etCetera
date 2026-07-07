@@ -30,10 +30,6 @@ fun FeedRoute(
 
     val topAppBarState by viewModel.topBarUiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-       viewModel.onEvent(Event.OnRefresh(selectedTab))
-    }
-
     FeedScreen(
         onEvent = viewModel::onEvent,
         selectedTab = selectedTab,

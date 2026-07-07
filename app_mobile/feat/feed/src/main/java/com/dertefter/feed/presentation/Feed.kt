@@ -5,6 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,7 +18,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
@@ -28,8 +29,9 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.dertefter.data.dto.feed.PostDto
-import com.dertefter.design.components.post.FeedLoadingShimmer
+import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.components.post.PostCard
+import com.dertefter.design.theme.spacing
 import com.dertefter.feed.R
 import com.dertefter.feed.presentation.mapper.toUiModel
 import com.jamal_aliev.paginator.compose.cursor.paginated
@@ -96,10 +98,12 @@ fun Feed(
                             else Modifier
                         ),
                     state = listState,
-                    contentPadding = contentPadding
+                    contentPadding = contentPadding,
+                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large)
                 ) {
                     paginated(paged) {
 
+                        item{}
 
                         postItems(items, onEvent)
 
@@ -119,11 +123,12 @@ private fun LazyListScope.postItems(
     items: List<PostDto>,
     onEvent: (Event) -> Unit
 ) {
-    itemsIndexed(items, key = { _, post -> post.id }) { index, post ->
+    itemsIndexed(items, key = { _, post -> post.id }) { _, post ->
         Column(Modifier.animateItem()) {
             PostCard(
                 post = post.toUiModel(),
-                modifier = Modifier.padding(vertical = 16.dp),
+                modifier = Modifier
+                    .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
                 onLike = { onEvent(Event.OnLike(post.id)) },
                 onUnlike = { onEvent(Event.OnUnlike(post.id)) },
                 onCommentsClick = { onEvent(Event.OnNavigateToComments(post.id)) },
@@ -143,7 +148,6 @@ private fun LazyListScope.postItems(
                 onUnpin = { onEvent(Event.OnUnpin(post.id)) },
                 onRepostClick = { onEvent(Event.OnRepost(post.id)) }
             )
-            if (index < items.lastIndex) HorizontalDivider()
         }
     }
 }
@@ -158,20 +162,20 @@ private fun FeedAppendIndicator(state: PaginatorUiState<PostDto>) {
     ) {
         when (state) {
             is PaginatorUiState.Loading -> {
-                FeedLoadingShimmer()
+                AppLoadingIndicator()
             }
             is PaginatorUiState.Error -> Text(stringResource(R.string.feed_error_loading))
             is PaginatorUiState.Content -> {
                 state.appendState?.let { appendState ->
                     if (appendState.isProgressState()) {
-                        FeedLoadingShimmer()
+                        AppLoadingIndicator()
                     } else if (appendState.isErrorState()) {
                         Text(stringResource(R.string.feed_error_loading))
                     }
                 }
             }
             is PaginatorUiState.Idle -> {
-                FeedLoadingShimmer()
+                AppLoadingIndicator()
             }
             else -> {}
         }

@@ -42,7 +42,6 @@ import com.dertefter.design.components.avatar.SmallEmojiAvatar
 import com.dertefter.design.components.buttons.AppNavigationIcon
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
-import com.dertefter.design.theme.circleShape
 import com.dertefter.design.theme.spacing
 import com.dertefter.feed.R
 import kotlinx.coroutines.delay
@@ -105,7 +104,7 @@ fun FeedAppBar(
             Box(
                 modifier = Modifier
                     .height(52.dp)
-                    .clip(MaterialTheme.circleShape())
+                    .clip(CircleShape)
                     .clickable(
                         onClick = onSearchClick
                     )

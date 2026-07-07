@@ -2,6 +2,7 @@ package com.dertefter.design.components.post
 
 import android.content.ClipData
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +27,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.LocalClipboard
@@ -66,7 +68,10 @@ fun PostCard(
     val scope = rememberCoroutineScope()
     Box(
         modifier = modifier
+            .clip(MaterialTheme.shapes.extraLarge)
             .clickable(onClick = { onOpenPost(post.id) })
+            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .padding(MaterialTheme.spacing.large)
             .fillMaxWidth()
     ) {
         Column(
@@ -75,7 +80,6 @@ fun PostCard(
         ) {
             Row(
                 modifier = Modifier
-                    .padding(horizontal = MaterialTheme.spacing.large)
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
@@ -201,7 +205,6 @@ fun PostCard(
                 var layoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
                 Text(
                     modifier = Modifier
-                        .padding(horizontal = MaterialTheme.spacing.large)
                         .pointerInput(post.id, revealedSpoilers) {
                             detectTapGestures { offset ->
                                 layoutResult?.let { lr ->
@@ -236,14 +239,12 @@ fun PostCard(
                             }
                         },
                     text = annotatedString,
-                    style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurface),
                     onTextLayout = { layoutResult = it }
                 )
             }
             if (post.attachments.isNotEmpty()) {
                 AttachmentsCarousel(
                     attachments = post.attachments,
-                    itemShape = MaterialTheme.shapes.largeIncreased,
                     onItemClick = { position ->
                         onAttachmentClick(
                             post.attachments, position
@@ -252,7 +253,6 @@ fun PostCard(
             }
             post.poll?.let { poll ->
                 PollCard(
-                    modifier = Modifier.padding(horizontal = MaterialTheme.spacing.large),
                     title = poll.title,
                     options = poll.options,
                     isMultipleChoice = poll.isMultipleChoice,
@@ -267,15 +267,13 @@ fun PostCard(
                     onOpenPost = { origId -> onOpenPost(origId) },
                     onHashtagClick = onHashtagClick,
                     onUserClick = onUserClick,
-                    modifier = Modifier.padding(horizontal = MaterialTheme.spacing.large),
                     onAttachmentClick = { attachments, position ->
                         onAttachmentClick(attachments, position)
                     })
             }
             Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = MaterialTheme.spacing.large),
+                    .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Row(
@@ -304,7 +302,8 @@ fun PostCard(
                 }
 
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     post.dominantEmoji?.let { dominantEmoji ->
                         DominantEmoji(dominantEmoji = dominantEmoji)
@@ -319,7 +318,7 @@ fun PostCard(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = false)
 @Composable
 fun PostCardPreview() {
     AppTheme {

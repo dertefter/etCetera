@@ -97,7 +97,7 @@ fun RouteContent(route: Routes) {
         is Routes.NewComment -> NewCommentRoute(route.postId)
         is Routes.NewCommentReply -> NewCommentReplyRoute(route.postId, route.commentId, route.userId)
         is Routes.AttachmentsViewer -> AttachmentViewerRoute(route.attachments, route.viewPosition)
-        is Routes.Followers -> FollowersRoute()
+        is Routes.Followers -> FollowersRoute(route.userId, route.startTabIsFollowing)
         is Routes.Notifications -> NotificationsRoute()
         is Routes.BannerEdit -> BannerEditRoute()
         is Routes.CrashReports -> CrashReportsRoute()

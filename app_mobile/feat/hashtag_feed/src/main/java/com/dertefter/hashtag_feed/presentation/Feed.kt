@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -14,8 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.dertefter.data.dto.feed.PostDto
-import com.dertefter.design.components.post.FeedLoadingShimmer
+import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.components.post.PostCard
+import com.dertefter.design.theme.spacing
 import com.dertefter.hashtag_feed.R
 import com.dertefter.hashtag_feed.presentation.mapper.toUiModel
 import com.jamal_aliev.paginator.compose.cursor.PaginatedLazyListHolder
@@ -61,11 +62,12 @@ private fun LazyListScope.postItems(
     items: List<PostDto>,
     onEvent: (Event) -> Unit
 ) {
-    itemsIndexed(items, key = { _, post -> post.id }) { index, post ->
+    itemsIndexed(items, key = { _, post -> post.id }) { _, post ->
         Column(Modifier.animateItem()) {
             PostCard(
                 post = post.toUiModel(),
-                modifier = Modifier.padding(vertical = 16.dp),
+                modifier = Modifier
+                    .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
                 onLike = { onEvent(Event.OnLike(post.id)) },
                 onUnlike = { onEvent(Event.OnUnlike(post.id)) },
                 onCommentsClick = { onEvent(Event.OnNavigateToComments(post.id)) },
@@ -83,9 +85,6 @@ private fun LazyListScope.postItems(
                 onVote = { optionIds -> onEvent(Event.OnVote(post.id, optionIds)) },
                 onRepostClick = { onEvent(Event.OnRepost(post.id)) }
             )
-            if (index < items.lastIndex) {
-                HorizontalDivider()
-            }
         }
     }
 }
@@ -99,18 +98,20 @@ private fun HashtagFeedAppendIndicator(state: PaginatorUiState<PostDto>) {
         contentAlignment = Alignment.Center
     ) {
         when (state) {
-            is PaginatorUiState.Loading -> FeedLoadingShimmer()
+            is PaginatorUiState.Loading -> {
+                AppLoadingIndicator()
+            }
             is PaginatorUiState.Error -> Text(stringResource(R.string.user_loading_error, state.state.exception.message ?: ""))
             is PaginatorUiState.Content -> {
                 state.appendState?.let { appendState ->
                     if (appendState.isProgressState()) {
-                        FeedLoadingShimmer()
+                        AppLoadingIndicator()
                     } else if (appendState.isErrorState()) {
                         Text(stringResource(R.string.user_append_error))
                     }
                 }
             }
-            is PaginatorUiState.Idle -> FeedLoadingShimmer()
+            is PaginatorUiState.Idle -> AppLoadingIndicator()
             else -> {}
         }
     }

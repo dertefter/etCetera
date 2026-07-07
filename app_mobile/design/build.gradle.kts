@@ -42,7 +42,6 @@ dependencies {
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.palette)
-    implementation(libs.compose.shimmer)
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)

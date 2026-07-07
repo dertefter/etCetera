@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,7 +24,6 @@ import com.dertefter.notifications.R
 import com.dertefter.data.dto.notifications.NotificationDto
 import com.dertefter.design.components.avatar.SmallEmojiAvatar
 import com.dertefter.design.theme.AppTheme
-import com.dertefter.design.theme.cornerShape
 import com.dertefter.design.theme.rounding
 import com.dertefter.design.theme.spacing
 
@@ -40,7 +40,7 @@ fun NotificationCard(
     val largeRounding = MaterialTheme.rounding.largeIncreased
     val smallRounding = MaterialTheme.rounding.small
 
-    val shape = MaterialTheme.cornerShape(
+    val shape = RoundedCornerShape(
         topStart = if (isFirst) largeRounding else smallRounding,
         topEnd = if (isFirst) largeRounding else smallRounding,
         bottomStart = if (isLast) largeRounding else smallRounding,

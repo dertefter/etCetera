@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -43,7 +44,6 @@ import com.dertefter.auth.R
 import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
-import com.dertefter.design.theme.circleShape
 import com.dertefter.design.theme.rounding
 import com.dertefter.design.theme.spacing
 
@@ -187,7 +187,7 @@ fun AuthScreen(onEvent: (Event) -> Unit, uiState: UiState) {
                         .padding(bottom = MaterialTheme.spacing.extraLarge)
                         .widthIn(max = 400.dp),
                     enabled = uiState.login.isNotBlank() && uiState.password.isNotBlank() && uiState.isLoginValid,
-                    shape = MaterialTheme.circleShape()
+                    shape = CircleShape
                 ) {
                     AnimatedContent(
                         targetState = uiState.isLoading,
