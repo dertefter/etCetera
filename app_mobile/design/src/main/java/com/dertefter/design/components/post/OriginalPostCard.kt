@@ -48,9 +48,9 @@ fun OriginalPostCard(
             .border(
                 width = 1.dp,
                 color = MaterialTheme.colorScheme.outlineVariant,
-                shape = MaterialTheme.shapes.extraLarge
+                shape = MaterialTheme.shapes.largeIncreased
             )
-            .padding(vertical = MaterialTheme.spacing.large),
+            .padding(all = MaterialTheme.spacing.large),
     ) {
         if (originalPost.isDeleted) {
             Text(
@@ -58,7 +58,6 @@ fun OriginalPostCard(
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier
-                    .padding(horizontal = MaterialTheme.spacing.large)
                     .align(Alignment.Center)
             )
         } else {
@@ -66,14 +65,13 @@ fun OriginalPostCard(
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
             ) {
                 Row(
-                    modifier = Modifier
-                    .padding(horizontal = MaterialTheme.spacing.large),
+                    modifier = Modifier,
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
                 ) {
                     SmallEmojiAvatar(
                         emoji = originalPost.author.avatar,
-                        containerSize = 32.dp
+                        containerSize = 40.dp
                     )
                     Column {
                         DisplayName(
@@ -95,7 +93,6 @@ fun OriginalPostCard(
                     var layoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
                     Text(
                         modifier = Modifier
-                            .padding(horizontal = MaterialTheme.spacing.large)
                             .pointerInput(originalPost.id, revealedSpoilers) {
                                 detectTapGestures { offset ->
                                     layoutResult?.let { lr ->
