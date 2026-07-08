@@ -1,8 +1,5 @@
 package com.dertefter.etcetera.navigation
 
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
@@ -44,28 +41,25 @@ fun AppNavHost(
         modifier = modifier.background(MaterialTheme.colorScheme.background),
         backStack = backStack,
         onBack = onBack,
-        transitionSpec = {
-            (fadeIn(animationSpec = tween(300)) + slideInHorizontally(
-                animationSpec = tween(300),
-                initialOffsetX = { it }
-            )) togetherWith (fadeOut(animationSpec = tween(300)) + slideOutHorizontally(
-                animationSpec = tween(300),
-                targetOffsetX = { -it }
-            ))
-        },
-        popTransitionSpec = {
-            (fadeIn(animationSpec = tween(300)) + slideInHorizontally(
-                animationSpec = tween(300),
-                initialOffsetX = { -it }
-            )) togetherWith (fadeOut(animationSpec = tween(300)) + slideOutHorizontally(
-                animationSpec = tween(300),
-                targetOffsetX = { it }
-            ))
-        },
         entryDecorators = listOf(
             rememberSaveableStateHolderNavEntryDecorator(),
             rememberViewModelStoreNavEntryDecorator()
         ),
+        transitionSpec = {
+            // Slide in from right when navigating forward
+            slideInHorizontally(initialOffsetX = { it }) togetherWith
+                    slideOutHorizontally(targetOffsetX = { -it })
+        },
+        popTransitionSpec = {
+            // Slide in from left when navigating back
+            slideInHorizontally(initialOffsetX = { -it }) togetherWith
+                    slideOutHorizontally(targetOffsetX = { it })
+        },
+        predictivePopTransitionSpec = {
+            // Slide in from left when navigating back
+            slideInHorizontally(initialOffsetX = { -it }) togetherWith
+                    slideOutHorizontally(targetOffsetX = { it })
+        },
         entryProvider = entryProvider {
             entry<Routes.CrashReports> { RouteContent(it) }
             entry<Routes.Auth> { RouteContent(it) }
