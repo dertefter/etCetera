@@ -113,7 +113,7 @@ fun AppTheme(
 
     val context = LocalContext.current
 
-    val paletteStyle = paletteStyle ?: PaletteStyle.Vibrant
+    val paletteStyle = paletteStyle ?: PaletteStyle.TonalSpot
     val specVersion = specVersion ?: ColorSpec.SpecVersion.SPEC_2025
     val isCut = isCut ?: false
 
