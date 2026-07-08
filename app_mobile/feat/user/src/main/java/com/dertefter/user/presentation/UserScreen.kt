@@ -498,6 +498,8 @@ fun UserScreen(
                                             Text(
                                                 text,
                                                 fontFamily = variableFontFamily,
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis,
                                                 style = MaterialTheme.typography.bodyMedium
                                             )
                                         }

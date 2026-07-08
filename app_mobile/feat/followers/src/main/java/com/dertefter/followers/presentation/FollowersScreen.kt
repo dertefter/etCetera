@@ -1,5 +1,6 @@
 package com.dertefter.followers.presentation
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,11 +24,16 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontVariation
+import androidx.compose.ui.text.style.TextOverflow
 import com.dertefter.data.dto.followers.FollowerUserDto
 import com.dertefter.design.components.buttons.AppNavigationIcon
 import com.dertefter.design.theme.spacing
@@ -144,7 +150,31 @@ fun FollowersScreen(
                                         Tab.FOLLOWERS -> stringResource(R.string.followers_tab_followers)
                                         Tab.FOLLOWING -> stringResource(R.string.followers_tab_following)
                                     }
-                                    Text(text)
+
+                                    val checked = selectedTab == title
+
+                                    val animatedWeight by animateFloatAsState(
+                                        targetValue = if (checked) 900f else 500f,
+                                        label = "WeightAnimation"
+                                    )
+
+                                    val variableFontFamily = FontFamily(
+                                        Font(
+                                            resId = com.dertefter.design.R.font.google_sans,
+                                            variationSettings = FontVariation.Settings(
+                                                FontVariation.weight(animatedWeight.toInt()),
+                                            )
+                                        )
+                                    )
+
+
+                                    Text(
+                                        text,
+                                        fontFamily = variableFontFamily,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
                                 }
                             },
                             menuContent = { menuState ->
