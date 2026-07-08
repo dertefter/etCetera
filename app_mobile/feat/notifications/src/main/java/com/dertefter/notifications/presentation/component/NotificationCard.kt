@@ -65,7 +65,6 @@ fun NotificationCard(
             emoji = notification.actor.avatar,
             containerSize = 48.dp,
             onClick = onUserClick,
-            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
             modifier = Modifier
                 .align(Alignment.Top)
         )

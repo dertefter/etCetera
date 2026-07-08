@@ -242,7 +242,6 @@ fun UserScreen(
                             ) {
                                 SmallEmojiAvatar(
                                     emoji = it.avatar,
-                                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
                                     containerSize = 40.dp
                                 )
                                 Text(

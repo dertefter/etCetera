@@ -41,8 +41,6 @@ import androidx.graphics.shapes.star
 import androidx.palette.graphics.Palette
 import com.dertefter.design.components.common.RoundedPolygonShape
 import com.dertefter.design.theme.AppTheme
-import com.materialkolor.PaletteStyle
-import com.materialkolor.dynamiccolor.ColorSpec
 import com.materialkolor.ktx.harmonize
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -56,12 +54,13 @@ fun SmallEmojiAvatar(
     containerSize: Dp = 48.dp,
     staticShape:  RoundedPolygon? = null,
     fontSize: TextUnit = 20.sp,
-    containerColor: Color = MaterialTheme.colorScheme.surfaceContainer,
-    harmonizeColor: Color = MaterialTheme.colorScheme.primaryContainer,
+    harmonizeColor: Color = MaterialTheme.colorScheme.surfaceContainerHighest,
     onClick: () -> Unit = {}
 ) {
 
-    var detectedColor by remember { mutableStateOf(containerColor) }
+    val fallbackColor = MaterialTheme.colorScheme.surfaceContainer
+
+    var detectedColor by remember { mutableStateOf(fallbackColor) }
 
     val polygon = remember(emoji, staticShape) {
         staticShape ?: getEmojiPolygon(emoji)
@@ -70,17 +69,22 @@ fun SmallEmojiAvatar(
         RoundedPolygonShape(polygon = polygon)
     }
 
-    LaunchedEffect(emoji, containerColor) {
-        val color = extractEmojiColor(emoji, containerColor.toArgb())
+    LaunchedEffect(emoji, fallbackColor) {
+        val color = extractEmojiColor(
+            emoji = emoji,
+            defaultColorInt = fallbackColor.toArgb()
+        )
         detectedColor = color
-            .harmonize(harmonizeColor, true)
+            .harmonize(
+                other = harmonizeColor,
+                matchSaturation = true
+            )
     }
 
     Box(
         modifier = modifier
             .size(containerSize)
             .clip(clip)
-            .background(containerColor)
             .background(detectedColor)
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
@@ -141,11 +145,7 @@ private suspend fun extractEmojiColor(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 @Composable
 fun PreviewAv() {
-    AppTheme(
-        paletteStyle = PaletteStyle.Vibrant,
-        specVersion = ColorSpec.SpecVersion.SPEC_2025,
-        seedColor = Color.Green.toArgb().toLong()
-    ) {
+    AppTheme {
         val emojiList = listOf(
             "🌏", "🪲", "⚙️", "😍", "🖼️", "❤️", "😆", "🔥", "🌈", "🍎", "⚽", "🚗", "📱", "💻", "⌚",
             "🎧", "📷", "💡", "🔑", "🎁", "🎈", "🎉", "🎨", "🎭", "🎮", "🎲", "🎯", "🎳"
