@@ -70,7 +70,11 @@ private fun LazyListScope.postItems(
     isMe: Boolean = false,
 ) {
     itemsIndexed(items, key = { _, post -> post.id }) { _, post ->
-        Column(Modifier.animateItem()) {
+        Column(
+            Modifier
+                .animateItem()
+                .padding(bottom = MaterialTheme.spacing.large)
+        ) {
             PostCard(
                 post = post.toUiModel(),
                 modifier = Modifier

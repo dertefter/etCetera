@@ -16,7 +16,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -52,6 +55,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -118,10 +122,15 @@ fun UserScreen(
         label = "addFabCornerRadius"
     )
 
-    val isStickyHeaderStuck by remember {
+    val isStickyHeaderStuck by remember(lazyListState) {
         derivedStateOf {
-            val stickyHeaderIndex = 3
-            lazyListState.firstVisibleItemIndex >= stickyHeaderIndex
+            val headerItem = lazyListState.layoutInfo.visibleItemsInfo.find { it.key == "tabs" }
+            if (headerItem != null) {
+                lazyListState.firstVisibleItemIndex > headerItem.index ||
+                        (lazyListState.firstVisibleItemIndex == headerItem.index && lazyListState.firstVisibleItemScrollOffset > 0)
+            } else {
+                false
+            }
         }
     }
 
@@ -345,19 +354,25 @@ fun UserScreen(
         )
         { contentPadding ->
             if (userUiState.userDto != null) {
+                val layoutDirection = LocalLayoutDirection.current
                 LazyColumn(
                     state = lazyListState,
                     modifier = Modifier
-                        .fillMaxSize(),
-                    contentPadding = contentPadding,
+                        .fillMaxSize()
+                        .padding(top = contentPadding.calculateTopPadding()),
+                    contentPadding = PaddingValues(
+                        start = contentPadding.calculateStartPadding(layoutDirection),
+                        end = contentPadding.calculateEndPadding(layoutDirection),
+                        bottom = contentPadding.calculateBottomPadding()
+                    ),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large),
                 ) {
                     item {
                         Header(
                             bannerUrl = userUiState.userDto.banner,
                             modifier = Modifier
-                                .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
+                                .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
+                                .padding(bottom = MaterialTheme.spacing.large),
                             author = userUiState.userDto.toUiModel(),
                             isMe = userUiState.isMe,
                             scrollBehavior = scrollBehavior,
@@ -374,8 +389,8 @@ fun UserScreen(
                     item {
                         Row(
                             modifier = Modifier
-                                .align(Alignment.Center)
-                                .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
+                                .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
+                                .padding(bottom = MaterialTheme.spacing.large),
                             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.defaultScreenPadding)
                         ) {
                             TitleValueCard(
@@ -402,7 +417,9 @@ fun UserScreen(
                     ){
                         item {
                             BioCard(
-                                modifier = Modifier.padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
+                                modifier = Modifier
+                                    .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
+                                    .padding(bottom = MaterialTheme.spacing.large),
                                 canEdit = userUiState.isMe,
                                 bio = userUiState.userDto.bio ?: "",
                                 onSaveClick = {
@@ -421,6 +438,7 @@ fun UserScreen(
                                     },
                                     modifier = Modifier
                                         .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
+                                        .padding(bottom = MaterialTheme.spacing.large)
                                         .fillMaxWidth()
                                 ) {
                                     Text(stringResource(R.string.user_unfollow))
@@ -434,6 +452,7 @@ fun UserScreen(
                                     },
                                     modifier = Modifier
                                         .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
+                                        .padding(bottom = MaterialTheme.spacing.large)
                                         .fillMaxWidth()
                                 ) {
                                     Text(stringResource(R.string.user_follow))
@@ -442,7 +461,7 @@ fun UserScreen(
                         }
                     }
 
-                    stickyHeader {
+                    stickyHeader(key = "tabs") {
                         val stickyHeaderBackground by animateColorAsState(
                             targetValue = if (isStickyHeaderStuck) MaterialTheme.colorScheme.surfaceContainer else MaterialTheme.colorScheme.surface,
                             label = "stickyHeaderBackground"
@@ -453,7 +472,7 @@ fun UserScreen(
                                 .fillMaxWidth()
                                 .background(stickyHeaderBackground)
                                 .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
-                                .padding(bottom = MaterialTheme.spacing.small),
+                                .padding(bottom = MaterialTheme.spacing.large),
                             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
                         ) {
                             val groupScope = this
