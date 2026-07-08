@@ -31,6 +31,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.LocalClipboard
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.tooling.preview.Preview
@@ -62,8 +63,11 @@ fun PostCard(
     isOnMyWall: Boolean = false,
     onOpenPost: (String) -> Unit,
     onHashtagClick: (hashtagId: String) -> Unit,
+    onLinkClick: ((url: String) -> Unit)? = null,
     onAttachmentClick: (attachments: List<AttachmentUiModel>, position: Int) -> Unit
 ) {
+    val uriHandler = LocalUriHandler.current
+    val finalOnLinkClick = onLinkClick ?: { url -> uriHandler.openUri(url) }
     val clipboard = LocalClipboard.current
     val scope = rememberCoroutineScope()
     Box(
@@ -139,7 +143,7 @@ fun PostCard(
                             text = { Text(stringResource(R.string.design_post_copy_link)) },
                             onClick = {
                                 val link =
-                                    "https://xn--d1ah4a.com/@${post.author.username}/post/${post.id}"
+                                    "https://итд.com/@${post.author.username}/post/${post.id}"
                                 scope.launch {
                                     clipboard.setClipEntry(
                                         ClipEntry(
@@ -224,10 +228,17 @@ fun PostCard(
                                         start = tapOffset,
                                         end = tapOffset
                                     )
+                                    val linkAnnotations = annotatedString.getStringAnnotations(
+                                        tag = "LINK",
+                                        start = tapOffset,
+                                        end = tapOffset
+                                    )
                                     if (hashtagAnnotations.isNotEmpty()) {
                                         onHashtagClick(hashtagAnnotations.first().item)
                                     } else if (mentionAnnotations.isNotEmpty()) {
                                         onUserClick(mentionAnnotations.first().item)
+                                    } else if (linkAnnotations.isNotEmpty()) {
+                                        finalOnLinkClick(linkAnnotations.first().item)
                                     } else if (spoilerAnnotations.isNotEmpty()) {
                                         spoilerAnnotations.firstOrNull()?.let { annotation ->
                                             revealedSpoilers = revealedSpoilers + annotation.item.toInt()
@@ -267,6 +278,7 @@ fun PostCard(
                     onOpenPost = { origId -> onOpenPost(origId) },
                     onHashtagClick = onHashtagClick,
                     onUserClick = onUserClick,
+                    onLinkClick = finalOnLinkClick,
                     onAttachmentClick = { attachments, position ->
                         onAttachmentClick(attachments, position)
                     })

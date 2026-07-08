@@ -61,7 +61,7 @@ fun ShortAuthorDto.toUiModel() = AuthorUiModel(id, username, displayName, avatar
 fun PinDto.toUiModel() = PinUiModel(description, name, slug, url)
 fun AttachmentDto.toUiModel() = AttachmentUiModel(id, type, url, mimeType)
 
-fun SpanDto.toUiModel() = SpanUiModel(type, length, offset, username, tag)
+fun SpanDto.toUiModel() = SpanUiModel(type, length, offset, username, tag, url)
 
 fun OriginalPostDto.toUiModel() = OriginalPostUiModel(
     id = id,

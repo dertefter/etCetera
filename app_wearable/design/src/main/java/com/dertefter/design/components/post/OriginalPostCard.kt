@@ -24,6 +24,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
 import com.dertefter.design.components.avatar.DisplayName
@@ -38,8 +39,11 @@ fun OriginalPostCard(
     onOpenPost: (String) -> Unit = {},
     onHashtagClick: (String) -> Unit = {},
     onUserClick: (String) -> Unit = {},
+    onLinkClick: ((String) -> Unit)? = null,
     onAttachmentClick: (attachments: List<AttachmentUiModel>, position: Int) -> Unit
 ) {
+    val uriHandler = LocalUriHandler.current
+    val finalOnLinkClick = onLinkClick ?: { url -> uriHandler.openUri(url) }
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -118,10 +122,17 @@ fun OriginalPostCard(
                                             start = tapOffset,
                                             end = tapOffset
                                         )
+                                        val linkAnnotations = annotatedString.getStringAnnotations(
+                                            tag = "LINK",
+                                            start = tapOffset,
+                                            end = tapOffset
+                                        )
                                         if (hashtagAnnotations.isNotEmpty()) {
                                             onHashtagClick(hashtagAnnotations.first().item)
                                         } else if (mentionAnnotations.isNotEmpty()) {
                                             onUserClick(mentionAnnotations.first().item)
+                                        } else if (linkAnnotations.isNotEmpty()) {
+                                            finalOnLinkClick(linkAnnotations.first().item)
                                         } else if (spoilerAnnotations.isNotEmpty()) {
                                             spoilerAnnotations.firstOrNull()?.let { annotation ->
                                                 revealedSpoilers = revealedSpoilers + annotation.item.toInt()

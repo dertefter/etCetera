@@ -26,7 +26,8 @@ data class SpanUiModel(
     val length: Int,
     val offset: Int,
     val username: String? = null,
-    val tag: String? = null
+    val tag: String? = null,
+    val url: String? = null
 )
 
 data class AuthorUiModel(

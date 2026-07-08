@@ -45,5 +45,5 @@ fun PollOptionDto.toUiModel(isChecked: Boolean) = PollOptionUiModel(
 fun AuthorDto.toUiModel() = AuthorUiModel(id, username, displayName, avatar, hasNuksta, verified, pin?.toUiModel())
 fun PinDto.toUiModel() = PinUiModel(description, name, slug, url)
 fun AttachmentDto.toUiModel() = AttachmentUiModel(id, type, url, mimeType)
-fun SpanDto.toUiModel() = SpanUiModel(type, length, offset, username, tag)
+fun SpanDto.toUiModel() = SpanUiModel(type, length, offset, username, tag, url)
 

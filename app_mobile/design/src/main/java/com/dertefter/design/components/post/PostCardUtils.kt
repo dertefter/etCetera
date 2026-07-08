@@ -54,6 +54,10 @@ fun buildPostAnnotatedString(
                         addStyle(SpanStyle(color = primaryColor, fontWeight = FontWeight.Bold), start, end)
                         span.tag?.let { addStringAnnotation("HASHTAG", it, start, end) }
                     }
+                    "link" -> {
+                        addStyle(SpanStyle(color = primaryColor, textDecoration = TextDecoration.Underline), start, end)
+                        span.url?.let { addStringAnnotation("LINK", it, start, end) }
+                    }
                 }
             }
         }

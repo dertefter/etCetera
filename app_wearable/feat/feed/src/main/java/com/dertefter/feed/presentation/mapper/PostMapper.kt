@@ -62,7 +62,7 @@ fun AttachmentDto.toUiModel() = AttachmentUiModel(id, type, url, mimeType)
 
 fun AttachmentUiModel.toNavigationModel() = AttachmentNavigationModel(id, type, url, mimeType)
 
-fun SpanDto.toUiModel() = SpanUiModel(type, length, offset, username, tag)
+fun SpanDto.toUiModel() = SpanUiModel(type, length, offset, username, tag, url)
 
 fun OriginalPostDto.toUiModel() = OriginalPostUiModel(
     id = id,

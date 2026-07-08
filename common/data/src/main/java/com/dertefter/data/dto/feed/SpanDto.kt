@@ -9,5 +9,6 @@ data class SpanDto(
     @SerialName("length") val length: Int,
     @SerialName("offset") val offset: Int,
     @SerialName("username") val username: String? = null,
-    @SerialName("tag") val tag: String? = null
+    @SerialName("tag") val tag: String? = null,
+    @SerialName("url") val url: String? = null
 )
