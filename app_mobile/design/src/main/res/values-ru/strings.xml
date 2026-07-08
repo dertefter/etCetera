@@ -24,6 +24,7 @@
     <string name="design_post_pin">Закрепить</string>
     <string name="design_post_unpin">Открепить</string>
     <string name="design_post_delete">Удалить</string>
+    <string name="design_post_deleted">Пост был удален</string>
 
     <string name="design_comment_actions">Действия над комментарием</string>
     <string name="design_comment_report">Пожаловаться</string>

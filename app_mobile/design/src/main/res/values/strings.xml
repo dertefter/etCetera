@@ -22,6 +22,7 @@
     <string name="design_post_pin">Pin</string>
     <string name="design_post_unpin">Unpin</string>
     <string name="design_post_delete">Delete</string>
+    <string name="design_post_deleted">Post deleted</string>
 
     <string name="design_comment_actions">Comment actions</string>
     <string name="design_comment_report">Report</string>
