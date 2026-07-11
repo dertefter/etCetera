@@ -1,6 +1,5 @@
 package com.dertefter.post.presentation
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,7 +25,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -34,7 +32,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dertefter.comments.CommentsViewModel
 import com.dertefter.comments.presentation.CommentSort
 import com.dertefter.comments.presentation.CommentsFeed
-import com.dertefter.comments.presentation.Event as CommentsEvent
 import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.design.components.PullToRefreshIndicator
 import com.dertefter.design.components.buttons.AppNavigationIcon
@@ -50,6 +47,7 @@ import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
 import com.jamal_aliev.paginator.cursor.bookmark.CursorBookmark
 import com.jamal_aliev.paginator.cursor.dsl.mutableCursorPaginator
 import com.jamal_aliev.paginator.cursor.load.CursorLoadResult
+import com.dertefter.comments.presentation.Event as CommentsEvent
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -95,8 +93,6 @@ fun PostScreenContent(
     val pullToRefreshState = rememberPullToRefreshState()
     var showMenu by remember { mutableStateOf(false) }
 
-    Log.e("posttttt", uiState.post.toString())
-
     PullToRefreshBox(
         modifier = Modifier.fillMaxSize(),
         state = pullToRefreshState,
@@ -117,7 +113,6 @@ fun PostScreenContent(
         }
     ) {
         Scaffold(
-            containerColor = Color.Transparent,
             topBar = {
                 LargeFlexibleTopAppBar(
                     title = {
@@ -143,7 +138,7 @@ fun PostScreenContent(
                             contentPadding = contentPadding,
                             scrollBehavior = scrollBehavior,
                             header = {
-                                item {
+                                item(key = "post_card_${post.id}") {
                                     PostCard(
                                         post = post,
                                         modifier = Modifier
