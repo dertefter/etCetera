@@ -32,6 +32,7 @@ haze = "2.0.0-alpha03"
 materialKolor = "5.0.0-alpha07"
 zoomable = "2.12.0"
 coilCompose = "2.7.0"
+composeVideo = "1.2.0"
 composefadingedges = "1.0.4"
 composeQrCode = "1.0.1"
 composeShimmer = "1.4.0"
@@ -114,6 +115,7 @@ androidx-compose-adaptive-navigation = { module = "androidx.compose.material3.ad
 # Всячность для композности
 coil = { module = "io.coil-kt:coil", version.ref = "coilCompose" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+compose-video = { module = "io.sanghun:compose-video", version.ref = "composeVideo" }
 composefadingedges = { module = "com.github.GIGAMOLE:ComposeFadingEdges", version.ref = "composefadingedges" }
 compose-shimmer = { module = "com.valentinilk.shimmer:compose-shimmer", version.ref = "composeShimmer" }
 haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }

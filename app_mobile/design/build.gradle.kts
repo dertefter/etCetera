@@ -63,6 +63,7 @@ dependencies {
     implementation(libs.composefadingedges)
     implementation(libs.material.kolor)
     implementation(libs.coil.compose)
+    implementation(libs.compose.video)
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.ui)
     implementation(libs.androidx.media3.ui.compose)
