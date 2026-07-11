@@ -24,8 +24,6 @@ fun Attachment(
         attachment.mimeType?.startsWith("video") == true || attachment.type.startsWith("video") -> {
             VideoAttachment(
                 attachment = attachment,
-                contentScale = contentScale,
-                containerColor = containerColor,
                 modifier = modifier
                     .clickable(onClick = onClick)
             )
