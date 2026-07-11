@@ -31,22 +31,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dertefter.comments.R
-import com.dertefter.design.components.comment.CommentCard
 import com.dertefter.comments.presentation.mapper.toUiModel
 import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.data.dto.feed.AuthorDto
+import com.dertefter.design.components.comment.CommentCard
 import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
-import com.gigamole.composefadingedges.FadingEdgesGravity
-import com.gigamole.composefadingedges.verticalFadingEdges
+import com.jamal_aliev.paginator.compose.cursor.paginated
+import com.jamal_aliev.paginator.compose.cursor.rememberPaginated
 import com.jamal_aliev.paginator.core.extension.isErrorState
 import com.jamal_aliev.paginator.core.extension.isProgressState
 import com.jamal_aliev.paginator.core.page.PaginatorUiState
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
 import com.jamal_aliev.paginator.cursor.bookmark.CursorBookmark
-import com.jamal_aliev.paginator.compose.cursor.paginated
-import com.jamal_aliev.paginator.compose.cursor.rememberPaginated
 import com.jamal_aliev.paginator.cursor.dsl.mutableCursorPaginator
 import com.jamal_aliev.paginator.cursor.load.CursorLoadResult
 
@@ -79,14 +77,6 @@ fun CommentsFeed(
         label = "comments_feed_state",
         modifier = Modifier
             .fillMaxSize()
-            .verticalFadingEdges(
-                gravity = FadingEdgesGravity.Start,
-                length = contentPadding.calculateTopPadding()
-            )
-            .verticalFadingEdges(
-                gravity = FadingEdgesGravity.End,
-                length = contentPadding.calculateBottomPadding() + MaterialTheme.spacing.extraLarge
-            )
     ) { state ->
         when (state) {
             PaginatorUiState.Idle -> {
