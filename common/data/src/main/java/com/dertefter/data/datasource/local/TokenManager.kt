@@ -12,7 +12,7 @@ import androidx.core.content.edit
 
 @Singleton
 class TokenManager @Inject constructor(
-    @ApplicationContext val context: Context
+    @param:ApplicationContext val context: Context
 ) {
     private val prefs: SharedPreferences = context.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
 
