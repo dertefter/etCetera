@@ -35,7 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dertefter.design.R
 import com.dertefter.design.components.avatar.DisplayName
-import com.dertefter.design.components.avatar.SmallEmojiAvatar
+import com.dertefter.design.components.avatar.EmojiAvatar
 import com.dertefter.design.components.post.AttachmentsCarousel
 import com.dertefter.design.components.post.AuthorUiModel
 import com.dertefter.design.components.post.AttachmentUiModel
@@ -84,7 +84,7 @@ fun CommentCard(
                     horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
                 )
                 {
-                    SmallEmojiAvatar(
+                    EmojiAvatar(
                         emoji = comment.author.avatar,
                         containerSize = 40.dp
                     )
@@ -192,7 +192,7 @@ fun CommentCard(
                 AttachmentsCarousel(
                     attachments = comment.attachments,
                     itemShape = MaterialTheme.shapes.medium,
-                    itemHeight = 160.dp
+                    itemHeight = 180.dp
                 )
             }
 
