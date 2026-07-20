@@ -63,11 +63,12 @@ dependencies {
     implementation(libs.composefadingedges)
     implementation(libs.material.kolor)
     implementation(libs.coil.compose)
-    implementation(libs.compose.video)
+    implementation(libs.kdroidfilter.composemediaplayer)
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.ui)
     implementation(libs.androidx.media3.ui.compose)
     implementation(libs.haze)
     implementation(libs.haze.blur)
+    implementation(libs.zoomable)
 
 }

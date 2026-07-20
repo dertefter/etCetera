@@ -2,6 +2,7 @@
 
 # Сборность и плагинность
 agp = "9.2.1"
+composemediaplayer = "0.11.3"
 drawboxEnhanced = "2.1.2"
 kotlin = "2.3.21"
 ksp = "2.3.6"
@@ -83,6 +84,7 @@ kotlinxCoroutines = "1.11.0"
 compose-wear-navigation = { module = "androidx.wear.compose:compose-navigation", version.ref = "composeWear" }
 compose-wear-navigation3 = { module = "androidx.wear.compose:compose-navigation3", version.ref = "composeWear" }
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
+kdroidfilter-composemediaplayer = { module = "io.github.kdroidfilter:composemediaplayer", version.ref = "composemediaplayer" }
 core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
 core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-palette = { module = "androidx.palette:palette", version.ref = "palette" }
@@ -115,7 +117,6 @@ androidx-compose-adaptive-navigation = { module = "androidx.compose.material3.ad
 # Всячность для композности
 coil = { module = "io.coil-kt:coil", version.ref = "coilCompose" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
-compose-video = { module = "io.sanghun:compose-video", version.ref = "composeVideo" }
 composefadingedges = { module = "com.github.GIGAMOLE:ComposeFadingEdges", version.ref = "composefadingedges" }
 compose-shimmer = { module = "com.valentinilk.shimmer:compose-shimmer", version.ref = "composeShimmer" }
 haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
