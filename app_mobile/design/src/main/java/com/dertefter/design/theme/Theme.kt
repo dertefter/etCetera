@@ -32,6 +32,8 @@ private val LightColorScheme = lightColorScheme()
 
 val LocalIsFold = staticCompositionLocalOf { false }
 
+val LocalIsDark = staticCompositionLocalOf { false }
+
 val LocalIsTab = staticCompositionLocalOf { false }
 
 val LocalSeedColor = staticCompositionLocalOf<Long?> { null }
@@ -69,6 +71,11 @@ val MaterialTheme.isFold: Boolean
     @Composable
     @ReadOnlyComposable
     get() = LocalIsFold.current
+
+val MaterialTheme.isDark: Boolean
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalIsDark.current
 
 val MaterialTheme.isTab: Boolean
     @Composable
@@ -114,8 +121,10 @@ fun AppTheme(
     val context = LocalContext.current
 
     val paletteStyle = paletteStyle ?: PaletteStyle.TonalSpot
-    val specVersion = specVersion ?: ColorSpec.SpecVersion.SPEC_2025
+    val specVersion = specVersion ?: ColorSpec.SpecVersion.SPEC_2021
     val isCut = isCut ?: false
+
+    val isDark = darkTheme
 
     val colorScheme = if (dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         if (darkTheme) {
@@ -156,6 +165,7 @@ fun AppTheme(
         LocalIsFold provides isFold,
         LocalIsTab provides isTab,
         LocalIsCut provides isCut,
+        LocalIsDark provides isDark,
         LocalSeedColor provides seedColor,
         LocalPaletteStyle provides paletteStyle,
         LocalSpecVersion provides specVersion
