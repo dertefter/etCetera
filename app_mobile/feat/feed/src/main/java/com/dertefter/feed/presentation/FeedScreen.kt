@@ -180,7 +180,11 @@ fun FeedScreen(
                             profileEmoji = topAppBarState.avatarEmoji,
                             popularHashtags = topAppBarState.trendingHashtags,
                             scrollBehavior = scrollBehavior,
-                            onProfileClick = { onEvent(Event.OnOpenUser(null)) },
+                            onProfileClick = {
+                                topAppBarState.userId?.let{ userId ->
+                                    onEvent(Event.OnOpenUser(userId))
+                                }
+                            },
                             onNotificationsClick = { onEvent(Event.OnOpenNotifications) },
                             onSearchClick = { onEvent(Event.OnOpenSearch) }
                         )
@@ -323,6 +327,7 @@ fun FeedScreen(
                 HorizontalPager(
                     state = pagerState,
                     modifier = Modifier.fillMaxSize(),
+                    userScrollEnabled = false
                 ) { page ->
                     val tab = tabs[page]
                     Feed(

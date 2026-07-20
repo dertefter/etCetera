@@ -56,14 +56,16 @@ class FeedViewModel @Inject constructor(
 
     private val _emojiAvatar = meRepository.meDto.map { it?.avatar }
 
+    private val _userId = meRepository.meDto.map { it?.id }
+
     fun getPaginator(tab: FeedTab) = paginators[tab]!!
 
 
     val topBarUiState: StateFlow<TopBarUiState> = combine(
-        _trendingHashtags, _emojiAvatar
-    ) { hashtags, avatar ->
+        _trendingHashtags, _emojiAvatar, _userId
+    ) { hashtags, avatar, userId ->
         TopBarUiState(
-            trendingHashtags = hashtags, avatarEmoji = avatar, notificationsCount = null
+            trendingHashtags = hashtags, avatarEmoji = avatar, notificationsCount = null, userId = userId
         )
     }.stateIn(
         scope = viewModelScope,
@@ -82,6 +84,8 @@ class FeedViewModel @Inject constructor(
         }
 
     init {
+        updateTrendingHashtags()
+        updateMe()
         paginators.values.forEach {
             setupPaginator(it)
         }

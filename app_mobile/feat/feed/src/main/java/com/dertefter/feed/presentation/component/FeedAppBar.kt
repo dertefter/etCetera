@@ -36,9 +36,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.dertefter.data.common.Constants
 import com.dertefter.data.dto.search.SearchHashtagDto
 import com.dertefter.design.common.PrettifyInt
-import com.dertefter.design.components.avatar.SmallEmojiAvatar
+import com.dertefter.design.components.avatar.EmojiAvatar
 import com.dertefter.design.components.buttons.AppNavigationIcon
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
@@ -69,7 +70,7 @@ fun FeedAppBar(
                 hashtagFormat.format(it.name, it.postsCount.PrettifyInt())
             }
             while (true) {
-                delay(6000.milliseconds)
+                delay(Constants.STATS_UPDATE_DELAY_MS.milliseconds)
                 currentSearchText = items.random()
             }
         } else {
@@ -92,7 +93,7 @@ fun FeedAppBar(
             )
         },
         actions = {
-            SmallEmojiAvatar(
+            EmojiAvatar(
                 emoji = profileEmoji ?: "",
                 containerSize = 56.dp,
                 fontSize = 24.sp,

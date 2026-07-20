@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.dertefter.data.common.Constants
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.components.post.PostCard
@@ -57,7 +58,7 @@ fun Feed(
 
     LaunchedEffect(listState) {
         while (true) {
-            delay(2000.milliseconds)
+            delay(Constants.STATS_UPDATE_DELAY_MS.milliseconds)
             val visibleItems = listState.layoutInfo.visibleItemsInfo
             val visibleIds = visibleItems.map { it.key.toString() }
             onEvent(Event.OnUpdateStats(visibleIds))
