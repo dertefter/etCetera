@@ -15,7 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dertefter.data.dto.search.SearchUserDto
 import com.dertefter.design.components.avatar.DisplayName
-import com.dertefter.design.components.avatar.SmallEmojiAvatar
+import com.dertefter.design.components.avatar.EmojiAvatar
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
 
@@ -33,7 +33,7 @@ fun SearchUserCard(
             .padding(horizontal = MaterialTheme.spacing.large, vertical = MaterialTheme.spacing.small),
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large)
     ) {
-        SmallEmojiAvatar(
+        EmojiAvatar(
             emoji = searchUser.avatar,
             containerSize = 40.dp
         )
