@@ -23,7 +23,7 @@ sealed interface Event {
 
     data class OnUnlike(val postId: String) : Event
 
-    data class OnOpenUser(val userId: String?) : Event
+    data class OnOpenUser(val userId: String) : Event
 
     data object OnOpenNewPost : Event
 
