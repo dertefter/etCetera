@@ -29,7 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dertefter.design.R
 import com.dertefter.design.components.avatar.DisplayName
-import com.dertefter.design.components.avatar.SmallEmojiAvatar
+import com.dertefter.design.components.avatar.EmojiAvatar
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
 
@@ -75,7 +75,7 @@ fun OriginalPostCard(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
                 ) {
-                    SmallEmojiAvatar(
+                    EmojiAvatar(
                         emoji = originalPost.author.avatar,
                         containerSize = 40.dp
                     )
