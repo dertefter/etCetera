@@ -2,6 +2,7 @@ package com.dertefter.design.components.avatar
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -24,6 +25,7 @@ import coil.compose.AsyncImage
 import com.dertefter.design.components.post.PinUiModel
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
+import com.dertefter.design.theme.spacing
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -75,8 +77,16 @@ fun DisplayName(
                     positioning = TooltipAnchorPosition.Above
                 ),
                 tooltip = {
-                    PlainTooltip {
-                        Text("${pinModel.name} • ${pinModel.description}")
+                    PlainTooltip(
+                        containerColor = MaterialTheme.colorScheme.tertiary,
+                        contentColor = MaterialTheme.colorScheme.onTertiary,
+                        shape = MaterialTheme.shapes.medium
+                    ) {
+                        Text(
+                            text = "${pinModel.name} • ${pinModel.description}",
+                            style = MaterialTheme.typography.labelLargeEmphasized,
+                            modifier = Modifier.padding(MaterialTheme.spacing.small)
+                        )
                     }
                 },
                 state = tooltipState
@@ -103,7 +113,7 @@ fun DisplayName(
 
 }
 
-@Preview
+@Preview(showSystemUi = true)
 @Composable
 fun DisplayNamePrev(){
     AppTheme {
@@ -111,6 +121,13 @@ fun DisplayNamePrev(){
             name = "Пользователь",
             verified = true,
             hasNuksta = true,
+            pin = PinUiModel(
+                description = "wawawa",
+                name = "awawaw",
+                slug = "awawaw",
+                url = null
+            ),
+            modifier = Modifier.fillMaxWidth()
         )
     }
 }
