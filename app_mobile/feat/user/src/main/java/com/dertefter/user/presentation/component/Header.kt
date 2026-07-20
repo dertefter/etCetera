@@ -17,19 +17,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.dertefter.design.components.avatar.DisplayName
-import com.dertefter.design.components.avatar.SmallEmojiAvatar
+import com.dertefter.design.components.avatar.EmojiAvatar
 import com.dertefter.design.components.buttons.AppNavigationIcon
 import com.dertefter.design.components.post.AuthorUiModel
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
+import com.dertefter.user.R
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import kotlin.math.absoluteValue
@@ -55,7 +58,8 @@ fun Header(
     }else{
         0f
     }
-    val avatarSize = avatarSize * (1 - scrollFraction)
+
+    val rotation = scrollFraction * 180f
 
    Column(
         modifier = modifier
@@ -63,7 +67,8 @@ fun Header(
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         Box(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth(),
             contentAlignment = Alignment.BottomCenter
         ){
             if (!bannerUrl.isNullOrEmpty() || isMe){
@@ -71,6 +76,9 @@ fun Header(
                     model = bannerUrl,
                     contentDescription = null,
                     modifier = Modifier
+                        .graphicsLayer(
+                            rotationX = -24f * scrollFraction
+                        )
                         .padding(bottom = avatarSize / 2)
                         .alpha(sqrt(1f - scrollFraction))
                         .clip(MaterialTheme.shapes.extraLarge)
@@ -92,16 +100,17 @@ fun Header(
                     containerColor = MaterialTheme.colorScheme.surfaceDim.copy(alpha = 0.5f),
                     contentColor = MaterialTheme.colorScheme.onSurface,
                     icon = Icons.Edit,
-                    contentDescription = "Изменить баннер",
+                    contentDescription = stringResource(R.string.user_edit_banner),
                     hazeState = hazeState
                 )
             }
 
 
-            SmallEmojiAvatar(
+            EmojiAvatar(
                 emoji = author.avatar,
+                rotation = rotation,
                 containerSize = avatarSize,
-                fontSize = 32.sp
+                fontSize = 36.sp,
             )
         }
 
@@ -122,8 +131,9 @@ fun Header(
     }
 }
 
-@Preview(showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL
+@Preview(
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES, backgroundColor = 0x00121318
 )
 @Composable
 fun HeaderPreview() {

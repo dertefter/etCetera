@@ -7,6 +7,7 @@ import com.dertefter.data.common.AppError
 import com.dertefter.data.common.toAppError
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.dto.me.UpdateMeRequestDto
+import com.dertefter.data.repository.AuthRepository
 import com.dertefter.data.repository.FeedRepository
 import com.dertefter.data.repository.MeRepository
 import com.dertefter.data.repository.PostRepository
@@ -47,6 +48,7 @@ import javax.inject.Inject
 class UserViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val meRepository: MeRepository,
+    private val authRepository: AuthRepository,
     private val feedRepository: FeedRepository,
     private val postRepository: PostRepository,
     private val navigator: Navigator
@@ -92,15 +94,19 @@ class UserViewModel @Inject constructor(
         } else {
             combine(
                 userRepository.getUser(userId),
+                authRepository.loginHistory,
+                authRepository.currentLogin,
                 _isMe,
                 _isLoading,
                 _error
-            ) { user, isMe, isLoading, error ->
+            ) { args ->
                 UserUiState(
-                    userDto = user,
-                    isMe = isMe,
-                    isLoading = isLoading,
-                    error = error
+                    userDto = args[0] as com.dertefter.data.dto.user.UserDto?,
+                    loginHistory = args[1] as List<String>,
+                    currentLogin = args[2] as String?,
+                    isMe = args[3] as Boolean,
+                    isLoading = args[4] as Boolean,
+                    error = args[5] as AppError?
                 )
             }
         }
@@ -188,6 +194,26 @@ class UserViewModel @Inject constructor(
 
     fun onEvent(event: Event) {
         when (event) {
+
+            is Event.OnNavigateToAuth -> {
+                navigator.navigate(Routes.Auth)
+            }
+
+            is Event.OnSwitchAccount -> {
+                viewModelScope.launch {
+                    authRepository.switchToLogin(event.login)
+                }
+            }
+
+            Event.OnAddAccount -> {
+                navigator.navigate(Routes.Auth)
+            }
+
+            is Event.OnRemoveAccountFromHistory -> {
+                viewModelScope.launch {
+                    authRepository.removeLoginFromHistory(event.login)
+                }
+            }
 
             is Event.OnOpenAttachmentsViewer -> {
                 navigator.navigate(
@@ -364,6 +390,9 @@ class UserViewModel @Inject constructor(
     }
 
     private fun update() {
+        viewModelScope.launch {
+            authRepository.refreshToken()
+        }
         val userId = _userId.value ?: return
         viewModelScope.launch {
             if (userUiState.value.userDto == null) {

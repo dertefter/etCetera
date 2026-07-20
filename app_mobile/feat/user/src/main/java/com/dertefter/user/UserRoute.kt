@@ -10,24 +10,18 @@ import com.dertefter.user.presentation.UserScreen
 
 @Composable
 fun UserRoute(
-    userId: String? = null,
+    userId: String,
     viewModel: UserViewModel = hiltViewModel(),
 ) {
-
     val userUiState by viewModel.userUiState.collectAsStateWithLifecycle()
     val selectedTab by viewModel.selectedTab.collectAsStateWithLifecycle()
-
-    val postsUiState by viewModel.uiStates[FeedTab.POSTS]!!.collectAsStateWithLifecycle()
-    val likesUiState by viewModel.uiStates[FeedTab.LIKES]!!.collectAsStateWithLifecycle()
-
-    val uiStates = mapOf(
-        FeedTab.POSTS to postsUiState,
-        FeedTab.LIKES to likesUiState
-    )
-
     val paginators by viewModel.paginators.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
+    val uiStates = viewModel.tabs.associateWith { tab ->
+        viewModel.uiStates[tab]!!.collectAsStateWithLifecycle().value
+    }
+
+    LaunchedEffect(userId) {
         viewModel.initWithUserId(userId)
     }
 
@@ -38,6 +32,4 @@ fun UserRoute(
         paginators = paginators,
         onEvent = viewModel::onEvent
     )
-
-
 }

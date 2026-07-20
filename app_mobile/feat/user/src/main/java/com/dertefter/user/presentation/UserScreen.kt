@@ -13,21 +13,25 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonGroup
 import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.DropdownMenuItem
@@ -35,8 +39,12 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
@@ -44,14 +52,19 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
+import androidx.compose.material3.rememberBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
@@ -60,14 +73,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontVariation
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.dertefter.data.common.Constants
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.dto.user.UserDto
 import com.dertefter.data.dto.user.VisibilityDto
 import com.dertefter.design.components.PullToRefreshIndicator
-import com.dertefter.design.components.avatar.SmallEmojiAvatar
+import com.dertefter.design.components.avatar.EmojiAvatar
 import com.dertefter.design.components.buttons.AppNavigationIcon
 import com.dertefter.design.components.common.ErrorLarge
 import com.dertefter.design.components.loading.AppLoadingIndicator
@@ -88,7 +103,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class, ExperimentalFoundationApi::class)
+@OptIn(
+    ExperimentalMaterial3Api::class,
+    ExperimentalMaterial3ExpressiveApi::class,
+    ExperimentalFoundationApi::class
+)
 @Composable
 fun UserScreen(
     onEvent: (Event) -> Unit,
@@ -103,6 +122,81 @@ fun UserScreen(
     val lazyListState = rememberLazyListState()
 
     val scope = rememberCoroutineScope()
+
+    var showAccountSelector by remember { mutableStateOf(false) }
+
+    if (showAccountSelector) {
+        ModalBottomSheet(
+            onDismissRequest = { showAccountSelector = false },
+            sheetState = rememberBottomSheetState(initialValue = SheetValue.Hidden)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(MaterialTheme.spacing.large),
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+            ) {
+                Text(
+                    text = stringResource(R.string.user_select_account),
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(bottom = MaterialTheme.spacing.small)
+                )
+                userUiState.loginHistory.forEach { login ->
+                    val isCurrent = login == userUiState.currentLogin
+                    ListItem(
+                        modifier = Modifier
+                            .clip(MaterialTheme.shapes.medium)
+                            .clickable {
+                                if (!isCurrent) {
+                                    onEvent(Event.OnSwitchAccount(login))
+                                }
+                                showAccountSelector = false
+                            },
+                        leadingContent = {
+                            Icon(
+                                if (isCurrent) Icons.Check else Icons.User,
+                                contentDescription = null,
+                                tint = if (isCurrent) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        },
+                        trailingContent = {
+                            if (!isCurrent) {
+                                AppNavigationIcon(
+                                    icon = Icons.Delete,
+                                    onClick = { onEvent(Event.OnRemoveAccountFromHistory(login)) }
+                                )
+                            }
+                        },
+                        overlineContent = null,
+                        supportingContent = null,
+                        colors = ListItemDefaults.colors(
+                            containerColor = if (isCurrent) MaterialTheme.colorScheme.primaryContainer.copy(
+                                alpha = 0.4f
+                            ) else Color.Transparent
+                        ),
+                        content = {
+                            Text(
+                                text = login,
+                                fontWeight = if (isCurrent) FontWeight.Bold else FontWeight.Normal
+                            )
+                        },
+                    )
+                }
+
+                Button(
+                    onClick = {
+                        onEvent(Event.OnAddAccount)
+                        showAccountSelector = false
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Icon(Icons.Add, contentDescription = null)
+                    Spacer(Modifier.width(MaterialTheme.spacing.small))
+                    Text(stringResource(R.string.user_add_account))
+                }
+            }
+        }
+    }
 
     val isUpFabVisible by remember(lazyListState) {
         derivedStateOf {
@@ -176,12 +270,17 @@ fun UserScreen(
         label = "appBarContainerColor"
     )
 
+    val shareText = userUiState.userDto?.let {
+        stringResource(R.string.user_share_profile_url, it.username)
+    } ?: ""
+
     val currentTabUiState = uiStates[selectedTab]
-    val isRefreshing = userUiState.isLoading || (currentTabUiState is PaginatorUiState.Content && currentTabUiState.prependState.isProgressState())
+    val isRefreshing =
+        userUiState.isLoading || (currentTabUiState is PaginatorUiState.Content && currentTabUiState.prependState.isProgressState())
     val pullToRefreshState = rememberPullToRefreshState()
 
     LaunchedEffect(lazyListState) {
-        delay(2000.milliseconds)
+        delay(Constants.STATS_UPDATE_DELAY_MS.milliseconds)
         while (true) {
             val visibleItems = lazyListState.layoutInfo.visibleItemsInfo
             val visibleIds = visibleItems.mapNotNull {
@@ -190,7 +289,7 @@ fun UserScreen(
             if (visibleIds.isNotEmpty()) {
                 onEvent(Event.OnUpdateStats(visibleIds))
             }
-            delay(5000.milliseconds)
+            delay(Constants.STATS_UPDATE_DELAY_MS.milliseconds)
         }
     }
 
@@ -240,7 +339,7 @@ fun UserScreen(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
                             ) {
-                                SmallEmojiAvatar(
+                                EmojiAvatar(
                                     emoji = it.avatar,
                                     containerSize = 40.dp
                                 )
@@ -256,10 +355,10 @@ fun UserScreen(
                         AppNavigationIcon(
                             icon = Icons.Share,
                             onClick = {
-                                userUiState.userDto?.let { user ->
+                                if (shareText.isNotEmpty()) {
                                     val sendIntent: Intent = Intent().apply {
                                         action = Intent.ACTION_SEND
-                                        putExtra(Intent.EXTRA_TEXT, "https://итд.com/@${user.username}")
+                                        putExtra(Intent.EXTRA_TEXT, shareText)
                                         type = "text/plain"
                                     }
                                     val shareIntent = Intent.createChooser(sendIntent, null)
@@ -268,7 +367,7 @@ fun UserScreen(
                             },
                             contentDescription = stringResource(R.string.user_share)
                         )
-                        if (userUiState.isMe){
+                        if (userUiState.isMe) {
                             AppNavigationIcon(
                                 icon = Icons.Settings,
                                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -366,6 +465,32 @@ fun UserScreen(
                     ),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
+
+                    if (userUiState.isMe) {
+                        item {
+                            FilledTonalButton(
+                                onClick = {
+                                    showAccountSelector = true
+                                },
+                                modifier = Modifier.padding(bottom = MaterialTheme.spacing.medium)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.SwapVert,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                                Spacer(Modifier.width(ButtonDefaults.IconSpacing))
+                                Text(
+                                    userUiState.currentLogin
+                                        ?: stringResource(R.string.user_switch_account)
+                                )
+                            }
+                        }
+
+                    }
+
+
+
                     item {
                         Header(
                             bannerUrl = userUiState.userDto.banner,
@@ -376,7 +501,7 @@ fun UserScreen(
                             isMe = userUiState.isMe,
                             scrollBehavior = scrollBehavior,
                             onEditClick = {
-                                if (userUiState.isMe){
+                                if (userUiState.isMe) {
                                     onEvent(Event.OnBannerEdit)
                                 }
                             },
@@ -413,7 +538,7 @@ fun UserScreen(
 
                     if (
                         userUiState.isMe || !userUiState.userDto.bio.isNullOrEmpty()
-                    ){
+                    ) {
                         item {
                             BioCard(
                                 modifier = Modifier
@@ -428,9 +553,9 @@ fun UserScreen(
                         }
                     }
 
-                    if (!userUiState.isMe){
-                        if (userUiState.userDto.isFollowing){
-                            item{
+                    if (!userUiState.isMe) {
+                        if (userUiState.userDto.isFollowing) {
+                            item {
                                 FilledTonalButton(
                                     onClick = {
                                         onEvent(Event.OnUnfollow(userUiState.userDto.id))
@@ -443,8 +568,8 @@ fun UserScreen(
                                     Text(stringResource(R.string.user_unfollow))
                                 }
                             }
-                        }else{
-                            item{
+                        } else {
+                            item {
                                 Button(
                                     onClick = {
                                         onEvent(Event.OnFollow(userUiState.userDto.id))
@@ -553,15 +678,19 @@ fun UserScreen(
                 }
             } else {
                 if (userUiState.isLoading) {
-                    Box(Modifier
-                        .padding(contentPadding)
-                        .fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Box(
+                        Modifier
+                            .padding(contentPadding)
+                            .fillMaxSize(), contentAlignment = Alignment.Center
+                    ) {
                         AppLoadingIndicator()
                     }
                 } else if (userUiState.error != null) {
-                    Box(Modifier
-                        .padding(contentPadding)
-                        .fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Box(
+                        Modifier
+                            .padding(contentPadding)
+                            .fillMaxSize(), contentAlignment = Alignment.Center
+                    ) {
                         ErrorLarge(
                             onRetry = { onEvent(Event.OnRefresh(tabs.first())) }
                         )
@@ -570,7 +699,6 @@ fun UserScreen(
             }
         }
     }
-
 
 
 }

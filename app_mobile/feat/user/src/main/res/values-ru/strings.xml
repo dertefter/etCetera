@@ -20,4 +20,9 @@
     <string name="user_loading_error">Ошибка загрузки: %1$s</string>
     <string name="user_pinned_post">Закреплено</string>
     <string name="user_append_error">Ошибка при загрузке новых постов</string>
+    <string name="user_select_account">Выберите аккаунт</string>
+    <string name="user_add_account">Добавить аккаунт</string>
+    <string name="user_switch_account">Сменить аккаунт</string>
+    <string name="user_share_profile_url">https://итд.com/@%1$s</string>
+    <string name="user_edit_banner">Изменить баннер</string>
 </resources>

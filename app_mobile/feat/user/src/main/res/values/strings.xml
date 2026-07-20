@@ -20,4 +20,9 @@
     <string name="user_loading_error">Loading error: %1$s</string>
     <string name="user_pinned_post">Pinned</string>
     <string name="user_append_error">Error loading new posts</string>
+    <string name="user_select_account">Select account</string>
+    <string name="user_add_account">Add account</string>
+    <string name="user_switch_account">Switch account</string>
+    <string name="user_share_profile_url">https://итд.com/@%1$s</string>
+    <string name="user_edit_banner">Edit banner</string>
 </resources>
