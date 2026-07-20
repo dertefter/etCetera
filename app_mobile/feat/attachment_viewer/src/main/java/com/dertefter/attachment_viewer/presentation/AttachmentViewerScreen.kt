@@ -18,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -31,8 +30,6 @@ import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.spacing
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
-import net.engawapg.lib.zoomable.rememberZoomState
-import net.engawapg.lib.zoomable.zoomable
 
 
 @Composable
@@ -65,18 +62,10 @@ fun AttachmentViewerScreen(
                 userScrollEnabled = true,
             ) { page ->
                 val attachment = attachments[page]
-                val zoomState = rememberZoomState()
                 Attachment(
+                    isFullscreen = true,
                     attachment = attachment,
-                    contentScale = ContentScale.Fit,
                     containerColor = Color.Black,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .then(
-                            if (attachment.type == "image") {
-                                Modifier.zoomable(zoomState)
-                            } else Modifier
-                        )
                 )
 
             }
