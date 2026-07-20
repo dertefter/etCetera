@@ -22,7 +22,7 @@ import androidx.compose.ui.res.stringResource
 import com.dertefter.data.dto.notifications.ActorDto
 import com.dertefter.notifications.R
 import com.dertefter.data.dto.notifications.NotificationDto
-import com.dertefter.design.components.avatar.SmallEmojiAvatar
+import com.dertefter.design.components.avatar.EmojiAvatar
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.rounding
 import com.dertefter.design.theme.spacing
@@ -61,7 +61,7 @@ fun NotificationCard(
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        SmallEmojiAvatar(
+        EmojiAvatar(
             emoji = notification.actor.avatar,
             containerSize = 48.dp,
             onClick = onUserClick,
