@@ -1,6 +1,7 @@
 package com.dertefter.design.components.post
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -18,10 +19,12 @@ fun UnsupportedAttachment(
     mimeType: String?,
     type: String?,
     modifier: Modifier = Modifier,
-    containerColor: Color = MaterialTheme.colorScheme.surfaceVariant
+    containerColor: Color = MaterialTheme.colorScheme.surfaceVariant,
+    onClick: () -> Unit = {},
 ) {
     Box(
         modifier = modifier
+            .clickable(onClick = onClick)
             .background(containerColor),
         contentAlignment = Alignment.Center
     ) {

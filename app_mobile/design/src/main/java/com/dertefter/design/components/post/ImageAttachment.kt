@@ -25,15 +25,21 @@ import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.dertefter.design.R
 import com.dertefter.design.theme.AppTheme
+import net.engawapg.lib.zoomable.rememberZoomState
+import net.engawapg.lib.zoomable.zoomable
 
 @Composable
 fun ImageAttachment(
     attachment: AttachmentUiModel,
     modifier: Modifier = Modifier,
     contentScale: ContentScale = ContentScale.Crop,
-    containerColor: Color = MaterialTheme.colorScheme.surfaceVariant
+    containerColor: Color = MaterialTheme.colorScheme.surfaceVariant,
+    onClick: () -> Unit = {},
+    isFullscreen: Boolean = false,
 ) {
     var retryHash by remember { mutableIntStateOf(0) }
+
+    val zoomState = rememberZoomState()
 
     SubcomposeAsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
@@ -43,6 +49,13 @@ fun ImageAttachment(
             .build(),
         contentDescription = null,
         modifier = modifier
+            .then(
+                if (isFullscreen) {
+                    Modifier
+                        .zoomable(zoomState)
+                } else Modifier
+                    .clickable(onClick = onClick)
+            )
             .background(containerColor),
         contentScale = contentScale,
         error = {
@@ -74,7 +87,7 @@ fun ImageAttachmentPreview() {
                 url = "https://picsum.photos/400/300",
                 mimeType = "image/jpeg"
             ),
-            modifier = Modifier.size(200.dp)
+            modifier = Modifier.size(200.dp),
         )
     }
 }

@@ -1,69 +1,182 @@
 package com.dertefter.design.components.post
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.media3.common.util.Log
-import androidx.media3.common.util.UnstableApi
-import androidx.media3.exoplayer.analytics.AnalyticsListener
-import io.sanghun.compose.video.RepeatMode
-import io.sanghun.compose.video.VideoPlayer
-import io.sanghun.compose.video.controller.VideoPlayerControllerConfig
-import io.sanghun.compose.video.uri.VideoPlayerMediaItem
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import com.dertefter.design.components.buttons.AppNavigationIcon
+import com.dertefter.design.components.loading.AppLoadingIndicator
+import com.dertefter.design.icons.Icons
+import com.dertefter.design.theme.spacing
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.rememberHazeState
+import io.github.kdroidfilter.composemediaplayer.CacheConfig
+import io.github.kdroidfilter.composemediaplayer.VideoPlayerSurface
+import io.github.kdroidfilter.composemediaplayer.rememberVideoPlayerState
 
-@UnstableApi
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun VideoAttachment(
     attachment: AttachmentUiModel,
     modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
+    isFullscreen: Boolean = false,
 ) {
 
-    val mediaItems = remember(attachment.url) {
-        listOf(
-            VideoPlayerMediaItem.NetworkMediaItem(
-                url = attachment.url ?: ""
-            )
+    val hazeState = rememberHazeState()
+
+    val playerState = rememberVideoPlayerState(
+        cacheConfig = CacheConfig(
+            enabled = true,
+            maxCacheSizeBytes = 200L * 1024L * 1024L
         )
+    )
+
+    LaunchedEffect(attachment.url) {
+        attachment.url?.let {
+            playerState.openUri(it)
+        }
     }
 
-    VideoPlayer(
-        mediaItems = mediaItems,
-        handleLifecycle = true,
-        autoPlay = true,
-        usePlayerController = true,
-        enablePip = true,
-        handleAudioFocus = false,
-        controllerConfig = VideoPlayerControllerConfig(
-            showSpeedAndPitchOverlay = false,
-            showSubtitleButton = false,
-            showCurrentTimeAndTotalTime = true,
-            showBufferingProgress = false,
-            showForwardIncrementButton = false,
-            showBackwardIncrementButton = false,
-            showBackTrackButton = false,
-            showNextTrackButton = false,
-            showRepeatModeButton = false,
-            controllerShowTimeMilliSeconds = 5_000,
-            controllerAutoShow = false,
-            showFullScreenButton = true,
-        ),
-        volume = 0.0f,  // volume 0.0f to 1.0f
-        repeatMode = RepeatMode.ALL,       // or RepeatMode.ALL, RepeatMode.ONE
-        onCurrentTimeChanged = { // long type, current player time (millisec)
-            Log.e("CurrentTime", it.toString())
-        },
-        playerInstance = { // ExoPlayer instance (Experimental)
-            addAnalyticsListener(
-                object : AnalyticsListener {
-                    // player logger
-                }
+    var mute by remember { mutableStateOf(true) }
+
+    var visibleControls by remember { mutableStateOf(false) }
+
+    playerState.volume = if (mute) 0f else 1f
+    playerState.loop = true
+
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ) {
+                visibleControls = !visibleControls
+            }
+    ) {
+        VideoPlayerSurface(
+            playerState = playerState,
+            modifier = Modifier
+                .hazeSource(state = hazeState)
+                .fillMaxWidth()
+        )
+
+        if (playerState.isLoading) {
+            AppLoadingIndicator(modifier = Modifier.align(Alignment.Center))
+        }
+
+        if (!isFullscreen) {
+            AppNavigationIcon(
+                onClick = {
+                    mute = !mute
+                },
+                modifier = Modifier
+                    .padding(MaterialTheme.spacing.small)
+                    .size(44.dp)
+                    .align(Alignment.TopStart),
+                containerColor = Color.Black.copy(alpha = 0.5f),
+                contentColor = Color.White,
+                hazeState = hazeState,
+                icon = if (!mute) {
+                    Icons.VolumeUpFilled
+                } else {
+                    Icons.VolumeOffFilled
+                },
+                contentDescription = null
             )
-        },
-        modifier = modifier.fillMaxWidth()
-    )
+        }
+        if (!isFullscreen){
+            AppNavigationIcon(
+                onClick = onClick,
+                modifier = Modifier
+                    .padding(MaterialTheme.spacing.small)
+                    .size(44.dp)
+                    .align(Alignment.TopEnd),
+                containerColor = Color.Black.copy(alpha = 0.5f),
+                contentColor = Color.White,
+                hazeState = hazeState,
+                icon = Icons.Fullscreen,
+                contentDescription = null
+            )
+        }
+
+
+        AnimatedVisibility(
+            visible = visibleControls,
+            enter = fadeIn(),
+            exit = fadeOut(),
+            modifier = Modifier.align(Alignment.Center)
+        ) {
+            AppNavigationIcon(
+                onClick = {
+                    if (playerState.isPlaying) playerState.pause() else playerState.play()
+                },
+                containerColor = Color.Black.copy(alpha = 0.5f),
+                contentColor = Color.White,
+                hazeState = hazeState,
+                modifier = Modifier.size(56.dp),
+                icon =  if (playerState.isPlaying) Icons.Pause else Icons.Play
+            )
+        }
+
+        AnimatedVisibility(
+            visible = visibleControls,
+            enter = fadeIn(),
+            exit = fadeOut(),
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(horizontal = MaterialTheme.spacing.medium, vertical = MaterialTheme.spacing.medium)
+        ) {
+            Column(horizontalAlignment = Alignment.Start) {
+                if (isFullscreen) {
+                    AppNavigationIcon(
+                        onClick = {
+                            mute = !mute
+                        },
+                        modifier = Modifier
+                            .padding(bottom = MaterialTheme.spacing.small)
+                            .size(44.dp),
+                        containerColor = Color.Black.copy(alpha = 0.5f),
+                        contentColor = Color.White,
+                        hazeState = hazeState,
+                        icon = if (!mute) {
+                            Icons.VolumeUpFilled
+                        } else {
+                            Icons.VolumeOffFilled
+                        },
+                        contentDescription = null
+                    )
+                }
+                Slider(
+                    value = playerState.sliderPos,
+                    onValueChange = { playerState.seekStart(it) },
+                    onValueChangeFinished = { playerState.seekFinished() },
+                    valueRange = 0f..1000f,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
+    }
 
 }
