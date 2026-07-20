@@ -4,7 +4,15 @@ import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
 
-    val isAuthorized: Flow<Boolean>
+    val isAuthorized: Flow<Boolean?>
+
+    val loginHistory: Flow<List<String>>
+
+    val currentLogin: Flow<String?>
+
+    suspend fun switchToLogin(login: String?)
+
+    suspend fun removeLoginFromHistory(login: String)
 
     suspend fun signIn(
         email: String,

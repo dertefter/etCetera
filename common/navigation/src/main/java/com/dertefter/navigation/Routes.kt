@@ -47,7 +47,7 @@ sealed interface Routes : NavKey {
     data class AttachmentsViewer(val attachments: List<AttachmentNavigationModel>, val viewPosition: Int = 0) : Routes
 
     @Serializable
-    data class User(val userId: String?) : Routes
+    data class User(val userId: String) : Routes
 
     @Serializable
     data class Followers(

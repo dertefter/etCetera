@@ -13,7 +13,7 @@ sealed interface Event {
 
     data class OnLoadMoreReplies(val commentId: String) : Event
 
-    data class OnOpenUser(val userId: String?) : Event
+    data class OnOpenUser(val userId: String) : Event
 
     data class OnReply(val commentId: String, val userId: String) : Event
 

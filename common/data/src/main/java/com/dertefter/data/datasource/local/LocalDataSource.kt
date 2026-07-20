@@ -12,7 +12,17 @@ import com.dertefter.data.dto.user.UserDto
 import kotlinx.coroutines.flow.Flow
 
 interface LocalDataSource {
+
+    val currentLogin: Flow<String?>
+
+    suspend fun switchToLogin(login: String?)
+
+    val loginHistory: Flow<List<String>>
+
+    suspend fun removeLoginFromHistory(login: String)
+
     val meDto: Flow<MeDto?>
+
     suspend fun saveMe(meDto: MeDto)
 
     fun getUser(userId: String): Flow<UserDto?>

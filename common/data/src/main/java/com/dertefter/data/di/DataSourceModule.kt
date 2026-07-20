@@ -2,6 +2,8 @@ package com.dertefter.data.di
 
 import com.dertefter.data.datasource.local.LocalDataSource
 import com.dertefter.data.datasource.local.LocalDataSourceImpl
+import com.dertefter.data.datasource.local.TokenManager
+import com.dertefter.data.datasource.local.TokenManagerImpl
 import com.dertefter.data.datasource.remote.RemoteDataSource
 import com.dertefter.data.datasource.remote.RemoteDataSourceImpl
 import dagger.Binds
@@ -25,4 +27,10 @@ abstract class DataSourceModule {
     abstract fun bindLocalDataSource(
         localDataSourceImpl: LocalDataSourceImpl
     ): LocalDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindTokenManager(
+        tokenManagerImpl: TokenManagerImpl
+    ): TokenManager
 }

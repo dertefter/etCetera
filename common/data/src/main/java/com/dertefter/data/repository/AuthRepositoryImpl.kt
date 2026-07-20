@@ -1,17 +1,30 @@
 package com.dertefter.data.repository
 
-import com.dertefter.data.datasource.local.TokenManager
+import com.dertefter.data.datasource.local.LocalDataSource
 import com.dertefter.data.datasource.remote.RemoteDataSource
 import com.dertefter.data.dto.auth.SignInRequest
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
-    private val tokenManager: TokenManager
+    private val localDataSource: LocalDataSource
 ) : AuthRepository {
 
-    override val isAuthorized: Flow<Boolean> = tokenManager.hasRefreshToken
+    override val isAuthorized: Flow<Boolean?> = localDataSource.currentLogin.map { it != null }
+
+    override val loginHistory: Flow<List<String>> = localDataSource.loginHistory
+
+    override val currentLogin: Flow<String?> = localDataSource.currentLogin
+
+    override suspend fun switchToLogin(login: String?) {
+        localDataSource.switchToLogin(login)
+    }
+
+    override suspend fun removeLoginFromHistory(login: String) {
+        localDataSource.removeLoginFromHistory(login)
+    }
 
     override suspend fun signIn(
         email: String,

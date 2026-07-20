@@ -44,7 +44,7 @@ interface ApiService {
     ): Response<SignInResponse>
 
     @POST("api/v1/auth/refresh")
-    suspend fun refreshToken(): Response<SignInResponse>
+    suspend fun refreshToken(@retrofit2.http.Tag login: String? = null): Response<Map<String, String>>
 
     @GET("api/users/me")
     suspend fun me(): Response<MeDto>
