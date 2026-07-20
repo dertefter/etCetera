@@ -18,7 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dertefter.data.dto.followers.FollowerUserDto
 import com.dertefter.design.components.avatar.DisplayName
-import com.dertefter.design.components.avatar.SmallEmojiAvatar
+import com.dertefter.design.components.avatar.EmojiAvatar
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
 import com.dertefter.followers.R
@@ -39,7 +39,7 @@ fun FollowerUserCard(
             .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding, vertical = MaterialTheme.spacing.small),
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large)
     ) {
-        SmallEmojiAvatar(
+        EmojiAvatar(
             emoji = followerUser.avatar,
             containerSize = 40.dp
         )
