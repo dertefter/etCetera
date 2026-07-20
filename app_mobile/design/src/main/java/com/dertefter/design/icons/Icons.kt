@@ -8,6 +8,9 @@ import com.dertefter.design.R
 @Suppress("unused")
 object Icons {
 
+    val Fullscreen: ImageVector
+        @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_fullscreen)
+
     val Redo: ImageVector
         @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_redo)
 
