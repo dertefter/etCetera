@@ -43,6 +43,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
+@Suppress("unchecked_cast")
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class UserViewModel @Inject constructor(
@@ -390,9 +392,6 @@ class UserViewModel @Inject constructor(
     }
 
     private fun update() {
-        viewModelScope.launch {
-            authRepository.refreshToken()
-        }
         val userId = _userId.value ?: return
         viewModelScope.launch {
             if (userUiState.value.userDto == null) {
