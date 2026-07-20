@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         splashScreen.setKeepOnScreenCondition {
-            viewModel.mainScreenState.value.isAuthorized == null
+            !viewModel.uiState.value.isReady
         }
 
         enableEdgeToEdge(
@@ -40,9 +40,14 @@ class MainActivity : ComponentActivity() {
         )
 
         setContent {
-            val mainScreenState by viewModel.mainScreenState.collectAsStateWithLifecycle()
-            AppTheme {
-                MainScreen(navigator, mainScreenState)
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+            if (uiState.isReady){
+                AppTheme {
+                    MainScreen(
+                        navigator,
+                        currentLogin = uiState.currentLogin
+                    )
+                }
             }
         }
     }

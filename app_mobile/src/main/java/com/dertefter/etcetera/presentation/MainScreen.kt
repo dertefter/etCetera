@@ -33,9 +33,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.rememberNavBackStack
 import com.dertefter.comments.CommentsRoute
+import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
 import com.dertefter.etcetera.navigation.AppNavHost
 import com.dertefter.navigation.NavigationAction
@@ -52,25 +54,23 @@ import dev.chrisbanes.haze.blur.blurEffect
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     navigator: Navigator,
-    mainScreenState: MainScreenState
+    currentLogin: String? = null,
 ){
-    val isAuthorized = mainScreenState.isAuthorized ?: return
 
-    val startDestination = if (isAuthorized) Routes.Feed else Routes.Auth
+    val startDestination = if (currentLogin != null) Routes.Feed else Routes.Auth
     val backStack = rememberNavBackStack(startDestination)
 
-    LaunchedEffect(isAuthorized) {
-        if (isAuthorized) {
-            if (backStack.contains(Routes.Auth)) {
-                backStack.clear()
-                backStack.add(Routes.Feed)
-            }
+    LaunchedEffect(currentLogin) {
+        if (currentLogin != null) {
+            backStack.clear()
+            backStack.add(Routes.Feed)
         } else {
             if (!backStack.contains(Routes.Auth)) {
                 backStack.clear()
@@ -238,5 +238,23 @@ fun MainScreen(
 
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MainScreenPreview() {
+    val navigator = object : Navigator {
+        override val navigationActions = emptyFlow<NavigationAction>()
+        override fun navigate(route: Routes) {}
+        override fun openAsBottomSheet(route: Routes) {}
+        override fun hideBottomSheet() {}
+        override fun navigateUp() {}
+        override fun navigateAndClearBackStack(route: Routes, popupTo: Routes, inclusive: Boolean) {}
+    }
+    AppTheme {
+        MainScreen(
+            navigator = navigator
+        )
     }
 }

@@ -1,68 +1,80 @@
 package com.dertefter.etcetera
 
 import android.content.Context
-import android.util.Log
+import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dertefter.data.datasource.local.TokenManager
 import com.dertefter.data.repository.AuthRepository
-import com.dertefter.etcetera.presentation.MainScreenState
-import com.google.android.gms.wearable.PutDataMapRequest
-import com.google.android.gms.wearable.Wearable
+import com.dertefter.etcetera.service.TokenRequestService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
+data class MainUiState(
+    val isReady: Boolean = false,
+    val currentLogin: String? = null
+)
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val authRepository: AuthRepository,
+    authRepository: AuthRepository,
     private val tokenManager: TokenManager,
-    @ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context
 ) : ViewModel() {
 
-    private val dataClient by lazy { Wearable.getDataClient(context) }
+    val uiState: StateFlow<MainUiState> = authRepository.currentLogin.map { login ->
+        MainUiState(isReady = true, currentLogin = login)
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.Eagerly,
+        initialValue = MainUiState(isReady = false)
+    )
 
-    val mainScreenState: StateFlow<MainScreenState> = authRepository.isAuthorized
-        .map { isAuthorized ->
-            MainScreenState(isAuthorized = isAuthorized)
+    val isReady: StateFlow<Boolean?> = uiState.map { if (it.isReady) true else null }.stateIn(
+        viewModelScope,
+        SharingStarted.Eagerly,
+        initialValue = null
+    )
+
+    val currentLogin: StateFlow<String?> = uiState.map { it.currentLogin }.stateIn(
+        viewModelScope,
+        SharingStarted.Eagerly,
+        initialValue = null
+    )
+
+    val refreshToken: Flow<String?> = currentLogin.flatMapLatest { login ->
+        if (login != null) {
+            tokenManager.getRefreshTokenForLogin(login)
+        } else {
+            flowOf(null)
         }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = MainScreenState(isAuthorized = null)
-        )
-
-    init {
-        authRepository.isAuthorized.onEach { isAuthorized ->
-            if (isAuthorized) {
-                syncTokensToWearable()
-            }
-        }.launchIn(viewModelScope)
     }
 
-    private fun syncTokensToWearable() {
-        val accessToken = tokenManager.getAccessToken()
-        val refreshToken = tokenManager.getRefreshToken()
-
-        val putDataMapRequest = PutDataMapRequest.create("/tokens").apply {
-            accessToken?.let { dataMap.putString("access_token", it) }
-            refreshToken?.let { dataMap.putString("refresh_token", it) }
-            dataMap.putLong("timestamp", System.currentTimeMillis())
+    val accessToken: Flow<String?> = currentLogin.flatMapLatest { login ->
+        if (login != null) {
+            tokenManager.getAccessTokenForLogin(login)
+        } else {
+            flowOf(null)
         }
+    }
 
-        val putDataRequest = putDataMapRequest.asPutDataRequest()
-        putDataRequest.setUrgent()
-
-        dataClient.putDataItem(putDataRequest)
-            .addOnSuccessListener { Log.d("MainViewModel", "Tokens synced to wearable") }
-            .addOnFailureListener { Log.e("MainViewModel", "Failed to sync tokens to wearable", it) }
+    init {
+        combine(currentLogin, accessToken, refreshToken) { _, _, _ -> }.onEach {
+                context.startService(Intent(context, TokenRequestService::class.java))
+            }.launchIn(viewModelScope)
     }
 
 }
