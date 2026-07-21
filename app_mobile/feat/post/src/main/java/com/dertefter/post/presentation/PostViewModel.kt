@@ -56,7 +56,7 @@ class PostViewModel @Inject constructor(
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
-        UiState(isLoading = true)
+        UiState()
     )
 
     fun initWithPostId(id: String) {

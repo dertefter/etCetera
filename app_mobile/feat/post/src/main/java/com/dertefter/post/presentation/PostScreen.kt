@@ -18,6 +18,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -93,11 +94,20 @@ fun PostScreenContent(
     val pullToRefreshState = rememberPullToRefreshState()
     var showMenu by remember { mutableStateOf(false) }
 
+    var pullRefreshing by remember { mutableStateOf(false) }
+
+    LaunchedEffect(uiState.isLoading) {
+        if (!uiState.isLoading) {
+            pullRefreshing = false
+        }
+    }
+
     PullToRefreshBox(
         modifier = Modifier.fillMaxSize(),
         state = pullToRefreshState,
-        isRefreshing = uiState.isLoading,
+        isRefreshing = pullRefreshing,
         onRefresh = {
+            pullRefreshing = true
             onEvent(Event.OnRefresh)
             uiState.post?.let { post ->
                 onCommentsEvent(CommentsEvent.OnRefresh(commentSort, post.id))
@@ -108,7 +118,7 @@ fun PostScreenContent(
                 modifier = Modifier
                     .align(Alignment.TopCenter),
                 state = pullToRefreshState,
-                isRefreshing = uiState.isLoading
+                isRefreshing = pullRefreshing
             )
         }
     ) {
