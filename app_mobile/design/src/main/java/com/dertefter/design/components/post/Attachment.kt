@@ -3,6 +3,7 @@
 package com.dertefter.design.components.post
 
 import androidx.annotation.OptIn
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,7 +17,8 @@ fun Attachment(
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
     isFullscreen: Boolean = false,
-    containerColor: Color = MaterialTheme.colorScheme.surfaceContainer
+    contentPadding: PaddingValues = PaddingValues(),
+    containerColor: Color = MaterialTheme.colorScheme.surfaceVariant
 ) {
 
     when {
@@ -25,7 +27,8 @@ fun Attachment(
                 modifier = modifier,
                 attachment = attachment,
                 isFullscreen = isFullscreen,
-                onClick = onClick
+                onClick = onClick,
+                contentPadding = contentPadding
             )
         }
 
