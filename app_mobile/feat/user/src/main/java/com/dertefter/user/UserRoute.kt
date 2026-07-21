@@ -5,12 +5,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.dertefter.user.presentation.FeedTab
 import com.dertefter.user.presentation.UserScreen
 
 @Composable
 fun UserRoute(
     userId: String,
+    showBackButton: Boolean,
     viewModel: UserViewModel = hiltViewModel(),
 ) {
     val userUiState by viewModel.userUiState.collectAsStateWithLifecycle()
@@ -30,6 +30,7 @@ fun UserRoute(
         selectedTab = selectedTab,
         uiStates = uiStates,
         paginators = paginators,
+        showBackButton = showBackButton,
         onEvent = viewModel::onEvent
     )
 }

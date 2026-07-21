@@ -115,6 +115,7 @@ fun UserScreen(
     selectedTab: FeedTab,
     uiStates: Map<FeedTab, PaginatorUiState<PostDto>>,
     paginators: Map<FeedTab, MutableCursorPaginator<String, PostDto>> = emptyMap(),
+    showBackButton: Boolean,
 ) {
 
     val context = LocalContext.current
@@ -322,12 +323,13 @@ fun UserScreen(
                         scrolledContainerColor = appBarContainerColor
                     ),
                     navigationIcon = {
-                        AppNavigationIcon(
-                            icon = Icons.ArrowBack,
-                            onClick = { onEvent(Event.OnNavigateBack) },
-                            contentDescription = stringResource(com.dertefter.design.R.string.design_back_content_desc)
-                        )
-
+                        if (showBackButton){
+                            AppNavigationIcon(
+                                icon = Icons.ArrowBack,
+                                onClick = { onEvent(Event.OnNavigateBack) },
+                                contentDescription = stringResource(com.dertefter.design.R.string.design_back_content_desc)
+                            )
+                        }
                     },
                     title = {
                         userUiState.userDto?.let {
@@ -736,7 +738,7 @@ fun UserScreenPreview() {
             ),
             selectedTab = FeedTab.POSTS,
             uiStates = emptyMap(),
-            paginators = emptyMap()
+            showBackButton = false
         )
     }
 }
