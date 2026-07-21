@@ -15,11 +15,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dertefter.design.R
 import com.dertefter.design.icons.Icons
-import com.dertefter.design.theme.AppTheme
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.blur.HazeBlurDefaults
 import dev.chrisbanes.haze.blur.blurEffect
@@ -67,28 +65,6 @@ fun AppNavigationIcon(
             tint = contentColor,
             contentDescription = contentDescription ?: stringResource(R.string.design_back_content_desc),
             modifier = Modifier.size(24.dp)
-        )
-    }
-}
-
-@Preview(showSystemUi = false, showBackground = true)
-@Composable
-private fun AppNavigationIconPreview(){
-    AppTheme {
-        AppNavigationIcon(
-            onClick = {}
-        )
-    }
-}
-
-@Preview(showSystemUi = false, showBackground = true)
-@Composable
-private fun AppNavigationIconPreview2(){
-    AppTheme(
-        isCut = true
-    ) {
-        AppNavigationIcon(
-            onClick = {}
         )
     }
 }
