@@ -18,7 +18,6 @@ import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
 import com.jamal_aliev.paginator.cursor.bookmark.CursorBookmark
 import com.jamal_aliev.paginator.cursor.extension.distinctBy
 import com.jamal_aliev.paginator.cursor.extension.prefetchController
-import com.jamal_aliev.paginator.cursor.extension.refreshAll
 import com.jamal_aliev.paginator.cursor.extension.uiState
 import com.jamal_aliev.paginator.cursor.extension.warmUpFromPersistent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -112,7 +111,9 @@ class FeedViewModel @Inject constructor(
             val inserted = paginator.warmUpFromPersistent()
             if (inserted > 0) {
                 paginator.jump(CursorBookmark(prev = null, self = "initial", next = null))
-                paginator.refreshAll(loadingSilently = true)
+                paginator.refresh(
+                    cursors = listOf(CursorBookmark(prev = null, self = "initial", next = null))
+                )
             } else {
                 paginator.restart(silentlyLoading = true)
             }
