@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dertefter.data.datasource.local.TokenManager
 import com.dertefter.data.repository.AuthRepository
+import com.dertefter.data.repository.MeRepository
 import com.dertefter.etcetera.service.TokenRequestService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -31,6 +32,7 @@ data class MainUiState(
 @HiltViewModel
 class MainViewModel @Inject constructor(
     authRepository: AuthRepository,
+    meRepository: MeRepository,
     private val tokenManager: TokenManager,
     @param:ApplicationContext private val context: Context
 ) : ViewModel() {
@@ -43,7 +45,7 @@ class MainViewModel @Inject constructor(
         initialValue = MainUiState(isReady = false)
     )
 
-    val isReady: StateFlow<Boolean?> = uiState.map { if (it.isReady) true else null }.stateIn(
+    val meUserId: StateFlow<String?> = meRepository.meDto.map { it?.id }.stateIn(
         viewModelScope,
         SharingStarted.Eagerly,
         initialValue = null
@@ -73,8 +75,9 @@ class MainViewModel @Inject constructor(
 
     init {
         combine(currentLogin, accessToken, refreshToken) { _, _, _ -> }.onEach {
-                context.startService(Intent(context, TokenRequestService::class.java))
-            }.launchIn(viewModelScope)
+            context.startService(Intent(context, TokenRequestService::class.java))
+            meRepository.fetchMe()
+        }.launchIn(viewModelScope)
     }
 
 }

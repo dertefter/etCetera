@@ -41,10 +41,12 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+            val meUserId by viewModel.meUserId.collectAsStateWithLifecycle()
             if (uiState.isReady){
                 AppTheme {
                     MainScreen(
                         navigator,
+                        meUserId = meUserId,
                         currentLogin = uiState.currentLogin
                     )
                 }

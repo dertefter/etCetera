@@ -18,8 +18,12 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.SheetValue
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberBottomSheetState
 import androidx.compose.runtime.Composable
@@ -28,16 +32,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.rememberNavBackStack
 import com.dertefter.comments.CommentsRoute
+import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
+import com.dertefter.design.theme.isFold
 import com.dertefter.design.theme.spacing
 import com.dertefter.etcetera.navigation.AppNavHost
 import com.dertefter.navigation.NavigationAction
@@ -57,29 +66,62 @@ import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 
+enum class MainTab(
+    val label: String,
+    val icon: @Composable () -> ImageVector,
+    val selectedIcon: @Composable () -> ImageVector
+) {
+    Feed("Лента", { Icons.Home }, { Icons.HomeFilled }),
+    Notifications("Уведомления", { Icons.Notifications }, { Icons.NotificationsFilled }),
+    Profile("Профиль", { Icons.User }, { Icons.UserFilled })
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     navigator: Navigator,
     currentLogin: String? = null,
-){
+    meUserId: String? = null,
+) {
 
-    val startDestination = if (currentLogin != null) Routes.Feed else Routes.Auth
-    val backStack = rememberNavBackStack(startDestination)
+    val authBackStack = rememberNavBackStack(Routes.Auth)
+    val feedBackStack = rememberNavBackStack(Routes.Feed)
+    val notificationsBackStack = rememberNavBackStack(Routes.Notifications(showBackButton = false))
+    val profileBackStack = rememberNavBackStack(
+        if (meUserId != null) Routes.User(meUserId) else Routes.Feed
+    )
+
+    var selectedTab by rememberSaveable { mutableStateOf(MainTab.Feed) }
+
+    val activeBackStack = when {
+        currentLogin == null -> authBackStack
+        selectedTab == MainTab.Feed -> feedBackStack
+        selectedTab == MainTab.Notifications -> notificationsBackStack
+        selectedTab == MainTab.Profile -> profileBackStack
+        else -> feedBackStack
+    }
 
     LaunchedEffect(currentLogin) {
-        if (currentLogin != null) {
-            backStack.clear()
-            backStack.add(Routes.Feed)
-        } else {
-            if (!backStack.contains(Routes.Auth)) {
-                backStack.clear()
-                backStack.add(Routes.Auth)
-            }
+        if (currentLogin == null) {
+            authBackStack.clear()
+            authBackStack.add(Routes.Auth)
+            feedBackStack.clear()
+            feedBackStack.add(Routes.Feed)
+            notificationsBackStack.clear()
+            notificationsBackStack.add(Routes.Notifications(showBackButton = false))
+            profileBackStack.clear()
+            profileBackStack.add(Routes.Auth)
         }
     }
 
-    val isAttachmentViewer = backStack.lastOrNull() is Routes.AttachmentsViewer
+    LaunchedEffect(meUserId) {
+        if (meUserId != null && currentLogin != null && profileBackStack.lastOrNull() !is Routes.User) {
+            profileBackStack.clear()
+            profileBackStack.add(Routes.User(meUserId, showBackButton = false))
+        }
+    }
+
+    val isAttachmentViewer = activeBackStack.lastOrNull() is Routes.AttachmentsViewer
 
     val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
@@ -94,14 +136,14 @@ fun MainScreen(
 
     val scope = rememberCoroutineScope()
 
-    BackHandler(enabled = scaffoldState.bottomSheetState.currentValue != SheetValue.Hidden) {
-        scope.launch {
-            scaffoldState.bottomSheetState.hide()
-        }
-    }
+//    BackHandler(enabled = scaffoldState.bottomSheetState.currentValue != SheetValue.Hidden) {
+//        scope.launch {
+//            scaffoldState.bottomSheetState.hide()
+//        }
+//    }
 
     val blurRadius by animateDpAsState(
-        targetValue = if (scaffoldState.bottomSheetState.currentValue == SheetValue.Expanded)  80.dp else 40.dp,
+        targetValue = if (scaffoldState.bottomSheetState.currentValue == SheetValue.Expanded) 120.dp else 60.dp,
         animationSpec = MaterialTheme.motionScheme.slowEffectsSpec()
     )
 
@@ -146,7 +188,7 @@ fun MainScreen(
                     },
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
-            ){
+            ) {
                 BottomSheetDefaults.DragHandle()
                 when (val route = bottomSheetRoute) {
                     is Routes.Comments -> CommentsRoute(route.postId)
@@ -161,29 +203,43 @@ fun MainScreen(
         }
     ) {
         Box(Modifier.fillMaxSize()) {
-            AppNavHost(
-                backStack = backStack,
-                onBack = {
-                    if (backStack.size > 1) {
-                        backStack.removeAt(backStack.lastIndex)
+            if (MaterialTheme.isFold){
+                FoldUI(
+                    activeBackStack = activeBackStack,
+                    currentLogin = currentLogin,
+                    selectedTab = selectedTab,
+                    hazeState = hazeState,
+                    hazeStyle = hazeStyle,
+                    onBack = {
+                        if (activeBackStack.size > 1) {
+                            activeBackStack.removeAt(activeBackStack.lastIndex)
+                        } else if (currentLogin != null && selectedTab != MainTab.Feed) {
+                            selectedTab = MainTab.Feed
+                        }
+                    },
+                    onNavItemClick = { tab ->
+                        selectedTab = tab
                     }
-                },
-                modifier = Modifier
-                    .hazeSource(hazeState)
-                    .then(
-                        if (!isAttachmentViewer) {
-                            Modifier.verticalFadingEdges(
-                                fillType = FadingEdgesFillType.FadeColor(
-                                    color = MaterialTheme.colorScheme.background
-
-                                ),
-                                gravity = FadingEdgesGravity.End,
-                                length = navigationBarHeight + 12.dp
-                            )
-                        } else Modifier
-                    )
-                    .fillMaxSize()
-            )
+                )
+            }else{
+                PhoneUI(
+                    activeBackStack = activeBackStack,
+                    currentLogin = currentLogin,
+                    selectedTab = selectedTab,
+                    hazeState = hazeState,
+                    hazeStyle = hazeStyle,
+                    onBack = {
+                        if (activeBackStack.size > 1) {
+                            activeBackStack.removeAt(activeBackStack.lastIndex)
+                        } else if (currentLogin != null && selectedTab != MainTab.Feed) {
+                            selectedTab = MainTab.Feed
+                        }
+                    },
+                    onNavItemClick = { tab ->
+                        selectedTab = tab
+                    }
+                )
+            }
 
             if (scaffoldState.bottomSheetState.currentValue != SheetValue.Hidden) {
                 Box(
@@ -202,8 +258,10 @@ fun MainScreen(
         }
     }
 
-    LaunchedEffect(Unit) {
+    val currentActiveBackStack by rememberUpdatedState(activeBackStack)
+    LaunchedEffect(navigator) {
         navigator.navigationActions.collect { action ->
+            val backStack = currentActiveBackStack
             when (action) {
                 is NavigationAction.Navigate -> {
                     scaffoldState.bottomSheetState.hide()
@@ -235,7 +293,6 @@ fun MainScreen(
                     scaffoldState.bottomSheetState.hide()
                     bottomSheetRoute = null
                 }
-
             }
         }
     }
