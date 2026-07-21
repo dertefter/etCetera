@@ -107,7 +107,6 @@ fun AppTheme(
     paletteStyle: PaletteStyle? = null,
     specVersion: ColorSpec.SpecVersion? = null,
     seedColor: Long? = null,
-    isCut: Boolean? = false,
     content: @Composable () -> Unit
 ) {
 
@@ -121,8 +120,7 @@ fun AppTheme(
     val context = LocalContext.current
 
     val paletteStyle = paletteStyle ?: PaletteStyle.TonalSpot
-    val specVersion = specVersion ?: ColorSpec.SpecVersion.SPEC_2021
-    val isCut = isCut ?: false
+    val specVersion = specVersion ?: ColorSpec.SpecVersion.Default
 
     val isDark = darkTheme
 
@@ -164,7 +162,6 @@ fun AppTheme(
         LocalRounding provides Rounding(),
         LocalIsFold provides isFold,
         LocalIsTab provides isTab,
-        LocalIsCut provides isCut,
         LocalIsDark provides isDark,
         LocalSeedColor provides seedColor,
         LocalPaletteStyle provides paletteStyle,
@@ -175,7 +172,6 @@ fun AppTheme(
             motionScheme = MotionScheme.expressive(),
             animate = true,
             typography = Typography,
-            shapes = if (isCut) CutShapes else RoundedShapes
         ) {
             val likeColor =
                 Color(0xFFF5006A).harmonize(MaterialTheme.colorScheme.primary, matchSaturation = true)
