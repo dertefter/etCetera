@@ -42,6 +42,7 @@ fun NotificationsScreen(
     uiState: PaginatorUiState<NotificationDto>,
     paginator: MutableCursorPaginator<String, NotificationDto>,
     selectedFilter: String? = null,
+    showBackButton: Boolean,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val pullToRefreshState = rememberPullToRefreshState()
@@ -71,11 +72,13 @@ fun NotificationsScreen(
                     Column {
                         LargeFlexibleTopAppBar(
                             navigationIcon = {
-                                AppNavigationIcon(
-                                    onClick = {
-                                        onEvent(Event.OnNavigateBack)
-                                    }
-                                )
+                                if (showBackButton){
+                                    AppNavigationIcon(
+                                        onClick = {
+                                            onEvent(Event.OnNavigateBack)
+                                        }
+                                    )
+                                }
                             },
                             title = {
                                 Text(stringResource(R.string.notifications_title))

@@ -10,7 +10,8 @@ import com.dertefter.notifications.presentation.NotificationsScreen
 
 @Composable
 fun NotificationsRoute(
-    viewModel: NotificationsViewModel = hiltViewModel(),
+    showBackButton: Boolean,
+    viewModel: NotificationsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val selectedFilter by viewModel.selectedFilter.collectAsStateWithLifecycle()
@@ -23,6 +24,7 @@ fun NotificationsRoute(
         onEvent = viewModel::onEvent,
         uiState = uiState,
         paginator = viewModel.paginator,
-        selectedFilter = selectedFilter
+        selectedFilter = selectedFilter,
+        showBackButton = showBackButton
     )
 }
