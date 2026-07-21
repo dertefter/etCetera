@@ -150,7 +150,7 @@ fun OriginalPostCard(
                     AttachmentsCarousel(
                         attachments = originalPost.attachments,
                         modifier = Modifier.fillMaxWidth(),
-                        itemHeight = 160.dp,
+                        itemHeight = 180.dp,
                         onItemClick = { position ->
                             onAttachmentClick(
                                 originalPost.attachments, position
