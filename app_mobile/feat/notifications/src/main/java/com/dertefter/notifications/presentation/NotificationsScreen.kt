@@ -20,6 +20,11 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,7 +36,6 @@ import com.dertefter.design.components.buttons.AppNavigationIcon
 import com.dertefter.design.theme.rounding
 import com.dertefter.design.theme.spacing
 import com.dertefter.notifications.R
-import com.jamal_aliev.paginator.core.extension.isProgressState
 import com.jamal_aliev.paginator.core.page.PaginatorUiState
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
 
@@ -46,18 +50,30 @@ fun NotificationsScreen(
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val pullToRefreshState = rememberPullToRefreshState()
-    val isRefreshing = (uiState is PaginatorUiState.Content<*>) && (uiState.prependState.isProgressState())
+    val isRefreshing = (uiState is PaginatorUiState.Content<*>)
+
+    var pullRefreshing by remember { mutableStateOf(false) }
+
+    LaunchedEffect(isRefreshing) {
+        if (!isRefreshing) {
+            pullRefreshing = false
+        }
+    }
+
 
     PullToRefreshBox(
         modifier = Modifier.fillMaxSize(),
         state = pullToRefreshState,
-        isRefreshing = isRefreshing,
-        onRefresh = { onEvent(Event.OnRefresh) },
+        isRefreshing = pullRefreshing,
+        onRefresh = {
+            pullRefreshing = true
+            onEvent(Event.OnRefresh)
+                    },
         indicator = {
             PullToRefreshIndicator(
                 modifier = Modifier.align(Alignment.TopCenter),
                 state = pullToRefreshState,
-                isRefreshing = isRefreshing
+                isRefreshing = pullRefreshing
             )
         }
     ) {

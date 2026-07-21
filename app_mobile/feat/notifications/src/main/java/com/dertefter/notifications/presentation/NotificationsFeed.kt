@@ -159,7 +159,7 @@ private fun NotificationAppendIndicator(state: PaginatorUiState<NotificationDto>
         contentAlignment = Alignment.Center
     ) {
         when (state) {
-            is PaginatorUiState.Loading -> CircularProgressIndicator()
+            is PaginatorUiState.Loading -> AppLoadingIndicator()
             is PaginatorUiState.Error -> Text(
                 stringResource(
                     R.string.notifications_load_error, state.state.exception.message ?: ""

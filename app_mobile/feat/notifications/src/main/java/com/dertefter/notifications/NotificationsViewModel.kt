@@ -84,7 +84,7 @@ class NotificationsViewModel @Inject constructor(
             }
             is Event.OnRefresh -> {
                 viewModelScope.launch {
-                    paginator.restart(silentlyLoading = true)
+                    paginator.restart(silentlyLoading = false)
                 }
             }
             is Event.OnNavigateBack -> {
