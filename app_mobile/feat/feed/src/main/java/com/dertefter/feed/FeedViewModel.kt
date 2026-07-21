@@ -204,7 +204,7 @@ class FeedViewModel @Inject constructor(
             }
 
             Event.OnOpenNotifications -> {
-                navigator.navigate(Routes.Notifications)
+                navigator.navigate(Routes.Notifications())
             }
 
             is Event.OnNavigateToComments -> {
