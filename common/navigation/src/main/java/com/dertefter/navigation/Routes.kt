@@ -20,7 +20,9 @@ sealed interface Routes : NavKey {
     data object Feed : Routes
 
     @Serializable
-    data object Notifications : Routes
+    data class Notifications(
+        val showBackButton: Boolean = true
+    ) : Routes
 
     @Serializable
     data object BannerEdit : Routes
@@ -47,7 +49,10 @@ sealed interface Routes : NavKey {
     data class AttachmentsViewer(val attachments: List<AttachmentNavigationModel>, val viewPosition: Int = 0) : Routes
 
     @Serializable
-    data class User(val userId: String) : Routes
+    data class User(
+        val userId: String,
+        val showBackButton: Boolean = true
+    ) : Routes
 
     @Serializable
     data class Followers(
