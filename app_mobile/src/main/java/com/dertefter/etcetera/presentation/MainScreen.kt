@@ -204,12 +204,11 @@ fun MainScreen(
     ) {
         Box(Modifier.fillMaxSize()) {
             if (MaterialTheme.isFold){
-                FoldUI(
+                TabUI(
                     activeBackStack = activeBackStack,
                     currentLogin = currentLogin,
                     selectedTab = selectedTab,
                     hazeState = hazeState,
-                    hazeStyle = hazeStyle,
                     onBack = {
                         if (activeBackStack.size > 1) {
                             activeBackStack.removeAt(activeBackStack.lastIndex)
@@ -221,7 +220,7 @@ fun MainScreen(
                         selectedTab = tab
                     }
                 )
-            }else{
+            } else{
                 PhoneUI(
                     activeBackStack = activeBackStack,
                     currentLogin = currentLogin,
