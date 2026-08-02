@@ -36,9 +36,9 @@ import com.dertefter.design.components.buttons.AppNavigationIcon
 import com.dertefter.design.components.post.AuthorUiModel
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
+import com.dertefter.design.theme.rounding
 import com.dertefter.design.theme.spacing
 import com.dertefter.user.R
-import com.dertefter.user.presentation.Event
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import kotlin.math.absoluteValue
@@ -46,12 +46,12 @@ import kotlin.math.sqrt
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun Header(
+fun HeaderWide(
     modifier: Modifier = Modifier,
     bannerUrl: String?,
     author: AuthorUiModel,
     isMe: Boolean = false,
-    avatarSize: Dp = 120.dp,
+    avatarSize: Dp = 80.dp,
     scrollBehavior: TopAppBarScrollBehavior? = null,
     onBannerClick: () -> Unit = {},
     onEditClick: () -> Unit = {},
@@ -76,16 +76,14 @@ fun Header(
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        Box(
+        Column(
             modifier = Modifier
-                .fillMaxWidth(),
-            contentAlignment = Alignment.BottomCenter
+                .fillMaxWidth()
         ){
             if (!bannerUrl.isNullOrEmpty() || isMe){
                 Box(
                     modifier = Modifier
                         .blur(120.dp * scrollFraction, edgeTreatment =  BlurredEdgeTreatment.Unbounded)
-                        .padding(bottom = avatarSize / 2)
                         .alpha(sqrt(1f - scrollFraction))
                         .clip(MaterialTheme.shapes.extraLarge)
                         .clickable(onClick = onBannerClick)
@@ -119,68 +117,87 @@ fun Header(
             }
             
 
+            Box(
+                modifier = Modifier.fillMaxWidth()
+            ){
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large),
+                    modifier = Modifier
+                        .padding(
+                            all = MaterialTheme.rounding.large
+                        )
+                )
+                {
+                    EmojiAvatar(
+                        emoji = author.avatar,
+                        rotation = rotation,
+                        containerSize = avatarSize,
+                        fontSize = 28.sp,
+                    )
+
+                    Column(
+                    ) {
+                        DisplayName(
+                            name = author.displayName,
+                            verified = author.verified,
+                            hasNuksta = author.hasNuksta,
+                            pin = author.pin,
+                            textStyle = MaterialTheme.typography.titleLargeEmphasized
+                        )
+                        Text(
+                            text = "@${author.username}",
+                            style = MaterialTheme.typography.bodyLargeEmphasized,
+                            color = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier.padding(top = MaterialTheme.spacing.extraSmall)
+                        )
+                    }
+                }
+
+                Row(
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
+                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.defaultScreenPadding),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    followersCount?.let { followersCount ->
+                        WideTitleValueCard(
+                            title = stringResource(R.string.user_followers),
+                            value = followersCount,
+                            onClick = onFollowersClick
+                        )
+                    }
+
+                    followingCount?.let { followingCount ->
+                        WideTitleValueCard(
+                            title = stringResource(R.string.user_following),
+                            value = followingCount,
+                            onClick = onFollowingClock
+                        )
+                    }
+                }
+            }
 
 
-            EmojiAvatar(
-                emoji = author.avatar,
-                rotation = rotation,
-                containerSize = avatarSize,
-                fontSize = 36.sp,
-            )
+
+
         }
 
-       DisplayName(
-           name = author.displayName,
-           verified = author.verified,
-           hasNuksta = author.hasNuksta,
-           pin = author.pin,
-           textStyle = MaterialTheme.typography.titleLarge
-       )
-       Text(
-           text = "@${author.username}",
-           style = MaterialTheme.typography.bodyLargeEmphasized,
-           color = MaterialTheme.colorScheme.secondary,
-           modifier = Modifier.padding(top = MaterialTheme.spacing.extraSmall)
-       )
 
-       Row(
-           modifier = Modifier
-               .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
-               .padding(bottom = MaterialTheme.spacing.large),
-           horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.defaultScreenPadding)
-       ) {
-           followersCount?.let { followersCount ->
-               TitleValueCard(
-                   title = stringResource(R.string.user_followers),
-                   value = followersCount,
-                   onClick = onFollowersClick
-               )
-           }
-           
-           followingCount?.let { followingCount ->
-               TitleValueCard(
-                   title = stringResource(R.string.user_following),
-                   value = followingCount,
-                   onClick = onFollowingClock
-               )
-           }
-
-
-           
-
-       }
 
     }
 }
 
 @Preview(
     showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES, backgroundColor = 0x00121318
+    uiMode = Configuration.UI_MODE_NIGHT_YES, backgroundColor = 0x00121318,
+    device = "spec:width=2040px,height=2340px,dpi=440"
 )
 @Composable
-fun HeaderPreview() {
+fun HeaderWidePrev() {
     AppTheme {
-        Header(
+        HeaderWide(
             bannerUrl = "https://picsum.photos/800/200",
             author = AuthorUiModel(
                 id = "author1",
@@ -191,8 +208,11 @@ fun HeaderPreview() {
                 verified = true,
                 pin = null,
             ),
-            onFollowersClick = {},
+            isMe = true,
             onFollowingClock = {},
+            onFollowersClick = {},
+            followingCount = 1,
+            followersCount = 2
         )
     }
 }

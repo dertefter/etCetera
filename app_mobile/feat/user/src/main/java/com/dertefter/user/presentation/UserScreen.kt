@@ -16,6 +16,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -27,6 +28,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -88,11 +90,13 @@ import com.dertefter.design.components.common.ErrorLarge
 import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
+import com.dertefter.design.theme.isFold
 import com.dertefter.design.theme.rounding
 import com.dertefter.design.theme.spacing
 import com.dertefter.user.R
 import com.dertefter.user.presentation.component.BioCard
 import com.dertefter.user.presentation.component.Header
+import com.dertefter.user.presentation.component.HeaderWide
 import com.dertefter.user.presentation.component.TitleValueCard
 import com.dertefter.user.presentation.mapper.toUiModel
 import com.jamal_aliev.paginator.compose.cursor.rememberPaginated
@@ -328,7 +332,7 @@ fun UserScreen(
                 TopAppBar(
                     scrollBehavior = scrollBehavior,
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = appBarContainerColor,
+                        containerColor = Color.Transparent,
                         scrolledContainerColor = appBarContainerColor
                     ),
                     navigationIcon = {
@@ -503,48 +507,60 @@ fun UserScreen(
 
 
                     item {
-                        Header(
-                            bannerUrl = userUiState.userDto.banner,
-                            modifier = Modifier
-                                .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
-                                .padding(bottom = MaterialTheme.spacing.large),
-                            author = userUiState.userDto.toUiModel(),
-                            isMe = userUiState.isMe,
-                            scrollBehavior = scrollBehavior,
-                            onEditClick = {
-                                if (userUiState.isMe) {
-                                    onEvent(Event.OnBannerEdit)
-                                }
-                            },
-                            onBannerClick = {
+                        if (MaterialTheme.isFold){
+                            HeaderWide(
+                                bannerUrl = userUiState.userDto.banner,
+                                modifier = Modifier
+                                    .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
+                                    .padding(bottom = MaterialTheme.spacing.large),
+                                author = userUiState.userDto.toUiModel(),
+                                isMe = userUiState.isMe,
+                                scrollBehavior = scrollBehavior,
+                                onEditClick = {
+                                    if (userUiState.isMe) {
+                                        onEvent(Event.OnBannerEdit)
+                                    }
+                                },
+                                onBannerClick = {
 
-                            }
-                        )
-                    }
-                    item {
-                        Row(
-                            modifier = Modifier
-                                .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
-                                .padding(bottom = MaterialTheme.spacing.large),
-                            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.defaultScreenPadding)
-                        ) {
-                            TitleValueCard(
-                                title = stringResource(R.string.user_followers),
-                                value = userUiState.userDto.followersCount,
-                                onClick = {
+                                },
+                                onFollowersClick = {
                                     onEvent(Event.OnOpenFollowers(userId = userUiState.userDto.id))
-                                }
-                            )
-
-                            TitleValueCard(
-                                title = stringResource(R.string.user_following),
-                                value = userUiState.userDto.followingCount,
-                                onClick = {
+                                },
+                                onFollowingClock = {
                                     onEvent(Event.OnOpenFollowing(userId = userUiState.userDto.id))
-                                }
+                                },
+                                followersCount = userUiState.userDto.followersCount,
+                                followingCount = userUiState.userDto.followingCount,
                             )
+                        }else{
+                            Header(
+                                bannerUrl = userUiState.userDto.banner,
+                                modifier = Modifier
+                                    .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
+                                author = userUiState.userDto.toUiModel(),
+                                isMe = userUiState.isMe,
+                                scrollBehavior = scrollBehavior,
+                                onEditClick = {
+                                    if (userUiState.isMe) {
+                                        onEvent(Event.OnBannerEdit)
+                                    }
+                                },
+                                onBannerClick = {
 
+                                },
+                                onFollowersClick = {
+                                    onEvent(Event.OnOpenFollowers(userId = userUiState.userDto.id))
+                                },
+                                onFollowingClock = {
+                                    onEvent(Event.OnOpenFollowing(userId = userUiState.userDto.id))
+                                },
+                                followersCount = userUiState.userDto.followersCount,
+                                followingCount = userUiState.userDto.followingCount,
+
+                            )
                         }
+
                     }
 
                     if (

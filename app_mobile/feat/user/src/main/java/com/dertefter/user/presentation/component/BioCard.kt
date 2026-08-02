@@ -1,7 +1,9 @@
 package com.dertefter.user.presentation.component
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.fadeIn
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,6 +21,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,13 +39,24 @@ fun BioCard(
     onSaveClick: (String) -> Unit = {}
 ){
     var editedBio by remember(bio) { mutableStateOf(bio) }
+    var isFocused by remember { mutableStateOf(false) }
     val isChanged = editedBio != bio && canEdit
+
+    val isEditing = isFocused
+
+    val bgColor by animateColorAsState(
+        if (isEditing) MaterialTheme.colorScheme.surfaceContainer else Color.Transparent
+    )
 
     Surface(
         modifier = modifier
             .fillMaxWidth(),
-        shape = MaterialTheme.shapes.medium,
-        color = MaterialTheme.colorScheme.surfaceContainer
+        shape = MaterialTheme.shapes.large,
+        color = bgColor,
+        border = BorderStroke(
+            color = MaterialTheme.colorScheme.outlineVariant,
+            width = 1.dp
+        )
     ) {
         Column(
             modifier = Modifier
@@ -49,6 +64,7 @@ fun BioCard(
         ) {
             BasicTextField(
                 modifier = Modifier
+                    .onFocusChanged { isFocused = it.isFocused }
                     .padding(top = MaterialTheme.spacing.extraLarge)
                     .padding(horizontal = MaterialTheme.spacing.extraLarge)
                     .padding(bottom = if (isChanged) 0.dp else MaterialTheme.spacing.extraLarge)
