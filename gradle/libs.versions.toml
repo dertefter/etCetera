@@ -1,7 +1,7 @@
 [versions]
 
 # Сборность и плагинность
-agp = "9.2.1"
+agp = "9.3.1"
 composemediaplayer = "0.11.3"
 drawboxEnhanced = "2.1.2"
 kotlin = "2.4.10"
@@ -17,30 +17,29 @@ material = "1.14.0"
 
 # Lifecycle & DataStore
 lifecycleRuntimeKtx = "2.11.0"
-navigation3 = "1.2.0-alpha06"
+navigation3 = "1.2.0-alpha07"
 
 # Датасторность
 datastoreCore = "1.2.1"
 datastorePreferences = "1.2.1"
 
 # Композность
-composeBomAlpha = "2026.07.00"
+composeBomAlpha = "2026.07.01"
 activityCompose = "1.13.0"
 navigationCompose = "2.9.8"
 
 #Всячность для юайности
 haze = "2.0.0-alpha03"
 materialKolor = "5.0.0"
-zoomable = "2.12.0"
+zoomable = "2.13.0"
 coilCompose = "2.7.0"
-composeVideo = "1.2.0"
 composefadingedges = "1.0.4"
 composeQrCode = "1.0.1"
 composeShimmer = "1.5.0"
 palette = "1.0.0"
 
 # Носимость
-composeWear = "1.7.0-alpha06"
+composeWear = "1.7.0-alpha07"
 playServicesWearable = "20.0.1"
 wearToolingPreview = "1.0.0"
 
@@ -52,7 +51,7 @@ hiltNavigationCompose = "1.4.0"
 # Нетворкность и Сериализайшность
 retrofit = "3.0.0"
 okhttpUrlconnection = "5.4.0"
-jsoup = "1.22.2"
+jsoup = "1.23.1"
 kotlinxSerializationJson = "1.11.0"
 
 # Румность
