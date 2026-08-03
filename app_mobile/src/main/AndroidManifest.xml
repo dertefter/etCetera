@@ -13,9 +13,9 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:enableOnBackInvokedCallback="true"
-        tools:targetApi="33"
         android:name=".EtCetera"
-        android:theme="@style/Theme.EtCetera">
+        android:theme="@style/Theme.EtCetera"
+        tools:targetApi="37">
 
         <service android:name="com.google.android.gms.metadata.ModuleDependencies"
             android:enabled="false"
