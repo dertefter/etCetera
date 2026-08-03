@@ -24,19 +24,14 @@ import com.gigamole.composefadingedges.FadingEdgesGravity
 import com.gigamole.composefadingedges.fill.FadingEdgesFillType
 import com.gigamole.composefadingedges.verticalFadingEdges
 import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.blur.HazeBlurStyle
-import dev.chrisbanes.haze.blur.blurEffect
-import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
 
 @Composable
 fun PhoneUI(
     modifier: Modifier = Modifier,
     activeBackStack: NavBackStack<NavKey>,
-    currentLogin: String?,
     selectedTab: MainTab,
     hazeState: HazeState,
-    hazeStyle: HazeBlurStyle,
     onBack: () -> Unit,
     onNavItemClick: (tab: MainTab) -> Unit
 
@@ -47,7 +42,7 @@ fun PhoneUI(
 
     val showFadingEdges = activeBackStack.lastOrNull() is Routes.AttachmentsViewer
 
-    val showNav = activeBackStack.lastOrNull() !is Routes.AttachmentsViewer || activeBackStack.lastOrNull() !is Routes.Auth || currentLogin != null
+    val hideNav = activeBackStack.lastOrNull() is Routes.AttachmentsViewer || activeBackStack.lastOrNull() is Routes.Auth
 
     Column(modifier.fillMaxSize()) {
         Box(Modifier.weight(1f)) {
@@ -72,14 +67,9 @@ fun PhoneUI(
             )
         }
 
-        if (showNav) {
+        if (!hideNav) {
             NavigationBar(
                 containerColor = Color.Transparent,
-                modifier = Modifier.hazeEffect(state = hazeState) {
-                    blurEffect {
-                        style = hazeStyle
-                    }
-                }
             ) {
                 MainTab.entries.forEach { tab ->
                     val selected = selectedTab == tab

@@ -1,5 +1,6 @@
 package com.dertefter.etcetera.presentation
 
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,6 +28,7 @@ import androidx.compose.material3.rememberWideNavigationRailState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -69,12 +71,15 @@ fun TabUI(
 
     val showFadingEdges = activeBackStack.lastOrNull() !is Routes.AttachmentsViewer
 
-    val showNav =
-        activeBackStack.lastOrNull() !is Routes.AttachmentsViewer || activeBackStack.lastOrNull() !is Routes.Auth || currentLogin != null
+    val hideNav = activeBackStack.lastOrNull() is Routes.AttachmentsViewer || activeBackStack.lastOrNull() is Routes.Auth
+
+    val topLeftCornerRadius by animateDpAsState(
+        if (hideNav) 0.dp else MaterialTheme.rounding.largeIncreased
+    )
 
     TabUIStateless(
         modifier = modifier,
-        showNav = showNav,
+        hideNav = hideNav,
         selectedTab = selectedTab,
         hazeState = hazeState,
         onNavItemClick = onNavItemClick,
@@ -96,7 +101,7 @@ fun TabUI(
                     )
                     .clipToBounds()
                     .statusBarsPadding()
-                    .clip(RoundedCornerShape(topStart = MaterialTheme.rounding.extraLarge))
+                    .clip(RoundedCornerShape(topStart = topLeftCornerRadius))
                     .fillMaxSize()
             )
         }
@@ -106,7 +111,7 @@ fun TabUI(
 @Composable
 fun TabUIStateless(
     modifier: Modifier = Modifier,
-    showNav: Boolean,
+    hideNav: Boolean,
     selectedTab: MainTab,
     hazeState: HazeState,
     onNavItemClick: (tab: MainTab) -> Unit,
@@ -131,7 +136,7 @@ fun TabUIStateless(
             .background(MaterialTheme.colorScheme.surfaceContainerHigh)
             .fillMaxSize()
     ) {
-        if (showNav) {
+        if (!hideNav) {
             WideNavigationRail(
                 modifier = Modifier,
                 state = railState,
@@ -175,31 +180,5 @@ fun TabUIStateless(
         Box(Modifier.weight(1f)) {
             content()
         }
-    }
-}
-
-@Preview(showBackground = true, widthDp = 500, heightDp = 600)
-@Composable
-fun TabUIPreview() {
-    val hazeState = rememberHazeState()
-
-    AppTheme {
-        TabUIStateless(
-            showNav = true,
-            selectedTab = MainTab.Feed,
-            hazeState = hazeState,
-            onNavItemClick = {},
-            content = {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.surface)
-                        .padding(16.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text("Content Area", style = MaterialTheme.typography.headlineLarge)
-                }
-            }
-        )
     }
 }
