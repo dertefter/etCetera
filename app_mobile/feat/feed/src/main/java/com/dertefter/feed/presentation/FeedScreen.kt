@@ -1,8 +1,6 @@
 package com.dertefter.feed.presentation
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.expandVertically
@@ -29,6 +27,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SmallFloatingActionButton
@@ -46,6 +45,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -62,7 +63,6 @@ import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.rounding
 import com.dertefter.design.theme.spacing
 import com.dertefter.feed.R
-import com.dertefter.feed.presentation.component.FeedAppBar
 import com.jamal_aliev.paginator.core.extension.isProgressState
 import com.jamal_aliev.paginator.core.page.PaginatorUiState
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
@@ -77,11 +77,9 @@ fun FeedScreen(
     onEvent: (Event) -> Unit,
     selectedTab: FeedTab,
     uiStates: Map<FeedTab, PaginatorUiState<PostDto>>,
-    paginators: Map<FeedTab, MutableCursorPaginator<String, PostDto>>,
-    topAppBarState: TopBarUiState
+    paginators: Map<FeedTab, MutableCursorPaginator<String, PostDto>>
 ) {
     val tabs = FeedTab.entries
-
 
     val popularListState = rememberLazyStaggeredGridState()
     val clanListState = rememberLazyStaggeredGridState()
@@ -168,26 +166,24 @@ fun FeedScreen(
     ) {
         Scaffold(
             topBar = {
-
-                Log.e("overlappedFraction,overlappedFraction", scrollBehavior.state.overlappedFraction.toString())
-
-                val containerColor by animateColorAsState(
-                    if (scrollBehavior.state.overlappedFraction <= 0.99f) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.surfaceContainer
+                val containerColor = lerp(
+                    MaterialTheme.colorScheme.surface,
+                    MaterialTheme.colorScheme.surfaceContainer,
+                    scrollBehavior.state.overlappedFraction
                 )
                 Surface(color = containerColor) {
                     Column {
-                        FeedAppBar(
-                            profileEmoji = topAppBarState.avatarEmoji,
-                            popularHashtags = topAppBarState.trendingHashtags,
-                            scrollBehavior = scrollBehavior,
-                            onProfileClick = {
-                                topAppBarState.userId?.let{ userId ->
-                                    onEvent(Event.OnOpenUser(userId))
-                                }
+                        LargeFlexibleTopAppBar(
+                            title = {
+                                Text(stringResource(R.string.feed_title))
                             },
-                            onNotificationsClick = { onEvent(Event.OnOpenNotifications) },
-                            onSearchClick = { onEvent(Event.OnOpenSearch) }
+                            colors = TopAppBarDefaults.topAppBarColors(
+                                containerColor = Color.Transparent,
+                                scrolledContainerColor = Color.Transparent
+                            ),
+                            scrollBehavior = scrollBehavior,
                         )
+
                         ButtonGroup(
                             overflowIndicator = { ButtonGroupDefaults.OverflowIndicator(it) },
                             modifier = Modifier
@@ -195,7 +191,8 @@ fun FeedScreen(
                                 .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
                                 .padding(bottom = MaterialTheme.spacing.small),
                             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
-                        ) {
+                        )
+                        {
                             val groupScope = this
                             tabs.forEachIndexed { index, title ->
 
@@ -272,6 +269,7 @@ fun FeedScreen(
                         }
                     }
                 }
+
             },
             floatingActionButton = {
                 Column(
@@ -500,7 +498,6 @@ fun FeedScreenPreview() {
             onEvent = {},
             selectedTab = FeedTab.POPULAR,
             uiStates = uiStates,
-            topAppBarState = TopBarUiState(),
             paginators = paginators,
         )
     }

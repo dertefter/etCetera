@@ -9,7 +9,6 @@ import com.dertefter.data.repository.PostRepository
 import com.dertefter.data.repository.SearchRepository
 import com.dertefter.feed.presentation.Event
 import com.dertefter.feed.presentation.FeedTab
-import com.dertefter.feed.presentation.TopBarUiState
 import com.dertefter.feed.presentation.mapper.toNavigationModel
 import com.dertefter.navigation.Navigator
 import com.dertefter.navigation.Routes
@@ -58,19 +57,6 @@ class FeedViewModel @Inject constructor(
     private val _userId = meRepository.meDto.map { it?.id }
 
     fun getPaginator(tab: FeedTab) = paginators[tab]!!
-
-
-    val topBarUiState: StateFlow<TopBarUiState> = combine(
-        _trendingHashtags, _emojiAvatar, _userId
-    ) { hashtags, avatar, userId ->
-        TopBarUiState(
-            trendingHashtags = hashtags, avatarEmoji = avatar, notificationsCount = null, userId = userId
-        )
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = TopBarUiState()
-    )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val uiStates: Map<FeedTab, StateFlow<PaginatorUiState<PostDto>>> =

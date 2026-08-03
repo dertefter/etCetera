@@ -28,12 +28,9 @@ fun FeedRoute(
 
     val paginators = viewModel.tabs.associateWith { viewModel.getPaginator(it) }
 
-    val topAppBarState by viewModel.topBarUiState.collectAsStateWithLifecycle()
-
     FeedScreen(
         onEvent = viewModel::onEvent,
         selectedTab = selectedTab,
-        topAppBarState = topAppBarState,
         uiStates = uiStates,
         paginators = paginators
     )
