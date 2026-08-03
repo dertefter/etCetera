@@ -115,7 +115,7 @@ fun AppTheme(
     val widthInDp = with(density) { windowInfo.containerSize.width.toDp() }
 
     val isFold = widthInDp > 600.dp
-    val isTab = widthInDp > 840.dp
+    val isTab = widthInDp > 1200.dp
 
     val context = LocalContext.current
 
