@@ -206,7 +206,6 @@ fun MainScreen(
             if (MaterialTheme.isFold){
                 TabUI(
                     activeBackStack = activeBackStack,
-                    currentLogin = currentLogin,
                     selectedTab = selectedTab,
                     hazeState = hazeState,
                     onBack = {
