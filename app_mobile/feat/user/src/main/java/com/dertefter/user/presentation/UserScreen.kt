@@ -16,7 +16,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -28,7 +27,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -97,7 +95,6 @@ import com.dertefter.user.R
 import com.dertefter.user.presentation.component.BioCard
 import com.dertefter.user.presentation.component.Header
 import com.dertefter.user.presentation.component.HeaderWide
-import com.dertefter.user.presentation.component.TitleValueCard
 import com.dertefter.user.presentation.mapper.toUiModel
 import com.jamal_aliev.paginator.compose.cursor.rememberPaginated
 import com.jamal_aliev.paginator.core.extension.isProgressState

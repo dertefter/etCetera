@@ -22,7 +22,6 @@ import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -136,8 +135,7 @@ fun HeaderWide(
                         fontSize = 28.sp,
                     )
 
-                    Column(
-                    ) {
+                    Column {
                         DisplayName(
                             name = author.displayName,
                             verified = author.verified,

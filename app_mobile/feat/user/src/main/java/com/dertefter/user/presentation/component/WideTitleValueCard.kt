@@ -10,7 +10,6 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -84,7 +83,7 @@ fun WideTitleValueCard(
 @Preview(showBackground = true)
 @Composable
 fun WidejjjjJJVJ(){
-    AppTheme() {
+    AppTheme {
         WideTitleValueCard(
             title = "Подписки",
             value = 13844

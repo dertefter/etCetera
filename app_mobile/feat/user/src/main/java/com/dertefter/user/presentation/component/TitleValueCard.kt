@@ -78,7 +78,7 @@ fun TitleValueCard(
 @Preview
 @Composable
 fun TtjtjkPrev(){
-    AppTheme() {
+    AppTheme {
         TitleValueCard(
             title = "Подписки",
             value = 13844
