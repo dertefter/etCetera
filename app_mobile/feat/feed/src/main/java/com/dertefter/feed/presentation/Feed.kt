@@ -7,16 +7,14 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -35,6 +33,8 @@ import com.dertefter.design.components.post.PostCard
 import com.dertefter.design.theme.spacing
 import com.dertefter.feed.R
 import com.dertefter.feed.presentation.mapper.toUiModel
+import com.jamal_aliev.paginator.compose.cursor.PaginatedLazyStaggeredGridScope
+import com.jamal_aliev.paginator.compose.cursor.itemsIndexed
 import com.jamal_aliev.paginator.compose.cursor.paginated
 import com.jamal_aliev.paginator.compose.cursor.rememberPaginated
 import com.jamal_aliev.paginator.core.extension.isErrorState
@@ -52,14 +52,14 @@ fun Feed(
     uiState: PaginatorUiState<PostDto>,
     contentPadding: PaddingValues = PaddingValues(),
     scrollBehavior: TopAppBarScrollBehavior? = null,
-    listState: LazyListState = rememberLazyListState()
+    gridState: LazyStaggeredGridState = rememberLazyStaggeredGridState()
 ) {
-    val paged = paginator.rememberPaginated(state = listState)
+    val paged = paginator.rememberPaginated(state = gridState)
 
-    LaunchedEffect(listState) {
+    LaunchedEffect(gridState) {
         while (true) {
             delay(Constants.STATS_UPDATE_DELAY_MS.milliseconds)
-            val visibleItems = listState.layoutInfo.visibleItemsInfo
+            val visibleItems = gridState.layoutInfo.visibleItemsInfo
             val visibleIds = visibleItems.map { it.key.toString() }
             onEvent(Event.OnUpdateStats(visibleIds))
         }
@@ -91,24 +91,23 @@ fun Feed(
                     is PaginatorUiState.Content -> state.items
                 }
 
-                LazyColumn(
-                    Modifier
+                LazyVerticalStaggeredGrid (
+                    modifier = Modifier
+                        .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
                         .fillMaxSize()
                         .then(
                             if (scrollBehavior != null) Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
                             else Modifier
                         ),
-                    state = listState,
+                    state = gridState,
                     contentPadding = contentPadding,
-                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large)
+                    columns = StaggeredGridCells.Adaptive(minSize = 500.dp),
+                    verticalItemSpacing = MaterialTheme.spacing.large,
+                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
                 ) {
                     paginated(paged) {
 
-                        item{}
-
                         postItems(items, onEvent)
-
-
 
                         appendIndicator {
                             FeedAppendIndicator(state)
@@ -120,36 +119,35 @@ fun Feed(
     }
 }
 
-private fun LazyListScope.postItems(
+private fun PaginatedLazyStaggeredGridScope.postItems(
     items: List<PostDto>,
     onEvent: (Event) -> Unit
 ) {
-    itemsIndexed(items, key = { _, post -> post.id }) { _, post ->
-        Column(Modifier.animateItem()) {
-            PostCard(
-                post = post.toUiModel(),
-                modifier = Modifier
-                    .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
-                onLike = { onEvent(Event.OnLike(post.id)) },
-                onUnlike = { onEvent(Event.OnUnlike(post.id)) },
-                onCommentsClick = { onEvent(Event.OnNavigateToComments(post.id)) },
-                onUserClick = { userId -> onEvent(Event.OnOpenUser(userId)) },
-                onVote = { optionIds -> onEvent(Event.OnVote(post.id, optionIds)) },
-                onOpenPost = { postId -> onEvent(Event.OnOpenPost(postId)) },
-                onAttachmentClick = { attachments, position ->
-                    onEvent(Event.OnOpenAttachmentsViewer(attachments, position))
-                },
-                onDelete = { onEvent(Event.OnDeletePost(post.id)) },
-                onHashtagClick = {
-                    onEvent(
-                        Event.OnOpenHashtag(it)
-                    )
-                },
-                onPin = { onEvent(Event.OnPin(post.id)) },
-                onUnpin = { onEvent(Event.OnUnpin(post.id)) },
-                onRepostClick = { onEvent(Event.OnRepost(post.id)) }
-            )
-        }
+    itemsIndexed<Any, PostDto>(items, key = { _, post -> post.id }) { _, post ->
+        PostCard(
+            post = post.toUiModel(),
+            modifier = Modifier
+                .animateItem()
+                .fillMaxWidth(),
+            onLike = { onEvent(Event.OnLike(post.id)) },
+            onUnlike = { onEvent(Event.OnUnlike(post.id)) },
+            onCommentsClick = { onEvent(Event.OnNavigateToComments(post.id)) },
+            onUserClick = { userId -> onEvent(Event.OnOpenUser(userId)) },
+            onVote = { optionIds -> onEvent(Event.OnVote(post.id, optionIds)) },
+            onOpenPost = { postId -> onEvent(Event.OnOpenPost(postId)) },
+            onAttachmentClick = { attachments, position ->
+                onEvent(Event.OnOpenAttachmentsViewer(attachments, position))
+            },
+            onDelete = { onEvent(Event.OnDeletePost(post.id)) },
+            onHashtagClick = {
+                onEvent(
+                    Event.OnOpenHashtag(it)
+                )
+            },
+            onPin = { onEvent(Event.OnPin(post.id)) },
+            onUnpin = { onEvent(Event.OnUnpin(post.id)) },
+            onRepostClick = { onEvent(Event.OnRepost(post.id)) }
+        )
     }
 }
 

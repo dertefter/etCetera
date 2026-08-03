@@ -19,7 +19,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -83,9 +83,9 @@ fun FeedScreen(
     val tabs = FeedTab.entries
 
 
-    val popularListState = rememberLazyListState()
-    val clanListState = rememberLazyListState()
-    val followingListState = rememberLazyListState()
+    val popularListState = rememberLazyStaggeredGridState()
+    val clanListState = rememberLazyStaggeredGridState()
+    val followingListState = rememberLazyStaggeredGridState()
 
     val popularScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val clanScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -97,7 +97,7 @@ fun FeedScreen(
         FeedTab.FOLLOWING to followingScrollBehavior
     )
 
-    val listStates = mapOf(
+    val gridStates = mapOf(
         FeedTab.POPULAR to popularListState,
         FeedTab.CLAN to clanListState,
         FeedTab.FOLLOWING to followingListState
@@ -134,7 +134,7 @@ fun FeedScreen(
         onEvent(Event.OnTabSelected(tabs[pagerState.currentPage]))
     }
 
-    val currentListState = listStates[tabs[pagerState.currentPage]]!!
+    val currentListState = gridStates[tabs[pagerState.currentPage]]!!
 
     val isUpFabVisible by remember(currentListState) {
         derivedStateOf {
@@ -336,7 +336,7 @@ fun FeedScreen(
                         uiState = uiStates[tab]!!,
                         contentPadding = contentPadding,
                         scrollBehavior = scrollBehaviors[tab]!!,
-                        listState = listStates[tab]!!
+                        gridState = gridStates[tab]!!
                     )
                 }
             }
