@@ -66,7 +66,8 @@ fun AttachmentViewerScreen(
                     isFullscreen = true,
                     attachment = attachment,
                     containerColor = Color.Black,
-                    contentPadding = contentPadding
+                    contentPadding = contentPadding,
+                    modifier = Modifier.fillMaxSize()
                 )
 
             }

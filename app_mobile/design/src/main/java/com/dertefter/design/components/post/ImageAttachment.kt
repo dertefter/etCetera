@@ -32,7 +32,6 @@ import net.engawapg.lib.zoomable.zoomable
 fun ImageAttachment(
     attachment: AttachmentUiModel,
     modifier: Modifier = Modifier,
-    contentScale: ContentScale = ContentScale.Crop,
     containerColor: Color = MaterialTheme.colorScheme.surfaceVariant,
     onClick: () -> Unit = {},
     isFullscreen: Boolean = false,
@@ -40,6 +39,8 @@ fun ImageAttachment(
     var retryHash by remember { mutableIntStateOf(0) }
 
     val zoomState = rememberZoomState()
+
+    val contentScale: ContentScale = if (isFullscreen) ContentScale.Fit else ContentScale.Crop
 
     SubcomposeAsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
