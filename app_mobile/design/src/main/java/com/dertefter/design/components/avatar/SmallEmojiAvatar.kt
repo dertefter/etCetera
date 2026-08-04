@@ -20,6 +20,7 @@ import androidx.compose.material3.ToggleButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -180,7 +181,7 @@ private suspend fun extractEmojiColor(
 @Composable
 fun PreviewAv() {
     var darkTheme by remember { mutableStateOf(true) }
-    var rotation by remember { mutableStateOf(0f) }
+    var rotation by remember { mutableFloatStateOf(0f) }
     var currentEmojiIndex by remember { mutableIntStateOf(0) }
 
     AppTheme(
