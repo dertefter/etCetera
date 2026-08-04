@@ -8,22 +8,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.SheetValue
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberBottomSheetState
 import androidx.compose.runtime.Composable
@@ -48,20 +41,15 @@ import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.isFold
 import com.dertefter.design.theme.spacing
-import com.dertefter.etcetera.navigation.AppNavHost
 import com.dertefter.navigation.NavigationAction
 import com.dertefter.navigation.Navigator
 import com.dertefter.navigation.Routes
 import com.dertefter.new_comment.NewCommentReplyRoute
 import com.dertefter.new_comment.NewCommentRoute
 import com.dertefter.new_post.NewPostRoute
-import com.gigamole.composefadingedges.FadingEdgesGravity
-import com.gigamole.composefadingedges.fill.FadingEdgesFillType
-import com.gigamole.composefadingedges.verticalFadingEdges
 import dev.chrisbanes.haze.blur.HazeBlurDefaults
 import dev.chrisbanes.haze.blur.blurEffect
 import dev.chrisbanes.haze.hazeEffect
-import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
@@ -72,6 +60,8 @@ enum class MainTab(
     val selectedIcon: @Composable () -> ImageVector
 ) {
     Feed("Лента", { Icons.Home }, { Icons.HomeFilled }),
+
+    Search("Поиск", { Icons.Search }, { Icons.Search }),
     Notifications("Уведомления", { Icons.Notifications }, { Icons.NotificationsFilled }),
     Profile("Профиль", { Icons.User }, { Icons.UserFilled })
 }
@@ -86,6 +76,7 @@ fun MainScreen(
 
     val authBackStack = rememberNavBackStack(Routes.Auth)
     val feedBackStack = rememberNavBackStack(Routes.Feed)
+    val searchBackStack = rememberNavBackStack(Routes.Search)
     val notificationsBackStack = rememberNavBackStack(Routes.Notifications(showBackButton = false))
     val profileBackStack = rememberNavBackStack(
         if (meUserId != null) Routes.User(meUserId) else Routes.Feed
@@ -96,6 +87,7 @@ fun MainScreen(
     val activeBackStack = when {
         currentLogin == null -> authBackStack
         selectedTab == MainTab.Feed -> feedBackStack
+        selectedTab == MainTab.Search -> searchBackStack
         selectedTab == MainTab.Notifications -> notificationsBackStack
         selectedTab == MainTab.Profile -> profileBackStack
         else -> feedBackStack
@@ -121,10 +113,6 @@ fun MainScreen(
         }
     }
 
-    val isAttachmentViewer = activeBackStack.lastOrNull() is Routes.AttachmentsViewer
-
-    val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-
     var bottomSheetRoute by remember { mutableStateOf<Routes?>(null) }
     val scaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = rememberBottomSheetState(
@@ -136,11 +124,21 @@ fun MainScreen(
 
     val scope = rememberCoroutineScope()
 
-//    BackHandler(enabled = scaffoldState.bottomSheetState.currentValue != SheetValue.Hidden) {
-//        scope.launch {
-//            scaffoldState.bottomSheetState.hide()
-//        }
-//    }
+    BackHandler(
+        enabled = selectedTab != MainTab.Feed
+    ) {
+       scope.launch {
+           selectedTab = MainTab.Feed
+       }
+    }
+
+    BackHandler(
+        enabled = scaffoldState.bottomSheetState.currentValue != SheetValue.Hidden
+    ) {
+        scope.launch {
+            scaffoldState.bottomSheetState.hide()
+        }
+    }
 
     val blurRadius by animateDpAsState(
         targetValue = if (scaffoldState.bottomSheetState.currentValue == SheetValue.Expanded) 120.dp else 60.dp,
