@@ -11,13 +11,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,7 +31,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dertefter.data.dto.search.SearchHashtagDto
 import com.dertefter.data.dto.search.SearchUserDto
-import com.dertefter.design.components.buttons.AppNavigationIcon
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
 import com.dertefter.search.R
@@ -61,15 +60,7 @@ fun SearchScreen(
             )
             Surface(color = containerColor) {
                 Column {
-                    TopAppBar(
-                        navigationIcon = {
-                            AppNavigationIcon(
-                                contentDescription = stringResource(R.string.navigate_back),
-                                onClick = {
-                                    onEvent(Event.OnNavigateBack)
-                                }
-                            )
-                        },
+                    LargeFlexibleTopAppBar(
                         title = {
                             Text(text = stringResource(R.string.search_title))
                         },
@@ -88,7 +79,7 @@ fun SearchScreen(
                             .fillMaxWidth(),
                         placeholder = {
                             Text(
-                                text = stringResource(R.string.search_title)
+                                text = stringResource(R.string.search_hint)
                             )
                         },
                         leadingIcon = {
