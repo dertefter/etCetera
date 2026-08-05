@@ -68,7 +68,12 @@ abstract class BaseNewPostViewModel(
             is Event.OnPhotosSelected -> uploadPhotos(event.uris)
             is Event.OnRemoveUpload -> _uploads.update { it.filter { upload -> upload.uri != event.uri } }
             is Event.OnRetryUpload -> retryUpload(event.uri)
-            is Event.OnContentChanged -> _content.value = event.content
+            is Event.OnContentChanged -> {
+                _content.value = event.content
+                _spans.update { spans ->
+                    spans.filter { it.offset + it.length <= event.content.length }
+                }
+            }
             is Event.OnSpanToggled -> toggleSpan(event.type, event.start, event.end)
             Event.OnAddPoll -> addPoll()
             Event.OnRemovePoll -> _poll.value = null
