@@ -3,6 +3,7 @@
 
     <string name="new_post_title">New post</string>
     <string name="new_repost_title">Repost</string>
+    <string name="edit_post_title">Edit post</string>
     <string name="span_bold">Bold</string>
     <string name="span_italic">Italic</string>
     <string name="span_underline">Underline</string>

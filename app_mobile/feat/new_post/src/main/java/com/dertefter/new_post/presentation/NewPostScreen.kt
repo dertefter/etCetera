@@ -137,6 +137,7 @@ fun NewPostScreen(
                     text = when (screenMode){
                         NewPostScreenMode.NEW_POST -> stringResource(R.string.new_post_title)
                         NewPostScreenMode.REPOST -> stringResource(R.string.new_repost_title)
+                        NewPostScreenMode.EDIT_POST -> stringResource(R.string.edit_post_title)
                     }
                 )
 
@@ -242,6 +243,7 @@ fun NewPostScreen(
                                 text = when (screenMode){
                                     NewPostScreenMode.NEW_POST -> stringResource(R.string.post_placeholder)
                                     NewPostScreenMode.REPOST -> stringResource(R.string.repost_placeholder)
+                                    NewPostScreenMode.EDIT_POST -> stringResource(R.string.post_placeholder)
                                 }
                             )
                                       },

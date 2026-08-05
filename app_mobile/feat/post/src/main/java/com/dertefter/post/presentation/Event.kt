@@ -7,6 +7,7 @@ sealed interface Event {
     data object OnRefresh : Event
 
     data class OnRepost(val postId: String) : Event
+    data class OnEditPost(val postId: String) : Event
     data class OnOpenUser(val userId: String) : Event
     data object OnLike : Event
 

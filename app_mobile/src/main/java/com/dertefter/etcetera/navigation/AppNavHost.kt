@@ -38,6 +38,7 @@ import com.dertefter.new_comment.NewCommentReplyRoute
 import com.dertefter.new_comment.NewCommentRoute
 import com.dertefter.new_post.NewPostRoute
 import com.dertefter.new_post.RepostRoute
+import com.dertefter.new_post.EditPostRoute
 import com.dertefter.notifications.NotificationsRoute
 import com.dertefter.post.PostRoute
 import com.dertefter.search.SearchRoute
@@ -120,6 +121,7 @@ fun AppNavHost(
             entry<Routes.User> { RouteContent(it) }
             entry<Routes.NewPost> { RouteContent(it) }
         entry<Routes.Repost> { RouteContent(it) }
+        entry<Routes.EditPost> { RouteContent(it) }
             entry<Routes.NewComment> { RouteContent(it) }
             entry<Routes.NewCommentReply> { RouteContent(it) }
             entry<Routes.Followers> { RouteContent(it) }
@@ -139,6 +141,7 @@ fun RouteContent(route: Routes) {
         is Routes.User -> UserRoute(route.userId, route.showBackButton)
         is Routes.NewPost -> NewPostRoute(route.wallRecipientId)
     is Routes.Repost -> RepostRoute(route.postIdForRepost, route.wallRecipientId)
+    is Routes.EditPost -> EditPostRoute(route.postId)
         is Routes.NewComment -> NewCommentRoute(route.postId)
         is Routes.NewCommentReply -> NewCommentReplyRoute(
             route.postId,

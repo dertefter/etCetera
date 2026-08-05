@@ -117,6 +117,12 @@ class PostViewModel @Inject constructor(
                 )
             }
 
+            is Event.OnEditPost -> {
+                navigator.openAsBottomSheet(
+                    Routes.EditPost(postId = event.postId)
+                )
+            }
+
 
             is Event.OnRefresh -> {
                 viewModelScope.launch {

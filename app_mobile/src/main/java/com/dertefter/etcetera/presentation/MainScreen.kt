@@ -48,6 +48,7 @@ import com.dertefter.new_comment.NewCommentReplyRoute
 import com.dertefter.new_comment.NewCommentRoute
 import com.dertefter.new_post.NewPostRoute
 import com.dertefter.new_post.RepostRoute
+import com.dertefter.new_post.EditPostRoute
 import dev.chrisbanes.haze.blur.HazeBlurDefaults
 import dev.chrisbanes.haze.blur.blurEffect
 import dev.chrisbanes.haze.hazeEffect
@@ -193,6 +194,7 @@ fun MainScreen(
                     is Routes.Comments -> CommentsRoute(route.postId)
                     is Routes.NewPost -> NewPostRoute(route.wallRecipientId)
     is Routes.Repost -> RepostRoute(route.postIdForRepost, route.wallRecipientId)
+    is Routes.EditPost -> EditPostRoute(route.postId)
                     is Routes.NewComment -> NewCommentRoute(route.postId)
                     is Routes.NewCommentReply -> NewCommentReplyRoute(route.postId, route.commentId, route.userId)
                     else -> {

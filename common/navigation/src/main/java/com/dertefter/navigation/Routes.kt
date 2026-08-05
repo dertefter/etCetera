@@ -39,6 +39,9 @@ sealed interface Routes : NavKey {
     ) : Routes
 
     @Serializable
+    data class EditPost(val postId: String) : Routes
+
+    @Serializable
     data class NewComment(val postId: String) : Routes
 
     @Serializable

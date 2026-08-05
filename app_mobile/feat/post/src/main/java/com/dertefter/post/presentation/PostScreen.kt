@@ -171,6 +171,7 @@ fun PostScreenContent(
                                         },
                                         showCommentsButton = false,
                                         onDelete = { onEvent(Event.OnDeletePost(post.id)) },
+                                        onEdit = { onEvent(Event.OnEditPost(it)) },
                                         onCommentsClick = {},
                                         onPin = { onEvent(Event.OnPin(post.id)) },
                                         onUnpin = { onEvent(Event.OnUnpin(post.id)) },

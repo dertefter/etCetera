@@ -55,7 +55,7 @@ fun PostCard(
     onRepostClick: () -> Unit,
     onUserClick: (userId: String) -> Unit,
     onVote: (optionIds: List<String>) -> Unit,
-    onEdit: () -> Unit = {},
+    onEdit: (postId: String) -> Unit = {},
     onPin: () -> Unit,
     onUnpin: () -> Unit,
     onDelete: () -> Unit,
@@ -178,6 +178,7 @@ fun PostCard(
                             DropdownMenuItem(
                                 text = { Text(stringResource(R.string.design_post_edit)) },
                                 onClick = {
+                                    onEdit(post.id)
                                     showMenu = false
                                 },
                                 leadingIcon = {

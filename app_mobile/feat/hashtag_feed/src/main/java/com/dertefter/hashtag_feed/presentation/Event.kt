@@ -8,6 +8,8 @@ sealed interface Event {
 
     data class OnRepost(val postId: String) : Event
 
+    data class OnEditPost(val postId: String) : Event
+
     data class OnPin(val postId: String) : Event
 
     data class OnVote(val postId: String, val optionIds: List<String>) : Event

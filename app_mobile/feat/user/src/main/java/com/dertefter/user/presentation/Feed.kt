@@ -94,6 +94,7 @@ private fun LazyListScope.postItems(
                 },
                 onPin = { onEvent(Event.OnPin(post.id)) },
                 onUnpin = { onEvent(Event.OnUnpin(post.id)) },
+                onEdit = { onEvent(Event.OnEditPost(it)) },
                 onDelete = { onEvent(Event.OnDeletePost(post.id)) },
                 onRepostClick = { onEvent(Event.OnRepost(post.id)) }
             )

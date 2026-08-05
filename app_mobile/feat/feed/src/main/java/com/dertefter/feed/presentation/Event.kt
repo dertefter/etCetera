@@ -17,6 +17,8 @@ sealed interface Event {
 
     data class OnRepost(val postId: String) : Event
 
+    data class OnEditPost(val postId: String) : Event
+
     data class OnDeletePost(val postId: String) : Event
 
     data class OnOpenHashtag(val name: String) : Event

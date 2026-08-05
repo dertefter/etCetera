@@ -361,6 +361,12 @@ class UserViewModel @Inject constructor(
                 )
             }
 
+            is Event.OnEditPost -> {
+                navigator.openAsBottomSheet(
+                    Routes.EditPost(postId = event.postId)
+                )
+            }
+
             is Event.OnOpenFollowing -> {
                 navigator.navigate(
                     Routes.Followers(event.userId, true)

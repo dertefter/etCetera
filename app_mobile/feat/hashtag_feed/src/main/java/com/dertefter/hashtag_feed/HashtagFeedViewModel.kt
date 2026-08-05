@@ -114,6 +114,12 @@ class HashtagFeedViewModel @Inject constructor(
                 )
             }
 
+            is Event.OnEditPost -> {
+                navigator.openAsBottomSheet(
+                    Routes.EditPost(postId = event.postId)
+                )
+            }
+
             is Event.OnOpenHashtag -> {
                 navigator.navigate(Routes.HashtagFeed(event.name))
             }

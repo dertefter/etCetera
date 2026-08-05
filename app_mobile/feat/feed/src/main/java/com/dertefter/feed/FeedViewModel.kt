@@ -162,6 +162,12 @@ class FeedViewModel @Inject constructor(
                 )
             }
 
+            is Event.OnEditPost -> {
+                navigator.openAsBottomSheet(
+                    Routes.EditPost(postId = event.postId)
+                )
+            }
+
             is Event.OnUpdateStats -> {
                 viewModelScope.launch {
                     if (event.ids.isNotEmpty()) {

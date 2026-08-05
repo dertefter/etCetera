@@ -80,7 +80,7 @@ interface ApiService {
         @Body postRequest: NewPostRequestDto
     ): Response<PostDto>
 
-    @POST("api/posts/{postId}")
+    @PUT("api/posts/{postId}")
     suspend fun editPost(
         @Path("postId") postId: String,
         @Body postRequest: EditPostRequestDto
