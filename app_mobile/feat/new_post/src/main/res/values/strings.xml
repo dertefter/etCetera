@@ -13,5 +13,6 @@
     <string name="action_add_media">Add media</string>
     <string name="action_save">Save</string>
     <string name="post_placeholder">What\'s new?</string>
+    <string name="repost_placeholder">Comment for post...</string>
 
 </resources>

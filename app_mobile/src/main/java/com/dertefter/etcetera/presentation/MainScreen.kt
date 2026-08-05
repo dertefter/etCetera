@@ -47,6 +47,7 @@ import com.dertefter.navigation.Routes
 import com.dertefter.new_comment.NewCommentReplyRoute
 import com.dertefter.new_comment.NewCommentRoute
 import com.dertefter.new_post.NewPostRoute
+import com.dertefter.new_post.RepostRoute
 import dev.chrisbanes.haze.blur.HazeBlurDefaults
 import dev.chrisbanes.haze.blur.blurEffect
 import dev.chrisbanes.haze.hazeEffect
@@ -190,7 +191,8 @@ fun MainScreen(
                 BottomSheetDefaults.DragHandle()
                 when (val route = bottomSheetRoute) {
                     is Routes.Comments -> CommentsRoute(route.postId)
-                    is Routes.NewPost -> NewPostRoute(route.wallRecipientId, route.postIdForRepost)
+                    is Routes.NewPost -> NewPostRoute(route.wallRecipientId)
+    is Routes.Repost -> RepostRoute(route.postIdForRepost, route.wallRecipientId)
                     is Routes.NewComment -> NewCommentRoute(route.postId)
                     is Routes.NewCommentReply -> NewCommentReplyRoute(route.postId, route.commentId, route.userId)
                     else -> {

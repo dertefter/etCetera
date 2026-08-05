@@ -110,6 +110,7 @@ fun AppNavHost(
             entry<Routes.Notifications> { }
             entry<Routes.BannerEdit> { }
             entry<Routes.NewPost> { }
+            entry<Routes.Repost> { }
             entry<Routes.NewComment> { }
             entry<Routes.NewCommentReply> { }
             entry<Routes.Followers> { route ->

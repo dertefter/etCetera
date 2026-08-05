@@ -11,25 +11,37 @@ import com.dertefter.data.dto.new_post.NewPollDto
 import com.dertefter.data.dto.new_post.NewPollOptionDto
 import com.dertefter.data.dto.feed.SpanDto
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class NewPostViewModel @Inject constructor(
+class RepostViewModel @Inject constructor(
     application: Application,
     postRepository: PostRepository,
     attachmentsRepository: AttachmentsRepository,
     navigator: Navigator
 ) : BaseNewPostViewModel(application, postRepository, attachmentsRepository, navigator) {
 
+    private var postIdForRepost: String? = null
     private var wallRecipientId: String? = null
 
-    fun initWith(wallRecipientId: String?) {
+    fun initWith(postIdForRepost: String, wallRecipientId: String?) {
+        this.postIdForRepost = postIdForRepost
         this.wallRecipientId = wallRecipientId
+        viewModelScope.launch {
+            postRepository.getPost(postIdForRepost).collectLatest {
+                _originalPost.value = it
+            }
+        }
+        viewModelScope.launch {
+            postRepository.updatePost(postIdForRepost)
+        }
         clearAll()
     }
 
     override fun savePost() {
+        val postId = postIdForRepost ?: return
         viewModelScope.launch {
             _isUploadingPost.value = true
             val pollDto = _poll.value?.let { poll ->
@@ -51,7 +63,7 @@ class NewPostViewModel @Inject constructor(
                 wallRecipientId = wallRecipientId
             )
 
-            val result = postRepository.newPost(request)
+            val result = postRepository.repost(postId, request)
 
             if (result.isSuccess) {
                 clearAll()

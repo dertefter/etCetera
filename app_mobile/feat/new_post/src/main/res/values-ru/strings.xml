@@ -13,5 +13,6 @@
     <string name="action_add_media">Добавить медиа</string>
     <string name="action_save">Сохранить</string>
     <string name="post_placeholder">Что нового?</string>
+    <string name="repost_placeholder">Комментарий к посту...</string>
 
 </resources>

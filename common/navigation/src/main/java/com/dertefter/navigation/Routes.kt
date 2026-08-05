@@ -30,7 +30,12 @@ sealed interface Routes : NavKey {
     @Serializable
     data class NewPost(
         val wallRecipientId: String? = null,
-        val postIdForRepost: String? = null,
+    ) : Routes
+
+    @Serializable
+    data class Repost(
+        val postIdForRepost: String,
+        val wallRecipientId: String? = null,
     ) : Routes
 
     @Serializable

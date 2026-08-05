@@ -8,14 +8,15 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dertefter.new_post.presentation.NewPostScreen
 
 @Composable
-fun NewPostRoute(
+fun RepostRoute(
+    postIdForRepost: String,
     wallRecipientId: String?,
-    viewModel: NewPostViewModel = hiltViewModel(),
+    viewModel: RepostViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(wallRecipientId) {
-        viewModel.initWith(wallRecipientId)
+    LaunchedEffect(postIdForRepost, wallRecipientId) {
+        viewModel.initWith(postIdForRepost, wallRecipientId)
     }
 
     NewPostScreen(
@@ -23,6 +24,6 @@ fun NewPostRoute(
         onEvent = { event ->
             viewModel.onEvent(event)
         },
-        screenMode = NewPostScreenMode.NEW_POST
+        screenMode = NewPostScreenMode.REPOST
     )
 }

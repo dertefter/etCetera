@@ -332,12 +332,12 @@ class UserViewModel @Inject constructor(
             is Event.OnOpenNewPost -> {
                 if (userUiState.value.isMe){
                     navigator.openAsBottomSheet(
-                        Routes.NewPost(null)
+                        Routes.NewPost()
                     )
                 }else{
                     userUiState.value.userDto?.id.let{ id ->
                         navigator.openAsBottomSheet(
-                            Routes.NewPost(id)
+                            Routes.NewPost(wallRecipientId = id)
                         )
                     }
                 }
@@ -357,7 +357,7 @@ class UserViewModel @Inject constructor(
 
             is Event.OnRepost -> {
                 navigator.openAsBottomSheet(
-                    Routes.NewPost(postIdForRepost = event.postId)
+                    Routes.Repost(postIdForRepost = event.postId)
                 )
             }
 

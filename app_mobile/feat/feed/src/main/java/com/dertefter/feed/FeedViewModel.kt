@@ -158,7 +158,7 @@ class FeedViewModel @Inject constructor(
 
             is Event.OnRepost -> {
                 navigator.openAsBottomSheet(
-                    Routes.NewPost(postIdForRepost = event.postId)
+                    Routes.Repost(postIdForRepost = event.postId)
                 )
             }
 
@@ -216,7 +216,7 @@ class FeedViewModel @Inject constructor(
             }
 
             is Event.OnOpenNewPost -> {
-                navigator.openAsBottomSheet(Routes.NewPost(null))
+                navigator.openAsBottomSheet(Routes.NewPost())
             }
         }
     }

@@ -62,6 +62,7 @@ import com.dertefter.design.components.post.buildPostAnnotatedString
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
+import com.dertefter.new_post.NewPostScreenMode
 import com.dertefter.new_post.R
 import com.dertefter.new_post.presentation.component.UploadCard
 import com.dertefter.new_post.presentation.mapper.toOriginalPostUiModel
@@ -71,6 +72,7 @@ import com.dertefter.new_post.presentation.mapper.toOriginalPostUiModel
 fun NewPostScreen(
     uiState: UiState,
     onEvent: (Event) -> Unit,
+    screenMode: NewPostScreenMode,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val scrollState = rememberScrollState()
@@ -132,10 +134,13 @@ fun NewPostScreen(
                         .weight(1f),
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onSurface,
-                    text = if (uiState.originalPost == null) stringResource(R.string.new_post_title) else stringResource(R.string.new_repost_title)
+                    text = when (screenMode){
+                        NewPostScreenMode.NEW_POST -> stringResource(R.string.new_post_title)
+                        NewPostScreenMode.REPOST -> stringResource(R.string.new_repost_title)
+                    }
                 )
 
-                if (uiState.originalPost == null){
+                if (screenMode == NewPostScreenMode.NEW_POST){
                     FilledTonalIconButton(
                         onClick = { onEvent(Event.OnAddPoll) },
                         enabled = uiState.poll == null,
@@ -232,7 +237,14 @@ fun NewPostScreen(
                         singleLine = false,
                         visualTransformation = VisualTransformation.None,
                         interactionSource = remember { MutableInteractionSource() },
-                        placeholder = { Text(stringResource(R.string.post_placeholder)) },
+                        placeholder = {
+                            Text(
+                                text = when (screenMode){
+                                    NewPostScreenMode.NEW_POST -> stringResource(R.string.post_placeholder)
+                                    NewPostScreenMode.REPOST -> stringResource(R.string.repost_placeholder)
+                                }
+                            )
+                                      },
                         colors = TextFieldDefaults.colors(
                             focusedContainerColor = Color.Transparent,
                             unfocusedContainerColor = Color.Transparent,
@@ -299,7 +311,8 @@ private fun NewPostScreenPreview() {
                 uploads = emptyList(),
                 isUploadingPost = true
             ),
-            onEvent = {}
+            onEvent = {},
+            screenMode = NewPostScreenMode.REPOST
         )
     }
 }

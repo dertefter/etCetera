@@ -121,7 +121,7 @@ class HashtagFeedViewModel @Inject constructor(
 
             is Event.OnRepost -> {
                 navigator.openAsBottomSheet(
-                    Routes.NewPost(postIdForRepost = event.postId)
+                    Routes.Repost(postIdForRepost = event.postId)
                 )
             }
 
