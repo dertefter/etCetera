@@ -18,6 +18,8 @@ data class PostUiModel(
     val dominantEmoji: String?,
     val isPinned: Boolean,
     val isOwner: Boolean,
+    val createdAt: String,
+    val editedAt: String?,
     val originalPost: OriginalPostUiModel?
 )
 
@@ -61,5 +63,7 @@ data class OriginalPostUiModel(
     val author: AuthorUiModel,
     val attachments: List<AttachmentUiModel>,
     val poll: PollUiModel?,
+    val createdAt: String,
+    val editedAt: String?,
     val isDeleted: Boolean
 )

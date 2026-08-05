@@ -22,8 +22,10 @@ fun PostDto.toOriginalPostUiModel(): OriginalPostUiModel {
         spans = spans.map { it.toUiModel() },
         author = author.toUiModel(),
         attachments = attachments.map { it.toUiModel() },
-        isDeleted = false,
-        poll = poll?.toUiModel()
+        poll = poll?.toUiModel(),
+        createdAt = createdAt,
+        editedAt = null,
+        isDeleted = false
     )
 }
 

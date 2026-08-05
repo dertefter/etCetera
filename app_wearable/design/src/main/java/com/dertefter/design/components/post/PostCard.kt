@@ -375,6 +375,7 @@ fun PostCardPreview() {
                             id = "1", type = "image", url = "https://picsum.photos/400/300"
                         )
                     ),
+                    poll = null,
                     likesCount = 100,
                     isLiked = true,
                     commentsCount = 50,
@@ -384,8 +385,9 @@ fun PostCardPreview() {
                     dominantEmoji = "🦎",
                     isPinned = true,
                     isOwner = false,
+                    createdAt = "2024-08-05T12:00:00Z",
+                    editedAt = null,
                     originalPost = null,
-                    poll = null,
                 ), isOnMyWall = true, onHashtagClick = {},
                 onAttachmentClick = { _, _ -> },
                 onOpenPost = {},

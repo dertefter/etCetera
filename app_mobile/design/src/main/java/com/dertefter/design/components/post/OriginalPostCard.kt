@@ -190,8 +190,10 @@ fun OriginalPostCardPreview() {
                             url = "https://picsum.photos/400/300"
                         )
                     ),
-                    isDeleted = false,
-                    poll = null
+                    poll = null,
+                    createdAt = "2024-08-05T12:00:00Z",
+                    editedAt = null,
+                    isDeleted = false
                 ),
                 onAttachmentClick = {_,_ -> }
             )

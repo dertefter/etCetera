@@ -35,9 +35,11 @@ fun PostDto.toUiModel(): PostUiModel {
         isReposted = isReposted,
         viewsCount = viewsCount,
         dominantEmoji = dominantEmoji,
-        originalPost = originalPost?.toUiModel(),
         isPinned = isPinned,
-        isOwner = isOwner
+        isOwner = isOwner,
+        createdAt = createdAt,
+        editedAt = editedAt,
+        originalPost = originalPost?.toUiModel()
     )
 }
 
@@ -73,5 +75,7 @@ fun OriginalPostDto.toUiModel() = OriginalPostUiModel(
     author = author.toUiModel(),
     attachments = attachments.map { it.toUiModel() },
     poll = poll?.toUiModel(),
+    createdAt = createdAt,
+    editedAt = null,
     isDeleted = isDeleted
 )

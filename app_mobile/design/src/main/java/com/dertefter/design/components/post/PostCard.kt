@@ -174,7 +174,7 @@ fun PostCard(
                                 )
                             })
                         }
-                        if (post.isOwner) {
+                        if (post.canEdit()) {
                             DropdownMenuItem(
                                 text = { Text(stringResource(R.string.design_post_edit)) },
                                 onClick = {
@@ -347,6 +347,7 @@ fun PostCardPreview() {
                         id = "1", type = "image", url = "https://picsum.photos/400/300"
                     )
                 ),
+                poll = null,
                 likesCount = 10,
                 isLiked = false,
                 commentsCount = 5,
@@ -356,8 +357,9 @@ fun PostCardPreview() {
                 dominantEmoji = "🦎",
                 isPinned = true,
                 isOwner = false,
-                originalPost = null,
-                poll = null,
+                createdAt = "2024-08-05T12:00:00Z",
+                editedAt = null,
+                originalPost = null
             ), isOnMyWall = true, onHashtagClick = {},
             onAttachmentClick = { _, _ -> },
             onOpenPost = {},

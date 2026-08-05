@@ -144,6 +144,7 @@ fun PostScreenPreview() {
             spans = emptyList(),
             author = sampleAuthor,
             attachments = emptyList(),
+            poll = null,
             likesCount = 10,
             isLiked = false,
             commentsCount = 5,
@@ -153,8 +154,9 @@ fun PostScreenPreview() {
             dominantEmoji = "🦎",
             isPinned = false,
             isOwner = false,
+            createdAt = "2024-08-05T12:00:00Z",
+            editedAt = null,
             originalPost = null,
-            poll = null,
         )
 
         val sampleComments = listOf(

@@ -26,6 +26,7 @@ fun PostDto.toUiModel(): PostUiModel {
         spans = spans.map { it.toUiModel() },
         author = author.toUiModel(),
         attachments = attachments.map { it.toUiModel() },
+        poll = poll?.toUiModel(),
         likesCount = likesCount,
         isLiked = isLiked,
         commentsCount = commentsCount,
@@ -33,10 +34,11 @@ fun PostDto.toUiModel(): PostUiModel {
         isReposted = isReposted,
         viewsCount = viewsCount,
         dominantEmoji = dominantEmoji,
-        poll = poll?.toUiModel(),
-        originalPost = originalPost?.toUiModel(),
+        isPinned = isPinned,
         isOwner = isOwner,
-        isPinned = isPinned
+        createdAt = createdAt,
+        editedAt = editedAt,
+        originalPost = originalPost?.toUiModel()
     )
 }
 
@@ -71,5 +73,7 @@ fun OriginalPostDto.toUiModel() = OriginalPostUiModel(
     author = author.toUiModel(),
     attachments = attachments.map { it.toUiModel() },
     poll = poll?.toUiModel(),
+    createdAt = createdAt,
+    editedAt = null,
     isDeleted = isDeleted
 )
