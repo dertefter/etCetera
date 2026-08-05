@@ -16,6 +16,8 @@ import com.dertefter.data.dto.followers.FollowersResponseDataDto
 import com.dertefter.data.dto.me.MeDto
 import com.dertefter.data.dto.me.UpdateMeRequestDto
 import com.dertefter.data.dto.me.UpdateMeResponseDto
+import com.dertefter.data.dto.new_post.EditPostRequestDto
+import com.dertefter.data.dto.new_post.EditPostResponseDto
 import com.dertefter.data.dto.new_post.NewPostRequestDto
 import com.dertefter.data.dto.notifications.NotificationsResponseDto
 import com.dertefter.data.dto.poll.VotePollRequestDto
@@ -279,6 +281,20 @@ class RemoteDataSourceImpl @Inject constructor(
     override suspend fun newPost(newPostRequest: NewPostRequestDto): Result<PostDto> {
         return runCatching {
             val response = apiService.newPost(newPostRequest)
+            if (response.isSuccessful) {
+                response.body()!!
+            } else {
+                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
+            }
+        }
+    }
+
+    override suspend fun editPost(
+        postId: String,
+        editPostRequest: EditPostRequestDto
+    ): Result<EditPostResponseDto> {
+        return runCatching {
+            val response = apiService.editPost(postId, editPostRequest)
             if (response.isSuccessful) {
                 response.body()!!
             } else {

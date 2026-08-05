@@ -4,6 +4,8 @@ import com.dertefter.data.dto.feed.PollDto
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.dto.feed.like.LikeResponseDto
 import com.dertefter.data.dto.feed.stats.PostStatsDto
+import com.dertefter.data.dto.new_post.EditPostRequestDto
+import com.dertefter.data.dto.new_post.EditPostResponseDto
 import com.dertefter.data.dto.new_post.NewPostRequestDto
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
 import kotlinx.coroutines.flow.Flow
@@ -30,6 +32,8 @@ interface PostRepository {
     suspend fun newPost(newPostRequestDto: NewPostRequestDto): Result<PostDto>
 
     suspend fun repost(postId: String, newPostRequestDto: NewPostRequestDto): Result<PostDto>
+
+    suspend fun editPost(postId: String, editPostRequestDto: EditPostRequestDto): Result<EditPostResponseDto>
 
     fun registerPaginator(paginator: MutableCursorPaginator<String, PostDto>)
 }

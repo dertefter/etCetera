@@ -16,6 +16,8 @@ import com.dertefter.data.dto.followers.FollowersResponseDto
 import com.dertefter.data.dto.me.MeDto
 import com.dertefter.data.dto.me.UpdateMeRequestDto
 import com.dertefter.data.dto.me.UpdateMeResponseDto
+import com.dertefter.data.dto.new_post.EditPostRequestDto
+import com.dertefter.data.dto.new_post.EditPostResponseDto
 import com.dertefter.data.dto.new_post.NewPostRequestDto
 import com.dertefter.data.dto.notifications.NotificationsResponseDto
 import com.dertefter.data.dto.poll.PollVoteResponseDto
@@ -77,6 +79,12 @@ interface ApiService {
     suspend fun newPost(
         @Body postRequest: NewPostRequestDto
     ): Response<PostDto>
+
+    @POST("api/posts/{postId}")
+    suspend fun editPost(
+        @Path("postId") postId: String,
+        @Body postRequest: EditPostRequestDto
+    ): Response<EditPostResponseDto>
 
     @POST("api/posts/{postId}/repost")
     suspend fun repost(

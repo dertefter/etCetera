@@ -14,6 +14,8 @@ import com.dertefter.data.dto.feed.stats.PostStatsDto
 import com.dertefter.data.dto.followers.FollowersResponseDataDto
 import com.dertefter.data.dto.me.UpdateMeRequestDto
 import com.dertefter.data.dto.me.UpdateMeResponseDto
+import com.dertefter.data.dto.new_post.EditPostRequestDto
+import com.dertefter.data.dto.new_post.EditPostResponseDto
 import com.dertefter.data.dto.new_post.NewPostRequestDto
 import com.dertefter.data.dto.notifications.NotificationsResponseDto
 import com.dertefter.data.dto.search.SearchDataDto
@@ -61,6 +63,8 @@ interface RemoteDataSource {
     suspend fun vote(postId: String, optionIds: List<String>): Result<PollDto>
 
     suspend fun newPost(newPostRequest: NewPostRequestDto): Result<PostDto>
+
+    suspend fun editPost(postId: String, editPostRequest: EditPostRequestDto): Result<EditPostResponseDto>
 
     suspend fun repost(postId: String, newPostRequest: NewPostRequestDto): Result<PostDto>
 

@@ -6,6 +6,8 @@ import com.dertefter.data.dto.feed.PollDto
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.dto.feed.like.LikeResponseDto
 import com.dertefter.data.dto.feed.stats.PostStatsDto
+import com.dertefter.data.dto.new_post.EditPostRequestDto
+import com.dertefter.data.dto.new_post.EditPostResponseDto
 import com.dertefter.data.dto.new_post.NewPostRequestDto
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
 import com.jamal_aliev.paginator.cursor.extension.find
@@ -181,6 +183,25 @@ class PostRepositoryImpl @Inject constructor(
                     paginator.flush()
                 }
             }
+        }
+    }
+
+    override suspend fun editPost(
+        postId: String,
+        editPostRequestDto: EditPostRequestDto
+    ): Result<EditPostResponseDto> {
+        return remoteDataSource.editPost(postId, editPostRequestDto).onSuccess { response ->
+            updateData(
+                predicate = { it.id == postId },
+                transform = { post ->
+                    post.copy(
+                        content = response.content,
+                        spans = response.spans,
+                        editedAt = response.updatedAt,
+                        isPinned = response.isPinned
+                    )
+                }
+            )
         }
     }
 
