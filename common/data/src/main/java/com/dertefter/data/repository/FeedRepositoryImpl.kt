@@ -75,7 +75,7 @@ class FeedRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getPostsPaginator(userId: String, sort: String, pinnedPostId: String?): MutableCursorPaginator<String, PostDto> {
+    override fun getPostsPaginator(userId: String, sort: String, pinnedPostId: () -> String?): MutableCursorPaginator<String, PostDto> {
         val cacheKey = "user_$userId" + "_$sort"
         return mutableCursorPaginator(capacity = 20) {
             cache = CursorMostRecentPagingCache(maxSize = 20)
@@ -83,7 +83,7 @@ class FeedRepositoryImpl @Inject constructor(
 
             load { cursor ->
                 val result = remoteDataSource.getPosts(
-                    userId, sort = sort, pinnedPostId = pinnedPostId,
+                    userId, sort = sort, pinnedPostId = pinnedPostId(),
                     cursor = cursor?.self?.takeIf { it != "initial" }
                 ).onFailureLog(crashlyticsRepository)
                 val data = result.getOrThrow()

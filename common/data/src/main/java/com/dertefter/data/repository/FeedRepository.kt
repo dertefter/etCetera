@@ -9,7 +9,7 @@ interface FeedRepository {
 
     fun getHashtagPaginator(hashtag: String): MutableCursorPaginator<String, PostDto>
 
-    fun getPostsPaginator(userId: String, sort: String = "new", pinnedPostId: String?): MutableCursorPaginator<String, PostDto>
+    fun getPostsPaginator(userId: String, sort: String = "new", pinnedPostId: () -> String?): MutableCursorPaginator<String, PostDto>
 
     fun getLikedPostsPaginator(userId: String): MutableCursorPaginator<String, PostDto>
 }
