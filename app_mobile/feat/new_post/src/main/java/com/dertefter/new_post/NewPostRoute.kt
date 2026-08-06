@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dertefter.new_post.presentation.NewPostScreen
+import com.dertefter.new_post.presentation.ScreenMode
 
 @Composable
 fun NewPostRoute(
@@ -23,6 +24,6 @@ fun NewPostRoute(
         onEvent = { event ->
             viewModel.onEvent(event)
         },
-        screenMode = NewPostScreenMode.NEW_POST
+        screenMode = ScreenMode.NEW_POST
     )
 }

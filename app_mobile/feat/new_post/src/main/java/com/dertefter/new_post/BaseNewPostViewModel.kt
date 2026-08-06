@@ -6,15 +6,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.repository.AttachmentsRepository
-import com.dertefter.data.repository.PostRepository
+import com.dertefter.design.components.poll.NewPollOptionUiModel
+import com.dertefter.design.components.poll.NewPollUiModel
+import com.dertefter.design.components.post.SpanUiModel
 import com.dertefter.navigation.Navigator
 import com.dertefter.new_post.presentation.Event
 import com.dertefter.new_post.presentation.UiState
 import com.dertefter.new_post.presentation.Upload
 import com.dertefter.new_post.presentation.UploadStatus
-import com.dertefter.design.components.poll.NewPollUiModel
-import com.dertefter.design.components.poll.NewPollOptionUiModel
-import com.dertefter.design.components.post.SpanUiModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -25,9 +24,9 @@ import kotlinx.coroutines.launch
 import java.io.File
 import java.util.UUID
 
+@Suppress("unchecked_cast")
 abstract class BaseNewPostViewModel(
     protected val application: Application,
-    protected val postRepository: PostRepository,
     protected val attachmentsRepository: AttachmentsRepository,
     protected val navigator: Navigator
 ) : ViewModel() {

@@ -34,8 +34,8 @@ import com.dertefter.feed.FeedRoute
 import com.dertefter.followers.FollowersRoute
 import com.dertefter.hashtag_feed.HashtagFeedRoute
 import com.dertefter.navigation.Routes
-import com.dertefter.new_comment.NewCommentReplyRoute
-import com.dertefter.new_comment.NewCommentRoute
+import com.dertefter.new_post.NewCommentReplyRoute
+import com.dertefter.new_post.NewCommentRoute
 import com.dertefter.new_post.NewPostRoute
 import com.dertefter.new_post.RepostRoute
 import com.dertefter.new_post.EditPostRoute

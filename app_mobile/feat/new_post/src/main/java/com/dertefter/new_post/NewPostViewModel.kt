@@ -17,10 +17,10 @@ import javax.inject.Inject
 @HiltViewModel
 class NewPostViewModel @Inject constructor(
     application: Application,
-    postRepository: PostRepository,
+    private val postRepository: PostRepository,
     attachmentsRepository: AttachmentsRepository,
     navigator: Navigator
-) : BaseNewPostViewModel(application, postRepository, attachmentsRepository, navigator) {
+) : BaseNewPostViewModel(application, attachmentsRepository, navigator) {
 
     private var wallRecipientId: String? = null
 

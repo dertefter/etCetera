@@ -4,6 +4,7 @@
     <string name="new_post_title">Новый пост</string>
     <string name="new_repost_title">Репост</string>
     <string name="edit_post_title">Редактировать пост</string>
+    <string name="new_comment_title">Новый комментарий</string>
     <string name="span_bold">Жирный</string>
     <string name="span_italic">Курсив</string>
     <string name="span_underline">Подчеркнутый</string>
@@ -15,5 +16,6 @@
     <string name="action_save">Сохранить</string>
     <string name="post_placeholder">Что нового?</string>
     <string name="repost_placeholder">Комментарий к посту...</string>
+    <string name="comment_placeholder">Напишите комментарий...</string>
 
 </resources>

@@ -89,7 +89,6 @@ dependencies {
     implementation(project(":app_mobile:feat:attachment_viewer"))
     implementation(project(":app_mobile:feat:search"))
     implementation(project(":app_mobile:feat:hashtag_feed"))
-    implementation(project(":app_mobile:feat:new_comment"))
 
     implementation(libs.core.ktx)
     implementation(libs.core.splashscreen)

@@ -44,8 +44,8 @@ import com.dertefter.design.theme.spacing
 import com.dertefter.navigation.NavigationAction
 import com.dertefter.navigation.Navigator
 import com.dertefter.navigation.Routes
-import com.dertefter.new_comment.NewCommentReplyRoute
-import com.dertefter.new_comment.NewCommentRoute
+import com.dertefter.new_post.NewCommentReplyRoute
+import com.dertefter.new_post.NewCommentRoute
 import com.dertefter.new_post.NewPostRoute
 import com.dertefter.new_post.RepostRoute
 import com.dertefter.new_post.EditPostRoute

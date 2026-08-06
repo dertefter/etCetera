@@ -62,7 +62,6 @@ import com.dertefter.design.components.post.buildPostAnnotatedString
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
-import com.dertefter.new_post.NewPostScreenMode
 import com.dertefter.new_post.R
 import com.dertefter.new_post.presentation.component.UploadCard
 import com.dertefter.new_post.presentation.mapper.toOriginalPostUiModel
@@ -72,7 +71,7 @@ import com.dertefter.new_post.presentation.mapper.toOriginalPostUiModel
 fun NewPostScreen(
     uiState: UiState,
     onEvent: (Event) -> Unit,
-    screenMode: NewPostScreenMode,
+    screenMode: ScreenMode,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val scrollState = rememberScrollState()
@@ -135,23 +134,26 @@ fun NewPostScreen(
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onSurface,
                     text = when (screenMode){
-                        NewPostScreenMode.NEW_POST -> stringResource(R.string.new_post_title)
-                        NewPostScreenMode.REPOST -> stringResource(R.string.new_repost_title)
-                        NewPostScreenMode.EDIT_POST -> stringResource(R.string.edit_post_title)
+                        ScreenMode.NEW_POST -> stringResource(R.string.new_post_title)
+                        ScreenMode.REPOST -> stringResource(R.string.new_repost_title)
+                        ScreenMode.EDIT_POST -> stringResource(R.string.edit_post_title)
+                        ScreenMode.NEW_COMMENT -> stringResource(R.string.new_comment_title)
                     }
                 )
 
-                if (screenMode == NewPostScreenMode.NEW_POST){
-                    FilledTonalIconButton(
-                        onClick = { onEvent(Event.OnAddPoll) },
-                        enabled = uiState.poll == null,
-                        colors = IconButtonDefaults.filledTonalIconButtonColors().copy(
-                            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onTertiaryContainer
-                        ),
-                        shape = MaterialTheme.shapes.medium,
-                    ) {
-                        Icon(imageVector = Icons.Poll, contentDescription = stringResource(R.string.action_add_poll))
+                if (screenMode == ScreenMode.NEW_POST || screenMode == ScreenMode.NEW_COMMENT){
+                    if (screenMode == ScreenMode.NEW_POST){
+                        FilledTonalIconButton(
+                            onClick = { onEvent(Event.OnAddPoll) },
+                            enabled = uiState.poll == null,
+                            colors = IconButtonDefaults.filledTonalIconButtonColors().copy(
+                                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                            ),
+                            shape = MaterialTheme.shapes.medium,
+                        ) {
+                            Icon(imageVector = Icons.Poll, contentDescription = stringResource(R.string.action_add_poll))
+                        }
                     }
 
                     FilledTonalIconButton(
@@ -241,9 +243,10 @@ fun NewPostScreen(
                         placeholder = {
                             Text(
                                 text = when (screenMode){
-                                    NewPostScreenMode.NEW_POST -> stringResource(R.string.post_placeholder)
-                                    NewPostScreenMode.REPOST -> stringResource(R.string.repost_placeholder)
-                                    NewPostScreenMode.EDIT_POST -> stringResource(R.string.post_placeholder)
+                                    ScreenMode.NEW_POST -> stringResource(R.string.post_placeholder)
+                                    ScreenMode.REPOST -> stringResource(R.string.repost_placeholder)
+                                    ScreenMode.EDIT_POST -> stringResource(R.string.post_placeholder)
+                                    ScreenMode.NEW_COMMENT -> stringResource(R.string.comment_placeholder)
                                 }
                             )
                                       },
@@ -314,7 +317,7 @@ private fun NewPostScreenPreview() {
                 isUploadingPost = true
             ),
             onEvent = {},
-            screenMode = NewPostScreenMode.REPOST
+            screenMode = ScreenMode.REPOST
         )
     }
 }
