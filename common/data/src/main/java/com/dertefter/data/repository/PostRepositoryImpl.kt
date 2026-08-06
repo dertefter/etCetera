@@ -1,5 +1,6 @@
 package com.dertefter.data.repository
 
+import com.dertefter.data.common.onFailureLog
 import com.dertefter.data.datasource.local.LocalDataSource
 import com.dertefter.data.datasource.remote.RemoteDataSource
 import com.dertefter.data.dto.feed.PollDto
@@ -23,7 +24,8 @@ import javax.inject.Singleton
 @Singleton
 class PostRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
-    private val localDataSource: LocalDataSource
+    private val localDataSource: LocalDataSource,
+    private val crashlyticsRepository: CrashlyticsRepository,
 ) : PostRepository {
 
     private val activePaginators = CopyOnWriteArrayList<WeakReference<MutableCursorPaginator<String, PostDto>>>()
@@ -54,7 +56,7 @@ class PostRepositoryImpl @Inject constructor(
 
     override suspend fun updatePostStats(ids: List<String>): Result<List<PostStatsDto>> {
         return runCatching {
-            val statsList = remoteDataSource.getStats(ids).getOrThrow()
+            val statsList = remoteDataSource.getStats(ids).onFailureLog(crashlyticsRepository).getOrThrow()
             val statsMap = statsList.associateBy { it.id }
 
             val predicate: (PostDto) -> Boolean = { statsMap.containsKey(it.id) }
@@ -77,7 +79,7 @@ class PostRepositoryImpl @Inject constructor(
 
     override suspend fun likePost(postId: String): Result<LikeResponseDto> {
         applyOptimisticLike(postId, true)
-        return remoteDataSource.likePost(postId).onSuccess { response ->
+        return remoteDataSource.likePost(postId).onFailureLog(crashlyticsRepository).onSuccess { response ->
             updateData(
                 predicate = { it.id == postId },
                 transform = { it.copy(isLiked = response.liked, likesCount = response.likesCount) }
@@ -88,7 +90,7 @@ class PostRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deletePost(postId: String): Result<Unit> {
-        return remoteDataSource.deletePost(postId).onSuccess {
+        return remoteDataSource.deletePost(postId).onFailureLog(crashlyticsRepository).onSuccess {
             activePaginators.removeIf { it.get() == null }
             activePaginators.forEach { ref ->
                 ref.get()?.let { paginator ->
@@ -102,7 +104,7 @@ class PostRepositoryImpl @Inject constructor(
 
     override suspend fun unlikePost(postId: String): Result<LikeResponseDto> {
         applyOptimisticLike(postId, false)
-        return remoteDataSource.unlikePost(postId).onSuccess { response ->
+        return remoteDataSource.unlikePost(postId).onFailureLog(crashlyticsRepository).onSuccess { response ->
             updateData(
                 predicate = { it.id == postId },
                 transform = { it.copy(isLiked = response.liked, likesCount = response.likesCount) }
@@ -113,7 +115,7 @@ class PostRepositoryImpl @Inject constructor(
     }
 
     override suspend fun pinPost(postId: String): Result<Unit> {
-        return remoteDataSource.pinPost(postId).onSuccess {
+        return remoteDataSource.pinPost(postId).onFailureLog(crashlyticsRepository).onSuccess {
             activePaginators.removeIf { it.get() == null }
             activePaginators.forEach { ref ->
                 ref.get()?.let { paginator ->
@@ -129,7 +131,7 @@ class PostRepositoryImpl @Inject constructor(
     }
 
     override suspend fun unpinPost(postId: String): Result<Unit> {
-        return remoteDataSource.unpinPost(postId).onSuccess {
+        return remoteDataSource.unpinPost(postId).onFailureLog(crashlyticsRepository).onSuccess {
             updateData(
                 predicate = { it.id == postId },
                 transform = { it.copy(isPinned = false) }
@@ -138,7 +140,7 @@ class PostRepositoryImpl @Inject constructor(
     }
 
     override suspend fun votePoll(postId: String, optionIds: List<String>): Result<PollDto> {
-        return remoteDataSource.vote(postId, optionIds).onSuccess { poll ->
+        return remoteDataSource.vote(postId, optionIds).onFailureLog(crashlyticsRepository).onSuccess { poll ->
             updateData(
                 predicate = { it.id == postId },
                 transform = { it.copy(poll = poll) }
@@ -151,7 +153,7 @@ class PostRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updatePost(postId: String): Result<PostDto> {
-        return remoteDataSource.getPost(postId).onSuccess { postDto ->
+        return remoteDataSource.getPost(postId).onFailureLog(crashlyticsRepository).onSuccess { postDto ->
             localDataSource.savePost(postDto)
             updateData(
                 predicate = { it.id == postId },
@@ -161,7 +163,7 @@ class PostRepositoryImpl @Inject constructor(
     }
 
     override suspend fun newPost(newPostRequestDto: NewPostRequestDto): Result<PostDto> {
-        return remoteDataSource.newPost(newPostRequestDto).onSuccess { postDto ->
+        return remoteDataSource.newPost(newPostRequestDto).onFailureLog(crashlyticsRepository).onSuccess { postDto ->
             localDataSource.savePost(postDto)
             activePaginators.removeIf { it.get() == null }
             activePaginators.forEach { ref ->
@@ -174,7 +176,7 @@ class PostRepositoryImpl @Inject constructor(
     }
 
     override suspend fun repost(postId: String, newPostRequestDto: NewPostRequestDto): Result<PostDto> {
-        return remoteDataSource.repost(postId, newPostRequestDto).onSuccess { postDto ->
+        return remoteDataSource.repost(postId, newPostRequestDto).onFailureLog(crashlyticsRepository).onSuccess { postDto ->
             localDataSource.savePost(postDto)
             activePaginators.removeIf { it.get() == null }
             activePaginators.forEach { ref ->
@@ -190,7 +192,7 @@ class PostRepositoryImpl @Inject constructor(
         postId: String,
         editPostRequestDto: EditPostRequestDto
     ): Result<EditPostResponseDto> {
-        return remoteDataSource.editPost(postId, editPostRequestDto).onSuccess { response ->
+        return remoteDataSource.editPost(postId, editPostRequestDto).onFailureLog(crashlyticsRepository).onSuccess { response ->
             updateData(
                 predicate = { it.id == postId },
                 transform = { post ->

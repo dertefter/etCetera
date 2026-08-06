@@ -1,5 +1,6 @@
 package com.dertefter.data.repository
 
+import com.dertefter.data.common.onFailureLog
 import com.dertefter.data.datasource.local.LocalDataSource
 import com.dertefter.data.datasource.local.room.NotificationPagingCache
 import com.dertefter.data.datasource.remote.RemoteDataSource
@@ -17,7 +18,8 @@ import javax.inject.Singleton
 @Singleton
 class NotificationsRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
-    private val localDataSource: LocalDataSource
+    private val localDataSource: LocalDataSource,
+    private val crashlyticsRepository: CrashlyticsRepository,
 ) : NotificationsRepository {
 
     private val activePaginators = CopyOnWriteArrayList<WeakReference<MutableCursorPaginator<String, NotificationDto>>>()
@@ -33,7 +35,7 @@ class NotificationsRepositoryImpl @Inject constructor(
                 var nextOffset: String?
 
                 while (true) {
-                    val result = remoteDataSource.getNotifications(currentOffset)
+                    val result = remoteDataSource.getNotifications(currentOffset).onFailureLog(crashlyticsRepository)
                     val data = result.getOrThrow()
 
                     val pageFiltered = if (type == null) {

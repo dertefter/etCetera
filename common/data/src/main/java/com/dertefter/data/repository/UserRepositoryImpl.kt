@@ -1,5 +1,6 @@
 package com.dertefter.data.repository
 
+import com.dertefter.data.common.onFailureLog
 import com.dertefter.data.datasource.local.LocalDataSource
 import com.dertefter.data.datasource.remote.RemoteDataSource
 import com.dertefter.data.dto.user.FollowResponseDto
@@ -13,7 +14,8 @@ import javax.inject.Singleton
 class UserRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
     private val localDataSource: LocalDataSource,
-    private val followersRepository: FollowersRepository
+    private val followersRepository: FollowersRepository,
+    private val crashlyticsRepository: CrashlyticsRepository,
 ) : UserRepository {
 
     override fun getUser(userId: String): Flow<UserDto?> {
@@ -21,14 +23,14 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateUser(userId: String): Result<UserDto> {
-        return remoteDataSource.getUser(userId).onSuccess {
+        return remoteDataSource.getUser(userId).onFailureLog(crashlyticsRepository).onSuccess {
             localDataSource.saveUser(it)
         }
     }
 
     override suspend fun follow(userId: String): Result<FollowResponseDto> {
         applyOptimisticFollow(userId, true)
-        return remoteDataSource.follow(userId).onSuccess { response ->
+        return remoteDataSource.follow(userId).onFailureLog(crashlyticsRepository).onSuccess { response ->
             handleFollowResponse(userId, response)
         }.onFailure {
             applyOptimisticFollow(userId, false)
@@ -37,7 +39,7 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun unfollow(userId: String): Result<FollowResponseDto> {
         applyOptimisticFollow(userId, false)
-        return remoteDataSource.unfollow(userId).onSuccess { response ->
+        return remoteDataSource.unfollow(userId).onFailureLog(crashlyticsRepository).onSuccess { response ->
             handleFollowResponse(userId, response)
         }.onFailure {
             applyOptimisticFollow(userId, true)

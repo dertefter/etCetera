@@ -1,5 +1,6 @@
 package com.dertefter.data.repository
 
+import com.dertefter.data.common.onFailureLog
 import com.dertefter.data.datasource.local.LocalDataSource
 import com.dertefter.data.datasource.local.room.CommentPagingCache
 import com.dertefter.data.datasource.remote.RemoteDataSource
@@ -21,7 +22,8 @@ import javax.inject.Singleton
 @Singleton
 class CommentsRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
-    private val localDataSource: LocalDataSource
+    private val localDataSource: LocalDataSource,
+    private val crashlyticsRepository: CrashlyticsRepository,
 ) : CommentsRepository {
 
     private val activePaginators = CopyOnWriteArrayList<WeakReference<MutableCursorPaginator<String, CommentDto>>>()
@@ -78,7 +80,7 @@ class CommentsRepositoryImpl @Inject constructor(
 
             load { cursor ->
                 val requestCursor = if (cursor?.self == "initial") null else cursor?.self
-                val result = remoteDataSource.getComments(postId, requestCursor, sort)
+                val result = remoteDataSource.getComments(postId, requestCursor, sort).onFailureLog(crashlyticsRepository)
                 val data = result.getOrThrow()
 
                 val otherPagesItems = core.cursors
@@ -113,7 +115,7 @@ class CommentsRepositoryImpl @Inject constructor(
         applyOptimisticLike(commentId, true)
         return remoteDataSource.likeComment(commentId).onSuccess { response ->
             handleLikeResponse(commentId, response)
-        }.onFailure {
+        }.onFailureLog(crashlyticsRepository).onFailure {
             applyOptimisticLike(commentId, false)
         }
     }
@@ -122,7 +124,7 @@ class CommentsRepositoryImpl @Inject constructor(
         applyOptimisticLike(commentId, false)
         return remoteDataSource.unlikeComment(commentId).onSuccess { response ->
             handleLikeResponse(commentId, response)
-        }.onFailure {
+        }.onFailureLog(crashlyticsRepository).onFailure {
             applyOptimisticLike(commentId, true)
         }
     }
@@ -137,25 +139,25 @@ class CommentsRepositoryImpl @Inject constructor(
                 comment.copy(replies = currentReplies + filteredNewReplies)
             }
             updateData(commentId, transform)
-        }
+        }.onFailureLog(crashlyticsRepository)
     }
 
     override suspend fun deleteComment(commentId: String): Result<Unit> {
-        return remoteDataSource.deleteComment(commentId)
+        return remoteDataSource.deleteComment(commentId).onFailureLog(crashlyticsRepository)
     }
 
     override suspend fun newComment(
         postId: String,
         newCommentRequestDto: NewCommentRequestDto
     ): Result<CommentDto> {
-        return remoteDataSource.newComment(postId, newCommentRequestDto)
+        return remoteDataSource.newComment(postId, newCommentRequestDto).onFailureLog(crashlyticsRepository)
     }
 
     override suspend fun newCommentReply(
         commentId: String,
         newCommentRequestDto: NewCommentRequestDto
     ): Result<CommentDto> {
-        return remoteDataSource.newCommentReply(commentId, newCommentRequestDto)
+        return remoteDataSource.newCommentReply(commentId, newCommentRequestDto).onFailureLog(crashlyticsRepository)
     }
 
     private suspend fun applyOptimisticLike(commentId: String, liked: Boolean) {

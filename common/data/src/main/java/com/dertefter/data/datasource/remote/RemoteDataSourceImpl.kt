@@ -29,6 +29,7 @@ import com.dertefter.data.dto.user.UserDto
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import retrofit2.Response
 import org.w3c.dom.Comment
 import java.io.File
 import javax.inject.Inject
@@ -41,82 +42,44 @@ class RemoteDataSourceImpl @Inject constructor(
     
     override suspend fun signIn(signInRequest: SignInRequest): Result<Unit> {
         return runCatching {
-            val response = apiService.signIn(signInRequest)
-            if (response.isSuccessful) {
-                Unit
-            } else {
-                throw Exception("Sign in failed: ${response.errorBody()?.string()}")
-            }
+            apiService.signIn(signInRequest).handleUnitResponse().getOrThrow()
         }
     }
 
     override suspend fun refreshToken(): Result<Unit> {
         return runCatching {
-            val response = apiService.refreshToken()
-            if (response.isSuccessful) {
-                Unit
-            } else {
-                throw Exception("Refresh failed: ${response.code()}")
-            }
+            apiService.refreshToken().handleUnitResponse().getOrThrow()
         }
     }
 
     override suspend fun getMe(): Result<MeDto> {
         return runCatching {
-            val response = apiService.me()
-            if (response.isSuccessful) {
-                response.body()!!
-            } else {
-                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
-            }
+            apiService.me().handleResponse { it }.getOrThrow()
         }
     }
 
     override suspend fun unpinPost(postId: String): Result<Unit> {
         return runCatching {
-            val response = apiService.unpinPost(postId)
-            if (response.isSuccessful) {
-                Unit
-            } else {
-                throw Exception("Refresh failed: ${response.code()}")
-            }
+            apiService.unpinPost(postId).handleUnitResponse().getOrThrow()
         }
     }
 
     override suspend fun pinPost(postId: String): Result<Unit> {
         return runCatching {
-            val response = apiService.pinPost(postId)
-            if (response.isSuccessful) {
-                Unit
-            } else {
-                throw Exception("Refresh failed: ${response.code()}")
-            }
+            apiService.pinPost(postId).handleUnitResponse().getOrThrow()
         }
     }
 
     override suspend fun getUser(userId: String): Result<UserDto> {
         return runCatching {
-            val response = apiService.user(userId)
-            if (response.isSuccessful) {
-                response.body()!!
-            } else {
-                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
-            }
+            apiService.user(userId).handleResponse { it }.getOrThrow()
         }
     }
 
     override suspend fun getPosts(tab: String, cursor: String?): Result<PostDataDto> {
         return runCatching {
             Log.e("sss getPosts","tab: $tab , cursor: $cursor")
-            if (cursor == null || cursor == "initial"){ //fake error
-              // throw NullPointerException()
-            }
-            val response = apiService.posts(tab = tab, cursor = cursor)
-            if (response.isSuccessful) {
-                response.body()!!.data
-            } else {
-                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
-            }
+            apiService.posts(tab = tab, cursor = cursor).handleResponse { it.data }.getOrThrow()
         }
     }
 
@@ -125,24 +88,13 @@ class RemoteDataSourceImpl @Inject constructor(
         cursor: String?
     ): Result<PostDataDto> {
         return runCatching {
-            val response = apiService.postsForHashtag(hashtagId = hashtagId, cursor = cursor)
-
-            if (response.isSuccessful) {
-                response.body()!!.data
-            } else {
-                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
-            }
+            apiService.postsForHashtag(hashtagId = hashtagId, cursor = cursor).handleResponse { it.data }.getOrThrow()
         }
     }
 
     override suspend fun getPost(postId: String): Result<PostDto> {
         return runCatching {
-            val response = apiService.post(postId)
-            if (response.isSuccessful) {
-                response.body()!!.data
-            } else {
-                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
-            }
+            apiService.post(postId).handleResponse { it.data }.getOrThrow()
         }
     }
 
@@ -153,17 +105,14 @@ class RemoteDataSourceImpl @Inject constructor(
         cursor: String?
     ): Result<PostDataDto> {
         return runCatching {
-            val response = apiService.posts(userId = userId, pinnedPostId = pinnedPostId, sort = sort, cursor = cursor)
-            if (response.isSuccessful) {
-                val data = response.body()!!.data
+            apiService.posts(userId = userId, pinnedPostId = pinnedPostId, sort = sort, cursor = cursor).handleResponse { response ->
+                val data = response.data
                 data.copy(
                     posts = data.posts.map { post ->
                         if (post.id == pinnedPostId) post.copy(isPinned = true) else post
                     }
                 )
-            } else {
-                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
-            }
+            }.getOrThrow()
         }
     }
 
@@ -172,12 +121,7 @@ class RemoteDataSourceImpl @Inject constructor(
         cursor: String?
     ): Result<PostDataDto> {
         return runCatching {
-            val response = apiService.likedPosts(userId = userId, cursor = cursor)
-            if (response.isSuccessful) {
-                response.body()!!.data
-            } else {
-                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
-            }
+            apiService.likedPosts(userId = userId, cursor = cursor).handleResponse { it.data }.getOrThrow()
         }
     }
 
@@ -187,12 +131,7 @@ class RemoteDataSourceImpl @Inject constructor(
         sort: String
     ): Result<CommentsDataDto> {
         return runCatching {
-            val response = apiService.comments(postId = postId, sort = sort, cursor = cursor)
-            if (response.isSuccessful) {
-                response.body()!!.data
-            } else {
-                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
-            }
+            apiService.comments(postId = postId, sort = sort, cursor = cursor).handleResponse { it.data }.getOrThrow()
         }
     }
 
@@ -201,91 +140,49 @@ class RemoteDataSourceImpl @Inject constructor(
         page: String?
     ): Result<RepliesDataDto> {
         return runCatching {
-            val response = apiService.replies(commentId = commentId, page = page)
-            if (response.isSuccessful) {
-                response.body()!!.data
-            } else {
-                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
-            }
+            apiService.replies(commentId = commentId, page = page).handleResponse { it.data }.getOrThrow()
         }
     }
 
     override suspend fun getStats(ids: List<String>): Result<List<PostStatsDto>> {
         return runCatching {
-            val response  = apiService.stats(
-                PostStatsRequest(ids)
-            )
-            if (response.isSuccessful) {
-                response.body()!!.postStats
-            } else {
-                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
-            }
+            apiService.stats(PostStatsRequest(ids)).handleResponse { it.postStats }.getOrThrow()
         }
     }
 
     override suspend fun likePost(postId: String): Result<LikeResponseDto> {
         return runCatching {
-            val response = apiService.likePost(postId = postId)
-            if (response.isSuccessful) {
-                response.body()!!
-            } else {
-                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
-            }
+            apiService.likePost(postId = postId).handleResponse { it }.getOrThrow()
         }
     }
 
     override suspend fun unlikePost(postId: String): Result<LikeResponseDto> {
         return runCatching {
-            val response = apiService.unlikePost(postId = postId)
-            if (response.isSuccessful) {
-                response.body()!!
-            } else {
-                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
-            }
+            apiService.unlikePost(postId = postId).handleResponse { it }.getOrThrow()
         }
     }
 
     override suspend fun likeComment(commentId: String): Result<LikeResponseDto> {
         return runCatching {
-            val response = apiService.likeComment(commentId = commentId)
-            if (response.isSuccessful) {
-                response.body()!!
-            } else {
-                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
-            }
+            apiService.likeComment(commentId = commentId).handleResponse { it }.getOrThrow()
         }
     }
 
     override suspend fun unlikeComment(commentId: String): Result<LikeResponseDto> {
         return runCatching {
-            val response = apiService.unlikeComment(commentId = commentId)
-            if (response.isSuccessful) {
-                response.body()!!
-            } else {
-                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
-            }
+            apiService.unlikeComment(commentId = commentId).handleResponse { it }.getOrThrow()
         }
     }
 
     override suspend fun vote(postId: String, optionIds: List<String>): Result<PollDto> {
         return runCatching {
-            val response = apiService.vote(postId, VotePollRequestDto(optionIds))
-            if (response.isSuccessful) {
-                response.body()!!.data
-            } else {
-                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
-            }
+            apiService.vote(postId, VotePollRequestDto(optionIds)).handleResponse { it.data }.getOrThrow()
         }
     }
 
     override suspend fun newPost(newPostRequest: NewPostRequestDto): Result<PostDto> {
         return runCatching {
-            val response = apiService.newPost(newPostRequest)
-            if (response.isSuccessful) {
-                response.body()!!
-            } else {
-                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
-            }
+            apiService.newPost(newPostRequest).handleResponse { it }.getOrThrow()
         }
     }
 
@@ -294,56 +191,31 @@ class RemoteDataSourceImpl @Inject constructor(
         editPostRequest: EditPostRequestDto
     ): Result<EditPostResponseDto> {
         return runCatching {
-            val response = apiService.editPost(postId, editPostRequest)
-            if (response.isSuccessful) {
-                response.body()!!
-            } else {
-                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
-            }
+            apiService.editPost(postId, editPostRequest).handleResponse { it }.getOrThrow()
         }
     }
 
     override suspend fun repost(postId: String, newPostRequest: NewPostRequestDto): Result<PostDto> {
         return runCatching {
-            val response = apiService.repost(postId, newPostRequest)
-            if (response.isSuccessful) {
-                response.body()!!
-            } else {
-                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
-            }
+            apiService.repost(postId, newPostRequest).handleResponse { it }.getOrThrow()
         }
     }
 
     override suspend fun newComment(postId: String, newCommentRequest: NewCommentRequestDto): Result<CommentDto> {
         return runCatching {
-            val response = apiService.newComment(postId, newCommentRequest)
-            if (response.isSuccessful) {
-                response.body()!!
-            } else {
-                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
-            }
+            apiService.newComment(postId, newCommentRequest).handleResponse { it }.getOrThrow()
         }
     }
 
     override suspend fun deleteComment(commentId: String): Result<Unit> {
         return runCatching {
-            val response = apiService.deleteComment(commentId)
-            if (response.isSuccessful) {
-                Unit
-            } else {
-                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
-            }
+            apiService.deleteComment(commentId).handleUnitResponse().getOrThrow()
         }
     }
 
     override suspend fun deletePost(postId: String): Result<Unit> {
         return runCatching {
-            val response = apiService.deletePost(postId)
-            if (response.isSuccessful) {
-                Unit
-            } else {
-                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
-            }
+            apiService.deletePost(postId).handleUnitResponse().getOrThrow()
         }
     }
 
@@ -352,12 +224,7 @@ class RemoteDataSourceImpl @Inject constructor(
         newCommentRequest: NewCommentRequestDto
     ): Result<CommentDto> {
         return runCatching {
-            val response = apiService.newCommentReply(commentId, newCommentRequest)
-            if (response.isSuccessful) {
-                response.body()!!
-            } else {
-                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
-            }
+            apiService.newCommentReply(commentId, newCommentRequest).handleResponse { it }.getOrThrow()
         }
     }
 
@@ -369,45 +236,25 @@ class RemoteDataSourceImpl @Inject constructor(
                 myFile.name,
                 requestBody
             )
-            val response = apiService.upload(multipartBody)
-            if (response.isSuccessful) {
-                response.body()!!
-            } else {
-                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
-            }
+            apiService.upload(multipartBody).handleResponse { it }.getOrThrow()
         }
     }
 
     override suspend fun follow(userId: String): Result<FollowResponseDto> {
         return runCatching {
-            val response = apiService.follow(userId)
-            if (response.isSuccessful) {
-                response.body()!!
-            } else {
-                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
-            }
+            apiService.follow(userId).handleResponse { it }.getOrThrow()
         }
     }
 
     override suspend fun unfollow(userId: String): Result<FollowResponseDto> {
         return runCatching {
-            val response = apiService.unfollow(userId)
-            if (response.isSuccessful) {
-                response.body()!!
-            } else {
-                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
-            }
+            apiService.unfollow(userId).handleResponse { it }.getOrThrow()
         }
     }
 
     override suspend fun updateMe(updateMeRequestDto: UpdateMeRequestDto): Result<UpdateMeResponseDto> {
         return runCatching {
-            val response = apiService.updateMe(updateMeRequestDto)
-            if (response.isSuccessful) {
-                response.body()!!
-            } else {
-                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
-            }
+            apiService.updateMe(updateMeRequestDto).handleResponse { it }.getOrThrow()
         }
     }
 
@@ -416,12 +263,7 @@ class RemoteDataSourceImpl @Inject constructor(
         page: Int?
     ): Result<FollowersResponseDataDto> {
         return runCatching {
-            val response = apiService.followers(userId = userId, page = page)
-            if (response.isSuccessful) {
-                response.body()!!.data
-            } else {
-                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
-            }
+            apiService.followers(userId = userId, page = page).handleResponse { it.data }.getOrThrow()
         }
     }
 
@@ -430,45 +272,44 @@ class RemoteDataSourceImpl @Inject constructor(
         page: Int?
     ): Result<FollowersResponseDataDto> {
         return runCatching {
-            val response = apiService.following(userId = userId, page = page)
-            if (response.isSuccessful) {
-                response.body()!!.data
-            } else {
-                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
-            }
+            apiService.following(userId = userId, page = page).handleResponse { it.data }.getOrThrow()
         }
     }
 
     override suspend fun getNotifications(offset: Int?): Result<NotificationsResponseDto> {
         return runCatching {
-            val response = apiService.notifications(offset = offset)
-            if (response.isSuccessful) {
-                response.body()!!
-            } else {
-                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
-            }
+            apiService.notifications(offset = offset).handleResponse { it }.getOrThrow()
         }
     }
 
     override suspend fun getTrendingHashtags(): Result<List<SearchHashtagDto>> {
         return runCatching {
-            val response = apiService.trendingHashtags()
-            if (response.isSuccessful) {
-                response.body()!!.data.hashtags
-            } else {
-                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
-            }
+            apiService.trendingHashtags().handleResponse { it.data.hashtags }.getOrThrow()
         }
     }
 
     override suspend fun getSearchResults(q: String): Result<SearchDataDto> {
         return runCatching {
-            val response = apiService.search(query = q)
-            if (response.isSuccessful) {
-                response.body()!!.data
-            } else {
-                throw Exception("${response.code()}, ${response.body()}, ${response.errorBody()}")
-            }
+            apiService.search(query = q).handleResponse { it.data }.getOrThrow()
         }
+    }
+}
+
+private fun <T, R> Response<T>.handleResponse(transform: (T) -> R): Result<R> {
+    val body = body()
+    return if (isSuccessful && body != null) {
+        Result.success(transform(body))
+    } else {
+        val errorBodyString = errorBody()?.string()
+        Result.failure(Exception("API Error ${code()}: $errorBodyString"))
+    }
+}
+
+private fun <T> Response<T>.handleUnitResponse(): Result<Unit> {
+    return if (isSuccessful) {
+        Result.success(Unit)
+    } else {
+        val errorBodyString = errorBody()?.string()
+        Result.failure(Exception("API Error ${code()}: $errorBodyString"))
     }
 }

@@ -1,6 +1,7 @@
 package com.dertefter.data.repository
 
 import android.content.Context
+import android.util.Log
 import com.dertefter.data.common.AppError
 import com.dertefter.data.common.toAppError
 import com.dertefter.data.dto.app.CrashlyticsItemDto
@@ -28,6 +29,7 @@ class CrashlyticsRepositoryImpl @Inject constructor(
     override val currentError: Flow<AppError?> = _currentError.asSharedFlow()
 
     override fun showError(e: Throwable?) {
+        Log.e("showError", e?.stackTraceToString() ?: "")
         val appError = e?.toAppError()
         _currentError.tryEmit(appError)
     }

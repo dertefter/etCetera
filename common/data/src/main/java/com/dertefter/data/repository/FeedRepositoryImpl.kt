@@ -1,5 +1,6 @@
 package com.dertefter.data.repository
 
+import com.dertefter.data.common.onFailureLog
 import com.dertefter.data.datasource.local.LocalDataSource
 import com.dertefter.data.datasource.local.room.PostPagingCache
 import com.dertefter.data.datasource.remote.RemoteDataSource
@@ -16,7 +17,8 @@ import javax.inject.Singleton
 class FeedRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
     private val localDataSource: LocalDataSource,
-    private val postRepository: PostRepository
+    private val postRepository: PostRepository,
+    private val crashlyticsRepository: CrashlyticsRepository,
 ) : FeedRepository {
 
     override fun getFeedPaginator(tab: String): MutableCursorPaginator<String, PostDto> {
@@ -30,7 +32,7 @@ class FeedRepositoryImpl @Inject constructor(
                 val result = remoteDataSource.getPosts(
                     tab,
                     cursor?.self?.takeIf { it != "initial" }
-                )
+                ).onFailureLog(crashlyticsRepository)
 
                 val data = result.getOrThrow()
 
@@ -55,7 +57,7 @@ class FeedRepositoryImpl @Inject constructor(
             persistentCache = PostPagingCache(hashtag, localDataSource)
 
             load { cursor ->
-                val result = remoteDataSource.getPostsForHashtag(hashtag, cursor?.self?.takeIf { it != "initial" } )
+                val result = remoteDataSource.getPostsForHashtag(hashtag, cursor?.self?.takeIf { it != "initial" } ).onFailureLog(crashlyticsRepository)
                 val data = result.getOrThrow()
 
                 CursorLoadResult(
@@ -83,7 +85,7 @@ class FeedRepositoryImpl @Inject constructor(
                 val result = remoteDataSource.getPosts(
                     userId, sort = sort, pinnedPostId = pinnedPostId,
                     cursor = cursor?.self?.takeIf { it != "initial" }
-                )
+                ).onFailureLog(crashlyticsRepository)
                 val data = result.getOrThrow()
 
                 CursorLoadResult(
@@ -108,7 +110,7 @@ class FeedRepositoryImpl @Inject constructor(
             persistentCache = PostPagingCache(cacheKey, localDataSource)
 
             load { cursor ->
-                val result = remoteDataSource.getLikedPosts(userId, cursor?.self?.takeIf { it != "initial" })
+                val result = remoteDataSource.getLikedPosts(userId, cursor?.self?.takeIf { it != "initial" }).onFailureLog(crashlyticsRepository)
                 val data = result.getOrThrow()
 
                 CursorLoadResult(

@@ -1,5 +1,6 @@
 package com.dertefter.data.repository
 
+import com.dertefter.data.common.onFailureLog
 import com.dertefter.data.datasource.local.LocalDataSource
 import com.dertefter.data.datasource.local.room.FollowerPagingCache
 import com.dertefter.data.datasource.remote.RemoteDataSource
@@ -18,7 +19,8 @@ import javax.inject.Singleton
 @Singleton
 class FollowersRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
-    private val localDataSource: LocalDataSource
+    private val localDataSource: LocalDataSource,
+    private val crashlyticsRepository: CrashlyticsRepository,
 ) : FollowersRepository {
 
     private val activePaginators = CopyOnWriteArrayList<WeakReference<MutableCursorPaginator<String, FollowerUserDto>>>()
@@ -48,7 +50,7 @@ class FollowersRepositoryImpl @Inject constructor(
 
             load { cursor ->
                 val page = (cursor?.self)?.toIntOrNull() ?: 1
-                val result = remoteDataSource.getFollowers(userId, page)
+                val result = remoteDataSource.getFollowers(userId, page).onFailureLog(crashlyticsRepository)
                 val data = result.getOrThrow()
 
                 CursorLoadResult(
@@ -74,7 +76,7 @@ class FollowersRepositoryImpl @Inject constructor(
 
             load { cursor ->
                 val page = (cursor?.self)?.toIntOrNull() ?: 1
-                val result = remoteDataSource.getFollowing(userId, page)
+                val result = remoteDataSource.getFollowing(userId, page).onFailureLog(crashlyticsRepository)
                 val data = result.getOrThrow()
 
                 CursorLoadResult(

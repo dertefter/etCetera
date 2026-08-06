@@ -1,5 +1,6 @@
 package com.dertefter.data.repository
 
+import com.dertefter.data.common.onFailureLog
 import com.dertefter.data.datasource.local.LocalDataSource
 import com.dertefter.data.datasource.remote.RemoteDataSource
 import com.dertefter.data.dto.auth.SignInRequest
@@ -9,7 +10,8 @@ import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
-    private val localDataSource: LocalDataSource
+    private val localDataSource: LocalDataSource,
+    private val crashlyticsRepository: CrashlyticsRepository,
 ) : AuthRepository {
 
     override val isAuthorized: Flow<Boolean?> = localDataSource.currentLogin.map { it != null }
@@ -37,11 +39,11 @@ class AuthRepositoryImpl @Inject constructor(
                 password = password,
                 turnstileToken = turnstileToken
             )
-        )
+        ).onFailureLog(crashlyticsRepository)
     }
 
     override suspend fun refreshToken(): Result<Unit> {
-        return remoteDataSource.refreshToken()
+        return remoteDataSource.refreshToken().onFailureLog(crashlyticsRepository)
     }
 
 }
