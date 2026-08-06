@@ -1,8 +1,13 @@
 package com.dertefter.data.repository
 
 import android.content.Context
+import com.dertefter.data.common.AppError
+import com.dertefter.data.common.toAppError
 import com.dertefter.data.dto.app.CrashlyticsItemDto
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -10,13 +15,21 @@ import java.util.Locale
 import javax.inject.Inject
 
 class CrashlyticsRepositoryImpl @Inject constructor(
-    @param:ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context,
 ) : CrashlyticsRepository {
 
     private val crashLogsFolder: File by lazy {
         File(context.filesDir, "crash_logs").apply {
             if (!exists()) mkdirs()
         }
+    }
+
+    private val _currentError = MutableSharedFlow<AppError?>(extraBufferCapacity = 1)
+    override val currentError: Flow<AppError?> = _currentError.asSharedFlow()
+
+    override fun showError(e: Throwable?) {
+        val appError = e?.toAppError()
+        _currentError.tryEmit(appError)
     }
 
     override fun saveCrashLog(exception: Throwable) {

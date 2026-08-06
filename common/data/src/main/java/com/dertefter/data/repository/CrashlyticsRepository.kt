@@ -1,6 +1,8 @@
 package com.dertefter.data.repository
 
+import com.dertefter.data.common.AppError
 import com.dertefter.data.dto.app.CrashlyticsItemDto
+import kotlinx.coroutines.flow.Flow
 
 interface CrashlyticsRepository {
 
@@ -11,4 +13,9 @@ interface CrashlyticsRepository {
     fun deleteCrashLog(path: String)
 
     fun readCrashLog(path: String): String
+
+    val currentError: Flow<AppError?>
+
+    fun showError(e: Throwable?)
+
 }
