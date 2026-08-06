@@ -145,30 +145,11 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    fun initWithUserId(userId: String?) {
+    fun initWithUserId(userId: String) {
         initJob?.cancel()
         initJob = viewModelScope.launch {
-            if (userId != null) {
-                _userId.value = userId
-                update()
-            } else {
-                _meUserId.collect { id ->
-                    if (id == null) {
-                        _isLoading.value = true
-                        meRepository.fetchMe().onFailure {
-                            _error.value = it.toAppError()
-                            _isLoading.value = false
-                        }
-                    } else {
-                        if (_userId.value != id) {
-                            _userId.value = id
-                            update()
-                        } else {
-                            _isLoading.value = false
-                        }
-                    }
-                }
-            }
+            _userId.value = userId
+            update()
         }
     }
 
