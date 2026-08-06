@@ -42,12 +42,14 @@ class MainActivity : ComponentActivity() {
         setContent {
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
             val meUserId by viewModel.meUserId.collectAsStateWithLifecycle()
+            val currentError by viewModel.currentError.collectAsStateWithLifecycle()
             if (uiState.isReady){
                 AppTheme {
                     MainScreen(
                         navigator,
                         meUserId = meUserId,
-                        currentLogin = uiState.currentLogin
+                        currentLogin = uiState.currentLogin,
+                        currentError = currentError
                     )
                 }
             }

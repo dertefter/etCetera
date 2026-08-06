@@ -17,6 +17,9 @@ import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetValue
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberBottomSheetState
 import androidx.compose.runtime.Composable
@@ -36,7 +39,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.compose.ui.res.stringResource
 import com.dertefter.comments.CommentsRoute
+import com.dertefter.data.common.AppError
+import com.dertefter.etcetera.R
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.isFold
@@ -68,12 +74,67 @@ enum class MainTab(
     Profile("Профиль", { Icons.User }, { Icons.UserFilled })
 }
 
+@Composable
+fun getErrorMessage(e: AppError?): String? {
+    return when (e) {
+        null -> null
+        is AppError.Network -> stringResource(R.string.app_error_network)
+        is AppError.TurnstileVerificationFailed -> stringResource(R.string.app_error_turnstile)
+        is AppError.ApiError -> e.message ?: stringResource(R.string.app_error_api_with_code, e.code ?: "")
+        is AppError.Unexpected -> e.message ?: stringResource(R.string.app_error_unexpected)
+
+        // Authentication & Authorization
+        is AppError.Unauthorized -> stringResource(R.string.app_error_unauthorized)
+        is AppError.SessionNotFound -> stringResource(R.string.app_error_session_not_found)
+        is AppError.SessionExpired -> stringResource(R.string.app_error_session_expired)
+        is AppError.SessionRevoked -> stringResource(R.string.app_error_session_revoked)
+        is AppError.RefreshTokenMissing -> stringResource(R.string.app_error_refresh_token_missing)
+        is AppError.InvalidCredentials -> stringResource(R.string.app_error_invalid_credentials)
+        is AppError.AccountBanned -> stringResource(R.string.app_error_account_banned)
+        is AppError.AccountDeleted -> stringResource(R.string.app_error_account_deleted)
+        is AppError.ProfileRequired -> stringResource(R.string.app_error_profile_required)
+        is AppError.EmailDomainNotAllowed -> stringResource(R.string.app_error_email_domain_not_allowed)
+
+        // Validation & Constraints
+        is AppError.ValidationError -> e.message ?: stringResource(R.string.app_error_validation)
+        is AppError.UsernameTaken -> stringResource(R.string.app_error_username_taken)
+        is AppError.InvalidDisplayName -> stringResource(R.string.app_error_invalid_display_name)
+        is AppError.SamePassword -> stringResource(R.string.app_error_same_password)
+        is AppError.InvalidOldPassword -> stringResource(R.string.app_error_invalid_old_password)
+        is AppError.InvalidPassword -> stringResource(R.string.app_error_invalid_password)
+        is AppError.BannedWord -> stringResource(R.string.app_error_banned_word)
+
+        // Resource Status
+        is AppError.NotFound -> stringResource(R.string.app_error_not_found)
+        is AppError.AlreadyDeleted -> stringResource(R.string.app_error_already_deleted)
+        is AppError.Conflict -> e.message ?: stringResource(R.string.app_error_conflict)
+        is AppError.UserBlocked -> stringResource(R.string.app_error_user_blocked)
+        is AppError.NotPinned -> stringResource(R.string.app_error_not_pinned)
+
+        // Permissions & Access
+        is AppError.Forbidden -> stringResource(R.string.app_error_forbidden)
+        is AppError.PinNotOwned -> stringResource(R.string.app_error_pin_not_owned)
+        is AppError.RequiresVerification -> stringResource(R.string.app_error_requires_verification)
+        is AppError.RequiresSubscription -> stringResource(R.string.app_error_requires_subscription)
+
+        // Operations
+        is AppError.RateLimit -> stringResource(R.string.app_error_rate_limit)
+        is AppError.UploadError -> stringResource(R.string.app_error_upload)
+        is AppError.ModerationError -> stringResource(R.string.app_error_moderation)
+        is AppError.EditWindowExpired -> stringResource(R.string.app_error_edit_window_expired)
+        is AppError.NotDeleted -> stringResource(R.string.app_error_not_deleted)
+        is AppError.Internal -> stringResource(R.string.app_error_internal)
+    }
+}
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     navigator: Navigator,
     currentLogin: String? = null,
     meUserId: String? = null,
+    currentError: AppError? = null,
 ) {
 
     val authBackStack = rememberNavBackStack(Routes.Auth)
@@ -115,6 +176,8 @@ fun MainScreen(
         }
     }
 
+
+
     var bottomSheetRoute by remember { mutableStateOf<Routes?>(null) }
     val scaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = rememberBottomSheetState(
@@ -125,6 +188,22 @@ fun MainScreen(
     val hazeState = rememberHazeState()
 
     val scope = rememberCoroutineScope()
+
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    val errorMessage = getErrorMessage(currentError)
+
+    LaunchedEffect(errorMessage) {
+        scope.launch {
+            errorMessage?.let{ errorMessage ->
+                snackbarHostState
+                    .showSnackbar(
+                        message = errorMessage,
+                        duration = SnackbarDuration.Short
+                    )
+            }
+        }
+    }
 
     BackHandler(
         enabled = selectedTab != MainTab.Feed
@@ -175,6 +254,9 @@ fun MainScreen(
         sheetContentColor = MaterialTheme.colorScheme.onSurface,
         sheetDragHandle = null,
         sheetShadowElevation = 0.dp,
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
         sheetContent = {
             Column(
                 modifier = Modifier
@@ -309,7 +391,7 @@ fun MainScreenPreview() {
     }
     AppTheme {
         MainScreen(
-            navigator = navigator
+            navigator = navigator,
         )
     }
 }

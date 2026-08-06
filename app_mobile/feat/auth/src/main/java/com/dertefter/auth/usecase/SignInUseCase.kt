@@ -1,10 +1,11 @@
 package com.dertefter.auth.usecase
 
 import com.dertefter.data.repository.AuthRepository
+import com.dertefter.data.repository.CrashlyticsRepository
 import javax.inject.Inject
 
 class SignInUseCase @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
 ) {
     suspend operator fun invoke(
         login: String,

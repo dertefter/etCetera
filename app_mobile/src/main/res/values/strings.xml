@@ -1,3 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">etCetera</string>
+    <string name="app_error_network">Network error. Check your connection</string>
+    <string name="app_error_turnstile">CloudFlare verification failed</string>
+    <string name="app_error_api_with_code">Server error (%1$s)</string>
+    <string name="app_error_unexpected">Unexpected error</string>
+    <string name="app_error_unauthorized">Authorization required</string>
+    <string name="app_error_session_not_found">Session not found</string>
+    <string name="app_error_session_expired">Session expired, please login again</string>
+    <string name="app_error_session_revoked">Session revoked</string>
+    <string name="app_error_refresh_token_missing">Refresh token missing</string>
+    <string name="app_error_invalid_credentials">Invalid login or password</string>
+    <string name="app_error_account_banned">Account banned</string>
+    <string name="app_error_account_deleted">Account deleted</string>
+    <string name="app_error_profile_required">Profile creation required</string>
+    <string name="app_error_email_domain_not_allowed">Email domain not allowed</string>
+    <string name="app_error_validation">Validation error</string>
+    <string name="app_error_username_taken">Username is already taken</string>
+    <string name="app_error_invalid_display_name">Invalid display name</string>
+    <string name="app_error_same_password">New password is same as old</string>
+    <string name="app_error_invalid_old_password">Invalid old password</string>
+    <string name="app_error_invalid_password">Password does not meet requirements</string>
+    <string name="app_error_banned_word">Text contains prohibited words</string>
+    <string name="app_error_not_found">Object not found</string>
+    <string name="app_error_already_deleted">Object already deleted</string>
+    <string name="app_error_conflict">Data conflict</string>
+    <string name="app_error_user_blocked">User is blocked</string>
+    <string name="app_error_not_pinned">Post is not pinned</string>
+    <string name="app_error_forbidden">Access forbidden</string>
+    <string name="app_error_pin_not_owned">You do not own this pin</string>
+    <string name="app_error_requires_verification">Verification required</string>
+    <string name="app_error_requires_subscription">Subscription required</string>
+    <string name="app_error_rate_limit">Too many requests. Try again later</string>
+    <string name="app_error_upload">File upload error</string>
+    <string name="app_error_moderation">File failed moderation</string>
+    <string name="app_error_edit_window_expired">Editing window has expired</string>
+    <string name="app_error_not_deleted">Object is not deleted</string>
+    <string name="app_error_internal">Internal server error</string>
 </resources>

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dertefter.data.datasource.local.TokenManager
 import com.dertefter.data.repository.AuthRepository
+import com.dertefter.data.repository.CrashlyticsRepository
 import com.dertefter.data.repository.MeRepository
 import com.dertefter.etcetera.service.TokenRequestService
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,6 +34,7 @@ data class MainUiState(
 class MainViewModel @Inject constructor(
     authRepository: AuthRepository,
     meRepository: MeRepository,
+    crashlyticsRepository: CrashlyticsRepository,
     private val tokenManager: TokenManager,
     @param:ApplicationContext private val context: Context
 ) : ViewModel() {
@@ -43,6 +45,12 @@ class MainViewModel @Inject constructor(
         viewModelScope,
         SharingStarted.Eagerly,
         initialValue = MainUiState(isReady = false)
+    )
+
+    val currentError = crashlyticsRepository.currentError.stateIn(
+        viewModelScope,
+        SharingStarted.Eagerly,
+        initialValue = null
     )
 
     val meUserId: StateFlow<String?> = meRepository.meDto.map { it?.id }.stateIn(

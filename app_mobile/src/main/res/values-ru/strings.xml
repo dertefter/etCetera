@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_error_network">Ошибка сети. Проверьте подключение</string>
+    <string name="app_error_turnstile">Ошибка верификации CloudFlare</string>
+    <string name="app_error_api_with_code">Ошибка сервера (%1$s)</string>
+    <string name="app_error_unexpected">Неожиданная ошибка</string>
+    <string name="app_error_unauthorized">Требуется авторизация</string>
+    <string name="app_error_session_not_found">Сессия не найдена</string>
+    <string name="app_error_session_expired">Сессия истекла, войдите снова</string>
+    <string name="app_error_session_revoked">Сессия отозвана</string>
+    <string name="app_error_refresh_token_missing">Ошибка токена обновления</string>
+    <string name="app_error_invalid_credentials">Неверный логин или пароль</string>
+    <string name="app_error_account_banned">Аккаунт заблокирован</string>
+    <string name="app_error_account_deleted">Аккаунт удален</string>
+    <string name="app_error_profile_required">Необходимо создать профиль</string>
+    <string name="app_error_email_domain_not_allowed">Данный домен почты не разрешен</string>
+    <string name="app_error_validation">Ошибка валидации</string>
+    <string name="app_error_username_taken">Имя пользователя уже занято</string>
+    <string name="app_error_invalid_display_name">Недопустимое отображаемое имя</string>
+    <string name="app_error_same_password">Новый пароль совпадает со старым</string>
+    <string name="app_error_invalid_old_password">Неверный старый пароль</string>
+    <string name="app_error_invalid_password">Пароль не соответствует требованиям</string>
+    <string name="app_error_banned_word">Текст содержит запрещенные слова</string>
+    <string name="app_error_not_found">Объект не найден</string>
+    <string name="app_error_already_deleted">Объект уже удален</string>
+    <string name="app_error_conflict">Конфликт данных</string>
+    <string name="app_error_user_blocked">Пользователь заблокирован</string>
+    <string name="app_error_not_pinned">Запись не закреплена</string>
+    <string name="app_error_forbidden">Доступ запрещен</string>
+    <string name="app_error_pin_not_owned">Этот пин вам не принадлежит</string>
+    <string name="app_error_requires_verification">Требуется верификация</string>
+    <string name="app_error_requires_subscription">Требуется подписка НУКСТА</string>
+    <string name="app_error_rate_limit">Слишком много запросов. Попробуйте позже</string>
+    <string name="app_error_upload">Ошибка загрузки файла</string>
+    <string name="app_error_moderation">Файл не прошел модерацию</string>
+    <string name="app_error_edit_window_expired">Время для редактирования истекло</string>
+    <string name="app_error_not_deleted">Объект не удален</string>
+    <string name="app_error_internal">Внутренняя ошибка сервера</string>
+</resources>

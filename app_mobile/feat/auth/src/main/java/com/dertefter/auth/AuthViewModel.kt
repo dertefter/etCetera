@@ -106,10 +106,8 @@ class AuthViewModel @Inject constructor(
                 turnstileToken = turnstileToken,
             ).onSuccess {
                 Log.d("AUth", "OK")
-            }.onFailure {
-                Log.e("AUth", it.stackTraceToString())
-                _error.value = it.toAppError()
-                Log.e("AUth", _error.value?.message.toString())
+            }.onFailure { e ->
+                _error.value = e.toAppError()
             }
             _isLoading.value = false
         }
