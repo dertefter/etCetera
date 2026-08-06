@@ -1,5 +1,6 @@
 package com.dertefter.etcetera.presentation
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.clickable
@@ -137,12 +138,14 @@ fun MainScreen(
     currentError: AppError? = null,
 ) {
 
+    Log.e("mememe", meUserId.toString())
+
     val authBackStack = rememberNavBackStack(Routes.Auth)
     val feedBackStack = rememberNavBackStack(Routes.Feed)
     val searchBackStack = rememberNavBackStack(Routes.Search)
     val notificationsBackStack = rememberNavBackStack(Routes.Notifications(showBackButton = false))
     val profileBackStack = rememberNavBackStack(
-        if (meUserId != null) Routes.User(meUserId) else Routes.Feed
+        if (meUserId != null) Routes.User(meUserId) else Routes.Auth
     )
 
     var selectedTab by rememberSaveable { mutableStateOf(MainTab.Feed) }
@@ -157,22 +160,27 @@ fun MainScreen(
     }
 
     LaunchedEffect(currentLogin) {
+        feedBackStack.clear()
+        feedBackStack.add(Routes.Feed)
+        searchBackStack.clear()
+        searchBackStack.add(Routes.Search)
+        notificationsBackStack.clear()
+        notificationsBackStack.add(Routes.Notifications(showBackButton = false))
         if (currentLogin == null) {
             authBackStack.clear()
             authBackStack.add(Routes.Auth)
-            feedBackStack.clear()
-            feedBackStack.add(Routes.Feed)
-            notificationsBackStack.clear()
-            notificationsBackStack.add(Routes.Notifications(showBackButton = false))
             profileBackStack.clear()
             profileBackStack.add(Routes.Auth)
         }
     }
 
     LaunchedEffect(meUserId) {
-        if (meUserId != null && currentLogin != null && profileBackStack.lastOrNull() !is Routes.User) {
-            profileBackStack.clear()
-            profileBackStack.add(Routes.User(meUserId, showBackButton = false))
+        if (meUserId != null && currentLogin != null) {
+            val lastRoute = profileBackStack.lastOrNull()
+            if (lastRoute !is Routes.User || lastRoute.userId != meUserId) {
+                profileBackStack.clear()
+                profileBackStack.add(Routes.User(meUserId, showBackButton = false))
+            }
         }
     }
 
