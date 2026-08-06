@@ -277,8 +277,7 @@ fun UserScreen(
     } ?: ""
 
     val currentTabUiState = uiStates[selectedTab]
-    val isRefreshing =
-        userUiState.isLoading || (currentTabUiState is PaginatorUiState.Content && currentTabUiState.prependState.isProgressState())
+    val isRefreshing = userUiState.isLoading
     val pullToRefreshState = rememberPullToRefreshState()
 
     LaunchedEffect(lazyListState) {
@@ -295,29 +294,20 @@ fun UserScreen(
         }
     }
 
-    var pullRefreshing by remember { mutableStateOf(false) }
-
-    LaunchedEffect(isRefreshing) {
-        if (!isRefreshing) {
-            pullRefreshing = false
-        }
-    }
-
     PullToRefreshBox(
         modifier = Modifier
             .fillMaxSize(),
         state = pullToRefreshState,
-        isRefreshing = pullRefreshing,
+        isRefreshing = isRefreshing,
         enabled = true,
         onRefresh = {
-            pullRefreshing = true
             onEvent(Event.OnRefresh(selectedTab))
         },
         indicator = {
             PullToRefreshIndicator(
                 modifier = Modifier.align(Alignment.TopCenter),
                 state = pullToRefreshState,
-                isRefreshing = pullRefreshing,
+                isRefreshing = isRefreshing,
             )
         }
     ) {
