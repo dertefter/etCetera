@@ -285,7 +285,7 @@ fun UserScreen(
         while (true) {
             val visibleItems = lazyListState.layoutInfo.visibleItemsInfo
             val visibleIds = visibleItems.mapNotNull {
-                it.key.toString().takeIf { key -> key.length > 5 }
+                it.key.toString().takeIf { it.startsWith("post_") }?.removePrefix("post_")
             }
             if (visibleIds.isNotEmpty()) {
                 onEvent(Event.OnUpdateStats(visibleIds))

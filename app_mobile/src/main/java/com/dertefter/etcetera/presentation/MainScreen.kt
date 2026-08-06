@@ -137,9 +137,6 @@ fun MainScreen(
     meUserId: String? = null,
     currentError: AppError? = null,
 ) {
-
-    Log.e("mememe", meUserId.toString())
-
     val authBackStack = rememberNavBackStack(Routes.Auth)
     val feedBackStack = rememberNavBackStack(Routes.Feed)
     val searchBackStack = rememberNavBackStack(Routes.Search)

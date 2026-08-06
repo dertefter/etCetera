@@ -69,7 +69,7 @@ private fun LazyListScope.postItems(
     onEvent: (Event) -> Unit,
     isMe: Boolean = false,
 ) {
-    itemsIndexed(items, key = { _, post -> post.id }) { _, post ->
+    itemsIndexed(items, key = { _, post -> "post_${post.id}" }) { _, post ->
         Column(
             Modifier
                 .animateItem()

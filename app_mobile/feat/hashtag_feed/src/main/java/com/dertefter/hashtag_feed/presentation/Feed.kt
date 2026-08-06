@@ -62,7 +62,7 @@ private fun LazyListScope.postItems(
     items: List<PostDto>,
     onEvent: (Event) -> Unit
 ) {
-    itemsIndexed(items, key = { _, post -> post.id }) { _, post ->
+    itemsIndexed(items, key = { _, post -> "post_${post.id}" }) { _, post ->
         Column(Modifier.animateItem()) {
             PostCard(
                 post = post.toUiModel(),

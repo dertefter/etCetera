@@ -60,8 +60,12 @@ fun Feed(
         while (true) {
             delay(Constants.STATS_UPDATE_DELAY_MS.milliseconds)
             val visibleItems = gridState.layoutInfo.visibleItemsInfo
-            val visibleIds = visibleItems.map { it.key.toString() }
-            onEvent(Event.OnUpdateStats(visibleIds))
+            val visibleIds = visibleItems.mapNotNull {
+                it.key.toString().takeIf { it.startsWith("post_") }?.removePrefix("post_")
+            }
+            if (visibleIds.isNotEmpty()) {
+                onEvent(Event.OnUpdateStats(visibleIds))
+            }
         }
     }
 
@@ -123,7 +127,7 @@ private fun PaginatedLazyStaggeredGridScope.postItems(
     items: List<PostDto>,
     onEvent: (Event) -> Unit
 ) {
-    itemsIndexed<Any, PostDto>(items, key = { _, post -> post.id }) { _, post ->
+    itemsIndexed<Any, PostDto>(items, key = { _, post -> "post_${post.id}" }) { _, post ->
         PostCard(
             post = post.toUiModel(),
             modifier = Modifier
