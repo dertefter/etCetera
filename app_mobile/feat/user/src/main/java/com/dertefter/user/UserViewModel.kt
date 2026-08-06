@@ -153,7 +153,7 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    fun updateMe(){
+    private fun updateMe(){
         viewModelScope.launch {
             meRepository.fetchMe()
         }
