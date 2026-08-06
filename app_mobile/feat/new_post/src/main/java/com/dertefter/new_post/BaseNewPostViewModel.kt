@@ -2,6 +2,7 @@ package com.dertefter.new_post
 
 import android.app.Application
 import android.net.Uri
+import android.webkit.MimeTypeMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dertefter.data.dto.feed.PostDto
@@ -64,7 +65,7 @@ abstract class BaseNewPostViewModel(
 
     open fun onEvent(event: Event) {
         when (event) {
-            is Event.OnPhotosSelected -> uploadPhotos(event.uris)
+            is Event.OnMediaSelected -> uploadMedia(event.uris)
             is Event.OnRemoveUpload -> _uploads.update { it.filter { upload -> upload.uri != event.uri } }
             is Event.OnRetryUpload -> retryUpload(event.uri)
             is Event.OnContentChanged -> {
@@ -133,10 +134,11 @@ abstract class BaseNewPostViewModel(
         _isUploadingPost.value = false
     }
 
-    protected fun uploadPhotos(uris: List<Uri>) {
+    protected fun uploadMedia(uris: List<Uri>) {
         uris.forEach { uri ->
             if (_uploads.value.any { it.uri == uri }) return@forEach
-            val newUpload = Upload(UploadStatus.UPLOADING, uri, null)
+            val mimeType = application.contentResolver.getType(uri)
+            val newUpload = Upload(UploadStatus.UPLOADING, uri, mimeType, null)
             _uploads.update { it + newUpload }
             uploadFile(newUpload)
         }
@@ -175,7 +177,9 @@ abstract class BaseNewPostViewModel(
 
     private fun uriToFile(uri: Uri): File {
         val inputStream = application.contentResolver.openInputStream(uri)
-        val file = File(application.cacheDir, "temp_upload_${System.currentTimeMillis()}.jpg")
+        val mimeType = application.contentResolver.getType(uri)
+        val extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType) ?: "bin"
+        val file = File(application.cacheDir, "temp_upload_${System.currentTimeMillis()}.$extension")
         inputStream?.use { input -> file.outputStream().use { output -> input.copyTo(output) } }
         return file
     }

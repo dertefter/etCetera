@@ -108,11 +108,11 @@ fun NewPostScreen(
         targetValue = if (scrollBehavior.state.contentOffset < 0f) 0f else 1f
     )
 
-    val photoPickerLauncher = rememberLauncherForActivityResult(
+    val mediaPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickMultipleVisualMedia(),
         onResult = { uris ->
             if (uris.isNotEmpty()) {
-                onEvent(Event.OnPhotosSelected(uris))
+                onEvent(Event.OnMediaSelected(uris))
             }
         }
     )
@@ -158,8 +158,8 @@ fun NewPostScreen(
 
                     FilledTonalIconButton(
                         onClick = {
-                            photoPickerLauncher.launch(
-                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                            mediaPickerLauncher.launch(
+                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo)
                             )
                         },
                         shape = MaterialTheme.shapes.medium,

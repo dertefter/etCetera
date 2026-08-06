@@ -16,10 +16,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import com.dertefter.data.dto.upload.AttachmentUploadResponseDto
 import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.components.post.Attachment
@@ -46,26 +45,24 @@ fun UploadCard(
         contentAlignment = Alignment.Center
     ){
 
-        if (upload.attachment == null) {
-            AsyncImage(
-                model = upload.uri,
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
-            )
-        }
-
-        upload.attachment?.let{ attachment ->
-            Attachment(
-                modifier = Modifier.fillMaxSize(),
-                attachment = AttachmentUiModel(
-                    id = attachment.id,
-                    type = "",
-                    url = attachment.url,
-                    mimeType = attachment.mimeType
+        Attachment(
+            modifier = Modifier.fillMaxSize(),
+            attachment = if (upload.attachment != null) {
+                AttachmentUiModel(
+                    id = upload.attachment.id,
+                    type = if (upload.attachment.mimeType?.startsWith("video") == true) "video" else "image",
+                    url = upload.attachment.url,
+                    mimeType = upload.attachment.mimeType
                 )
-            )
-        }
+            } else {
+                AttachmentUiModel(
+                    id = "local",
+                    type = if (upload.mimeType?.startsWith("video") == true) "video" else "image",
+                    url = upload.uri.toString(),
+                    mimeType = upload.mimeType
+                )
+            }
+        )
 
         if (upload.uploadStatus == UploadStatus.UPLOADING || upload.uploadStatus == UploadStatus.ERROR) {
             Box(
@@ -125,6 +122,7 @@ fun UploadCardPreview() {
             upload = Upload(
                 uploadStatus = UploadStatus.SUCCESS,
                 uri = Uri.EMPTY,
+                mimeType = "image/jpeg",
                 attachment = AttachmentUploadResponseDto(
                     id = "1",
                     url = "https://picsum.photos/400/300",
@@ -143,6 +141,7 @@ fun UploadCardUploadingPreview() {
             upload = Upload(
                 uploadStatus = UploadStatus.UPLOADING,
                 uri = Uri.EMPTY,
+                mimeType = "image/jpeg",
                 attachment = null
             )
         )
@@ -157,6 +156,7 @@ fun UploadCardErrorPreview() {
             upload = Upload(
                 uploadStatus = UploadStatus.ERROR,
                 uri = Uri.EMPTY,
+                mimeType = "image/jpeg",
                 attachment = null
             )
         )

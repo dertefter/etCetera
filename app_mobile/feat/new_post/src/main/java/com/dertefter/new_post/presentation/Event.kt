@@ -3,7 +3,7 @@ package com.dertefter.new_post.presentation
 import android.net.Uri
 
 sealed interface Event {
-    data class OnPhotosSelected(val uris: List<Uri>) : Event
+    data class OnMediaSelected(val uris: List<Uri>) : Event
 
     data class OnRemoveUpload(val uri: Uri) : Event
 

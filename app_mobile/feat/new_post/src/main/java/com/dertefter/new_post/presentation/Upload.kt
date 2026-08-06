@@ -6,5 +6,6 @@ import com.dertefter.data.dto.upload.AttachmentUploadResponseDto
 data class Upload(
     val uploadStatus: UploadStatus,
     val uri: Uri,
+    val mimeType: String?,
     val attachment: AttachmentUploadResponseDto?,
 )
