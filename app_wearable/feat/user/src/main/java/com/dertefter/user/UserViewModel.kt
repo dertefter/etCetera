@@ -109,24 +109,27 @@ class UserViewModel @Inject constructor(
         initialValue = UserUiState()
     )
 
+    private val _currentPinnedPostId = MutableStateFlow<String?>(null)
+
     private var initJob: Job? = null
 
     init {
         viewModelScope.launch {
             _userId.flatMapLatest { id ->
                 if (id == null) flowOf(null)
-                else userRepository.getUser(id).map { user ->
-                    user?.let { id to it.pinnedPostId }
-                }.distinctUntilChanged()
-            }.collectLatest { data ->
+                else userRepository.getUser(id).map { it?.pinnedPostId }
+            }.collect { _currentPinnedPostId.value = it }
+        }
+
+        viewModelScope.launch {
+            _userId.collectLatest { userId ->
                 _paginators.value.values.forEach { it.release() }
                 _paginators.value = emptyMap()
-                if (data == null) return@collectLatest
+                if (userId == null) return@collectLatest
 
-                val (userId, pinnedPostId) = data
                 val map = tabs.associateWith { tab ->
                     when (tab) {
-                        FeedTab.POSTS -> feedRepository.getPostsPaginator(userId, pinnedPostId = pinnedPostId)
+                        FeedTab.POSTS -> feedRepository.getPostsPaginator(userId, pinnedPostId = { _currentPinnedPostId.value })
                         FeedTab.LIKES -> feedRepository.getLikedPostsPaginator(userId)
                     }
                 }
@@ -248,9 +251,9 @@ class UserViewModel @Inject constructor(
             }
 
             is Event.OnRefresh -> {
-                update()
-                updateMe()
                 viewModelScope.launch {
+                    update()
+                    updateMe()
                     val paginator = getPaginator(event.tab)
                     paginator?.refreshAll()
                     paginator?.jump(CursorBookmark(prev = null, self = "initial", next = null))
@@ -362,19 +365,19 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    private fun update() {
+    private suspend fun update() {
         val userId = _userId.value ?: return
-        viewModelScope.launch {
-            if (userUiState.value.userDto == null) {
-                _isLoading.value = true
-            }
-            _error.value = null
-            userRepository.updateUser(userId).onFailure {
-                Log.e("UserViewModel", it.stackTraceToString())
-                _error.value = it.toAppError()
-            }
-            _isLoading.value = false
+        if (userUiState.value.userDto == null) {
+            _isLoading.value = true
         }
+        _error.value = null
+        userRepository.updateUser(userId).onSuccess { user ->
+            _currentPinnedPostId.value = user.pinnedPostId
+        }.onFailure {
+            Log.e("UserViewModel", it.stackTraceToString())
+            _error.value = it.toAppError()
+        }
+        _isLoading.value = false
     }
 
     override fun onCleared() {
