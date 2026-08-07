@@ -37,4 +37,11 @@
         <item quantity="other">%d ответа</item>
     </plurals>
 
+    <string name="design_date_now">сейчас</string>
+    <string name="design_date_minutes_short">%1$d мин.</string>
+    <string name="design_date_hours_short">%1$d ч.</string>
+    <string name="design_date_days_short">%1$d дн.</string>
+    <string name="design_date_weeks_short">%1$d нед.</string>
+    <string name="design_date_edited">(ред.)</string>
+
 </resources>

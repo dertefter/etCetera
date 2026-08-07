@@ -1,9 +1,10 @@
 package com.dertefter.design.components.post
 
+import com.dertefter.design.common.DateParser
 import com.dertefter.design.components.poll.PollUiModel
 import java.time.Duration
 import java.time.Instant
-import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZoneId
 
 data class PostUiModel(
@@ -26,35 +27,22 @@ data class PostUiModel(
     val editedAt: String?,
     val originalPost: OriginalPostUiModel?
 ) {
-    fun getCreatedAtDate(): LocalDate? {
-        return try {
-            Instant.parse(createdAt)
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate()
-        } catch (_: Exception) {
-            null
-        }
+    fun getCreatedAtDate(): LocalDateTime? {
+        return DateParser.parseToInstant(createdAt)
+            ?.atZone(ZoneId.systemDefault())
+            ?.toLocalDateTime()
     }
 
     fun canEdit(): Boolean {
         if (!isOwner) return false
-
-        return try {
-            val created = Instant.parse(createdAt)
-            Instant.now().isBefore(created.plus(Duration.ofHours(48)))
-        } catch (_: Exception) {
-            false
-        }
+        val created = DateParser.parseToInstant(createdAt) ?: return false
+        return Instant.now().isBefore(created.plus(Duration.ofHours(48)))
     }
 
-    fun getEditedAtDate(): LocalDate? {
-        return try {
-            Instant.parse(editedAt)
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate()
-        } catch (_: Exception) {
-            null
-        }
+    fun getEditedAtDate(): LocalDateTime? {
+        return DateParser.parseToInstant(editedAt)
+            ?.atZone(ZoneId.systemDefault())
+            ?.toLocalDateTime()
     }
 }
 
@@ -101,4 +89,16 @@ data class OriginalPostUiModel(
     val createdAt: String,
     val editedAt: String?,
     val isDeleted: Boolean
-)
+) {
+    fun getCreatedAtDate(): LocalDateTime? {
+        return DateParser.parseToInstant(createdAt)
+            ?.atZone(ZoneId.systemDefault())
+            ?.toLocalDateTime()
+    }
+
+    fun getEditedAtDate(): LocalDateTime? {
+        return DateParser.parseToInstant(editedAt)
+            ?.atZone(ZoneId.systemDefault())
+            ?.toLocalDateTime()
+    }
+}

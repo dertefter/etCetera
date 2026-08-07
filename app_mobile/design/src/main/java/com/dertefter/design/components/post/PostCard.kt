@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -34,6 +33,7 @@ import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dertefter.design.R
@@ -86,36 +86,41 @@ fun PostCard(
                 modifier = Modifier
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large),
+                EmojiAvatar(
+                    emoji = post.author.avatar,
+                    onClick = { onUserClick(post.author.id) }
+                )
+                Column(
                     modifier = Modifier
+                        .weight(1f)
+                        .clip(MaterialTheme.shapes.medium)
                         .clickable(
                             onClick = { onUserClick(post.author.id) })
-                ){
-                    EmojiAvatar(emoji = post.author.avatar)
-                    Column()
-                    {
-                        DisplayName(
-                            name = post.author.displayName,
-                            verified = post.author.verified,
-                            hasNuksta = post.author.hasNuksta,
-                            pin = post.author.pin
-                        )
-                        Text(
-                            text = "@${post.author.username}",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
+                ) {
+                    DisplayName(
+                        name = post.author.displayName,
+                        verified = post.author.verified,
+                        hasNuksta = post.author.hasNuksta,
+                        pin = post.author.pin,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Text(
+                        text = "@${post.author.username}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
                 }
 
-
-                Spacer(
-                    modifier = Modifier.weight(1f)
+                PrettyDate(
+                    createdDate = post.getCreatedAtDate(),
+                    editedDate = post.getEditedAtDate(),
+                    modifier = Modifier
                 )
+
 
                 AnimatedVisibility(
                     visible = post.isPinned
@@ -341,7 +346,7 @@ fun PostCardPreview() {
                 content = "#супермиликотики",
                 spans = emptyList(),
                 author = AuthorUiModel(
-                    id = "author1", username = "johndoe", displayName = "John Doe", avatar = "😐", hasNuksta = true, verified = true, pin = null
+                    id = "author1", username = "johndoeуууууууууууууууууууууууууууууууууууууууу", displayName = "John Doeуууууууууууууу", avatar = "😐", hasNuksta = true, verified = true, pin = null
                 ),
                 attachments = listOf(
                     AttachmentUiModel(
@@ -358,7 +363,7 @@ fun PostCardPreview() {
                 dominantEmoji = "🦎",
                 isPinned = true,
                 isOwner = false,
-                createdAt = "2024-08-05T12:00:00Z",
+                createdAt = "2026-08-05T12:00:00Z",
                 editedAt = null,
                 originalPost = null
             ), isOnMyWall = true, onHashtagClick = {},

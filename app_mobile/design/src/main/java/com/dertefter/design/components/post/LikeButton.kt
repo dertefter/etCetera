@@ -36,13 +36,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.text.font.FontWeight
 import com.dertefter.design.R
 import com.dertefter.design.common.PrettifyInt
 import com.dertefter.design.icons.Icons
@@ -97,6 +99,12 @@ fun LikeButton(
 
     Row(
         modifier = modifier
+            .shadow(
+                elevation = 20.dp,
+                shape = CircleShape,
+                ambientColor = MaterialTheme.customColors.likeContainerColor,
+                spotColor = Color.Transparent
+            )
             .clip(CircleShape)
             .clickable(
                 onClick = onClick,

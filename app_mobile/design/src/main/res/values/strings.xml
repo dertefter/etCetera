@@ -33,4 +33,11 @@
         <item quantity="other">%d answers</item>
     </plurals>
 
+    <string name="design_date_now">now</string>
+    <string name="design_date_minutes_short">%1$d m.</string>
+    <string name="design_date_hours_short">%1$d h.</string>
+    <string name="design_date_days_short">%1$d d.</string>
+    <string name="design_date_weeks_short">%1$d w.</string>
+    <string name="design_date_edited">(ed.)</string>
+
 </resources>
