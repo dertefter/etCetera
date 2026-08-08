@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_title">Настройки</string>
+    <string name="settings_account">Аккаунт</string>
+    <string name="settings_about">О приложении</string>
+    <string name="settings_billing">Оплата</string>
+    <string name="settings_security">Безопасность</string>
+    <string name="settings_privacy">Приватность</string>
+</resources>
