@@ -52,13 +52,9 @@ fun TabUI(
 ) {
     val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
-    val showFadingEdges = activeBackStack.lastOrNull() !is Routes.AttachmentsViewer
-
     val hideNav = activeBackStack.lastOrNull() is Routes.AttachmentsViewer || activeBackStack.lastOrNull() is Routes.Auth
 
-    val topLeftCornerRadius by animateDpAsState(
-        if (hideNav) 0.dp else MaterialTheme.rounding.largeIncreased
-    )
+    val topLeftCornerRadius = MaterialTheme.rounding.largeIncreased
 
     TabUIStateless(
         modifier = modifier,
@@ -72,7 +68,7 @@ fun TabUI(
                 onBack = onBack,
                 modifier = Modifier
                     .then(
-                        if (showFadingEdges) {
+                        if (!hideNav) {
                             Modifier.verticalFadingEdges(
                                 fillType = FadingEdgesFillType.FadeColor(
                                     color = MaterialTheme.colorScheme.background
@@ -83,8 +79,13 @@ fun TabUI(
                         } else Modifier
                     )
                     .clipToBounds()
-                    .statusBarsPadding()
-                    .clip(RoundedCornerShape(topStart = topLeftCornerRadius))
+                    .then(
+                        if (!hideNav){
+                            Modifier
+                                .statusBarsPadding()
+                                .clip(RoundedCornerShape(topStart = topLeftCornerRadius))
+                        } else Modifier
+                    )
                     .fillMaxSize()
             )
         }
