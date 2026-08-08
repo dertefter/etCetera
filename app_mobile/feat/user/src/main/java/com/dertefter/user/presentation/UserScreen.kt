@@ -319,7 +319,7 @@ fun UserScreen(
                 TopAppBar(
                     scrollBehavior = scrollBehavior,
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = Color.Transparent,
+                        containerColor = MaterialTheme.colorScheme.background,
                         scrolledContainerColor = appBarContainerColor
                     ),
                     navigationIcon = {
@@ -374,7 +374,7 @@ fun UserScreen(
                                 icon = Icons.Settings,
                                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
                                 contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                                onClick = {},
+                                onClick = { onEvent(Event.OnNavigateToSettings) },
                                 contentDescription = stringResource(R.string.user_settings)
                             )
                         }

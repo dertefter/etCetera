@@ -186,6 +186,10 @@ class UserViewModel @Inject constructor(
                 navigator.navigate(Routes.Auth)
             }
 
+            is Event.OnNavigateToSettings -> {
+                navigator.navigate(Routes.Settings)
+            }
+
             is Event.OnSwitchAccount -> {
                 viewModelScope.launch {
                     authRepository.switchToLogin(event.login)

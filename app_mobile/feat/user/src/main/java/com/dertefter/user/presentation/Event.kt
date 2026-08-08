@@ -48,6 +48,8 @@ sealed interface Event {
 
     data object OnBannerEdit : Event
 
+    data object OnNavigateToSettings : Event
+
     data class OnOpenHashtag(val name: String) : Event
 
     data class OnUnfollow(val userId: String) : Event
