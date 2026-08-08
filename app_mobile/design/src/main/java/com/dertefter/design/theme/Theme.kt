@@ -3,6 +3,7 @@ package com.dertefter.design.theme
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.MaterialExpressiveTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MotionScheme
 import androidx.compose.material3.darkColorScheme
@@ -138,25 +139,6 @@ fun AppTheme(
         }
     }
 
-    val dynamicThemeState = if (seedColor == null) {
-        rememberDynamicMaterialThemeState(
-            isDark = darkTheme,
-            style = paletteStyle,
-            specVersion = specVersion,
-            seedColor = colorScheme.primary,
-            primary = colorScheme.primary,
-            secondary = colorScheme.secondary,
-            tertiary = colorScheme.tertiary,
-        )
-    } else {
-        rememberDynamicMaterialThemeState(
-            isDark = darkTheme,
-            style = paletteStyle,
-            specVersion = specVersion,
-            seedColor = Color(seedColor),
-        )
-    }
-
     CompositionLocalProvider(
         LocalSpacing provides Spacing(),
         LocalRounding provides Rounding(),
@@ -167,11 +149,10 @@ fun AppTheme(
         LocalPaletteStyle provides paletteStyle,
         LocalSpecVersion provides specVersion
     ) {
-        DynamicMaterialExpressiveTheme(
-            state = dynamicThemeState,
+        MaterialExpressiveTheme (
             motionScheme = MotionScheme.expressive(),
-            animate = true,
             typography = Typography,
+            colorScheme = colorScheme
         ) {
             val likeColor =
                 Color(0xFFF5006A).harmonize(MaterialTheme.colorScheme.primary, matchSaturation = true)
