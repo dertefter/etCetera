@@ -8,6 +8,9 @@ import com.dertefter.design.R
 @Suppress("unused")
 object Icons {
 
+    val Security: ImageVector
+        @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_security)
+
     val AccountBalanceWallet: ImageVector
         @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_account_balance_wallet)
 
