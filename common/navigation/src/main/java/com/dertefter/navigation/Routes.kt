@@ -12,6 +12,8 @@ sealed interface Routes : NavKey {
     @Serializable
     data object Search : Routes
 
+    @Serializable
+    data object Settings : Routes
 
     @Serializable
     data object CrashReports : Routes
@@ -45,7 +47,8 @@ sealed interface Routes : NavKey {
     data class NewComment(val postId: String) : Routes
 
     @Serializable
-    data class NewCommentReply(val postId: String, val commentId: String, val userId: String) : Routes
+    data class NewCommentReply(val postId: String, val commentId: String, val userId: String) :
+        Routes
 
     @Serializable
     data class Comments(val postId: String) : Routes
@@ -54,18 +57,18 @@ sealed interface Routes : NavKey {
     data class Post(val postId: String) : Routes
 
     @Serializable
-    data class AttachmentsViewer(val attachments: List<AttachmentNavigationModel>, val viewPosition: Int = 0) : Routes
+    data class AttachmentsViewer(
+        val attachments: List<AttachmentNavigationModel>, val viewPosition: Int = 0
+    ) : Routes
 
     @Serializable
     data class User(
-        val userId: String,
-        val showBackButton: Boolean = true
+        val userId: String, val showBackButton: Boolean = true
     ) : Routes
 
     @Serializable
     data class Followers(
-        val userId: String,
-        val startTabIsFollowing: Boolean = false
+        val userId: String, val startTabIsFollowing: Boolean = false
     ) : Routes
 
     @Serializable
