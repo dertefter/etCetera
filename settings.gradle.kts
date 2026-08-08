@@ -63,11 +63,14 @@ include(":app_mobile:feat:post")
 include(":app_mobile:feat:search")
 include(":app_mobile:feat:hashtag_feed")
 include(":app_mobile:feat:attachment_viewer")
+include(":app_mobile:feat:settings")
 
 
 //wearable
 include(":app_wearable")
+
 include(":app_wearable:design")
+
 include(":app_wearable:feat:feed")
 include(":app_wearable:feat:user")
 include(":app_wearable:feat:followers")

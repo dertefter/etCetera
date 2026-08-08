@@ -42,6 +42,7 @@ import com.dertefter.new_post.EditPostRoute
 import com.dertefter.notifications.NotificationsRoute
 import com.dertefter.post.PostRoute
 import com.dertefter.search.SearchRoute
+import com.dertefter.settings.SettingsRoute
 import com.dertefter.user.UserRoute
 
 @Composable
@@ -128,6 +129,7 @@ fun AppNavHost(
             entry<Routes.Post> { RouteContent(it) }
             entry<Routes.HashtagFeed> { RouteContent(it) }
             entry<Routes.AttachmentsViewer> { RouteContent(it) }
+            entry<Routes.Settings> { RouteContent(it) }
         }
     )
 }
@@ -157,5 +159,6 @@ fun RouteContent(route: Routes) {
         is Routes.Post -> PostRoute(route.postId)
         is Routes.Search -> SearchRoute()
         is Routes.HashtagFeed -> HashtagFeedRoute(route.hashtagName)
+        is Routes.Settings -> SettingsRoute()
     }
 }
