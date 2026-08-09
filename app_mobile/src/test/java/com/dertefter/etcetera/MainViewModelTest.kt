@@ -1,13 +1,18 @@
 package com.dertefter.etcetera
 
+import android.content.Context
+import com.dertefter.data.datasource.local.TokenManager
 import com.dertefter.data.repository.AuthRepository
-import com.dertefter.etcetera.presentation.MainScreenState
+import com.dertefter.data.repository.CrashlyticsRepository
+import com.dertefter.data.repository.MeRepository
+import com.dertefter.data.dto.me.MeDto
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -21,8 +26,10 @@ import org.junit.Test
 class MainViewModelTest {
 
     private val authRepository: AuthRepository = mockk()
-    private val tokenManager: com.dertefter.data.datasource.local.TokenManager = mockk()
-    private val context: android.content.Context = mockk()
+    private val meRepository: MeRepository = mockk()
+    private val crashlyticsRepository: CrashlyticsRepository = mockk()
+    private val tokenManager: TokenManager = mockk()
+    private val context: Context = mockk(relaxed = true)
     private val testDispatcher = StandardTestDispatcher()
 
     private lateinit var viewModel: MainViewModel
@@ -30,7 +37,16 @@ class MainViewModelTest {
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
-        every { authRepository.isAuthorized } returns MutableStateFlow(false)
+        
+        // Default mocks for init block
+        every { authRepository.currentLogin } returns flowOf(null)
+        every { crashlyticsRepository.currentError } returns flowOf(null)
+        every { meRepository.meDto } returns flowOf(null)
+        coEvery { meRepository.fetchMe() } returns mockk()
+        
+        // Mock tokenManager for refreshToken and accessToken flows
+        every { tokenManager.getRefreshTokenForLogin(any()) } returns flowOf(null)
+        every { tokenManager.getAccessTokenForLogin(any()) } returns flowOf(null)
     }
 
     @After
@@ -39,28 +55,39 @@ class MainViewModelTest {
     }
 
     @Test
-    fun `mainScreenState updates when authorization status changes`() = runTest {
+    fun `uiState updates when currentLogin changes`() = runTest {
         // Given
-        val isAuthorizedFlow = MutableStateFlow(false)
-        every { authRepository.isAuthorized } returns isAuthorizedFlow
+        val currentLoginFlow = MutableStateFlow<String?>(null)
+        every { authRepository.currentLogin } returns currentLoginFlow
         
-        viewModel = MainViewModel(authRepository, tokenManager, context)
+        viewModel = MainViewModel(authRepository, meRepository, crashlyticsRepository, tokenManager, context)
 
-        // Then: Initial state should be null (loading)
-        assertEquals(MainScreenState(isAuthorized = null), viewModel.mainScreenState.value)
+        // Then: Initial state should be isReady = false
+        assertEquals(MainUiState(isReady = false, currentLogin = null), viewModel.uiState.value)
 
-        // When: Authorization status changes
-        // The stateIn will collect from authRepository.isAuthorized
-        // Since we provided isAuthorizedFlow, it will eventually emit false
+        // When: currentLogin updates
+        currentLoginFlow.value = "test_user"
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Then: uiState should be updated
+        assertEquals(MainUiState(isReady = true, currentLogin = "test_user"), viewModel.uiState.value)
+    }
+
+    @Test
+    fun `meUserId updates when meRepository meDto changes`() = runTest {
+        // Given
+        val meDtoFlow = MutableStateFlow<MeDto?>(null)
+        every { meRepository.meDto } returns meDtoFlow
         
-        val firstState = viewModel.mainScreenState.first { it.isAuthorized != null }
-        assertEquals(MainScreenState(isAuthorized = false), firstState)
+        viewModel = MainViewModel(authRepository, meRepository, crashlyticsRepository, tokenManager, context)
 
-        // When: Authorization status changes to true
-        isAuthorizedFlow.value = true
+        // When: meDto updates
+        val mockMeDto: MeDto = mockk()
+        every { mockMeDto.id } returns "user_123"
+        meDtoFlow.value = mockMeDto
+        testDispatcher.scheduler.advanceUntilIdle()
 
-        // Then: State should update
-        val updatedState = viewModel.mainScreenState.first { it.isAuthorized == true }
-        assertEquals(MainScreenState(isAuthorized = true), updatedState)
+        // Then: meUserId should be updated
+        assertEquals("user_123", viewModel.meUserId.value)
     }
 }
