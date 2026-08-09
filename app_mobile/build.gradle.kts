@@ -75,7 +75,6 @@ dependencies {
     implementation(project(":common:navigation"))
 
     implementation(project(":app_mobile:design"))
-
     implementation(project(":app_mobile:feat:auth"))
     implementation(project(":app_mobile:feat:feed"))
     implementation(project(":app_mobile:feat:comments"))
@@ -91,9 +90,7 @@ dependencies {
     implementation(project(":app_mobile:feat:hashtag_feed"))
     implementation(project(":app_mobile:feat:settings"))
 
-    implementation(libs.core.ktx)
     implementation(libs.core.splashscreen)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.activity.compose)
     implementation(libs.appcompat)
     implementation(platform(libs.compose.bom.alpha))
@@ -101,32 +98,21 @@ dependencies {
     implementation(libs.compose.ui.graphics)
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.compose.material3)
-    implementation(libs.oss.licenses.droibit)
+    runtimeOnly(libs.oss.licenses.droibit)
     implementation(libs.hilt.android)
     implementation(libs.play.services.wearable)
     ksp(libs.hilt.compiler)
-
-    implementation(libs.hilt.navigation.compose)
     implementation(libs.navigation.compose)
-    implementation(libs.navigation3.runtime)
     implementation(libs.navigation3.ui)
     implementation(libs.lifecycle.viewmodel.navigation3)
-    implementation(libs.androidx.compose.adaptive)
-    implementation(libs.androidx.compose.adaptive.layout)
-    implementation(libs.androidx.compose.adaptive.navigation)
-
-    implementation(libs.androidx.glance.appwidget)
-    implementation(libs.androidx.glance.appwidget.preview)
-    implementation(libs.androidx.glance.preview)
-    implementation(libs.androidx.glance.material3)
-
+    runtimeOnly(libs.androidx.glance.appwidget)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.material.kolor)
-    implementation(libs.coil)
     implementation(libs.composefadingedges)
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
     implementation(libs.haze)
     implementation(libs.haze.blur)
+    implementation(libs.haze.blur.materials)
 }

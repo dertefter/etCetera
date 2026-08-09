@@ -38,30 +38,18 @@ android {
 }
 
 dependencies {
-    implementation(libs.core.ktx)
-    implementation(libs.hilt.android)
+    api(libs.hilt.android)
     implementation(libs.datastore.preferences)
-    implementation(libs.androidx.datastore.core)
-    implementation(libs.encryptedprefs)
+    api(libs.androidx.datastore.core)
     ksp(libs.hilt.compiler)
-
-    implementation(libs.room.runtime)
-    implementation(libs.room.ktx)
-    implementation(libs.room.paging)
+    api(libs.room.runtime)
     ksp(libs.room.compiler)
-
-    implementation(libs.retrofit)
+    api(libs.retrofit)
     implementation(libs.converter.gson)
-    implementation(libs.okhttp)
+    api(libs.okhttp)
     implementation(libs.logging.interceptor)
-    implementation(libs.jsoup)
-    implementation(libs.okhttp.java.net.cookiejar)
-    implementation(libs.paging.runtime)
     implementation(libs.play.services.wearable)
-
-    implementation(libs.kotlinx.serialization.json)
-
-    implementation(platform(libs.jamal.wia.paginator.bom))
-    implementation(libs.paginator.offset)
-    implementation(libs.paginator.cursor)
+    api(libs.kotlinx.serialization.json)
+    api(platform(libs.jamal.wia.paginator.bom))
+    api(libs.paginator.cursor)
 }

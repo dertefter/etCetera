@@ -38,13 +38,9 @@ android {
 
 dependencies {
 
-    implementation(project(":common:data"))
-    implementation(project(":common:navigation"))
+    api(project(":common:data"))
+    api(project(":app_mobile:design"))
 
-    implementation(project(":app_mobile:design"))
-
-
-    implementation(libs.core.ktx)
     implementation(platform(libs.compose.bom.alpha))
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.graphics)
@@ -53,9 +49,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
-    implementation(libs.hilt.navigation.compose)
     implementation(libs.hilt.lifecycle.viewmodel.compose)
     debugImplementation(libs.compose.ui.tooling)
-    debugImplementation(libs.compose.ui.test.manifest)
+    debugRuntimeOnly(libs.compose.ui.test.manifest)
 
 }

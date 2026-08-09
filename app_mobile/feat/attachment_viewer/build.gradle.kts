@@ -38,29 +38,17 @@ android {
 
 dependencies {
 
-    implementation(project(":common:data"))
-    implementation(project(":common:navigation"))
+    api(project(":common:navigation"))
+    api(project(":app_mobile:design"))
 
-    implementation(project(":app_mobile:design"))
-
-    implementation(libs.core.ktx)
     implementation(platform(libs.compose.bom.alpha))
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.graphics)
-    implementation(libs.compose.ui.tooling.preview)
     implementation(libs.compose.material3)
-    implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
-    implementation(libs.hilt.navigation.compose)
     implementation(libs.hilt.lifecycle.viewmodel.compose)
     debugImplementation(libs.compose.ui.tooling)
-    debugImplementation(libs.compose.ui.test.manifest)
-    implementation(libs.coil.compose)
-    implementation(libs.coil)
-    implementation(libs.material.kolor)
-    implementation(libs.lightspark.compose.qr.code)
-    implementation(libs.zoomable)
+    debugRuntimeOnly(libs.compose.ui.test.manifest)
     implementation(libs.haze)
-    implementation(libs.haze.blur)
 }

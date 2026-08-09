@@ -38,32 +38,21 @@ android {
 
 dependencies {
 
-    implementation(project(":common:data"))
-    implementation(project(":common:navigation"))
+    api(project(":common:data"))
+    api(project(":common:navigation"))
 
-    implementation(project(":app_mobile:design"))
+    api(project(":app_mobile:design"))
 
-    implementation(libs.core.ktx)
     implementation(platform(libs.compose.bom.alpha))
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.graphics)
-    implementation(libs.compose.ui.tooling.preview)
     implementation(libs.compose.material3)
     implementation(libs.androidx.lifecycle.runtime.compose)
-    implementation(libs.androidx.media3.exoplayer)
-    implementation(libs.androidx.media3.ui)
-    implementation(libs.androidx.media3.ui.compose)
-    implementation(libs.coil.compose)
+    runtimeOnly(libs.androidx.media3.exoplayer)
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
-    implementation(libs.hilt.navigation.compose)
     implementation(libs.hilt.lifecycle.viewmodel.compose)
     implementation(platform(libs.jamal.wia.paginator.bom))
     debugImplementation(libs.compose.ui.tooling)
-    debugImplementation(libs.compose.ui.test.manifest)
-
-    testImplementation(libs.junit)
-    testImplementation(libs.mockk)
-    testImplementation(libs.kotlinx.coroutines.test)
-
+    debugRuntimeOnly(libs.compose.ui.test.manifest)
 }
