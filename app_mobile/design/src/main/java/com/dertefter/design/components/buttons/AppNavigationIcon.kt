@@ -1,5 +1,6 @@
 package com.dertefter.design.components.buttons
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,10 +19,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.dertefter.design.R
 import com.dertefter.design.icons.Icons
+import dev.chrisbanes.haze.HazeInput
 import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.blur.HazeBlurDefaults
-import dev.chrisbanes.haze.blur.blurEffect
-import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.blur.hazeBlur
+import dev.chrisbanes.haze.blur.materials.HazeMaterials
 
 
 @Composable
@@ -35,10 +36,8 @@ fun AppNavigationIcon(
     hazeState: HazeState? = null
 ){
 
-    val ultraThin = HazeBlurDefaults.style(
-        backgroundColor = containerColor,
-        blurRadius = 24.dp,
-        noiseFactor = 0.15f,
+    val hazeStyle = HazeMaterials.ultraThin(
+        containerColor = containerColor
     )
 
     Box(
@@ -52,11 +51,17 @@ fun AppNavigationIcon(
 
         Box(
             modifier = Modifier
-                .hazeEffect(state = hazeState) {
-                    blurEffect {
-                        style = ultraThin
+                .then(
+                    if (hazeState != null) {
+                        Modifier.hazeBlur(
+                            input = HazeInput.Sources(hazeState),
+                            style = hazeStyle
+                        )
+                    } else {
+                        Modifier
+                            .background(containerColor)
                     }
-                }
+                )
                 .fillMaxSize()
         )
 
