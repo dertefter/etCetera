@@ -1,6 +1,5 @@
 package com.dertefter.etcetera.presentation
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.clickable
@@ -37,28 +36,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.rememberNavBackStack
-import androidx.compose.ui.res.stringResource
 import com.dertefter.comments.CommentsRoute
 import com.dertefter.data.common.AppError
-import com.dertefter.etcetera.R
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.isFold
 import com.dertefter.design.theme.spacing
+import com.dertefter.etcetera.R
 import com.dertefter.navigation.NavigationAction
 import com.dertefter.navigation.Navigator
 import com.dertefter.navigation.Routes
+import com.dertefter.new_post.EditPostRoute
 import com.dertefter.new_post.NewCommentReplyRoute
 import com.dertefter.new_post.NewCommentRoute
 import com.dertefter.new_post.NewPostRoute
 import com.dertefter.new_post.RepostRoute
-import com.dertefter.new_post.EditPostRoute
-import dev.chrisbanes.haze.blur.HazeBlurDefaults
-import dev.chrisbanes.haze.blur.blurEffect
-import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.HazeInput
+import dev.chrisbanes.haze.blur.hazeBlur
+import dev.chrisbanes.haze.blur.materials.HazeMaterials
 import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
@@ -231,11 +230,11 @@ fun MainScreen(
         animationSpec = MaterialTheme.motionScheme.slowEffectsSpec()
     )
 
-    val hazeStyle = HazeBlurDefaults.style(
-        backgroundColor = MaterialTheme.colorScheme.surfaceContainer,
-        blurRadius = blurRadius,
-        noiseFactor = 0.6f,
-    )
+    val hazeStyle = HazeMaterials.ultraThin(
+        containerColor = MaterialTheme.colorScheme.surfaceContainer
+    ).then {
+        blurRadius(blurRadius)
+    }
 
     LaunchedEffect(bottomSheetRoute) {
         if (bottomSheetRoute != null) {
@@ -268,11 +267,10 @@ fun MainScreen(
                     .statusBarsPadding()
                     .fillMaxSize()
                     .clip(BottomSheetDefaults.ExpandedShape)
-                    .hazeEffect(state = hazeState) {
-                        blurEffect {
-                            style = hazeStyle
-                        }
-                    },
+                    .hazeBlur(
+                        input = HazeInput.Sources(hazeState),
+                        style = hazeStyle
+                    ),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
             ) {
