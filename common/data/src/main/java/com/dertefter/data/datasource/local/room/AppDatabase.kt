@@ -34,7 +34,7 @@ import com.dertefter.data.datasource.local.room.entity.UserEntity
         NotificationEntity::class,
         PageNotificationEntity::class
     ],
-    version = 47,
+    version = 50,
     exportSchema = false
 )
 
