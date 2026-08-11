@@ -1,5 +1,3 @@
-
-
 package com.dertefter.design.components.post
 
 import androidx.annotation.OptIn
