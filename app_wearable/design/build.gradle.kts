@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 kotlin {
     compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_17)
+        jvmTarget.set(JvmTarget.JVM_21)
     }
 }
 
@@ -27,8 +27,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 
 
@@ -43,10 +43,9 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.palette)
     implementation(libs.compose.shimmer)
-
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
-
+    implementation(libs.kdroidfilter.composemediaplayer)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -72,5 +71,6 @@ dependencies {
     implementation(libs.androidx.media3.ui.compose)
     implementation(libs.haze)
     implementation(libs.haze.blur)
+    implementation(libs.zoomable)
 
 }
