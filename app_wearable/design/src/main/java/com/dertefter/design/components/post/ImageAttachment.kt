@@ -5,8 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
-import androidx.wear.compose.material3.MaterialTheme
-import androidx.wear.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -21,19 +19,27 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.wear.compose.material3.MaterialTheme
+import androidx.wear.compose.material3.Text
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.dertefter.design.R
-import com.dertefter.design.theme.WearableTheme
+import net.engawapg.lib.zoomable.rememberZoomState
+import net.engawapg.lib.zoomable.zoomable
 
 @Composable
 fun ImageAttachment(
     attachment: AttachmentUiModel,
     modifier: Modifier = Modifier,
-    contentScale: ContentScale = ContentScale.Crop,
-    containerColor: Color = MaterialTheme.colorScheme.surfaceContainerHigh
+    containerColor: Color = MaterialTheme.colorScheme.surfaceContainer,
+    onClick: () -> Unit = {},
+    isFullscreen: Boolean = false,
 ) {
     var retryHash by remember { mutableIntStateOf(0) }
+
+    val zoomState = rememberZoomState()
+
+    val contentScale: ContentScale = if (isFullscreen) ContentScale.Fit else ContentScale.Crop
 
     SubcomposeAsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
@@ -43,6 +49,13 @@ fun ImageAttachment(
             .build(),
         contentDescription = null,
         modifier = modifier
+            .then(
+                if (isFullscreen) {
+                    Modifier
+                        .zoomable(zoomState)
+                } else Modifier
+                    .clickable(onClick = onClick)
+            )
             .background(containerColor),
         contentScale = contentScale,
         error = {
@@ -61,20 +74,4 @@ fun ImageAttachment(
             }
         }
     )
-}
-
-@Preview(showBackground = false)
-@Composable
-fun ImageAttachmentPreview() {
-    WearableTheme {
-        ImageAttachment(
-            attachment = AttachmentUiModel(
-                id = "1",
-                type = "image",
-                url = "https://picsum.photos/400/300",
-                mimeType = "image/jpeg"
-            ),
-            modifier = Modifier.size(200.dp)
-        )
-    }
 }

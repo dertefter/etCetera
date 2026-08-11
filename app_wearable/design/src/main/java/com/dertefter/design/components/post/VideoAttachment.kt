@@ -5,307 +5,194 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.wear.compose.material3.Icon
-import androidx.wear.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalInspectionMode
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.media3.common.MediaItem
-import androidx.media3.common.Player
-import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.SeekParameters
-import androidx.media3.ui.compose.PlayerSurface
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.layout.ContentScale
-import androidx.media3.common.util.UnstableApi
-import androidx.media3.ui.compose.modifiers.resizeWithContentScale
-import androidx.media3.ui.compose.state.rememberPresentationState
-import androidx.wear.compose.material3.FilledIconButton
-import androidx.wear.compose.material3.FilledTonalIconButton
+import androidx.compose.ui.unit.dp
+import androidx.wear.compose.material3.Icon
+import androidx.wear.compose.material3.IconButton
+import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Slider
-import androidx.wear.compose.material3.SliderDefaults
 import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.icons.Icons
-import com.dertefter.design.theme.WearableTheme
 import com.dertefter.design.theme.spacing
-import kotlinx.coroutines.delay
-import kotlin.time.Duration.Companion.milliseconds
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.rememberHazeState
+import io.github.kdroidfilter.composemediaplayer.CacheConfig
+import io.github.kdroidfilter.composemediaplayer.VideoPlayerSurface
+import io.github.kdroidfilter.composemediaplayer.rememberVideoPlayerState
 
-@UnstableApi
 @Composable
 fun VideoAttachment(
-    attachment: AttachmentUiModel,
     modifier: Modifier = Modifier,
-    contentScale: ContentScale = ContentScale.Crop,
-    containerColor: Color = MaterialTheme.colorScheme.surfaceContainerHigh
+    attachment: AttachmentUiModel,
+    contentPadding: PaddingValues = PaddingValues(),
+    onClick: () -> Unit = {},
+    isFullscreen: Boolean = false,
 ) {
-    val context = LocalContext.current
-    val isInspectionMode = LocalInspectionMode.current
-    val exoPlayer = remember {
-        if (isInspectionMode) null
-        else ExoPlayer.Builder(context)
-            .setMediaSourceFactory(VideoCache.createMediaSourceFactory(context))
-            .setLoadControl(VideoCache.createLoadControl())
-            .build().apply {
-                repeatMode = Player.REPEAT_MODE_ALL
-                playWhenReady = true
-                setSeekParameters(SeekParameters.CLOSEST_SYNC)
-            }
-    }
 
-    var isFirstFrameRendered by remember { mutableStateOf(false) }
+    val hazeState = rememberHazeState()
+
+    val playerState = rememberVideoPlayerState(
+        cacheConfig = CacheConfig(
+            enabled = true,
+            maxCacheSizeBytes = 200L * 1024L * 1024L
+        )
+    )
 
     LaunchedEffect(attachment.url) {
         attachment.url?.let {
-            isFirstFrameRendered = false
-            val mediaItem = MediaItem.fromUri(it)
-            exoPlayer?.setMediaItem(mediaItem)
-            exoPlayer?.prepare()
+            playerState.openUri(it)
         }
     }
 
-    var isPlaying by remember { mutableStateOf(value = true) }
-    var isMuted by remember { mutableStateOf(value = true) }
-    var showControls by remember { mutableStateOf(value = false) }
-    var isBuffering by remember { mutableStateOf(value = !isInspectionMode) }
-    var progress by remember { mutableFloatStateOf(0f) }
-    var isSeeking by remember { mutableStateOf(false) }
+    var mute by remember { mutableStateOf(true) }
 
-    LaunchedEffect(isMuted) {
-        exoPlayer?.volume = if (isMuted) 0f else 1f
-    }
+    var visibleControls by remember { mutableStateOf(false) }
 
-    DisposableEffect(exoPlayer) {
-        val listener = object : Player.Listener {
-            override fun onPlaybackStateChanged(playbackState: Int) {
-                isBuffering = playbackState == Player.STATE_BUFFERING
-            }
+    playerState.volume = if (mute) 0f else 1f
+    playerState.loop = true
 
-            override fun onRenderedFirstFrame() {
-                isFirstFrameRendered = true
-            }
-        }
-        exoPlayer?.addListener(listener)
-        onDispose {
-            exoPlayer?.removeListener(listener)
-            exoPlayer?.release()
-        }
-    }
-
-    LaunchedEffect(showControls, isPlaying) {
-        if (showControls && isPlaying) {
-            delay(3000.milliseconds)
-            showControls = false
-        }
-    }
-
-    LaunchedEffect(isPlaying, isSeeking) {
-        if (isInspectionMode || isSeeking) return@LaunchedEffect
-        while (true) {
-            val currentPos = exoPlayer?.currentPosition?.toFloat() ?: 0f
-            val duration = exoPlayer?.duration?.toFloat() ?: 0f
-            if (duration > 0) {
-                progress = currentPos / duration
-            }
-            delay(500.milliseconds)
-        }
-    }
-
-    VideoAttachmentContent(
-        exoPlayer = exoPlayer,
-        isPlaying = isPlaying,
-        isMuted = isMuted,
-        showControls = showControls,
-        isBuffering = isBuffering,
-        isFirstFrameRendered = isFirstFrameRendered,
-        progress = progress,
-        onToggleControls = { showControls = !showControls },
-        onTogglePlayback = {
-            exoPlayer?.let {
-                isPlaying = if (it.isPlaying) {
-                    it.pause()
-                    false
-                } else {
-                    it.play()
-                    true
-                }
-            }
-        },
-        onToggleMute = { isMuted = !isMuted },
-        onSeek = { seekTo ->
-            progress = seekTo
-            isSeeking = true
-        },
-        onSeekFinished = {
-            exoPlayer?.let {
-                val duration = it.duration
-                if (duration > 0) {
-                    it.seekTo((progress * duration).toLong())
-                }
-            }
-            isSeeking = false
-        },
-        contentScale = contentScale,
-        containerColor = containerColor,
-        modifier = modifier
-    )
-}
-
-@UnstableApi
-@Composable
-fun VideoAttachmentContent(
-    exoPlayer: Player?,
-    isPlaying: Boolean,
-    isMuted: Boolean,
-    showControls: Boolean,
-    isBuffering: Boolean,
-    isFirstFrameRendered: Boolean,
-    progress: Float,
-    onToggleControls: () -> Unit,
-    onTogglePlayback: () -> Unit,
-    onToggleMute: () -> Unit,
-    onSeek: (Float) -> Unit,
-    onSeekFinished: () -> Unit,
-    modifier: Modifier = Modifier,
-    contentScale: ContentScale = ContentScale.Crop,
-    containerColor: Color = MaterialTheme.colorScheme.surfaceContainerHigh
-) {
-    val presentationState = rememberPresentationState(exoPlayer)
     Box(
         modifier = modifier
-            .background(containerColor)
-            .clickable { onToggleControls() }
-            .clipToBounds(),
-        contentAlignment = Alignment.Center,
+            .fillMaxWidth()
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ) {
+                visibleControls = !visibleControls
+            }
     ) {
-        if (exoPlayer != null) {
-            PlayerSurface(
-                player = exoPlayer,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .alpha(if (isFirstFrameRendered) 1f else 0f)
-                    .resizeWithContentScale(
-                        contentScale = contentScale,
-                        sourceSizeDp = presentationState.videoSizeDp
-                    ),
-            )
+        VideoPlayerSurface(
+            playerState = playerState,
+            contentScale = if (isFullscreen) ContentScale.Fit else ContentScale.Crop,
+            modifier = Modifier
+                .hazeSource(state = hazeState)
+                .background(if (isFullscreen) Color.Black else MaterialTheme.colorScheme.surfaceContainer)
+                .fillMaxWidth()
+        )
+
+        if (playerState.isLoading) {
+            AppLoadingIndicator(modifier = Modifier.align(Alignment.Center))
         }
 
-        if (isBuffering) {
-            Box(
+        if (!isFullscreen) {
+            IconButton(
+                onClick = {
+                    mute = !mute
+                },
                 modifier = Modifier
-                    .fillMaxSize(),
-                contentAlignment = Alignment.Center
+                    .padding(MaterialTheme.spacing.small)
+                    .size(44.dp)
+                    .align(Alignment.TopStart),
             ){
-                AppLoadingIndicator()
+                val icon = if (!mute) {
+                    Icons.VolumeUpFilled
+                } else {
+                    Icons.VolumeOffFilled
+                }
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null
+                )
             }
+        }
+        if (!isFullscreen){
+            IconButton(
+                onClick = onClick,
+                modifier = Modifier
+                    .padding(MaterialTheme.spacing.small)
+                    .size(44.dp)
+                    .align(Alignment.TopEnd),
+            ) {
+                Icon(
+                    imageVector = Icons.Fullscreen,
+                    contentDescription = null
+                )
+            }
+        }
 
+
+        AnimatedVisibility(
+            visible = visibleControls,
+            enter = fadeIn(),
+            exit = fadeOut(),
+            modifier = Modifier.align(Alignment.Center)
+        ) {
+            IconButton(
+                onClick = {
+                    if (playerState.isPlaying) playerState.pause() else playerState.play()
+                },
+                modifier = Modifier.size(56.dp),
+
+            ){
+                val  icon =  if (playerState.isPlaying) Icons.Pause else Icons.Play
+
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null
+                )
+            }
         }
 
         AnimatedVisibility(
-            visible = showControls,
+            visible = visibleControls,
             enter = fadeIn(),
             exit = fadeOut(),
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.4f)),
-                contentAlignment = Alignment.Center,
-            ) {
-                FilledTonalIconButton(
-                    onClick = onTogglePlayback,
-                    modifier = Modifier.size(56.dp)
-                ) {
-                    Icon(
-                        imageVector = if (isPlaying) Icons.Pause else Icons.Play,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .padding(MaterialTheme.spacing.small),
-                    )
-                }
-            }
-        }
-
-        Column(
             modifier = Modifier
-                .alpha(if (showControls) 1f else 0f)
-                .padding(MaterialTheme.spacing.extraLarge+4.dp)
                 .align(Alignment.BottomCenter)
-                .fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraLarge)
+                .padding(contentPadding)
+                .padding(horizontal = MaterialTheme.spacing.medium, vertical = MaterialTheme.spacing.medium)
         ) {
+            Column(horizontalAlignment = Alignment.Start) {
+                if (isFullscreen) {
+                    IconButton(
+                        onClick = {
+                            mute = !mute
+                        },
+                        modifier = Modifier
+                            .padding(bottom = MaterialTheme.spacing.small)
+                            .size(44.dp),
+                    ) {
+                        val icon = if (!mute) {
+                            Icons.VolumeUpFilled
+                        } else {
+                            Icons.VolumeOffFilled
+                        }
 
-            FilledIconButton(
-                onClick = onToggleMute,
-                modifier = Modifier.size(40.dp),
-            ) {
-                Icon(
-                    imageVector = if (isMuted) Icons.VolumeOffFilled else Icons.VolumeUpFilled,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .padding(MaterialTheme.spacing.small),
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = null
+                        )
+                    }
+                }
+
+                Slider(
+                    value = playerState.sliderPos,
+                    onValueChange = {
+                        playerState.seekStart(it)
+                        playerState.seekFinished()
+                    },
+                    steps = 99,
+                    valueRange = 0f..1000f,
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
-
-            Slider(
-                value = progress,
-                onValueChange = {
-                    onSeek(it)
-                    onSeekFinished()
-                },
-                steps = 99,
-                modifier = Modifier
-                    .fillMaxWidth(),
-                valueRange = 0f..1f
-            )
         }
-
     }
-}
 
-@UnstableApi
-@Preview(showBackground = true)
-@Composable
-fun VideoAttachmentPreview() {
-    WearableTheme {
-        VideoAttachmentContent(
-            exoPlayer = null,
-            isPlaying = true,
-            showControls = true,
-            isBuffering = false,
-            isFirstFrameRendered = true,
-            progress = 0.5f,
-            onToggleControls = {},
-            onTogglePlayback = {},
-            onToggleMute = {},
-            onSeek = {},
-            onSeekFinished = {},
-            isMuted = true,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(250.dp)
-        )
-    }
 }

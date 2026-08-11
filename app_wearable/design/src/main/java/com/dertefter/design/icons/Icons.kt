@@ -11,6 +11,24 @@ object Icons {
     val Explore: ImageVector
         @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_explore)
 
+    val DominoMask: ImageVector
+        @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_domino_mask)
+
+    val DominoMaskFilled: ImageVector
+        @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_domino_mask_filled)
+
+    val Security: ImageVector
+        @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_security)
+
+    val AccountBalanceWallet: ImageVector
+        @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_account_balance_wallet)
+
+    val AccountBalanceWalletFilled: ImageVector
+        @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_account_balance_wallet_filled)
+
+    val Fullscreen: ImageVector
+        @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_fullscreen)
+
     val Redo: ImageVector
         @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_redo)
 
@@ -152,7 +170,7 @@ object Icons {
 
     val CloudAlertFilled: ImageVector
         @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_cloud_alert_filled)
-    
+
     val Info: ImageVector
         @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_info)
 
