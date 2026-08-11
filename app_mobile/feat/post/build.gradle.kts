@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 kotlin {
     compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_17)
+        jvmTarget.set(JvmTarget.JVM_21)
     }
 }
 
@@ -27,8 +27,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 
     buildFeatures {
@@ -38,12 +38,12 @@ android {
 
 dependencies {
 
-    api(project(":common:data"))
-    api(project(":common:navigation"))
+    implementation(project(":common:data"))
+    implementation(project(":common:navigation"))
 
-    api(project(":app_mobile:design"))
+    implementation(project(":app_mobile:design"))
 
-    api(project(":app_mobile:feat:comments"))
+    implementation(project(":app_mobile:feat:comments"))
 
     implementation(platform(libs.compose.bom.alpha))
     implementation(libs.compose.ui)
