@@ -1,0 +1,8 @@
+# Project-specific keep rules for mobile app.
+# AGP 9.3+ picks up .keep files in src/main/keepRules automatically.
+
+# Preserve annotations and signatures for reflection-based libraries (Retrofit)
+-keepattributes Signature, *Annotation*, EnclosingMethod, InnerClasses
+
+# Keep Room entities
+-keep class com.dertefter.data.datasource.local.room.entity.** { *; }
