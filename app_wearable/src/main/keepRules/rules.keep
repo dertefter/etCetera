@@ -4,6 +4,12 @@
 # For more details, see
 #   https://d.android.com/r/tools/r8/keep-rules
 
+# Preserve annotations and signatures for reflection-based libraries (Retrofit)
+-keepattributes Signature, *Annotation*, EnclosingMethod, InnerClasses
+
+# Keep Room entities
+-keep class com.dertefter.data.datasource.local.room.entity.** { *; }
+
 # If your project uses WebView with JS, uncomment the following
 # and specify the fully qualified class name to the JavaScript interface
 # class:

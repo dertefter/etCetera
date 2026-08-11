@@ -1,0 +1,2 @@
+# Project-specific keep rules for wearable app.
+# AGP 9.3+ picks up .keep files in src/main/keepRules automatically.
