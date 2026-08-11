@@ -1,6 +1,7 @@
 [versions]
 # Build and Plugins
 agp = "9.3.1"
+annotationExperimental = "1.6.0"
 kotlin = "2.4.10"
 ksp = "2.3.6"
 ossLicensesPlugin = "0.13.0"
@@ -71,6 +72,7 @@ droibitOssLicenses = "0.10.0"
 
 [libraries]
 # AndroidX Core
+androidx-annotation-experimental = { module = "androidx.annotation:annotation-experimental", version.ref = "annotationExperimental" }
 androidx-datastore-core = { group = "androidx.datastore", name = "datastore-core", version.ref = "datastoreCore" }
 androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleRuntimeKtx" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
@@ -128,7 +130,7 @@ room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 
 # Networking and Serialization
-converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
+converter-kotlinx-serialization = { module = "com.squareup.retrofit2:converter-kotlinx-serialization", version.ref = "retrofit" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttpUrlconnection" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttpUrlconnection" }
