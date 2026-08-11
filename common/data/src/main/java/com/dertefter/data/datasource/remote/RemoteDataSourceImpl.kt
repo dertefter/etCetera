@@ -2,6 +2,7 @@ package com.dertefter.data.datasource.remote
 
 import android.util.Log
 import com.dertefter.data.dto.auth.SignInRequest
+import com.dertefter.data.dto.auth.SignInResponse
 import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.data.dto.comments.CommentsDataDto
 import com.dertefter.data.dto.comments.NewCommentRequestDto
@@ -40,9 +41,9 @@ class RemoteDataSourceImpl @Inject constructor(
 ) : RemoteDataSource {
 
     
-    override suspend fun signIn(signInRequest: SignInRequest): Result<Unit> {
+    override suspend fun signIn(signInRequest: SignInRequest): Result<SignInResponse> {
         return runCatching {
-            apiService.signIn(signInRequest).handleUnitResponse().getOrThrow()
+            apiService.signIn(signInRequest).handleResponse { it }.getOrThrow()
         }
     }
 

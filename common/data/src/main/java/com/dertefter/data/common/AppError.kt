@@ -1,8 +1,13 @@
 package com.dertefter.data.common
 
 import com.dertefter.data.dto.common.ErrorResponseDto
-import com.google.gson.Gson
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.contentOrNull
 import java.io.IOException
+
+private val errorJson = Json { ignoreUnknownKeys = true }
 
 sealed interface AppError {
     val message: String?
@@ -64,7 +69,7 @@ fun Throwable.toAppError(): AppError {
     if (jsonStart != -1 && jsonEnd != -1 && jsonEnd > jsonStart) {
         val json = errorMessage.substring(jsonStart, jsonEnd + 1)
         try {
-            val errorResponse = Gson().fromJson(json, ErrorResponseDto::class.java)
+            val errorResponse = errorJson.decodeFromString<ErrorResponseDto>(json)
             val error = errorResponse.error
             val errorCode = error?.code
             val message = error?.message
@@ -110,11 +115,10 @@ fun Throwable.toAppError(): AppError {
         }
 
         try {
-            // Handle cases where 'error' might be a string or other structures
-            val map = Gson().fromJson(json, Map::class.java)
-            val errorField = map["error"]
-            val messageField = map["message"]
-            if (errorField is String) {
+            val jsonObject = errorJson.parseToJsonElement(json).jsonObject
+            val errorField = jsonObject["error"]?.jsonPrimitive?.contentOrNull
+            val messageField = jsonObject["message"]?.jsonPrimitive?.contentOrNull
+            if (errorField != null) {
                 return when (errorField) {
                     "invalid signature", "invalid token" -> AppError.Unauthorized("Invalid access token")
                     "token expired" -> AppError.SessionExpired("Token expired")
@@ -124,7 +128,7 @@ fun Throwable.toAppError(): AppError {
                 }
             }
             if (messageField == "Invalid or expired token") {
-                return AppError.SessionExpired(messageField as? String)
+                return AppError.SessionExpired(messageField)
             }
         } catch (_: Exception) {
         }

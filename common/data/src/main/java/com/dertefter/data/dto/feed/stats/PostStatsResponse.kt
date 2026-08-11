@@ -1,9 +1,11 @@
 package com.dertefter.data.dto.feed.stats
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class PostStatsResponse(
-    @SerializedName("posts")
+    @SerialName("posts")
     val postStats: List<PostStatsDto>
 )
 

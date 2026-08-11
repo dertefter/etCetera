@@ -1,9 +1,11 @@
 package com.dertefter.data.dto.auth
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class SignInRequest(
-    @SerializedName("email") val email: String,
-    @SerializedName("password") val password: String,
-    @SerializedName("turnstileToken") val turnstileToken: String
+    @SerialName("email") val email: String,
+    @SerialName("password") val password: String,
+    @SerialName("turnstileToken") val turnstileToken: String
 )

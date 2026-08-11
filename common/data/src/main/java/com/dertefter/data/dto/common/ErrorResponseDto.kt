@@ -1,14 +1,17 @@
 package com.dertefter.data.dto.common
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class ErrorResponseDto(
-    @SerializedName("error") val error: ErrorDto? = null
+    @SerialName("error") val error: ErrorDto? = null
 )
 
+@Serializable
 data class ErrorDto(
-    @SerializedName("code") val code: String? = null,
-    @SerializedName("message") val message: String? = null,
-    @SerializedName("canRestore") val canRestore: Boolean? = null,
-    @SerializedName("retryAfter") val retryAfter: Int? = null
+    @SerialName("code") val code: String? = null,
+    @SerialName("message") val message: String? = null,
+    @SerialName("canRestore") val canRestore: Boolean? = null,
+    @SerialName("retryAfter") val retryAfter: Int? = null
 )

@@ -4,6 +4,7 @@ import com.dertefter.data.common.onFailureLog
 import com.dertefter.data.datasource.local.LocalDataSource
 import com.dertefter.data.datasource.remote.RemoteDataSource
 import com.dertefter.data.dto.auth.SignInRequest
+import com.dertefter.data.dto.auth.SignInResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -32,7 +33,7 @@ class AuthRepositoryImpl @Inject constructor(
         email: String,
         password: String,
         turnstileToken: String
-    ): Result<Unit> {
+    ): Result<SignInResponse> {
         return remoteDataSource.signIn(
             SignInRequest(
                 email = email,

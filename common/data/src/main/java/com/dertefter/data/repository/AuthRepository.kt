@@ -1,5 +1,6 @@
 package com.dertefter.data.repository
 
+import com.dertefter.data.dto.auth.SignInResponse
 import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
@@ -18,7 +19,7 @@ interface AuthRepository {
         email: String,
         password: String,
         turnstileToken: String
-    ): Result<Unit>
+    ): Result<SignInResponse>
 
     suspend fun refreshToken(): Result<Unit>
 

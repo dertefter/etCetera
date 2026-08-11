@@ -36,7 +36,7 @@ data class UserEntity(
     // Me fields
     val isPhoneVerified: Boolean = false,
     val isPrivate: Boolean = false,
-    val subscriptionDto: SubscriptionDto? = null,
+    val subscription: SubscriptionDto? = null,
     val isMe: Boolean = false
 )
 
@@ -112,7 +112,7 @@ fun UserEntity.asMeExternalModel() = MeDto(
     likesVisibility = likesVisibility,
     pin = pin,
     postsCount = postsCount,
-    subscriptionDto = subscriptionDto,
+    subscription = subscription,
     username = username,
     verified = verified,
     wallAccess = wallAccess
@@ -156,7 +156,7 @@ fun MeDto.asEntity() = UserEntity(
     likesVisibility = likesVisibility,
     pin = pin,
     postsCount = postsCount,
-    subscriptionDto = subscriptionDto,
+    subscription = subscription,
     username = username,
     verified = verified,
     wallAccess = wallAccess,

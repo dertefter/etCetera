@@ -1,6 +1,7 @@
 package com.dertefter.data.datasource.remote
 
 import com.dertefter.data.dto.auth.SignInRequest
+import com.dertefter.data.dto.auth.SignInResponse
 import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.data.dto.comments.CommentsDataDto
 import com.dertefter.data.dto.comments.NewCommentRequestDto
@@ -27,7 +28,7 @@ import java.io.File
 
 interface RemoteDataSource {
 
-    suspend fun signIn(signInRequest: SignInRequest): Result<Unit>
+    suspend fun signIn(signInRequest: SignInRequest): Result<SignInResponse>
     suspend fun refreshToken(): Result<Unit>
     suspend fun getMe(): Result<MeDto>
 

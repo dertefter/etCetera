@@ -7,7 +7,6 @@ import com.dertefter.data.datasource.remote.ApiService
 import com.dertefter.data.dto.auth.SignInRequest
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.Wearable
-import com.google.gson.Gson
 import dagger.Lazy
 import dagger.Module
 import dagger.Provides
@@ -19,13 +18,19 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.decodeFromJsonElement
+import retrofit2.converter.kotlinx.serialization.asConverterFactory
+import okhttp3.MediaType.Companion.toMediaType
+import kotlinx.serialization.decodeFromString
 import okhttp3.Cookie
 import okhttp3.CookieJar
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -131,7 +136,8 @@ object NetworkModule {
     fun provideInternalAuthApiService(
         cookieJar: CookieJar,
         localDataSource: LocalDataSource,
-        tokenManager: TokenManager
+        tokenManager: TokenManager,
+        json: Json
     ): ApiService {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
@@ -144,8 +150,8 @@ object NetworkModule {
 
                 val bodyString = response.peekBody(1024 * 1024).string()
                 try {
-                    val jsonObject = Gson().fromJson(bodyString, com.google.gson.JsonObject::class.java)
-                    val errorCode = jsonObject.getAsJsonObject("error")?.get("code")?.asString
+                    val jsonObject = json.parseToJsonElement(bodyString).jsonObject
+                    val errorCode = jsonObject["error"]?.jsonObject?.get("code")?.jsonPrimitive?.contentOrNull
                     if (errorCode == "SESSION_NOT_FOUND" || errorCode == "SESSION_REVOKED") {
                         val login = request.tag(String::class.java) ?: runBlocking { localDataSource.currentLogin.first() }
                         login?.let { l ->
@@ -167,7 +173,7 @@ object NetworkModule {
                     try {
                         val requestBuffer = okio.Buffer()
                         request.body?.writeTo(requestBuffer)
-                        login = Gson().fromJson(requestBuffer.readUtf8(), SignInRequest::class.java)?.email
+                        login = json.decodeFromString<SignInRequest>(requestBuffer.readUtf8()).email
                     } catch (_: Exception) {
                     }
                 }
@@ -188,7 +194,7 @@ object NetworkModule {
         return Retrofit.Builder()
             .baseUrl("https://xn--d1ah4a.com/")
             .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
             .create(ApiService::class.java)
     }
@@ -201,7 +207,8 @@ object NetworkModule {
         localDataSource: LocalDataSource,
         @InternalAuthApi authApiService: Lazy<ApiService>,
         @IsWearDevice isWear: Boolean,
-        @ApplicationContext context: Context
+        @ApplicationContext context: Context,
+        json: Json
     ): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
@@ -221,7 +228,7 @@ object NetworkModule {
                     try {
                         val requestBuffer = okio.Buffer()
                         request.body?.writeTo(requestBuffer)
-                        login = Gson().fromJson(requestBuffer.readUtf8(), SignInRequest::class.java)?.email
+                        login = json.decodeFromString<SignInRequest>(requestBuffer.readUtf8()).email
                     } catch (_: Exception) {
                     }
                 }
@@ -254,8 +261,8 @@ object NetworkModule {
 
                 val bodyString = response.peekBody(1024 * 1024).string()
                 try {
-                    val jsonObject = Gson().fromJson(bodyString, com.google.gson.JsonObject::class.java)
-                    val errorCode = jsonObject.getAsJsonObject("error")?.get("code")?.asString
+                    val jsonObject = json.parseToJsonElement(bodyString).jsonObject
+                    val errorCode = jsonObject["error"]?.jsonObject?.get("code")?.jsonPrimitive?.contentOrNull
                     if (errorCode == "SESSION_NOT_FOUND" || errorCode == "SESSION_REVOKED") {
                         val login = request.tag(String::class.java) ?: runBlocking { localDataSource.currentLogin.first() }
                         login?.let { l ->
@@ -274,19 +281,19 @@ object NetworkModule {
 
                 if (response.isSuccessful && (request.url.encodedPath.contains("api/v1/auth/sign-in") || request.url.encodedPath.contains("api/v1/auth/refresh"))) {
                     try {
-                        val jsonObject = Gson().fromJson(bodyString, com.google.gson.JsonObject::class.java)
+                        val jsonObject = json.parseToJsonElement(bodyString).jsonObject
                         val login = if (request.url.encodedPath.contains("api/v1/auth/sign-in")) {
                             val requestBuffer = okio.Buffer()
                             request.body?.writeTo(requestBuffer)
                             try {
-                                Gson().fromJson(requestBuffer.readUtf8(), SignInRequest::class.java)?.email
+                                json.decodeFromString<SignInRequest>(requestBuffer.readUtf8()).email
                             } catch (_: Exception) { null }
                         } else {
                             loginFromTag
                         }
 
                         login?.let { l ->
-                            jsonObject.get("accessToken")?.asString?.let { token ->
+                            jsonObject["accessToken"]?.jsonPrimitive?.contentOrNull?.let { token ->
                                 runBlocking {
                                     if (request.url.encodedPath.contains("api/v1/auth/sign-in")) {
                                         localDataSource.switchToLogin(l)
@@ -370,11 +377,11 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+    fun provideRetrofit(okHttpClient: OkHttpClient, json: Json): Retrofit {
         return Retrofit.Builder()
             .baseUrl("https://xn--d1ah4a.com/")
             .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
     }
 

@@ -1,23 +1,25 @@
 package com.dertefter.data.dto.feed.stats
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class PostStatsDto(
-    @SerializedName("id")
+    @SerialName("id")
     val id: String,
 
-    @SerializedName("likesCount")
+    @SerialName("likesCount")
     val likesCount: Int,
 
-    @SerializedName("commentsCount")
+    @SerialName("commentsCount")
     val commentsCount: Int,
 
-    @SerializedName("repostsCount")
+    @SerialName("repostsCount")
     val repostsCount: Int,
 
-    @SerializedName("viewsCount")
+    @SerialName("viewsCount")
     val viewsCount: Int,
 
-    @SerializedName("dominantEmoji")
-    val dominantEmoji: String
+    @SerialName("dominantEmoji")
+    val dominantEmoji: String?
 )

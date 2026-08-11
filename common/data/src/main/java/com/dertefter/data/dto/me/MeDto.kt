@@ -20,7 +20,7 @@ data class MeDto(
     val likesVisibility: VisibilityDto,
     val pin: PinDto?,
     val postsCount: Int,
-    val subscriptionDto: SubscriptionDto?,
+    val subscription: SubscriptionDto?,
     val username: String,
     val verified: Boolean,
     val wallAccess: VisibilityDto

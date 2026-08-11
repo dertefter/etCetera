@@ -1,12 +1,14 @@
 package com.dertefter.data.dto.feed.like
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class LikeResponseDto(
-    @SerializedName("liked")
+    @SerialName("liked")
     val liked: Boolean,
 
-    @SerializedName("likesCount")
+    @SerialName("likesCount")
     val likesCount: Int
 )
 
