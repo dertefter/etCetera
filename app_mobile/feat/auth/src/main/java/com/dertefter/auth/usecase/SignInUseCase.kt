@@ -1,7 +1,7 @@
 package com.dertefter.auth.usecase
 
+import com.dertefter.data.dto.auth.SignInResponse
 import com.dertefter.data.repository.AuthRepository
-import com.dertefter.data.repository.CrashlyticsRepository
 import javax.inject.Inject
 
 class SignInUseCase @Inject constructor(
@@ -11,7 +11,7 @@ class SignInUseCase @Inject constructor(
         login: String,
         password: String,
         turnstileToken: String,
-    ): Result<Unit> {
+    ): Result<SignInResponse> {
         return authRepository.signIn(
             login,
             password,
