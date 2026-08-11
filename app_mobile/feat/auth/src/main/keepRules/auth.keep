@@ -1,0 +1,6 @@
+# Keep methods invoked from JavaScript via WebView.addJavascriptInterface
+# for Cloudflare Turnstile in TurnstileWebView.kt
+-keepattributes JavascriptInterface
+-keepclassmembers class * {
+    @android.webkit.JavascriptInterface <methods>;
+}
