@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 kotlin {
     compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_17)
+        jvmTarget.set(JvmTarget.JVM_21)
     }
 }
 
@@ -32,24 +32,25 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 }
 
 dependencies {
-    api(libs.hilt.android)
+    implementation(libs.androidx.annotation.experimental)
+    implementation(libs.hilt.android)
     implementation(libs.datastore.preferences)
-    api(libs.androidx.datastore.core)
+    implementation(libs.androidx.datastore.core)
     ksp(libs.hilt.compiler)
-    api(libs.room.runtime)
+    implementation(libs.room.runtime)
     ksp(libs.room.compiler)
-    api(libs.retrofit)
-    implementation(libs.converter.gson)
-    api(libs.okhttp)
+    implementation(libs.retrofit)
+    implementation(libs.converter.kotlinx.serialization)
+    implementation(libs.okhttp)
     implementation(libs.logging.interceptor)
     implementation(libs.play.services.wearable)
-    api(libs.kotlinx.serialization.json)
+    implementation(libs.kotlinx.serialization.json)
     api(platform(libs.jamal.wia.paginator.bom))
     api(libs.paginator.cursor)
 }
