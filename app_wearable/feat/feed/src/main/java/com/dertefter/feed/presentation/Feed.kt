@@ -114,9 +114,17 @@ fun Feed(
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraLarge)
         ) {
             header?.invoke(this, transformationSpec)
-            postItems(items, onEvent, transformationSpec)
-            item(key = "append_indicator") {
-                FeedAppendIndicator(uiState, transformationSpec)
+            if (items.isEmpty() && (uiState is PaginatorUiState.Loading || uiState is PaginatorUiState.Idle)) {
+                items(3) {
+                    TransformingListItem(transformationSpec = transformationSpec) {
+                        PostCardShimmer()
+                    }
+                }
+            } else {
+                postItems(items, onEvent, transformationSpec)
+                item(key = "append_indicator") {
+                    FeedAppendIndicator(uiState, transformationSpec)
+                }
             }
         }
 
