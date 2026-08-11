@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 kotlin {
     compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_17)
+        jvmTarget.set(JvmTarget.JVM_21)
     }
 }
 
@@ -26,8 +26,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 
 
@@ -41,18 +41,18 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.palette)
     implementation(libs.haze.blur.materials)
-    api(platform(libs.compose.bom.alpha))
-    api(libs.compose.ui)
-    api(libs.compose.ui.graphics)
+    implementation(platform(libs.compose.bom.alpha))
+    implementation(libs.compose.ui)
+    implementation(libs.compose.ui.graphics)
     implementation(libs.compose.ui.tooling.preview)
-    api(libs.compose.material3)
+    implementation(libs.compose.material3)
     debugImplementation(libs.compose.ui.tooling)
     debugRuntimeOnly(libs.compose.ui.test.manifest)
-    api(libs.material.kolor)
+    implementation(libs.material.kolor)
     implementation(libs.coil.compose)
     implementation(libs.kdroidfilter.composemediaplayer)
-    api(libs.androidx.media3.exoplayer)
-    api(libs.haze)
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.haze)
     implementation(libs.haze.blur)
     implementation(libs.zoomable)
 
