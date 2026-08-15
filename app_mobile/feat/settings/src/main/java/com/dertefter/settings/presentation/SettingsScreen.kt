@@ -125,7 +125,7 @@ fun SettingsScreen(
                     onClick = {
 
                     },
-                    colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+                        colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
                     shapes = ListItemDefaults.segmentedShapes(
                         index = index,
                         count = settingsItems.count(),
