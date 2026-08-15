@@ -22,7 +22,7 @@ android {
 
     defaultConfig {
         applicationId = "com.dertefter.etcetera"
-        minSdk = 30
+        minSdk = 29
         targetSdk = 37
         versionCode = project.property("appVersionCode").toString().toInt()
         versionName = project.property("appVersionName").toString()
