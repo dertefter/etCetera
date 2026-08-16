@@ -17,7 +17,7 @@ kotlin {
 android {
     namespace = "com.dertefter.etcetera"
     compileSdk = 37
-    ndkVersion = "30.0.15729638 rc2"
+    ndkVersion = "27.2.12479018"
 
     defaultConfig {
         applicationId = "com.dertefter.etcetera"

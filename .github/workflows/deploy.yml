@@ -40,7 +40,7 @@ jobs:
       - name: Install NDK
         run: |
           yes | sdkmanager --licenses
-          sdkmanager --install "ndk;30.0.15729638 rc2"
+          sdkmanager --install "ndk;27.2.12479018"
 
       - name: Decode Keystore
         run: |
