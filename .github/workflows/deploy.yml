@@ -83,7 +83,7 @@ jobs:
           packageName: com.dertefter.etcetera
           releaseFiles: app_mobile/build/outputs/bundle/release/app_mobile-release.aab
           mappingFile: app_mobile/build/outputs/mapping/release/mapping.txt
-          debugSymbols: app_mobile/build/outputs/native_debug_symbols/release/native-debug-symbols.zip
+          debugSymbols: app_mobile/build/outputs/native-debug-symbols/release/native-debug-symbols.zip
           status: draft
           tracks: ${{ steps.determine_track.outputs.mobile_track }}
 
@@ -94,7 +94,7 @@ jobs:
           packageName: com.dertefter.etcetera
           releaseFiles: app_wearable/build/outputs/bundle/release/app_wearable-release.aab
           mappingFile: app_wearable/build/outputs/mapping/release/mapping.txt
-          debugSymbols: app_wearable/build/outputs/native_debug_symbols/release/native-debug-symbols.zip
+          debugSymbols: app_wearable/build/outputs/native-debug-symbols/release/native-debug-symbols.zip
           status: draft
           tracks: ${{ steps.determine_track.outputs.wear_track }}
 
