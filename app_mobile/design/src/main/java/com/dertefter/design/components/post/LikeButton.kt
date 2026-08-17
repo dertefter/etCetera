@@ -3,6 +3,7 @@ package com.dertefter.design.components.post
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -12,9 +13,12 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -71,6 +75,15 @@ fun LikeButton(
         stringResource(R.string.design_like_button_like)
     }
 
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+
+    val animatedHorizontalPadding by animateDpAsState(
+        targetValue = if (isPressed) MaterialTheme.spacing.extraLarge else MaterialTheme.spacing.medium,
+        label = "horizontalPadding",
+        animationSpec = MaterialTheme.motionScheme.fastSpatialSpec()
+    )
+
     val containerColor by animateColorAsState(
         if (isLiked) MaterialTheme.customColors.likeContainerColor else MaterialTheme.colorScheme.surfaceVariant,
         label = "containerColor"
@@ -107,14 +120,19 @@ fun LikeButton(
             )
             .clip(CircleShape)
             .clickable(
+                interactionSource = interactionSource,
+                indication = androidx.compose.foundation.LocalIndication.current,
                 onClick = onClick,
             )
             .semantics {
                 contentDescription = likeButtonDescription
             }
             .background(containerColor)
+            .animateContentSize(
+                animationSpec = MaterialTheme.motionScheme.fastSpatialSpec()
+            )
             .padding(
-                horizontal = MaterialTheme.spacing.medium,
+                horizontal = animatedHorizontalPadding,
                 vertical = MaterialTheme.spacing.small + MaterialTheme.spacing.extraSmall,
             ),
         verticalAlignment = Alignment.CenterVertically,
@@ -133,7 +151,7 @@ fun LikeButton(
                 imageVector = if (liked) Icons.FavFilled else Icons.Fav,
                 contentDescription = null,
                 modifier = Modifier
-                    .size(20.dp)
+                    .size(18.dp)
                     .scale(scale.value),
                 tint = contentColor
             )
@@ -175,7 +193,7 @@ fun LikeButtonPreview() {
 
         LaunchedEffect(Unit) {
             while (true) {
-                delay(1500.milliseconds)
+                delay(8000.milliseconds)
                 index = (index + 1) % values.size
             }
         }

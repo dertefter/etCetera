@@ -2,6 +2,8 @@ package com.dertefter.design.components.post
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
@@ -9,6 +11,8 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -18,6 +22,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,16 +58,31 @@ fun CommentsButton(
     val prettifiedComments = remember(comments) { comments.PrettifyInt() }
     val animatedComments = remember(prettifiedComments) { comments }
 
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+
+    val animatedHorizontalPadding by animateDpAsState(
+        targetValue = if (isPressed) MaterialTheme.spacing.extraLarge else MaterialTheme.spacing.medium,
+        label = "horizontalPadding"
+    )
+
     Row(
         modifier = modifier
             .clip(CircleShape)
-            .clickable(onClick = onClick)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = androidx.compose.foundation.LocalIndication.current,
+                onClick = onClick,
+            )
             .semantics {
                 contentDescription = desc
             }
             .background(containerColor)
+            .animateContentSize(
+                animationSpec = MaterialTheme.motionScheme.fastSpatialSpec()
+            )
             .padding(
-                horizontal = MaterialTheme.spacing.medium,
+                horizontal = animatedHorizontalPadding,
                 vertical = MaterialTheme.spacing.small + MaterialTheme.spacing.extraSmall,
             ),
         verticalAlignment = Alignment.CenterVertically,
