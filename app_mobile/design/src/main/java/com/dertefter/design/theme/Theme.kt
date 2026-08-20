@@ -21,11 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.dp
-import com.materialkolor.DynamicMaterialExpressiveTheme
-import com.materialkolor.PaletteStyle
-import com.materialkolor.dynamiccolor.ColorSpec
 import com.materialkolor.ktx.harmonize
-import com.materialkolor.rememberDynamicMaterialThemeState
 
 private val DarkColorScheme = darkColorScheme()
 
@@ -37,11 +33,7 @@ val LocalIsDark = staticCompositionLocalOf { false }
 
 val LocalIsTab = staticCompositionLocalOf { false }
 
-val LocalSeedColor = staticCompositionLocalOf<Long?> { null }
-
-val LocalPaletteStyle = staticCompositionLocalOf { PaletteStyle.Vibrant }
-
-val LocalSpecVersion = staticCompositionLocalOf { ColorSpec.SpecVersion.SPEC_2021 }
+val LocalEmojiAvatarHarmonizationColor = staticCompositionLocalOf { EmojiAvatarHarmonizationColor.PRIMARY_CONTAINER }
 
 @Immutable
 data class CustomColors(
@@ -68,6 +60,11 @@ val MaterialTheme.customColors: CustomColors
     @ReadOnlyComposable
     get() = LocalCustomColors.current
 
+val MaterialTheme.emojiAvatarHarmonizeColor: EmojiAvatarHarmonizationColor
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalEmojiAvatarHarmonizationColor.current
+
 val MaterialTheme.isFold: Boolean
     @Composable
     @ReadOnlyComposable
@@ -83,33 +80,32 @@ val MaterialTheme.isTab: Boolean
     @ReadOnlyComposable
     get() = LocalIsTab.current
 
-val MaterialTheme.seedColor: Long?
-    @Composable
-    @ReadOnlyComposable
-    get() = LocalSeedColor.current
 
-val MaterialTheme.paletteStyle: PaletteStyle
-    @Composable
-    @ReadOnlyComposable
-    get() = LocalPaletteStyle.current
+enum class EmojiAvatarHarmonizationColor {
+    PRIMARY,
+    SECONDARY,
+    TERTIARY,
+    SURFACE_CONTAINER,
+    PRIMARY_CONTAINER,
+    SECONDARY_CONTAINER,
+    TERTIARY_CONTAINER
+}
 
-val MaterialTheme.specVersion: ColorSpec.SpecVersion
-    @Composable
-    @ReadOnlyComposable
-    get() = LocalSpecVersion.current
+
 
 
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun AppTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean? = isSystemInDarkTheme(),
     dynamicColor: Boolean = true,
-    paletteStyle: PaletteStyle? = null,
-    specVersion: ColorSpec.SpecVersion? = null,
-    seedColor: Long? = null,
+    emojiAvatarHarmonizeColor: EmojiAvatarHarmonizationColor = EmojiAvatarHarmonizationColor.PRIMARY_CONTAINER,
     content: @Composable () -> Unit
 ) {
+
+
+    val darkTheme = darkTheme ?: isSystemInDarkTheme()
 
     val windowInfo = LocalWindowInfo.current
     val density = LocalDensity.current
@@ -119,11 +115,6 @@ fun AppTheme(
     val isTab = widthInDp > 1200.dp
 
     val context = LocalContext.current
-
-    val paletteStyle = paletteStyle ?: PaletteStyle.TonalSpot
-    val specVersion = specVersion ?: ColorSpec.SpecVersion.Default
-
-    val isDark = darkTheme
 
     val colorScheme = if (dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         if (darkTheme) {
@@ -139,15 +130,15 @@ fun AppTheme(
         }
     }
 
+    val likeSourceColor = Color(0xFFFA237E)
+
     CompositionLocalProvider(
         LocalSpacing provides Spacing(),
         LocalRounding provides Rounding(),
         LocalIsFold provides isFold,
         LocalIsTab provides isTab,
-        LocalIsDark provides isDark,
-        LocalSeedColor provides seedColor,
-        LocalPaletteStyle provides paletteStyle,
-        LocalSpecVersion provides specVersion
+        LocalIsDark provides darkTheme,
+        LocalEmojiAvatarHarmonizationColor provides emojiAvatarHarmonizeColor,
     ) {
         MaterialExpressiveTheme (
             motionScheme = MotionScheme.expressive(),
@@ -155,23 +146,32 @@ fun AppTheme(
             colorScheme = colorScheme
         ) {
             val likeColor =
-                Color(0xFFF5006A).harmonize(MaterialTheme.colorScheme.primary, matchSaturation = true)
+                likeSourceColor.harmonize(
+                    MaterialTheme.colorScheme.primary,
+                    matchSaturation = true
+                )
+
             val onLikeColor =
-                Color(0xFFF5006A).harmonize(MaterialTheme.colorScheme.onPrimary, matchSaturation = true)
+                likeSourceColor.harmonize(
+                    MaterialTheme.colorScheme.onPrimary,
+                    matchSaturation = true
+                )
+
             val likeContainerColor =
-                Color(0xFFF5006A).harmonize(
+                likeSourceColor.harmonize(
                     MaterialTheme.colorScheme.primaryContainer,
                     matchSaturation = true
                 )
+
             val onLikeContainerColor =
-                Color(0xFFF5006A).harmonize(
+                likeSourceColor.harmonize(
                     MaterialTheme.colorScheme.onPrimaryContainer,
                     matchSaturation = true
                 )
 
 
             val customColors =
-                remember(likeColor, onLikeColor, likeContainerColor, onLikeContainerColor) {
+                remember(likeColor, onLikeColor, likeContainerColor, onLikeContainerColor, emojiAvatarHarmonizeColor) {
                     CustomColors(
                         likeColor = likeColor,
                         onLikeColor = onLikeColor,

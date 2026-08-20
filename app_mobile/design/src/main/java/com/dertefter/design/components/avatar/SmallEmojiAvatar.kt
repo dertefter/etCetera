@@ -2,6 +2,7 @@ package com.dertefter.design.components.avatar
 
 import android.graphics.Canvas
 import android.graphics.Paint
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -46,6 +47,9 @@ import androidx.graphics.shapes.star
 import androidx.palette.graphics.Palette
 import com.dertefter.design.components.common.RoundedPolygonShape
 import com.dertefter.design.theme.AppTheme
+import com.dertefter.design.theme.EmojiAvatarHarmonizationColor
+import com.dertefter.design.theme.customColors
+import com.dertefter.design.theme.emojiAvatarHarmonizeColor
 import com.dertefter.design.theme.spacing
 import com.materialkolor.PaletteStyle
 import com.materialkolor.dynamiccolor.ColorSpec
@@ -65,10 +69,22 @@ fun EmojiAvatar(
     strokeWidth: Dp = 2.dp,
     fontSize: TextUnit = 20.sp,
     rotation: Float = 0f,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
 ) {
 
-    val targetBgColor = MaterialTheme.colorScheme.primaryContainer
+    val targetColor by animateColorAsState(
+        when (MaterialTheme.emojiAvatarHarmonizeColor){
+            EmojiAvatarHarmonizationColor.PRIMARY -> MaterialTheme.colorScheme.primary
+            EmojiAvatarHarmonizationColor.SECONDARY -> MaterialTheme.colorScheme.secondary
+            EmojiAvatarHarmonizationColor.TERTIARY -> MaterialTheme.colorScheme.tertiary
+            EmojiAvatarHarmonizationColor.SURFACE_CONTAINER -> MaterialTheme.colorScheme.surfaceContainerHigh
+            EmojiAvatarHarmonizationColor.PRIMARY_CONTAINER -> MaterialTheme.colorScheme.primaryContainer
+            EmojiAvatarHarmonizationColor.SECONDARY_CONTAINER -> MaterialTheme.colorScheme.secondaryContainer
+            EmojiAvatarHarmonizationColor.TERTIARY_CONTAINER -> MaterialTheme.colorScheme.tertiaryContainer
+        }
+    )
+
+    val targetBgColor = targetColor
     val targetShadowColor = MaterialTheme.colorScheme.onPrimaryFixed
     val fallbackColor = MaterialTheme.colorScheme.surfaceContainer
 
@@ -185,10 +201,7 @@ fun PreviewAv() {
     var currentEmojiIndex by remember { mutableIntStateOf(0) }
 
     AppTheme(
-        seedColor = Color(0xFF5A1DC7).toArgb().toLong(),
         darkTheme = darkTheme,
-        paletteStyle = PaletteStyle.Vibrant,
-        specVersion = ColorSpec.SpecVersion.Default
     ) {
         val emojiList = listOf(
             "🌏", "🪲", "⚙️", "😍", "🖼️", "❤️", "😆", "🔥", "🌈", "🍎", "⚽", "🚗", "📱", "💻", "⌚",
