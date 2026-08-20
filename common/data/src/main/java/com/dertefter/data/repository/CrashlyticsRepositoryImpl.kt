@@ -4,11 +4,11 @@ import android.content.Context
 import android.util.Log
 import com.dertefter.data.common.AppError
 import com.dertefter.data.common.toAppError
-import com.dertefter.data.dto.app.CrashlyticsItemDto
+import com.dertefter.data.dto.app.CrashlyticsItem
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -25,13 +25,13 @@ class CrashlyticsRepositoryImpl @Inject constructor(
         }
     }
 
-    private val _currentError = MutableSharedFlow<AppError?>(extraBufferCapacity = 1)
-    override val currentError: Flow<AppError?> = _currentError.asSharedFlow()
+    private val _currentError = MutableStateFlow<AppError?>(null)
+    override val currentError: Flow<AppError?> = _currentError.asStateFlow()
 
     override fun showError(e: Throwable?) {
         Log.e("showError", e?.stackTraceToString() ?: "")
         val appError = e?.toAppError()
-        _currentError.tryEmit(appError)
+        _currentError.value = appError
     }
 
     override fun saveCrashLog(exception: Throwable) {
@@ -56,11 +56,11 @@ class CrashlyticsRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getCrashLogsList(): List<CrashlyticsItemDto> {
+    override fun getCrashLogsList(): List<CrashlyticsItem> {
         return try {
             crashLogsFolder.listFiles()
                 ?.filter { it.isFile }
-                ?.map { CrashlyticsItemDto(it.name, it.absolutePath) }
+                ?.map { CrashlyticsItem(it.name, it.absolutePath) }
                 ?.sortedByDescending { it.name } ?: emptyList()
         } catch (_: Exception) {
             emptyList()

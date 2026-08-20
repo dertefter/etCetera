@@ -3,6 +3,7 @@ package com.dertefter.data.datasource.local
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
@@ -15,6 +16,8 @@ import com.dertefter.data.datasource.local.room.entity.asEntity
 import com.dertefter.data.datasource.local.room.entity.asExternalModel
 import com.dertefter.data.datasource.local.room.entity.asFollowerExternalModel
 import com.dertefter.data.datasource.local.room.entity.asMeExternalModel
+import com.dertefter.data.di.AuthDataStore
+import com.dertefter.data.di.SettingsDataStore
 import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.dto.followers.FollowerUserDto
@@ -34,12 +37,15 @@ import javax.inject.Singleton
 @OptIn(ExperimentalCoroutinesApi::class)
 @Singleton
 class LocalDataSourceImpl @Inject constructor(
-    private val dataStore: DataStore<Preferences>,
+    @AuthDataStore private val authDataStore: DataStore<Preferences>,
+    @SettingsDataStore private val settingsDataStore: DataStore<Preferences>,
     @param:ApplicationContext private val context: Context
 ) : LocalDataSource {
 
     private val CURRENT_LOGIN_KEY = stringPreferencesKey("current_login")
     private val LOGIN_HISTORY_KEY = stringSetPreferencesKey("login_history")
+    private val EMOJI_AVATAR_HARMONIZATION_COLOR_KEY = stringPreferencesKey("emoji_avatar_harmonization_color")
+    private val DARK_THEME_KEY = booleanPreferencesKey("dark_theme")
     private val dbCache = mutableMapOf<String?, AppDatabase>()
 
     private fun getDatabase(login: String?): AppDatabase {
@@ -53,12 +59,12 @@ class LocalDataSourceImpl @Inject constructor(
 
     private suspend fun db() = getDatabase(currentLogin.first())
 
-    override val currentLogin: Flow<String?> = dataStore.data.map { preferences ->
+    override val currentLogin: Flow<String?> = authDataStore.data.map { preferences ->
         preferences[CURRENT_LOGIN_KEY]
     }
 
     override suspend fun switchToLogin(login: String?) {
-        dataStore.edit { preferences ->
+        authDataStore.edit { preferences ->
             if (login == null) {
                 preferences.remove(CURRENT_LOGIN_KEY)
             } else {
@@ -69,12 +75,12 @@ class LocalDataSourceImpl @Inject constructor(
         }
     }
 
-    override val loginHistory: Flow<List<String>> = dataStore.data.map { preferences ->
+    override val loginHistory: Flow<List<String>> = authDataStore.data.map { preferences ->
         preferences[LOGIN_HISTORY_KEY]?.toList() ?: emptyList()
     }
 
     override suspend fun removeLoginFromHistory(login: String) {
-        dataStore.edit { preferences ->
+        authDataStore.edit { preferences ->
             val currentHistory = preferences[LOGIN_HISTORY_KEY] ?: emptySet()
             preferences[LOGIN_HISTORY_KEY] = currentHistory - login
         }
@@ -209,5 +215,33 @@ class LocalDataSourceImpl @Inject constructor(
 
     override suspend fun saveTrendingHashtags(hashtags: List<SearchHashtagDto>) {
         db().searchDao().updateTrendingHashtags(hashtags.map { it.asEntity() })
+    }
+
+    override val emojiAvatarHarmonizationColor: Flow<String?> = settingsDataStore.data.map { preferences ->
+        preferences[EMOJI_AVATAR_HARMONIZATION_COLOR_KEY]
+    }
+
+    override suspend fun updateEmojiAvatarHarmonizationColor(color: String?) {
+        settingsDataStore.edit { preferences ->
+            if (color == null) {
+                preferences.remove(EMOJI_AVATAR_HARMONIZATION_COLOR_KEY)
+            } else {
+                preferences[EMOJI_AVATAR_HARMONIZATION_COLOR_KEY] = color
+            }
+        }
+    }
+
+    override val darkTheme: Flow<Boolean?> = settingsDataStore.data.map { preferences ->
+        preferences[DARK_THEME_KEY]
+    }
+
+    override suspend fun updateDarkTheme(darkTheme: Boolean?) {
+        settingsDataStore.edit { preferences ->
+            if (darkTheme == null) {
+                preferences.remove(DARK_THEME_KEY)
+            } else {
+                preferences[DARK_THEME_KEY] = darkTheme
+            }
+        }
     }
 }

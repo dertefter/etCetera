@@ -56,4 +56,10 @@ interface LocalDataSource {
 
     fun getTrendingHashtags(): Flow<List<SearchHashtagDto>?>
     suspend fun saveTrendingHashtags(hashtags: List<SearchHashtagDto>)
+
+    val emojiAvatarHarmonizationColor: Flow<String?>
+    suspend fun updateEmojiAvatarHarmonizationColor(color: String?)
+
+    val darkTheme: Flow<Boolean?>
+    suspend fun updateDarkTheme(darkTheme: Boolean?)
 }

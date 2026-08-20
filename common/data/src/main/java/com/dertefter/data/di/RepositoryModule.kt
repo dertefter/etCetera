@@ -20,6 +20,8 @@ import com.dertefter.data.repository.PostRepository
 import com.dertefter.data.repository.PostRepositoryImpl
 import com.dertefter.data.repository.SearchRepository
 import com.dertefter.data.repository.SearchRepositoryImpl
+import com.dertefter.data.repository.SettingsRepository
+import com.dertefter.data.repository.SettingsRepositoryImpl
 import com.dertefter.data.repository.UserRepository
 import com.dertefter.data.repository.UserRepositoryImpl
 import dagger.Binds
@@ -97,4 +99,10 @@ abstract class RepositoryModule {
     abstract fun bindCrashlyticsRepository(
         crashlyticsRepositoryImpl: CrashlyticsRepositoryImpl
     ): CrashlyticsRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindSettingsRepository(
+        settingsRepositoryImpl: SettingsRepositoryImpl
+    ): SettingsRepository
 }
