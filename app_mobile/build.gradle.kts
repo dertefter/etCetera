@@ -95,6 +95,7 @@ dependencies {
     implementation(project(":app_mobile:feat:search"))
     implementation(project(":app_mobile:feat:hashtag_feed"))
     implementation(project(":app_mobile:feat:settings"))
+    implementation(project(":app_mobile:feat:settings_theme"))
 
     implementation(libs.core.splashscreen)
     implementation(libs.activity.compose)

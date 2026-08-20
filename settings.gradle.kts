@@ -70,6 +70,7 @@ include(":app_mobile:feat:search")
 include(":app_mobile:feat:hashtag_feed")
 include(":app_mobile:feat:attachment_viewer")
 include(":app_mobile:feat:settings")
+include(":app_mobile:feat:settings_theme")
 
 
 //wearable
