@@ -43,6 +43,7 @@ import com.dertefter.notifications.NotificationsRoute
 import com.dertefter.post.PostRoute
 import com.dertefter.search.SearchRoute
 import com.dertefter.settings.SettingsRoute
+import com.dertefter.settings_theme.SettingsThemeRoute
 import com.dertefter.user.UserRoute
 
 @Composable
@@ -121,8 +122,8 @@ fun AppNavHost(
             entry<Routes.Comments> { RouteContent(it) }
             entry<Routes.User> { RouteContent(it) }
             entry<Routes.NewPost> { RouteContent(it) }
-        entry<Routes.Repost> { RouteContent(it) }
-        entry<Routes.EditPost> { RouteContent(it) }
+            entry<Routes.Repost> { RouteContent(it) }
+            entry<Routes.EditPost> { RouteContent(it) }
             entry<Routes.NewComment> { RouteContent(it) }
             entry<Routes.NewCommentReply> { RouteContent(it) }
             entry<Routes.Followers> { RouteContent(it) }
@@ -130,6 +131,7 @@ fun AppNavHost(
             entry<Routes.HashtagFeed> { RouteContent(it) }
             entry<Routes.AttachmentsViewer> { RouteContent(it) }
             entry<Routes.Settings> { RouteContent(it) }
+            entry<Routes.SettingsTheme> { RouteContent(it) }
         }
     )
 }
@@ -160,5 +162,6 @@ fun RouteContent(route: Routes) {
         is Routes.Search -> SearchRoute()
         is Routes.HashtagFeed -> HashtagFeedRoute(route.hashtagName)
         is Routes.Settings -> SettingsRoute()
+        is Routes.SettingsTheme -> SettingsThemeRoute()
     }
 }

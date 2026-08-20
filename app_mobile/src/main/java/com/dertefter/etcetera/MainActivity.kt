@@ -15,6 +15,7 @@ import com.dertefter.etcetera.presentation.MainScreen
 import com.dertefter.navigation.Navigator
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import com.dertefter.design.theme.EmojiAvatarHarmonizationColor as DesignColor
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -31,7 +32,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         splashScreen.setKeepOnScreenCondition {
-            !viewModel.uiState.value.isReady
+            !viewModel.isReady.value
         }
 
         enableEdgeToEdge(
@@ -41,18 +42,30 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-            val meUserId by viewModel.meUserId.collectAsStateWithLifecycle()
-            val currentError by viewModel.currentError.collectAsStateWithLifecycle()
+
+            val themeState by viewModel.themeState.collectAsStateWithLifecycle()
+
             if (uiState.isReady){
-                AppTheme {
-                    MainScreen(
-                        navigator,
-                        meUserId = meUserId,
-                        currentLogin = uiState.currentLogin,
-                        currentError = currentError
-                    )
+                themeState?.let { themeState ->
+                    val harmonizationColor =
+                        DesignColor.valueOf(themeState.emojiHarmonizationColor.name)
+                    val darkTheme = themeState.darkTheme
+
+                    AppTheme(
+                        emojiAvatarHarmonizeColor = harmonizationColor,
+                        darkTheme = darkTheme
+                    ) {
+                        MainScreen(
+                            navigator,
+                            uiState = uiState,
+                        )
+                    }
+
                 }
             }
+
+
+
         }
     }
 }

@@ -37,13 +37,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.rememberNavBackStack
 import com.dertefter.comments.CommentsRoute
 import com.dertefter.data.common.AppError
 import com.dertefter.design.icons.Icons
-import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.isFold
 import com.dertefter.design.theme.spacing
 import com.dertefter.etcetera.R
@@ -59,7 +57,6 @@ import dev.chrisbanes.haze.HazeInput
 import dev.chrisbanes.haze.blur.hazeBlur
 import dev.chrisbanes.haze.blur.materials.HazeMaterials
 import dev.chrisbanes.haze.rememberHazeState
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 
 enum class MainTab(
@@ -132,22 +129,20 @@ fun getErrorMessage(e: AppError?): String? {
 @Composable
 fun MainScreen(
     navigator: Navigator,
-    currentLogin: String? = null,
-    meUserId: String? = null,
-    currentError: AppError? = null,
+    uiState: MainUiState,
 ) {
     val authBackStack = rememberNavBackStack(Routes.Auth)
     val feedBackStack = rememberNavBackStack(Routes.Feed)
     val searchBackStack = rememberNavBackStack(Routes.Search)
     val notificationsBackStack = rememberNavBackStack(Routes.Notifications(showBackButton = false))
     val profileBackStack = rememberNavBackStack(
-        if (meUserId != null) Routes.User(meUserId) else Routes.Auth
+        if (uiState.meUserId != null) Routes.User(uiState.meUserId) else Routes.Auth
     )
 
     var selectedTab by rememberSaveable { mutableStateOf(MainTab.Feed) }
 
     val activeBackStack = when {
-        currentLogin == null -> authBackStack
+        uiState.currentLogin == null -> authBackStack
         selectedTab == MainTab.Feed -> feedBackStack
         selectedTab == MainTab.Search -> searchBackStack
         selectedTab == MainTab.Notifications -> notificationsBackStack
@@ -155,14 +150,14 @@ fun MainScreen(
         else -> feedBackStack
     }
 
-    LaunchedEffect(currentLogin) {
+    LaunchedEffect(uiState.currentLogin) {
         feedBackStack.clear()
         feedBackStack.add(Routes.Feed)
         searchBackStack.clear()
         searchBackStack.add(Routes.Search)
         notificationsBackStack.clear()
         notificationsBackStack.add(Routes.Notifications(showBackButton = false))
-        if (currentLogin == null) {
+        if (uiState.currentLogin == null) {
             authBackStack.clear()
             authBackStack.add(Routes.Auth)
             profileBackStack.clear()
@@ -170,12 +165,12 @@ fun MainScreen(
         }
     }
 
-    LaunchedEffect(meUserId) {
-        if (meUserId != null && currentLogin != null) {
+    LaunchedEffect(uiState.meUserId) {
+        if (uiState.meUserId != null && uiState.currentLogin != null) {
             val lastRoute = profileBackStack.lastOrNull()
-            if (lastRoute !is Routes.User || lastRoute.userId != meUserId) {
+            if (lastRoute !is Routes.User || lastRoute.userId != uiState.meUserId) {
                 profileBackStack.clear()
-                profileBackStack.add(Routes.User(meUserId, showBackButton = false))
+                profileBackStack.add(Routes.User(uiState.meUserId, showBackButton = false))
             }
         }
     }
@@ -195,7 +190,7 @@ fun MainScreen(
 
     val snackbarHostState = remember { SnackbarHostState() }
 
-    val errorMessage = getErrorMessage(currentError)
+    val errorMessage = getErrorMessage(uiState.currentError)
 
     LaunchedEffect(errorMessage) {
         scope.launch {
@@ -298,7 +293,7 @@ fun MainScreen(
                     onBack = {
                         if (activeBackStack.size > 1) {
                             activeBackStack.removeAt(activeBackStack.lastIndex)
-                        } else if (currentLogin != null && selectedTab != MainTab.Feed) {
+                        } else if (uiState.currentLogin != null && selectedTab != MainTab.Feed) {
                             selectedTab = MainTab.Feed
                         }
                     },
@@ -314,7 +309,7 @@ fun MainScreen(
                     onBack = {
                         if (activeBackStack.size > 1) {
                             activeBackStack.removeAt(activeBackStack.lastIndex)
-                        } else if (currentLogin != null && selectedTab != MainTab.Feed) {
+                        } else if (uiState.currentLogin != null && selectedTab != MainTab.Feed) {
                             selectedTab = MainTab.Feed
                         }
                     },
@@ -378,23 +373,5 @@ fun MainScreen(
                 }
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun MainScreenPreview() {
-    val navigator = object : Navigator {
-        override val navigationActions = emptyFlow<NavigationAction>()
-        override fun navigate(route: Routes) {}
-        override fun openAsBottomSheet(route: Routes) {}
-        override fun hideBottomSheet() {}
-        override fun navigateUp() {}
-        override fun navigateAndClearBackStack(route: Routes, popupTo: Routes, inclusive: Boolean) {}
-    }
-    AppTheme {
-        MainScreen(
-            navigator = navigator,
-        )
     }
 }
