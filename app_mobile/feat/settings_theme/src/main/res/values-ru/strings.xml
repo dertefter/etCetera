@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_theme_title">Внешний вид</string>
+    <string name="settings_theme_color_scheme">Тема</string>
+    <string name="settings_theme_day">День</string>
+    <string name="settings_theme_night">Ночь</string>
+    <string name="settings_theme_auto">Авто</string>
+    <string name="settings_theme_emoji_avatar">Эмодзи аватарки</string>
+    <string name="settings_theme_preview">Предпросмотр</string>
+    <string name="settings_theme_emoji_harmonization">Гармонизация фона эмодзи</string>
+</resources>

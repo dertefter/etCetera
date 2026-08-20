@@ -6,4 +6,7 @@
     <string name="settings_billing">Оплата</string>
     <string name="settings_security">Безопасность</string>
     <string name="settings_privacy">Приватность</string>
+    <string name="settings_appearance">Внешний вид</string>
+    <string name="settings_section_account">Аккаунт</string>
+    <string name="settings_section_app">Приложение</string>
 </resources>

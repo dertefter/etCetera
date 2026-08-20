@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_theme_title">Appearance</string>
+    <string name="settings_theme_color_scheme">Theme</string>
+    <string name="settings_theme_day">Light</string>
+    <string name="settings_theme_night">Dark</string>
+    <string name="settings_theme_auto">System</string>
+    <string name="settings_theme_emoji_avatar">Emoji avatars</string>
+    <string name="settings_theme_preview">Preview</string>
+    <string name="settings_theme_emoji_harmonization">Emoji background harmonization</string>
+</resources>

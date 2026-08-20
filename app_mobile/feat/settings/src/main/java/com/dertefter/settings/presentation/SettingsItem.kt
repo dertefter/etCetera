@@ -1,12 +1,17 @@
 package com.dertefter.settings.presentation
 
-import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.dertefter.navigation.Routes
 
+
+data class SettingsSection(
+    val title: String,
+    val settingsItems: List<SettingsItem>
+)
+
 data class SettingsItem(
-    @StringRes val titleRes: Int,
-    @StringRes val subtitleRes: Int? = null,
+    val title: String,
+    val subtitle: String? = null,
     val icon: ImageVector,
     val route: Routes
 )
