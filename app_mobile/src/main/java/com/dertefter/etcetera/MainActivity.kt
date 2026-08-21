@@ -12,6 +12,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.etcetera.presentation.MainScreen
+import com.dertefter.etcetera.navigation.AppNavHost
 import com.dertefter.navigation.Navigator
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -58,6 +59,13 @@ class MainActivity : ComponentActivity() {
                         MainScreen(
                             navigator,
                             uiState = uiState,
+                            appNavHost = { backStack, onBack, modifier ->
+                                AppNavHost(
+                                    backStack = backStack,
+                                    onBack = onBack,
+                                    modifier = modifier
+                                )
+                            }
                         )
                     }
 

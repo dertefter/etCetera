@@ -1,6 +1,5 @@
 package com.dertefter.etcetera.presentation
 
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,7 +20,6 @@ import androidx.compose.material3.WideNavigationRailValue
 import androidx.compose.material3.rememberWideNavigationRailState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
@@ -33,7 +31,6 @@ import androidx.navigation3.runtime.NavKey
 import com.dertefter.design.theme.isTab
 import com.dertefter.design.theme.rounding
 import com.dertefter.design.theme.spacing
-import com.dertefter.etcetera.navigation.AppNavHost
 import com.dertefter.navigation.Routes
 import com.gigamole.composefadingedges.FadingEdgesGravity
 import com.gigamole.composefadingedges.fill.FadingEdgesFillType
@@ -47,6 +44,11 @@ fun TabUI(
     activeBackStack: NavBackStack<NavKey>,
     selectedTab: MainTab,
     hazeState: HazeState,
+    appNavHost: @Composable (
+        backStack: NavBackStack<NavKey>,
+        onBack: () -> Unit,
+        modifier: Modifier
+    ) -> Unit,
     onBack: () -> Unit,
     onNavItemClick: (tab: MainTab) -> Unit
 ) {
@@ -63,10 +65,10 @@ fun TabUI(
         hazeState = hazeState,
         onNavItemClick = onNavItemClick,
         content = {
-            AppNavHost(
-                backStack = activeBackStack,
-                onBack = onBack,
-                modifier = Modifier
+            appNavHost(
+                activeBackStack,
+                onBack,
+                Modifier
                     .then(
                         if (!hideNav) {
                             Modifier.verticalFadingEdges(

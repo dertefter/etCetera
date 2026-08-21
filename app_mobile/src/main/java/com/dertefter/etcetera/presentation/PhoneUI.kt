@@ -19,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
-import com.dertefter.etcetera.navigation.AppNavHost
 import com.dertefter.navigation.Routes
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeSource
@@ -31,10 +30,13 @@ fun PhoneUI(
     activeBackStack: NavBackStack<NavKey>,
     selectedTab: MainTab,
     hazeState: HazeState,
+    appNavHost: @Composable (
+        backStack: NavBackStack<NavKey>,
+        onBack: () -> Unit,
+        modifier: Modifier
+    ) -> Unit,
     onBack: () -> Unit,
     onNavItemClick: (tab: MainTab) -> Unit
-
-
     ){
 
     val hideNav = activeBackStack.lastOrNull() is Routes.AttachmentsViewer || activeBackStack.lastOrNull() is Routes.Auth || WindowInsets.isImeVisible
@@ -42,10 +44,10 @@ fun PhoneUI(
     val consumedPaddingValues = if (hideNav) PaddingValues(0.dp) else WindowInsets.navigationBars.asPaddingValues()
 
     Column(modifier.fillMaxSize()) {
-        AppNavHost(
-            backStack = activeBackStack,
-            onBack = onBack,
-            modifier = Modifier
+        appNavHost(
+            activeBackStack,
+            onBack,
+            Modifier
                 .hazeSource(hazeState)
                 .consumeWindowInsets(consumedPaddingValues)
                 .weight(1f)

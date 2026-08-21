@@ -38,6 +38,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
 import com.dertefter.comments.CommentsRoute
 import com.dertefter.data.common.AppError
@@ -130,6 +132,11 @@ fun getErrorMessage(e: AppError?): String? {
 fun MainScreen(
     navigator: Navigator,
     uiState: MainUiState,
+    appNavHost: @Composable (
+        backStack: NavBackStack<NavKey>,
+        onBack: () -> Unit,
+        modifier: Modifier
+    ) -> Unit
 ) {
     val authBackStack = rememberNavBackStack(Routes.Auth)
     val feedBackStack = rememberNavBackStack(Routes.Feed)
@@ -140,6 +147,8 @@ fun MainScreen(
     )
 
     var selectedTab by rememberSaveable { mutableStateOf(MainTab.Feed) }
+    var lastSeenLogin by rememberSaveable { mutableStateOf<String?>(null) }
+    var lastSeenMeUserId by rememberSaveable { mutableStateOf<String?>(null) }
 
     val activeBackStack = when {
         uiState.currentLogin == null -> authBackStack
@@ -151,27 +160,33 @@ fun MainScreen(
     }
 
     LaunchedEffect(uiState.currentLogin) {
-        feedBackStack.clear()
-        feedBackStack.add(Routes.Feed)
-        searchBackStack.clear()
-        searchBackStack.add(Routes.Search)
-        notificationsBackStack.clear()
-        notificationsBackStack.add(Routes.Notifications(showBackButton = false))
-        if (uiState.currentLogin == null) {
-            authBackStack.clear()
-            authBackStack.add(Routes.Auth)
-            profileBackStack.clear()
-            profileBackStack.add(Routes.Auth)
+        if (uiState.currentLogin != lastSeenLogin) {
+            feedBackStack.clear()
+            feedBackStack.add(Routes.Feed)
+            searchBackStack.clear()
+            searchBackStack.add(Routes.Search)
+            notificationsBackStack.clear()
+            notificationsBackStack.add(Routes.Notifications(showBackButton = false))
+            if (uiState.currentLogin == null) {
+                authBackStack.clear()
+                authBackStack.add(Routes.Auth)
+                profileBackStack.clear()
+                profileBackStack.add(Routes.Auth)
+            }
+            lastSeenLogin = uiState.currentLogin
         }
     }
 
     LaunchedEffect(uiState.meUserId) {
-        if (uiState.meUserId != null && uiState.currentLogin != null) {
-            val lastRoute = profileBackStack.lastOrNull()
-            if (lastRoute !is Routes.User || lastRoute.userId != uiState.meUserId) {
-                profileBackStack.clear()
-                profileBackStack.add(Routes.User(uiState.meUserId, showBackButton = false))
+        if (uiState.meUserId != lastSeenMeUserId) {
+            if (uiState.meUserId != null && uiState.currentLogin != null) {
+                val lastRoute = profileBackStack.lastOrNull()
+                if (lastRoute !is Routes.User || lastRoute.userId != uiState.meUserId) {
+                    profileBackStack.clear()
+                    profileBackStack.add(Routes.User(uiState.meUserId, showBackButton = false))
+                }
             }
+            lastSeenMeUserId = uiState.meUserId
         }
     }
 
@@ -290,6 +305,7 @@ fun MainScreen(
                     activeBackStack = activeBackStack,
                     selectedTab = selectedTab,
                     hazeState = hazeState,
+                    appNavHost = appNavHost,
                     onBack = {
                         if (activeBackStack.size > 1) {
                             activeBackStack.removeAt(activeBackStack.lastIndex)
@@ -306,6 +322,7 @@ fun MainScreen(
                     activeBackStack = activeBackStack,
                     selectedTab = selectedTab,
                     hazeState = hazeState,
+                    appNavHost = appNavHost,
                     onBack = {
                         if (activeBackStack.size > 1) {
                             activeBackStack.removeAt(activeBackStack.lastIndex)
