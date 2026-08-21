@@ -43,6 +43,7 @@ import com.dertefter.notifications.NotificationsRoute
 import com.dertefter.post.PostRoute
 import com.dertefter.search.SearchRoute
 import com.dertefter.settings.SettingsRoute
+import com.dertefter.settings_account.SettingsAccountRoute
 import com.dertefter.settings_theme.SettingsThemeRoute
 import com.dertefter.user.UserRoute
 
@@ -132,6 +133,7 @@ fun AppNavHost(
             entry<Routes.AttachmentsViewer> { RouteContent(it) }
             entry<Routes.Settings> { RouteContent(it) }
             entry<Routes.SettingsTheme> { RouteContent(it) }
+            entry<Routes.SettingsAccount> { RouteContent(it) }
         }
     )
 }
@@ -163,5 +165,6 @@ fun RouteContent(route: Routes) {
         is Routes.HashtagFeed -> HashtagFeedRoute(route.hashtagName)
         is Routes.Settings -> SettingsRoute()
         is Routes.SettingsTheme -> SettingsThemeRoute()
+        is Routes.SettingsAccount -> SettingsAccountRoute()
     }
 }
