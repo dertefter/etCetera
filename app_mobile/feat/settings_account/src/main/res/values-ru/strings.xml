@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="settings_account_title">Аккаунт</string>
+    <string name="settings_account_save">Сохранить</string>
+    <string name="settings_account_section_title">Ваш аккаунт</string>
+    <string name="settings_account_emoji_clan_title">Эмодзи-клан</string>
+    <string name="settings_account_emoji_clan_desc">Выбран при регистрации. Изменить нельзя</string>
+    <string name="settings_account_display_name_hint">Имя</string>
+    <string name="settings_account_username_hint">Username</string>
+    <string name="settings_account_bio_hint">О себе</string>
 </resources>

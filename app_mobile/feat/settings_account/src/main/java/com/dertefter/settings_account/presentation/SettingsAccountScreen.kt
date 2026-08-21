@@ -76,7 +76,7 @@ fun SettingsAccountScreen(
                 ) {
                     Icon(
                         Icons.Save,
-                        contentDescription = "Сохранить"
+                        contentDescription = stringResource(R.string.settings_account_save)
                     )
                 }
             }
@@ -104,7 +104,7 @@ fun SettingsAccountScreen(
 
                 item{
                     SegmentedColumn(
-                        title = "Ваш аккаунт"
+                        title = stringResource(R.string.settings_account_section_title)
                     ){
                         item{
                             Row(
@@ -115,10 +115,10 @@ fun SettingsAccountScreen(
                                     modifier = Modifier.weight(1f),
                                 ){
                                     Text(
-                                        text = "Эмодзи-клан"
+                                        text = stringResource(R.string.settings_account_emoji_clan_title)
                                     )
                                     Text(
-                                        text = "Выбран при регистрации. Изменить нельзя",
+                                        text = stringResource(R.string.settings_account_emoji_clan_desc),
                                         style = MaterialTheme.typography.labelMedium
                                     )
                                 }
@@ -135,7 +135,7 @@ fun SettingsAccountScreen(
                         ){
                             TextFieldItem(
                                 value = uiState.displayNameInput,
-                                hint = "Имя",
+                                hint = stringResource(R.string.settings_account_display_name_hint),
                                 onValueChange = { onEvent(Event.OnDisplayNameChange(it)) }
                             )
                         }
@@ -145,7 +145,7 @@ fun SettingsAccountScreen(
                         ){
                             TextFieldItem(
                                 value = uiState.usernameInput,
-                                hint = "Username",
+                                hint = stringResource(R.string.settings_account_username_hint),
                                 onValueChange = { onEvent(Event.OnUsernameChange(it)) }
                             )
                         }
@@ -155,7 +155,7 @@ fun SettingsAccountScreen(
                         ){
                             TextFieldItem(
                                 value = uiState.bioInput,
-                                hint = "О себе",
+                                hint = stringResource(R.string.settings_account_bio_hint),
                                 onValueChange = { onEvent(Event.OnBioChange(it)) },
                                 singleLine = false
                             )
