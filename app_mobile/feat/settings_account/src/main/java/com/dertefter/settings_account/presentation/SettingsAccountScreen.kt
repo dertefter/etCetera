@@ -21,6 +21,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dertefter.data.dto.me.MeDto
 import com.dertefter.data.dto.user.VisibilityDto
+import com.dertefter.design.components.PullToRefreshIndicator
 import com.dertefter.design.components.avatar.EmojiAvatar
 import com.dertefter.design.components.buttons.AppNavigationIcon
 import com.dertefter.design.components.lists.SegmentedColumn
@@ -48,8 +51,24 @@ fun SettingsAccountScreen(
     onEvent: (Event) -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val pullToRefreshState = rememberPullToRefreshState()
 
-    Scaffold(
+    PullToRefreshBox(
+        modifier = Modifier.fillMaxSize(),
+        state = pullToRefreshState,
+        isRefreshing = uiState.isLoading || uiState.me == null,
+        onRefresh = {
+            onEvent(Event.OnRefresh)
+        },
+        indicator = {
+            PullToRefreshIndicator(
+                modifier = Modifier.align(Alignment.TopCenter),
+                state = pullToRefreshState,
+                isRefreshing = uiState.isLoading || uiState.me == null
+            )
+        }
+    ) {
+        Scaffold(
         topBar = {
             LargeFlexibleTopAppBar(
                 title = {
@@ -92,8 +111,6 @@ fun SettingsAccountScreen(
             end = contentPadding.calculateEndPadding(LocalLayoutDirection.current) + MaterialTheme.spacing.defaultScreenPadding
         )
 
-
-        uiState.me?.let { me ->
             LazyColumn(
                 modifier = Modifier
                     .nestedScroll(scrollBehavior.nestedScrollConnection)
@@ -102,75 +119,81 @@ fun SettingsAccountScreen(
                 contentPadding = contentPadding
             ) {
 
-                item{
-                    SegmentedColumn(
-                        title = stringResource(R.string.settings_account_section_title)
-                    ){
-                        item{
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically
-                            ){
-                                Column(
-                                    modifier = Modifier.weight(1f),
+                uiState.me?.let { me ->
+                    item{
+                        SegmentedColumn(
+                            title = stringResource(R.string.settings_account_section_title)
+                        ){
+                            item{
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large)
                                 ){
-                                    Text(
-                                        text = stringResource(R.string.settings_account_emoji_clan_title)
-                                    )
-                                    Text(
-                                        text = stringResource(R.string.settings_account_emoji_clan_desc),
-                                        style = MaterialTheme.typography.labelMedium
+                                    Column(
+                                        modifier = Modifier.weight(1f),
+                                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+                                    ){
+                                        Text(
+                                            text = stringResource(R.string.settings_account_emoji_clan_title)
+                                        )
+                                        Text(
+                                            text = stringResource(R.string.settings_account_emoji_clan_desc),
+                                            style = MaterialTheme.typography.labelMedium
+                                        )
+                                    }
+                                    EmojiAvatar(
+                                        emoji = me.avatar,
+                                        containerSize = 48.dp,
+                                        fontSize = 18.sp
                                     )
                                 }
-                                EmojiAvatar(
-                                    emoji = me.avatar,
-                                    containerSize = 44.dp,
-                                    fontSize = 16.sp
+                            }
+
+                            item(
+                                itemInnerPadding = PaddingValues()
+                            ){
+                                TextFieldItem(
+                                    value = uiState.displayNameInput,
+                                    hint = stringResource(R.string.settings_account_display_name_hint),
+                                    onValueChange = { onEvent(Event.OnDisplayNameChange(it)) },
+                                    enabled = !uiState.isLoading
                                 )
                             }
+
+                            item(
+                                itemInnerPadding = PaddingValues()
+                            ){
+                                TextFieldItem(
+                                    value = uiState.usernameInput,
+                                    hint = stringResource(R.string.settings_account_username_hint),
+                                    onValueChange = { onEvent(Event.OnUsernameChange(it)) },
+                                    enabled = !uiState.isLoading
+                                )
+                            }
+
+                            item(
+                                itemInnerPadding = PaddingValues()
+                            ){
+                                TextFieldItem(
+                                    value = uiState.bioInput,
+                                    hint = stringResource(R.string.settings_account_bio_hint),
+                                    onValueChange = { onEvent(Event.OnBioChange(it)) },
+                                    singleLine = false,
+                                    enabled = !uiState.isLoading
+                                )
+                            }
+
+
+
                         }
-
-                        item(
-                            itemInnerPadding = PaddingValues()
-                        ){
-                            TextFieldItem(
-                                value = uiState.displayNameInput,
-                                hint = stringResource(R.string.settings_account_display_name_hint),
-                                onValueChange = { onEvent(Event.OnDisplayNameChange(it)) }
-                            )
-                        }
-
-                        item(
-                            itemInnerPadding = PaddingValues()
-                        ){
-                            TextFieldItem(
-                                value = uiState.usernameInput,
-                                hint = stringResource(R.string.settings_account_username_hint),
-                                onValueChange = { onEvent(Event.OnUsernameChange(it)) }
-                            )
-                        }
-
-                        item(
-                            itemInnerPadding = PaddingValues()
-                        ){
-                            TextFieldItem(
-                                value = uiState.bioInput,
-                                hint = stringResource(R.string.settings_account_bio_hint),
-                                onValueChange = { onEvent(Event.OnBioChange(it)) },
-                                singleLine = false
-                            )
-                        }
-
-
-
                     }
                 }
 
             }
-        }
 
 
-
+    }
     }
 }
 
