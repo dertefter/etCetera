@@ -53,7 +53,7 @@ fun SettingsScreen(
             title = stringResource(R.string.settings_section_account),
             settingsItems = listOf(
                 SettingsItem(
-                    title = stringResource(R.string.settings_account), icon = Icons.UserFilled, route = Routes.Settings
+                    title = stringResource(R.string.settings_account), icon = Icons.UserFilled, route = Routes.SettingsAccount
                 ), SettingsItem(
                     title = stringResource(R.string.settings_billing),
                     icon = Icons.AccountBalanceWalletFilled,
@@ -151,10 +151,10 @@ fun SettingsScreen(
              ) {
                      itemsIndexed(
                          items = section.settingsItems,
-                         onClick = { _, _ ->
+                         onClick = { _, item ->
                              onEvent(
                                  Event.OnNavigateTo(
-                                     Routes.SettingsTheme
+                                     item.route
                                  )
                              )
                          }
