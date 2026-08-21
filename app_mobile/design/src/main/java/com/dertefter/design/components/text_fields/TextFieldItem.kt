@@ -151,7 +151,7 @@ fun TextFieldItem(
                         }
                     },
                     textStyle = MaterialTheme.typography.titleMedium.copy(
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurface
                     ),
                     cursorBrush = SolidColor(contentColor),
                     visualTransformation = visualTransformation,
