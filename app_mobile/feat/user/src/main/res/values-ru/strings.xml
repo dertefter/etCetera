@@ -25,4 +25,23 @@
     <string name="user_switch_account">Сменить аккаунт</string>
     <string name="user_share_profile_url">https://итд.com/@%1$s</string>
     <string name="user_edit_banner">Изменить баннер</string>
+    <string name="user_last_seen_prefix">Был(а) в сети: </string>
+    <string name="user_last_seen_just_now">только что</string>
+    <plurals name="user_last_seen_minutes">
+        <item quantity="one">%1$d минуту назад</item>
+        <item quantity="few">%1$d минуты назад</item>
+        <item quantity="many">%1$d минут назад</item>
+        <item quantity="other">%1$d минут назад</item>
+    </plurals>
+    <plurals name="user_last_seen_hours">
+        <item quantity="one">%1$d час назад</item>
+        <item quantity="few">%1$d часа назад</item>
+        <item quantity="many">%1$d часов назад</item>
+        <item quantity="other">%1$d часов назад</item>
+    </plurals>
+    <string name="user_last_seen_recently">недавно</string>
+    <string name="user_last_seen_this_week">на этой неделе</string>
+    <string name="user_last_seen_this_month">в этом месяце</string>
+    <string name="user_last_seen_long_ago">давно</string>
+    <string name="user_online">В сети</string>
 </resources>

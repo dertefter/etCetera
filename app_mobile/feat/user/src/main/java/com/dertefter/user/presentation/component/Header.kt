@@ -1,6 +1,8 @@
 package com.dertefter.user.presentation.component
 
 import android.content.res.Configuration
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
@@ -23,12 +26,15 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.dertefter.data.dto.user.LastSeenDto
 import com.dertefter.design.components.avatar.DisplayName
 import com.dertefter.design.components.avatar.EmojiAvatar
 import com.dertefter.design.components.buttons.AppNavigationIcon
@@ -37,6 +43,7 @@ import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
 import com.dertefter.user.R
+import com.dertefter.user.presentation.mapper.toPresentationString
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import kotlin.math.absoluteValue
@@ -57,7 +64,11 @@ fun Header(
     followingCount: Int? = null,
     onFollowersClick: () -> Unit,
     onFollowingClock: () -> Unit,
+    lastSeenDto: LastSeenDto? = null,
+    isOnline: Boolean = false,
 ){
+
+    val context = LocalContext.current
 
     val hazeState = rememberHazeState()
 
@@ -124,6 +135,7 @@ fun Header(
                 rotation = rotation,
                 containerSize = avatarSize,
                 fontSize = 36.sp,
+                isOnline = isOnline
             )
         }
 
@@ -141,10 +153,43 @@ fun Header(
            modifier = Modifier.padding(top = MaterialTheme.spacing.extraSmall)
        )
 
+       val lastSeenText = if (!isMe && !isOnline) {
+           lastSeenDto.toPresentationString(context, false)
+       } else if (!isMe) {
+           stringResource(R.string.user_online)
+       } else {
+           null
+       }
+
+       val color by animateColorAsState(
+           if (isOnline){
+               MaterialTheme.colorScheme.tertiary
+           }else {
+               MaterialTheme.colorScheme.outline
+           }
+       )
+
+       val fontWeight by animateIntAsState(
+           if (isOnline){
+               600
+           }else {
+               400
+           }
+       )
+
+       if (lastSeenText != null) {
+           Text(
+               text = lastSeenText,
+               style = MaterialTheme.typography.bodyMedium,
+               color = color,
+               fontWeight = FontWeight(fontWeight),
+               modifier = Modifier.padding(vertical = MaterialTheme.spacing.medium)
+           )
+       }
+
        Row(
            modifier = Modifier
-               .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
-               .padding(bottom = MaterialTheme.spacing.large),
+               .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.defaultScreenPadding)
        ) {
            followersCount?.let { followersCount ->
@@ -189,6 +234,9 @@ fun HeaderPreview() {
                 verified = true,
                 pin = null,
             ),
+            isMe = false,
+            isOnline = true,
+            followersCount = 1,
             onFollowersClick = {},
             onFollowingClock = {},
         )

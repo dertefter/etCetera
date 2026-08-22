@@ -1,11 +1,14 @@
 package com.dertefter.user.presentation.component
 
 import android.content.res.Configuration
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
@@ -23,12 +27,15 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.dertefter.data.dto.user.LastSeenDto
 import com.dertefter.design.components.avatar.DisplayName
 import com.dertefter.design.components.avatar.EmojiAvatar
 import com.dertefter.design.components.buttons.AppNavigationIcon
@@ -38,6 +45,7 @@ import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.rounding
 import com.dertefter.design.theme.spacing
 import com.dertefter.user.R
+import com.dertefter.user.presentation.mapper.toPresentationString
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import kotlin.math.absoluteValue
@@ -58,8 +66,11 @@ fun HeaderWide(
     followingCount: Int? = null,
     onFollowersClick: () -> Unit,
     onFollowingClock: () -> Unit,
+    lastSeenDto: LastSeenDto? = null,
+    isOnline: Boolean = false,
 ){
 
+    val context = LocalContext.current
     val hazeState = rememberHazeState()
 
     val scrollFraction = if (scrollBehavior != null){
@@ -114,10 +125,12 @@ fun HeaderWide(
                     }
                 }
             }
-            
 
-            Box(
-                modifier = Modifier.fillMaxWidth()
+
+            FlowRow(
+                modifier = Modifier.fillMaxWidth(),
+                itemVerticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ){
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -149,12 +162,44 @@ fun HeaderWide(
                             color = MaterialTheme.colorScheme.secondary,
                             modifier = Modifier.padding(top = MaterialTheme.spacing.extraSmall)
                         )
+                        val lastSeenText = if (!isMe && !isOnline) {
+                            lastSeenDto.toPresentationString(context, false)
+                        } else if (!isMe) {
+                            stringResource(R.string.user_online)
+                        } else {
+                            null
+                        }
+
+                        val color by animateColorAsState(
+                            if (isOnline){
+                                MaterialTheme.colorScheme.tertiary
+                            }else {
+                                MaterialTheme.colorScheme.outline
+                            }
+                        )
+
+                        val fontWeight by animateIntAsState(
+                            if (isOnline){
+                                600
+                            }else {
+                                400
+                            }
+                        )
+
+                        if (lastSeenText != null) {
+                            Text(
+                                text = lastSeenText,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = color,
+                                fontWeight = FontWeight(fontWeight),
+                                modifier = Modifier.padding(top = MaterialTheme.spacing.extraSmall)
+                            )
+                        }
                     }
                 }
 
                 Row(
                     modifier = Modifier
-                        .align(Alignment.CenterEnd)
                         .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
                     horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.defaultScreenPadding),
                     verticalAlignment = Alignment.CenterVertically
@@ -206,7 +251,8 @@ fun HeaderWidePrev() {
                 verified = true,
                 pin = null,
             ),
-            isMe = true,
+            isMe = false,
+            lastSeenDto = LastSeenDto.JustNow,
             onFollowingClock = {},
             onFollowersClick = {},
             followingCount = 1,

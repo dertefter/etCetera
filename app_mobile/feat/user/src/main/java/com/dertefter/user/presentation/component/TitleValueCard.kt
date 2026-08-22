@@ -41,7 +41,7 @@ fun TitleValueCard(
         modifier = modifier
             .clip(MaterialTheme.shapes.medium)
             .clickable(onClick = onClick)
-            .padding(MaterialTheme.spacing.large),
+            .padding(MaterialTheme.spacing.small),
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -60,7 +60,7 @@ fun TitleValueCard(
         ) { count ->
             Text(
                 text = count.PrettifyInt(),
-                style = MaterialTheme.typography.headlineLargeEmphasized,
+                style = MaterialTheme.typography.headlineMediumEmphasized,
                 color = MaterialTheme.colorScheme.primary
             )
         }

@@ -25,4 +25,19 @@
     <string name="user_switch_account">Switch account</string>
     <string name="user_share_profile_url">https://итд.com/@%1$s</string>
     <string name="user_edit_banner">Edit banner</string>
+    <string name="user_last_seen_prefix">Last seen: </string>
+    <string name="user_last_seen_just_now">just now</string>
+    <plurals name="user_last_seen_minutes">
+        <item quantity="one">%1$d minute ago</item>
+        <item quantity="other">%1$d minutes ago</item>
+    </plurals>
+    <plurals name="user_last_seen_hours">
+        <item quantity="one">%1$d hour ago</item>
+        <item quantity="other">%1$d hours ago</item>
+    </plurals>
+    <string name="user_last_seen_recently">recently</string>
+    <string name="user_last_seen_this_week">this week</string>
+    <string name="user_last_seen_this_month">this month</string>
+    <string name="user_last_seen_long_ago">long ago</string>
+    <string name="user_online">Online</string>
 </resources>

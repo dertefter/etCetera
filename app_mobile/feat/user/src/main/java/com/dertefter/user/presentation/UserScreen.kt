@@ -13,25 +13,21 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonGroup
 import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.DropdownMenuItem
@@ -54,11 +50,8 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
@@ -67,7 +60,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontVariation
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -91,7 +83,6 @@ import com.dertefter.user.presentation.component.Header
 import com.dertefter.user.presentation.component.HeaderWide
 import com.dertefter.user.presentation.mapper.toUiModel
 import com.jamal_aliev.paginator.compose.cursor.rememberPaginated
-import com.jamal_aliev.paginator.core.extension.isProgressState
 import com.jamal_aliev.paginator.core.page.PaginatorUiState
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
 import kotlinx.coroutines.delay
@@ -413,6 +404,8 @@ fun UserScreen(
                                 },
                                 followersCount = userUiState.userDto.followersCount,
                                 followingCount = userUiState.userDto.followingCount,
+                                lastSeenDto = userUiState.userDto.lastSeen,
+                                isOnline = userUiState.userDto.online
                             )
                         }else{
                             Header(
@@ -438,11 +431,13 @@ fun UserScreen(
                                 },
                                 followersCount = userUiState.userDto.followersCount,
                                 followingCount = userUiState.userDto.followingCount,
-
+                                lastSeenDto = userUiState.userDto.lastSeen,
+                                isOnline = userUiState.userDto.online
                             )
                         }
 
                     }
+
 
                     if (
                         userUiState.isMe || !userUiState.userDto.bio.isNullOrEmpty()
@@ -451,7 +446,7 @@ fun UserScreen(
                             BioCard(
                                 modifier = Modifier
                                     .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
-                                    .padding(bottom = MaterialTheme.spacing.large),
+                                    .padding(vertical = MaterialTheme.spacing.large),
                                 canEdit = userUiState.isMe,
                                 bio = userUiState.userDto.bio ?: "",
                                 onSaveClick = {
