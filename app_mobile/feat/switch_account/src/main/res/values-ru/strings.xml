@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="user_select_account">Выберите аккаунт</string>
-    <string name="user_add_account">Добавить аккаунт</string>
+    <string name="switch_acount_select_account">Выберите аккаунт</string>
+    <string name="switch_acount_add_account">Добавить аккаунт</string>
+    <string name="switch_acount_remove_from_history">Удалить из истории</string>
 </resources>

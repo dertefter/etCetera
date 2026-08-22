@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="user_select_account">Select account</string>
-    <string name="user_add_account">Add account</string>
+    <string name="switch_acount_select_account">Select account</string>
+    <string name="switch_acount_add_account">Add account</string>
+    <string name="switch_acount_remove_from_history">Remove from history</string>
 </resources>

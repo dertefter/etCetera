@@ -2,10 +2,14 @@
 <resources>
     <string name="settings_account_title">Account</string>
     <string name="settings_account_save">Save</string>
+    <string name="settings_account_info_section_title">Account info</string>
     <string name="settings_account_section_title">Your account</string>
     <string name="settings_account_emoji_clan_title">Emoji clan</string>
     <string name="settings_account_emoji_clan_desc">Selected during registration. Cannot be changed</string>
     <string name="settings_account_display_name_hint">Display name</string>
     <string name="settings_account_username_hint">Username</string>
     <string name="settings_account_bio_hint">Bio</string>
+    <string name="settings_account_logged_in_as">You are logged in as:</string>
+    <string name="settings_account_switch_account">Switch account</string>
+    <string name="settings_account_logout">Logout</string>
 </resources>

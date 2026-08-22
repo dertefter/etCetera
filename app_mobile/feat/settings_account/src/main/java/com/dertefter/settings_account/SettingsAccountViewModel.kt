@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dertefter.data.repository.MeRepository
 import com.dertefter.data.dto.me.UpdateMeRequestDto
+import com.dertefter.data.repository.AuthRepository
 import com.dertefter.navigation.Navigator
+import com.dertefter.navigation.Routes
 import com.dertefter.settings_account.presentation.Event
 import com.dertefter.settings_account.presentation.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,28 +21,35 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsAccountViewModel @Inject constructor(
     private val navigator: Navigator,
-    private val meRepository: MeRepository
+    private val meRepository: MeRepository,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _me = meRepository.meDto
     private val _isLoading = MutableStateFlow(false)
+
+    private val _currentLogin = authRepository.currentLogin
+
     private val _displayName = MutableStateFlow("")
     private val _username = MutableStateFlow("")
     private val _bio = MutableStateFlow("")
 
     val uiState = combine(
+        _currentLogin,
         _me,
         _isLoading,
-        _displayName,
-        _username,
-        _bio
-    ) { me, isLoading, displayName, username, bio ->
+        combine(_displayName, _username, _bio) { displayName, username, bio ->
+            Triple(displayName, username, bio)
+        }
+    ) { currentLogin, me, isLoading, inputs ->
+        val (displayName, username, bio) = inputs
         val canSave = !isLoading && me != null && (
                 displayName != me.displayName ||
                         username != me.username ||
                         bio != (me.bio ?: "")
                 )
         UiState(
+            currentLogin = currentLogin,
             me = me,
             isLoading = isLoading,
             canSave = canSave,
@@ -69,6 +78,14 @@ class SettingsAccountViewModel @Inject constructor(
 
     fun onEvent(event: Event) {
         when (event) {
+
+            is Event.OnOpenSwitchAccount -> {
+                navigator.openAsBottomSheet(
+                    Routes.SwitchAccount
+                )
+            }
+
+
             is Event.OnRefresh -> {
                 fetchMe()
             }

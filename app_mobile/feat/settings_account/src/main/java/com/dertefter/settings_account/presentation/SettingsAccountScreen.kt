@@ -3,6 +3,7 @@ package com.dertefter.settings_account.presentation
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,7 +12,9 @@ import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingActionButton
@@ -20,12 +23,14 @@ import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
@@ -119,10 +124,75 @@ fun SettingsAccountScreen(
                 contentPadding = contentPadding
             ) {
 
-                uiState.me?.let { me ->
+                uiState.currentLogin?.let { currentLogin ->
                     item{
                         SegmentedColumn(
                             title = stringResource(R.string.settings_account_section_title)
+                        ){
+                            item(
+                                itemInnerPadding = PaddingValues()
+                            ){
+                                Column{
+
+                                    Text(
+                                        currentLogin,
+                                        style = MaterialTheme.typography.titleMediumEmphasized,
+                                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        modifier = Modifier
+                                            .padding(
+                                            start = MaterialTheme.spacing.large,
+                                            end = MaterialTheme.spacing.large,
+                                            top = MaterialTheme.spacing.large
+                                        )
+                                            .clip(MaterialTheme.shapes.medium)
+                                            .background(MaterialTheme.colorScheme.secondaryContainer)
+                                            .padding(MaterialTheme.spacing.large)
+                                            .fillMaxWidth()
+                                        ,
+                                    )
+
+                                    Row(
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
+                                        TextButton(
+                                            contentPadding = PaddingValues(MaterialTheme.spacing.extraLarge),
+                                            onClick = {
+                                                onEvent(
+                                                    Event.OnOpenSwitchAccount
+                                                )
+                                            },
+                                        ){
+                                            Text(
+                                                stringResource(R.string.settings_account_switch_account)
+                                            )
+                                        }
+
+                                        TextButton(
+                                            contentPadding = PaddingValues(MaterialTheme.spacing.extraLarge),
+                                            onClick = {},
+                                            colors = ButtonDefaults.textButtonColors(
+                                                contentColor = MaterialTheme.colorScheme.error
+                                            )
+                                        ){
+                                            Text(
+                                                stringResource(R.string.settings_account_logout)
+                                            )
+                                        }
+                                    }
+
+                                }
+
+
+                            }
+                        }
+                    }
+                }
+
+                uiState.me?.let { me ->
+                    item{
+                        SegmentedColumn(
+                            title = stringResource(R.string.settings_account_info_section_title)
                         ){
                             item{
                                 Row(
@@ -225,7 +295,8 @@ fun SettingsAccountScreenPreview() {
                 isLoading = false,
                 displayNameInput = "Display Name",
                 usernameInput = "username",
-                bioInput = "Bio"
+                bioInput = "Bio",
+                currentLogin = "fjfjfj"
             ),
             onEvent = {}
         )

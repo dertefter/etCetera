@@ -46,7 +46,7 @@ fun SwitchAccountScreen(
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
     ) {
         Text(
-            text = stringResource(R.string.user_select_account),
+            text = stringResource(R.string.switch_acount_select_account),
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.padding(bottom = MaterialTheme.spacing.small)
         )
@@ -105,7 +105,7 @@ fun SwitchAccountScreen(
                         ) {
                             Icon(
                                 imageVector = Icons.Delete,
-                                contentDescription = "Удалить аккаунт из истории",
+                                contentDescription = stringResource(R.string.switch_acount_remove_from_history),
                             )
                         }
                     }
@@ -124,7 +124,7 @@ fun SwitchAccountScreen(
         ) {
             Icon(Icons.Add, contentDescription = null)
             Spacer(Modifier.width(MaterialTheme.spacing.small))
-            Text(stringResource(R.string.user_add_account))
+            Text(stringResource(R.string.switch_acount_add_account))
         }
     }
 }
