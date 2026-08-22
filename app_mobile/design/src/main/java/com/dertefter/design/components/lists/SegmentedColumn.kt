@@ -6,12 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.ListItemDefaults
-import androidx.compose.material3.ListItemShapes
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -19,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.rounding
 import com.dertefter.design.theme.spacing
@@ -117,7 +111,6 @@ fun SegmentedColumn(
     )
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun SegmentedColumnImpl(
     modifier: Modifier = Modifier,
@@ -149,72 +142,14 @@ private fun SegmentedColumnImpl(
         }
 
         scope.listItems.forEachIndexed { index, (itemOnClick, itemContent, perItemPadding) ->
-            SegmentedListItem(
+            SegmentedContentItem(
                 onClick = itemOnClick,
-                colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
-                shapes = segmentedListItemShapes(index, scope.listItems.size),
+                index = index,
+                count = scope.listItems.size,
                 content = itemContent,
                 contentPadding = perItemPadding ?: itemInnerPadding
             )
         }
-    }
-}
-
-@Composable
-private fun segmentedListItemShapes(
-    index: Int,
-    count: Int
-): ListItemShapes {
-    val rounding = MaterialTheme.rounding
-    val segmentRadius = rounding.small
-    val edgeRadius = rounding.largeIncreased
-    val interactiveRadius = rounding.largeIncreased
-
-    return remember(index, count, segmentRadius, edgeRadius, interactiveRadius) {
-        val topRadius = if (index == 0) edgeRadius else segmentRadius
-        val bottomRadius = if (index == count - 1) edgeRadius else segmentRadius
-
-        val interactiveTopRadius = if (index == 0) interactiveRadius else segmentRadius
-        val interactiveBottomRadius = if (index == count - 1) interactiveRadius else segmentRadius
-
-        ListItemShapes(
-            shape = RoundedCornerShape(
-                topStart = topRadius,
-                topEnd = topRadius,
-                bottomEnd = bottomRadius,
-                bottomStart = bottomRadius
-            ),
-            selectedShape = RoundedCornerShape(
-                topStart = interactiveTopRadius,
-                topEnd = interactiveTopRadius,
-                bottomEnd = interactiveBottomRadius,
-                bottomStart = interactiveBottomRadius
-            ),
-            pressedShape = RoundedCornerShape(
-                topStart = interactiveTopRadius,
-                topEnd = interactiveTopRadius,
-                bottomEnd = interactiveBottomRadius,
-                bottomStart = interactiveBottomRadius
-            ),
-            focusedShape = RoundedCornerShape(
-                topStart = interactiveTopRadius,
-                topEnd = interactiveTopRadius,
-                bottomEnd = interactiveBottomRadius,
-                bottomStart = interactiveBottomRadius
-            ),
-            hoveredShape = RoundedCornerShape(
-                topStart = interactiveTopRadius,
-                topEnd = interactiveTopRadius,
-                bottomEnd = interactiveBottomRadius,
-                bottomStart = interactiveBottomRadius
-            ),
-            draggedShape = RoundedCornerShape(
-                topStart = interactiveTopRadius,
-                topEnd = interactiveTopRadius,
-                bottomEnd = interactiveBottomRadius,
-                bottomStart = interactiveBottomRadius
-            )
-        )
     }
 }
 
