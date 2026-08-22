@@ -2,24 +2,29 @@ package com.dertefter.design.components.avatar
 
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.util.LruCache
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Badge
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -48,15 +53,14 @@ import androidx.palette.graphics.Palette
 import com.dertefter.design.components.common.RoundedPolygonShape
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.EmojiAvatarHarmonizationColor
-import com.dertefter.design.theme.customColors
 import com.dertefter.design.theme.emojiAvatarHarmonizeColor
 import com.dertefter.design.theme.spacing
-import com.materialkolor.PaletteStyle
-import com.materialkolor.dynamiccolor.ColorSpec
 import com.materialkolor.ktx.harmonize
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.random.Random
+
+private val EmojiColorCache = LruCache<String, Color>(200)
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -64,16 +68,14 @@ fun EmojiAvatar(
     modifier: Modifier = Modifier,
     emoji: String,
     containerSize: Dp = 52.dp,
-    staticShape:  RoundedPolygon? = null,
-    strokeColor: Color = Color.Transparent,
-    strokeWidth: Dp = 2.dp,
     fontSize: TextUnit = 20.sp,
     rotation: Float = 0f,
     onClick: () -> Unit = {},
+    isOnline: Boolean = false
 ) {
 
     val targetColor by animateColorAsState(
-        when (MaterialTheme.emojiAvatarHarmonizeColor){
+        when (MaterialTheme.emojiAvatarHarmonizeColor) {
             EmojiAvatarHarmonizationColor.PRIMARY -> MaterialTheme.colorScheme.primary
             EmojiAvatarHarmonizationColor.SECONDARY -> MaterialTheme.colorScheme.secondary
             EmojiAvatarHarmonizationColor.TERTIARY -> MaterialTheme.colorScheme.tertiary
@@ -97,74 +99,110 @@ fun EmojiAvatar(
         )
     }
 
-    val harmonizedBgColor = remember(baseEmojiColor, targetBgColor) {
-        val color = baseEmojiColor ?: return@remember fallbackColor
-        if (color == Color.Transparent) fallbackColor
-        else color.harmonize(targetBgColor, matchSaturation = true)
+    val harmonizedBgColor by remember(baseEmojiColor, targetBgColor, fallbackColor) {
+        derivedStateOf {
+            val color = baseEmojiColor ?: return@derivedStateOf fallbackColor
+            if (color == Color.Transparent) fallbackColor
+            else color.harmonize(targetBgColor, matchSaturation = true)
+        }
     }
 
-    val harmonizedShadowColor = remember(baseEmojiColor, targetShadowColor) {
-        val color = baseEmojiColor ?: return@remember fallbackColor
-        if (color == Color.Transparent) fallbackColor
-        else color.harmonize(targetShadowColor, matchSaturation = true)
+    val harmonizedShadowColor by remember(baseEmojiColor, targetShadowColor, fallbackColor) {
+        derivedStateOf {
+            val color = baseEmojiColor ?: return@derivedStateOf fallbackColor
+            if (color == Color.Transparent) fallbackColor
+            else color.harmonize(targetShadowColor, matchSaturation = true)
+        }
     }
 
-    val polygon = remember(emoji, staticShape) {
-        staticShape ?: getEmojiPolygon(emoji)
+
+
+    val polygonParameters = remember(emoji) { getEmojiPolygonParameters(emoji) }
+
+    val polygon = remember(polygonParameters) {
+        RoundedPolygon.star(
+            numVerticesPerRadius = polygonParameters.first,
+            innerRadius = polygonParameters.second,
+            rounding = CornerRounding(polygonParameters.third)
+        )
     }
 
-    val clip = remember(polygon, rotation) {
-        RoundedPolygonShape(polygon = polygon, rotation = rotation)
+    val clip = remember(polygon) {
+        RoundedPolygonShape(polygon = polygon)
     }
 
-    Box(
-        modifier = modifier
-            .clickable(onClick = onClick)
-            .graphicsLayer {
-                this.shape = clip
-                this.clip = true
-            }
-            .size(containerSize)
-            .border(
-                shape = clip,
-                color = strokeColor,
-                width = strokeWidth
-            )
-            .background(harmonizedBgColor),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = emoji,
-            maxLines = 1,
-            fontSize = fontSize,
-            modifier = Modifier,
-            textAlign = TextAlign.Center,
-            style = TextStyle(
-                shadow = Shadow(
-                    color = harmonizedShadowColor.copy(alpha = 0.6f),
-                    blurRadius = 12f
-                )
+
+    val textStyle = remember(harmonizedShadowColor) {
+        TextStyle(
+            shadow = Shadow(
+                color = harmonizedShadowColor,
+                blurRadius = 16f
             )
         )
     }
+
+    val interactionSource = remember { MutableInteractionSource() }
+
+    Box(
+        modifier = modifier
+    ){
+        Box(
+            modifier = Modifier
+                .size(containerSize)
+                .graphicsLayer { rotationZ = rotation }
+                .clip(clip)
+                .clickable(
+                    onClick = onClick,
+                    indication = ripple(
+                        color = baseEmojiColor ?: MaterialTheme.colorScheme.outline
+                    ),
+                    interactionSource = interactionSource
+                )
+                .background(harmonizedBgColor),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = emoji,
+                maxLines = 1,
+                fontSize = fontSize,
+                modifier = Modifier.graphicsLayer { rotationZ = -rotation },
+                textAlign = TextAlign.Center,
+                style = textStyle
+            )
+        }
+
+
+        AnimatedVisibility(
+            visible = isOnline,
+            modifier = Modifier
+                .align(
+                    Alignment.BottomEnd
+                )
+                .padding(MaterialTheme.spacing.medium)
+        ) {
+            Badge {}
+        }
+    }
+
+
+
+
 }
 
-private fun getEmojiPolygon(emoji: String): RoundedPolygon {
+
+private fun getEmojiPolygonParameters(emoji: String): Triple<Int, Float, Float> {
     val random = Random(emoji.hashCode().toLong())
-    val numVertices = (random.nextInt(4) + 2) * 2 // 4, 6, 8, 10
-    val innerRadius = 0.2f + random.nextFloat() * 0.4f // 0.2f to 0.6f
-    val rounding = 0.1f + random.nextFloat() * 0.6f // 0.1f to 0.7f
-    return RoundedPolygon.star(
-        numVerticesPerRadius = numVertices,
-        innerRadius = innerRadius,
-        rounding = CornerRounding(rounding)
-    )
+    val numVertices = (random.nextInt(3) + 7)
+    val innerRadius = 0.2f + random.nextFloat() * 0.5f
+    val rounding = 0.2f + random.nextFloat() * 0.5f
+    return Triple(numVertices,innerRadius,rounding)
 }
 
 private suspend fun extractEmojiColor(
     emoji: String,
     defaultColorInt: Int
 ): Color = withContext(Dispatchers.Default) {
+    EmojiColorCache.get(emoji)?.let { return@withContext it }
     val colorInt = runCatching {
         val size = 16
         val bitmap = createBitmap(size, size)
@@ -183,14 +221,15 @@ private suspend fun extractEmojiColor(
         palette.getVibrantColor(
             palette.getDominantColor(
                 palette.getMutedColor(
-                    palette.getDarkVibrantColor( defaultColorInt )
+                    palette.getDarkVibrantColor(defaultColorInt)
                 )
             )
         )
     }.getOrDefault(defaultColorInt)
-    Color(colorInt)
+    val result = Color(colorInt)
+    EmojiColorCache.put(emoji, result)
+    result
 }
-
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Preview
@@ -204,7 +243,7 @@ fun PreviewAv() {
         darkTheme = darkTheme,
     ) {
         val emojiList = listOf(
-            "🌏", "🪲", "⚙️", "😍", "🖼️", "❤️", "😆", "🔥", "🌈", "🍎", "⚽", "🚗", "📱", "💻", "⌚",
+            "🖼️", "🪲", "⚙️", "😍", "🖼️", "❤️", "😆", "🔥", "🌈", "🍎", "⚽", "🚗", "📱", "💻", "⌚",
             "🎧", "📷", "💡", "🔑", "🎁", "🎈", "🎉", "🎨", "🎭", "🎮", "🎲", "🎯", "🎳"
         )
 
@@ -216,7 +255,7 @@ fun PreviewAv() {
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large)
-        ){
+        ) {
             EmojiAvatar(
                 emoji = emojiList[currentEmojiIndex],
                 rotation = rotation,

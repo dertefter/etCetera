@@ -1,7 +1,6 @@
 package com.dertefter.design.components.common
 
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Matrix
 import androidx.compose.ui.graphics.Outline
@@ -11,30 +10,35 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.graphics.shapes.RoundedPolygon
 import androidx.graphics.shapes.toPath
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
-fun RoundedPolygon.getBounds() = calculateBounds().let { Rect(it[0], it[1], it[2], it[3]) }
 class RoundedPolygonShape(
-    private val polygon: RoundedPolygon,
-    private var matrix: Matrix = Matrix(),
-    private val rotation: Float = 0f
+    private val polygon: RoundedPolygon
 ) : Shape {
-    private var path = Path()
+    private val basePath = polygon.toPath().asComposePath()
+    private val matrix = Matrix()
+    private val transformedPath = Path()
+
     override fun createOutline(
         size: Size,
         layoutDirection: LayoutDirection,
         density: Density
     ): Outline {
-        path.rewind()
-        path = polygon.toPath().asComposePath()
+        val bounds = polygon.calculateBounds()
+        val maxAbsX = max(abs(bounds[0]), abs(bounds[2]))
+        val maxAbsY = max(abs(bounds[1]), abs(bounds[3]))
+        val scale = min(size.width / (2 * maxAbsX), size.height / (2 * maxAbsY))
+
         matrix.reset()
-        val bounds = polygon.getBounds()
-        val maxDimension = max(bounds.width, bounds.height)
-        matrix.scale(size.width / maxDimension, size.height / maxDimension)
-        matrix.translate(-bounds.left, -bounds.top)
-        matrix.rotateZ(rotation)
-        path.transform(matrix)
-        return Outline.Generic(path)
+        matrix.translate(size.width / 2f, size.height / 2f)
+        matrix.scale(scale, scale)
+
+        transformedPath.rewind()
+        transformedPath.addPath(basePath)
+        transformedPath.transform(matrix)
+
+        return Outline.Generic(transformedPath)
     }
 }

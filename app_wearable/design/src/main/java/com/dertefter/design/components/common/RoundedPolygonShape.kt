@@ -1,6 +1,6 @@
 package com.dertefter.design.components.common
 
-import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Matrix
 import androidx.compose.ui.graphics.Outline
@@ -10,28 +10,35 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.graphics.shapes.RoundedPolygon
 import androidx.graphics.shapes.toPath
+import kotlin.math.abs
+import kotlin.math.max
 import kotlin.math.min
-
-fun RoundedPolygon.getBounds() = calculateBounds().let { Rect(it[0], it[1], it[2], it[3]) }
 
 class RoundedPolygonShape(
     private val polygon: RoundedPolygon
 ) : Shape {
+    private val basePath = polygon.toPath().asComposePath()
+    private val matrix = Matrix()
+    private val transformedPath = Path()
 
     override fun createOutline(
         size: Size,
         layoutDirection: LayoutDirection,
         density: Density
     ): Outline {
-        val path = polygon.toPath().asComposePath()
-        val matrix = Matrix()
-        val bounds = polygon.getBounds()
-        val scale = min(size.width / bounds.width, size.height / bounds.height)
+        val bounds = polygon.calculateBounds()
+        val maxAbsX = max(abs(bounds[0]), abs(bounds[2]))
+        val maxAbsY = max(abs(bounds[1]), abs(bounds[3]))
+        val scale = min(size.width / (2 * maxAbsX), size.height / (2 * maxAbsY))
+
+        matrix.reset()
         matrix.translate(size.width / 2f, size.height / 2f)
         matrix.scale(scale, scale)
-        matrix.translate(-(bounds.left + bounds.right) / 2f, -(bounds.top + bounds.bottom) / 2f)
 
-        path.transform(matrix)
-        return Outline.Generic(path)
+        transformedPath.rewind()
+        transformedPath.addPath(basePath)
+        transformedPath.transform(matrix)
+
+        return Outline.Generic(transformedPath)
     }
 }
