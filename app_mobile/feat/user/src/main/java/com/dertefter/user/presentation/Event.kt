@@ -13,9 +13,7 @@ sealed interface Event {
     data object OnNavigateBack : Event
 
     data object OnNavigateToAuth : Event
-    data class OnSwitchAccount(val login: String) : Event
-    data object OnAddAccount : Event
-    data class OnRemoveAccountFromHistory(val login: String) : Event
+    data object OnOpenSwitchAccount : Event
     data class OnTabSelected(val tab: FeedTab) : Event
     data class OnLike(val postId: String) : Event
     data class OnUnlike(val postId: String) : Event

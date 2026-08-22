@@ -39,12 +39,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ListItem
-import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SheetValue
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
@@ -52,12 +48,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
-import androidx.compose.material3.rememberBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -124,81 +118,6 @@ fun UserScreen(
     val lazyListState = rememberLazyListState()
 
     val scope = rememberCoroutineScope()
-
-    var showAccountSelector by remember { mutableStateOf(false) }
-
-    if (showAccountSelector) {
-        ModalBottomSheet(
-            onDismissRequest = { showAccountSelector = false },
-            sheetState = rememberBottomSheetState(initialValue = SheetValue.Hidden)
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(MaterialTheme.spacing.large),
-                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
-            ) {
-                Text(
-                    text = stringResource(R.string.user_select_account),
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(bottom = MaterialTheme.spacing.small)
-                )
-                userUiState.loginHistory.forEach { login ->
-                    val isCurrent = login == userUiState.currentLogin
-                    ListItem(
-                        modifier = Modifier
-                            .clip(MaterialTheme.shapes.medium)
-                            .clickable {
-                                if (!isCurrent) {
-                                    onEvent(Event.OnSwitchAccount(login))
-                                }
-                                showAccountSelector = false
-                            },
-                        leadingContent = {
-                            Icon(
-                                if (isCurrent) Icons.Check else Icons.User,
-                                contentDescription = null,
-                                tint = if (isCurrent) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        },
-                        trailingContent = {
-                            if (!isCurrent) {
-                                AppNavigationIcon(
-                                    icon = Icons.Delete,
-                                    onClick = { onEvent(Event.OnRemoveAccountFromHistory(login)) }
-                                )
-                            }
-                        },
-                        overlineContent = null,
-                        supportingContent = null,
-                        colors = ListItemDefaults.colors(
-                            containerColor = if (isCurrent) MaterialTheme.colorScheme.primaryContainer.copy(
-                                alpha = 0.4f
-                            ) else Color.Transparent
-                        ),
-                        content = {
-                            Text(
-                                text = login,
-                                fontWeight = if (isCurrent) FontWeight.Bold else FontWeight.Normal
-                            )
-                        },
-                    )
-                }
-
-                Button(
-                    onClick = {
-                        onEvent(Event.OnAddAccount)
-                        showAccountSelector = false
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Icon(Icons.Add, contentDescription = null)
-                    Spacer(Modifier.width(MaterialTheme.spacing.small))
-                    Text(stringResource(R.string.user_add_account))
-                }
-            }
-        }
-    }
 
     val isUpFabVisible by remember(lazyListState) {
         derivedStateOf {
@@ -467,31 +386,6 @@ fun UserScreen(
                     ),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-
-                    if (userUiState.isMe) {
-                        item {
-                            FilledTonalButton(
-                                onClick = {
-                                    showAccountSelector = true
-                                },
-                                modifier = Modifier.padding(bottom = MaterialTheme.spacing.medium)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.SwapVert,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(20.dp)
-                                )
-                                Spacer(Modifier.width(ButtonDefaults.IconSpacing))
-                                Text(
-                                    userUiState.currentLogin
-                                        ?: stringResource(R.string.user_switch_account)
-                                )
-                            }
-                        }
-
-                    }
-
-
 
                     item {
                         if (MaterialTheme.isFold){

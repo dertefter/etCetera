@@ -45,6 +45,7 @@ import com.dertefter.search.SearchRoute
 import com.dertefter.settings.SettingsRoute
 import com.dertefter.settings_account.SettingsAccountRoute
 import com.dertefter.settings_theme.SettingsThemeRoute
+import com.dertefter.switch_account.SwitchAccountRoute
 import com.dertefter.user.UserRoute
 
 @Composable
@@ -134,6 +135,7 @@ fun AppNavHost(
             entry<Routes.Settings> { RouteContent(it) }
             entry<Routes.SettingsTheme> { RouteContent(it) }
             entry<Routes.SettingsAccount> { RouteContent(it) }
+            entry<Routes.SwitchAccount> { RouteContent(it) }
         }
     )
 }
@@ -163,8 +165,10 @@ fun RouteContent(route: Routes) {
         is Routes.Post -> PostRoute(route.postId)
         is Routes.Search -> SearchRoute()
         is Routes.HashtagFeed -> HashtagFeedRoute(route.hashtagName)
+        is Routes.SwitchAccount -> SwitchAccountRoute()
         is Routes.Settings -> SettingsRoute()
         is Routes.SettingsTheme -> SettingsThemeRoute()
         is Routes.SettingsAccount -> SettingsAccountRoute()
+
     }
 }

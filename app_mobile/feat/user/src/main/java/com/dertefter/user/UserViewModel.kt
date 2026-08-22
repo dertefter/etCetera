@@ -7,7 +7,6 @@ import com.dertefter.data.common.AppError
 import com.dertefter.data.common.toAppError
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.dto.me.UpdateMeRequestDto
-import com.dertefter.data.repository.AuthRepository
 import com.dertefter.data.repository.FeedRepository
 import com.dertefter.data.repository.MeRepository
 import com.dertefter.data.repository.PostRepository
@@ -50,7 +49,6 @@ import javax.inject.Inject
 class UserViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val meRepository: MeRepository,
-    private val authRepository: AuthRepository,
     private val feedRepository: FeedRepository,
     private val postRepository: PostRepository,
     private val navigator: Navigator
@@ -96,19 +94,15 @@ class UserViewModel @Inject constructor(
         } else {
             combine(
                 userRepository.getUser(userId),
-                authRepository.loginHistory,
-                authRepository.currentLogin,
                 _isMe,
                 _isLoading,
                 _error
             ) { args ->
                 UserUiState(
                     userDto = args[0] as com.dertefter.data.dto.user.UserDto?,
-                    loginHistory = args[1] as List<String>,
-                    currentLogin = args[2] as String?,
-                    isMe = args[3] as Boolean,
-                    isLoading = args[4] as Boolean,
-                    error = args[5] as AppError?
+                    isMe = args[1] as Boolean,
+                    isLoading = args[2] as Boolean,
+                    error = args[3] as AppError?
                 )
             }
         }
@@ -186,24 +180,12 @@ class UserViewModel @Inject constructor(
                 navigator.navigate(Routes.Auth)
             }
 
+            Event.OnOpenSwitchAccount -> {
+                navigator.openAsBottomSheet(Routes.SwitchAccount)
+            }
+
             is Event.OnNavigateToSettings -> {
                 navigator.navigate(Routes.Settings)
-            }
-
-            is Event.OnSwitchAccount -> {
-                viewModelScope.launch {
-                    authRepository.switchToLogin(event.login)
-                }
-            }
-
-            Event.OnAddAccount -> {
-                navigator.navigate(Routes.Auth)
-            }
-
-            is Event.OnRemoveAccountFromHistory -> {
-                viewModelScope.launch {
-                    authRepository.removeLoginFromHistory(event.login)
-                }
             }
 
             is Event.OnOpenAttachmentsViewer -> {

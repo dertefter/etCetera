@@ -8,6 +8,4 @@ data class UserUiState(
     val isMe: Boolean = false,
     val isLoading: Boolean = true,
     val error: AppError? = null,
-    val loginHistory: List<String> = emptyList(),
-    val currentLogin: String? = null
 )

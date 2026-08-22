@@ -55,6 +55,7 @@ import com.dertefter.new_post.NewCommentReplyRoute
 import com.dertefter.new_post.NewCommentRoute
 import com.dertefter.new_post.NewPostRoute
 import com.dertefter.new_post.RepostRoute
+import com.dertefter.switch_account.SwitchAccountRoute
 import dev.chrisbanes.haze.HazeInput
 import dev.chrisbanes.haze.blur.hazeBlur
 import dev.chrisbanes.haze.blur.materials.HazeMaterials
@@ -79,7 +80,11 @@ fun getErrorMessage(e: AppError?): String? {
         null -> null
         is AppError.Network -> stringResource(R.string.app_error_network)
         is AppError.TurnstileVerificationFailed -> stringResource(R.string.app_error_turnstile)
-        is AppError.ApiError -> e.message ?: stringResource(R.string.app_error_api_with_code, e.code ?: "")
+        is AppError.ApiError -> e.message ?: stringResource(
+            R.string.app_error_api_with_code,
+            e.code ?: ""
+        )
+
         is AppError.Unexpected -> e.message ?: stringResource(R.string.app_error_unexpected)
 
         // Authentication & Authorization
@@ -191,7 +196,6 @@ fun MainScreen(
     }
 
 
-
     var bottomSheetRoute by remember { mutableStateOf<Routes?>(null) }
     val scaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = rememberBottomSheetState(
@@ -209,7 +213,7 @@ fun MainScreen(
 
     LaunchedEffect(errorMessage) {
         scope.launch {
-            errorMessage?.let{ errorMessage ->
+            errorMessage?.let { errorMessage ->
                 snackbarHostState
                     .showSnackbar(
                         message = errorMessage,
@@ -222,9 +226,9 @@ fun MainScreen(
     BackHandler(
         enabled = selectedTab != MainTab.Feed
     ) {
-       scope.launch {
-           selectedTab = MainTab.Feed
-       }
+        scope.launch {
+            selectedTab = MainTab.Feed
+        }
     }
 
     BackHandler(
@@ -286,12 +290,18 @@ fun MainScreen(
             ) {
                 BottomSheetDefaults.DragHandle()
                 when (val route = bottomSheetRoute) {
+                    is Routes.SwitchAccount -> SwitchAccountRoute()
                     is Routes.Comments -> CommentsRoute(route.postId)
                     is Routes.NewPost -> NewPostRoute(route.wallRecipientId)
-    is Routes.Repost -> RepostRoute(route.postIdForRepost, route.wallRecipientId)
-    is Routes.EditPost -> EditPostRoute(route.postId)
+                    is Routes.Repost -> RepostRoute(route.postIdForRepost, route.wallRecipientId)
+                    is Routes.EditPost -> EditPostRoute(route.postId)
                     is Routes.NewComment -> NewCommentRoute(route.postId)
-                    is Routes.NewCommentReply -> NewCommentReplyRoute(route.postId, route.commentId, route.userId)
+                    is Routes.NewCommentReply -> NewCommentReplyRoute(
+                        route.postId,
+                        route.commentId,
+                        route.userId
+                    )
+
                     else -> {
                         Spacer(Modifier.height(1.dp))
                     }
@@ -300,7 +310,7 @@ fun MainScreen(
         }
     ) {
         Box(Modifier.fillMaxSize()) {
-            if (MaterialTheme.isFold){
+            if (MaterialTheme.isFold) {
                 TabUI(
                     activeBackStack = activeBackStack,
                     selectedTab = selectedTab,
@@ -317,7 +327,7 @@ fun MainScreen(
                         selectedTab = tab
                     }
                 )
-            } else{
+            } else {
                 PhoneUI(
                     activeBackStack = activeBackStack,
                     selectedTab = selectedTab,
