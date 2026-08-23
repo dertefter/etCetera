@@ -82,6 +82,9 @@ object Icons {
     val Comment: ImageVector
         @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_comment)
 
+    val CommentFilled: ImageVector
+        @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_comment_filled)
+
     val FavFilled: ImageVector
         @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_fav_filled)
 
