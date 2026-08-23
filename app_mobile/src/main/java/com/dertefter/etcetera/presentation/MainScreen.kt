@@ -2,6 +2,8 @@ package com.dertefter.etcetera.presentation
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -59,6 +61,7 @@ import com.dertefter.switch_account.SwitchAccountRoute
 import dev.chrisbanes.haze.HazeInput
 import dev.chrisbanes.haze.blur.hazeBlur
 import dev.chrisbanes.haze.blur.materials.HazeMaterials
+import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.launch
 
@@ -240,11 +243,16 @@ fun MainScreen(
     }
 
     val blurRadius by animateDpAsState(
-        targetValue = if (scaffoldState.bottomSheetState.currentValue == SheetValue.Expanded) 120.dp else 60.dp,
+        targetValue = if (scaffoldState.bottomSheetState.currentValue == SheetValue.Expanded) 80.dp else 30.dp,
         animationSpec = MaterialTheme.motionScheme.slowEffectsSpec()
     )
 
-    val hazeStyle = HazeMaterials.ultraThin(
+    val scrimAlpha by animateFloatAsState(
+        targetValue = if (scaffoldState.bottomSheetState.targetValue != SheetValue.Hidden) 0.32f else 0f,
+        animationSpec = MaterialTheme.motionScheme.slowEffectsSpec()
+    )
+
+    val hazeStyle = HazeMaterials.regular(
         containerColor = MaterialTheme.colorScheme.surfaceContainer
     ).then {
         blurRadius(blurRadius)
@@ -346,10 +354,12 @@ fun MainScreen(
                 )
             }
 
-            if (scaffoldState.bottomSheetState.currentValue != SheetValue.Hidden) {
+            if (scaffoldState.bottomSheetState.targetValue != SheetValue.Hidden || scaffoldState.bottomSheetState.currentValue != SheetValue.Hidden) {
                 Box(
                     Modifier
                         .fillMaxSize()
+                        .hazeSource(hazeState)
+                        .background(Color.Black.copy(alpha = scrimAlpha))
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null
