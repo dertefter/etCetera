@@ -128,8 +128,8 @@ private fun LazyListScope.notificationItems(
         items, key = { _, item -> item.id }) { index, notification ->
         NotificationCard(
             notification = notification,
-            isFirst = index == 0,
-            isLast = index == items.lastIndex,
+            index = index,
+            count = items.count(),
             modifier = Modifier.padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
             onClick = {
                 if (notification.type == "follow") {

@@ -1,100 +1,88 @@
 package com.dertefter.notifications.presentation.component
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.res.stringResource
 import com.dertefter.data.dto.notifications.ActorDto
-import com.dertefter.notifications.R
 import com.dertefter.data.dto.notifications.NotificationDto
 import com.dertefter.design.components.avatar.EmojiAvatar
+import com.dertefter.design.components.lists.SegmentedContentItem
 import com.dertefter.design.theme.AppTheme
-import com.dertefter.design.theme.rounding
 import com.dertefter.design.theme.spacing
+import com.dertefter.notifications.R
 
 @Composable
 fun NotificationCard(
     modifier: Modifier = Modifier,
     notification: NotificationDto,
-    isFirst: Boolean = false,
-    isLast: Boolean = false,
+    index: Int = 1,
+    count: Int = 1,
     onUserClick: () -> Unit = {},
     onClick: () -> Unit = {},
 ) {
 
-    val largeRounding = MaterialTheme.rounding.largeIncreased
-    val smallRounding = MaterialTheme.rounding.small
-
-    val shape = RoundedCornerShape(
-        topStart = if (isFirst) largeRounding else smallRounding,
-        topEnd = if (isFirst) largeRounding else smallRounding,
-        bottomStart = if (isLast) largeRounding else smallRounding,
-        bottomEnd = if (isLast) largeRounding else smallRounding,
-    )
-
-    val topPadding = if (isFirst) MaterialTheme.spacing.small else 0.dp
-    val bottomPadding = if (isLast) MaterialTheme.spacing.small else 0.dp
-
-    Row(
+    SegmentedContentItem(
         modifier = modifier
-            .padding(top = topPadding, bottom = bottomPadding)
-            .fillMaxWidth()
-            .clip(shape)
-            .clickable { onClick() }
-            .background(MaterialTheme.colorScheme.surfaceContainer)
-            .padding(MaterialTheme.spacing.large),
-        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large),
-        verticalAlignment = Alignment.CenterVertically
+            .fillMaxWidth(),
+        index = index,
+        count = count,
+        onClick = onClick
     ) {
-        EmojiAvatar(
-            emoji = notification.actor.avatar,
-            containerSize = 48.dp,
-            onClick = onUserClick,
-            modifier = Modifier
-                .align(Alignment.Top)
-        )
-        Column(
-            modifier = Modifier.weight(1f),
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large),
+            verticalAlignment = Alignment.CenterVertically
         )
         {
-            Text(
-                text = notification.actor.displayName,
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Bold,
+            EmojiAvatar(
+                emoji = notification.actor.avatar,
+                containerSize = 48.dp,
+                onClick = onUserClick,
                 modifier = Modifier
-                    .clickable(onClick = onUserClick)
+                    .align(Alignment.Top)
             )
-            Text(
-                text = getNotificationText(notification),
-                style = MaterialTheme.typography.bodyMedium
+            Column(
+                modifier = Modifier.weight(1f),
             )
-            if (!notification.preview.isNullOrEmpty()){
+            {
                 Text(
-                    text = notification.preview!!,
+                    text = notification.actor.displayName,
                     style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(top = MaterialTheme.spacing.small),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .clickable(onClick = onUserClick)
                 )
-            }
+                Text(
+                    text = getNotificationText(notification),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                if (!notification.preview.isNullOrEmpty()){
+                    Text(
+                        text = notification.preview!!,
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.padding(top = MaterialTheme.spacing.small),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
 
+            }
         }
     }
+
+
 }
 
 @Composable
@@ -109,7 +97,7 @@ private fun getNotificationText(notification: NotificationDto): String {
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = false)
 @Composable
 fun NotificationCardPreview() {
     AppTheme {
