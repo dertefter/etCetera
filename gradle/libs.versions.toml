@@ -3,11 +3,11 @@
 agp = "9.3.1"
 annotationExperimental = "1.6.0"
 kotlin = "2.4.10"
-ksp = "2.3.6"
+ksp = "2.3.11"
 ossLicensesPlugin = "0.13.0"
 
 # AndroidX Core
-appcompat = "1.7.1"
+appcompat = "1.8.0"
 coreKtx = "1.19.0"
 coreSplashscreen = "1.2.0"
 datastoreCore = "1.2.1"
@@ -17,7 +17,7 @@ palette = "1.0.0"
 
 # Jetpack Compose
 activityCompose = "1.13.0"
-composeBomAlpha = "2026.07.01"
+composeBomAlpha = "2026.08.00"
 navigationCompose = "2.9.8"
 navigation3 = "1.2.0-alpha07"
 
@@ -28,13 +28,13 @@ composemediaplayer = "0.11.4"
 composeQrCode = "1.0.1"
 composeShimmer = "1.5.0"
 drawboxEnhanced = "2.1.2"
-haze = "2.0.0-alpha04"
+haze = "2.0.0-beta01"
 material = "1.14.0"
 materialKolor = "5.0.0"
 zoomable = "2.13.0"
 
 # Wear OS
-composeWear = "1.7.0-alpha07"
+composeWear = "1.7.0-beta01"
 playServicesWearable = "20.0.1"
 wearToolingPreview = "1.0.0"
 
@@ -45,7 +45,7 @@ hiltNavigationCompose = "1.4.0"
 
 # Networking and Serialization
 kotlinxSerializationJson = "1.11.0"
-okhttpUrlconnection = "5.4.0"
+okhttpUrlconnection = "5.5.0"
 retrofit = "3.0.0"
 
 # Database
@@ -55,7 +55,7 @@ room = "2.8.4"
 media3 = "1.11.0"
 
 # Paging
-paginatorBom = "10.2.1"
+paginatorBom = "10.2.2"
 
 # Widgets
 glance = "1.2.0-rc01"
