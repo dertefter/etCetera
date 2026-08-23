@@ -4,11 +4,48 @@
     <string name="notifications_empty_state">Уведомлений пока нет</string>
     <string name="notifications_load_error">Ошибка загрузки: %1$s</string>
     <string name="notifications_append_error">Ошибка загрузки дополнительных уведомлений</string>
-    <string name="notification_type_follow">подписался(-ась) на вас</string>
-    <string name="notification_type_like">поставил(а) лайк вашему посту</string>
-    <string name="notification_type_comment">оставил(а) комментарий</string>
-    <string name="notification_type_wall_post">опубликовал(а) новый пост</string>
-    <string name="notification_type_repost">сделал(а) репост</string>
+
+    <string name="notification_follow_single">подписался(-ась) на вас</string>
+    <plurals name="notification_follow_multiple">
+        <item quantity="one">и ещё %1$d человек подписались на вас</item>
+        <item quantity="few">и ещё %1$d человека подписались на вас</item>
+        <item quantity="many">и ещё %1$d человек подписались на вас</item>
+        <item quantity="other">и ещё %1$d человек подписались на вас</item>
+    </plurals>
+    <string name="notification_follow_request">хочет подписаться на вас</string>
+    <string name="notification_follow_accepted">принял(а) вашу заявку на подписку</string>
+
+    <string name="notification_post_reaction_single">оценил(а) ваш пост</string>
+    <plurals name="notification_post_reaction_multiple">
+        <item quantity="one">и ещё %1$d человек оценили ваш пост</item>
+        <item quantity="few">и ещё %1$d человека оценили ваш пост</item>
+        <item quantity="many">и ещё %1$d человек оценили ваш пост</item>
+        <item quantity="other">и ещё %1$d человек оценили ваш пост</item>
+    </plurals>
+
+    <string name="notification_post_comment">прокомментировал(а) ваш пост</string>
+
+    <string name="notification_post_repost_single">сделал(а) репост вашего поста</string>
+    <plurals name="notification_post_repost_multiple">
+        <item quantity="one">и ещё %1$d человек сделали репост</item>
+        <item quantity="few">и ещё %1$d человека сделали репост</item>
+        <item quantity="many">и ещё %1$d человек сделали репост</item>
+        <item quantity="other">и ещё %1$d человек сделали репост</item>
+    </plurals>
+
+    <string name="notification_comment_reaction_single">оценил(а) ваш комментарий</string>
+    <plurals name="notification_comment_reaction_multiple">
+        <item quantity="one">и ещё %1$d человек оценили ваш комментарий</item>
+        <item quantity="few">и ещё %1$d человека оценили ваш комментарий</item>
+        <item quantity="many">и ещё %1$d человек оценили ваш комментарий</item>
+        <item quantity="other">и ещё %1$d человек оценили ваш комментарий</item>
+    </plurals>
+
+    <string name="notification_comment_reply">ответил(а) на ваш комментарий</string>
+    <string name="notification_post_mention">упомянул(а) вас в посте</string>
+    <string name="notification_comment_mention">упомянул(а) вас в комментарии</string>
+    <string name="notification_wall_post">написал(а) на вашей стене</string>
+
     <string name="notification_type_unknown">новое уведомление</string>
     <string name="filter_all">Все</string>
     <string name="filter_follow">Подписки</string>

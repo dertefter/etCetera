@@ -50,6 +50,7 @@ dependencies {
     implementation(libs.compose.material3)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.hilt.android)
+    implementation(libs.material.kolor)
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.lifecycle.viewmodel.compose)
     debugImplementation(libs.compose.ui.tooling)
