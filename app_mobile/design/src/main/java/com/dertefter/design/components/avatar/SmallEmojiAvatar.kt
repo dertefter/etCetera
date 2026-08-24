@@ -60,7 +60,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.random.Random
 
-private val EmojiColorCache = LruCache<String, Color>(200)
+val EmojiColorCache = LruCache<String, Color>(200)
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
