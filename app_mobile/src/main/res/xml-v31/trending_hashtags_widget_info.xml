@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-
     android:widgetCategory="home_screen"
-
     android:initialLayout="@layout/glance_default_loading_layout"
-
     android:updatePeriodMillis="86400000"
-
-    android:previewImage="@drawable/top_clans_widget_preview"
-
-    android:description="@string/app_widget_top_clans_desc"
-
+    android:description="@string/app_widget_trending_hashtags_desc"
     android:resizeMode="horizontal|vertical"
     android:minWidth="120dp"
     android:minHeight="80dp"
-
-
+    android:targetCellWidth="3"
+    android:targetCellHeight="2"
+    android:previewImage="@drawable/trending_hashtags_widget_preview"
    />

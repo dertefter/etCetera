@@ -1,4 +1,4 @@
-package com.dertefter.etcetera.widget.top_clans
+package com.dertefter.etcetera.widget.tranding_hashtags
 
 import android.appwidget.AppWidgetManager
 import android.content.Context
@@ -15,8 +15,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class TopClansWidgetReceiver : GlanceAppWidgetReceiver() {
-    override val glanceAppWidget: GlanceAppWidget = TopClansWidget()
+class TrendingHashtagsWidgetReceiver : GlanceAppWidgetReceiver() {
+    override val glanceAppWidget: GlanceAppWidget = TrendingHashtagsWidget()
 
     override fun onUpdate(
         context: Context,
@@ -32,20 +32,20 @@ class TopClansWidgetReceiver : GlanceAppWidgetReceiver() {
         val pendingResult = goAsync()
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val glanceIds = GlanceAppWidgetManager(context).getGlanceIds(TopClansWidget::class.java)
+                val glanceIds = GlanceAppWidgetManager(context).getGlanceIds(TrendingHashtagsWidget::class.java)
 
                 glanceIds.forEach { glanceId ->
                     updateAppWidgetState(context, glanceId) { prefs ->
-                        prefs[TopClansWidget.IS_LOADING] = true
+                        prefs[TrendingHashtagsWidget.IS_LOADING] = true
                     }
                 }
                 glanceAppWidget.updateAll(context)
 
-                repository.updateTopClans()
+                repository.updateTrendingHashtags()
 
                 glanceIds.forEach { glanceId ->
                     updateAppWidgetState(context, glanceId) { prefs ->
-                        prefs[TopClansWidget.IS_LOADING] = false
+                        prefs[TrendingHashtagsWidget.IS_LOADING] = false
                     }
                 }
                 glanceAppWidget.updateAll(context)

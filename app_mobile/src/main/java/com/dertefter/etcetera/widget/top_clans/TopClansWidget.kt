@@ -12,7 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -24,15 +23,14 @@ import androidx.glance.ColorFilter
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
-import androidx.glance.action.actionStartActivity
-import androidx.glance.action.clickable
 import androidx.glance.Image
 import androidx.glance.ImageProvider
 import androidx.glance.LocalContext
 import androidx.glance.LocalSize
+import androidx.glance.action.actionStartActivity
+import androidx.glance.action.clickable
 import androidx.glance.appwidget.CircularProgressIndicator
 import androidx.glance.appwidget.GlanceAppWidget
-import androidx.glance.appwidget.PreviewSizeMode
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.lazy.GridCells
@@ -56,34 +54,22 @@ import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
 import androidx.palette.graphics.Palette
 import com.dertefter.data.dto.search.TopClanDto
-import com.dertefter.data.repository.SearchRepository
 import com.dertefter.design.components.avatar.EmojiColorCache
 import com.dertefter.etcetera.MainActivity
 import com.dertefter.etcetera.R
+import com.dertefter.etcetera.di.WidgetEntryPoint
 import com.materialkolor.ktx.harmonize
-import dagger.hilt.EntryPoint
-import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
-import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.flow.firstOrNull
 import java.util.Locale
 import kotlin.math.abs
 import kotlin.math.floor
 import kotlin.math.max
 
-@EntryPoint
-@InstallIn(SingletonComponent::class)
-interface WidgetEntryPoint {
-    fun searchRepository(): SearchRepository
-}
 
 class TopClansWidget : GlanceAppWidget() {
 
     override val sizeMode: SizeMode = SizeMode.Exact
-
-    override val previewSizeMode: PreviewSizeMode = SizeMode.Responsive(
-        setOf(DpSize(120.dp, 120.dp), DpSize(240.dp, 240.dp))
-    )
 
     companion object {
         val IS_LOADING = booleanPreferencesKey("is_loading")

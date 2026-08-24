@@ -39,4 +39,13 @@
     <string name="app_widget_top_clans_label">Топ кланов</string>
     <string name="app_widget_top_clans_empty">Кланы не найдены</string>
     <string name="app_widget_top_clans_desc">Самые популярные кланы</string>
+    <string name="app_widget_trending_hashtags_label">Популярные хештеги</string>
+    <string name="app_widget_trending_hashtags_empty">Хештеги не найдены</string>
+    <string name="app_widget_trending_hashtags_desc">Самые популярные хештеги</string>
+    <plurals name="app_widget_trending_hashtags_posts_count">
+        <item quantity="one">%1$s пост</item>
+        <item quantity="few">%1$s поста</item>
+        <item quantity="many">%1$s постов</item>
+        <item quantity="other">%1$s постов</item>
+    </plurals>
 </resources>

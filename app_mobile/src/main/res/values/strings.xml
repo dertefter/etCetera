@@ -40,4 +40,11 @@
     <string name="app_widget_top_clans_label">Top Clans</string>
     <string name="app_widget_top_clans_empty">Clans not found</string>
     <string name="app_widget_top_clans_desc">The most popular clans</string>
+    <string name="app_widget_trending_hashtags_label">Trending Hashtags</string>
+    <string name="app_widget_trending_hashtags_empty">Hashtags not found</string>
+    <string name="app_widget_trending_hashtags_desc">The most popular hashtags</string>
+    <plurals name="app_widget_trending_hashtags_posts_count">
+        <item quantity="one">%1$s post</item>
+        <item quantity="other">%1$s posts</item>
+    </plurals>
 </resources>
