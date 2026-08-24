@@ -2,6 +2,7 @@ package com.dertefter.etcetera.navigation
 
 import android.util.Log
 import androidx.compose.animation.core.EaseIn
+import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.EaseOut
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -16,13 +17,8 @@ import androidx.compose.foundation.background
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
-import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
-import androidx.navigation3.runtime.entryProvider
-import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.navigationevent.NavigationEvent
 import com.dertefter.attachment_viewer.AttachmentViewerRoute
@@ -34,11 +30,11 @@ import com.dertefter.feed.FeedRoute
 import com.dertefter.followers.FollowersRoute
 import com.dertefter.hashtag_feed.HashtagFeedRoute
 import com.dertefter.navigation.Routes
+import com.dertefter.new_post.EditPostRoute
 import com.dertefter.new_post.NewCommentReplyRoute
 import com.dertefter.new_post.NewCommentRoute
 import com.dertefter.new_post.NewPostRoute
 import com.dertefter.new_post.RepostRoute
-import com.dertefter.new_post.EditPostRoute
 import com.dertefter.notifications.NotificationsRoute
 import com.dertefter.post.PostRoute
 import com.dertefter.search.SearchRoute
@@ -51,7 +47,7 @@ import com.dertefter.user.UserRoute
 @Composable
 fun AppNavHost(
     modifier: Modifier = Modifier,
-    backStack: NavBackStack<NavKey>,
+    entries: List<NavEntry<NavKey>>,
     onBack: () -> Unit
 ) {
 
@@ -59,12 +55,8 @@ fun AppNavHost(
 
     NavDisplay(
         modifier = modifier.background(MaterialTheme.colorScheme.background),
-        backStack = backStack,
+        entries = entries,
         onBack = onBack,
-        entryDecorators = listOf(
-            rememberSaveableStateHolderNavEntryDecorator(),
-            rememberViewModelStoreNavEntryDecorator()
-        ),
         transitionSpec = {
             fadeIn(
                 initialAlpha = 0.5f,
@@ -92,7 +84,7 @@ fun AppNavHost(
                 animationSpec = tween(easing = EaseIn, durationMillis = 200)
             )
         },
-        predictivePopTransitionSpec = { swipeEdge ->
+        predictivePopTransitionSpec = { swipeEdge: Int ->
             Log.e("swipeEdge", swipeEdge.toString())
             val enter =
                 fadeIn(
@@ -108,34 +100,7 @@ fun AppNavHost(
                         slideOutHorizontally( animationSpec = tween(easing = EaseIn, durationMillis = 100)) { it }
                     }
                 }
-            (enter togetherWith exit.apply {
-                this@NavDisplay.initialState.apply {
-                    modifier.shadow(elevation = 20.dp)
-                }
-            })
-        },
-        entryProvider = entryProvider {
-            entry<Routes.CrashReports> { RouteContent(it) }
-            entry<Routes.Auth> { RouteContent(it) }
-            entry<Routes.Feed> { RouteContent(it) }
-            entry<Routes.Notifications> { RouteContent(it) }
-            entry<Routes.BannerEdit> { RouteContent(it) }
-            entry<Routes.Search> { RouteContent(it) }
-            entry<Routes.Comments> { RouteContent(it) }
-            entry<Routes.User> { RouteContent(it) }
-            entry<Routes.NewPost> { RouteContent(it) }
-            entry<Routes.Repost> { RouteContent(it) }
-            entry<Routes.EditPost> { RouteContent(it) }
-            entry<Routes.NewComment> { RouteContent(it) }
-            entry<Routes.NewCommentReply> { RouteContent(it) }
-            entry<Routes.Followers> { RouteContent(it) }
-            entry<Routes.Post> { RouteContent(it) }
-            entry<Routes.HashtagFeed> { RouteContent(it) }
-            entry<Routes.AttachmentsViewer> { RouteContent(it) }
-            entry<Routes.Settings> { RouteContent(it) }
-            entry<Routes.SettingsTheme> { RouteContent(it) }
-            entry<Routes.SettingsAccount> { RouteContent(it) }
-            entry<Routes.SwitchAccount> { RouteContent(it) }
+            (enter togetherWith exit)
         }
     )
 }

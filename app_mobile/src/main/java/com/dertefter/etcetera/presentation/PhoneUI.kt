@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import com.dertefter.navigation.Routes
 import dev.chrisbanes.haze.HazeState
@@ -28,10 +29,11 @@ import dev.chrisbanes.haze.hazeSource
 fun PhoneUI(
     modifier: Modifier = Modifier,
     activeBackStack: NavBackStack<NavKey>,
+    entries: List<NavEntry<NavKey>>,
     selectedTab: MainTab,
     hazeState: HazeState,
     appNavHost: @Composable (
-        backStack: NavBackStack<NavKey>,
+        entries: List<NavEntry<NavKey>>,
         onBack: () -> Unit,
         modifier: Modifier
     ) -> Unit,
@@ -45,7 +47,7 @@ fun PhoneUI(
 
     Column(modifier.fillMaxSize()) {
         appNavHost(
-            activeBackStack,
+            entries,
             onBack,
             Modifier
                 .hazeSource(hazeState)

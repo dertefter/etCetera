@@ -40,9 +40,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.rememberDecoratedNavEntries
 import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import com.dertefter.etcetera.navigation.getAppEntryProvider
 import com.dertefter.comments.CommentsRoute
 import com.dertefter.data.common.AppError
 import com.dertefter.design.icons.Icons
@@ -141,7 +145,7 @@ fun MainScreen(
     navigator: Navigator,
     uiState: MainUiState,
     appNavHost: @Composable (
-        backStack: NavBackStack<NavKey>,
+        entries: List<NavEntry<NavKey>>,
         onBack: () -> Unit,
         modifier: Modifier
     ) -> Unit
@@ -155,6 +159,28 @@ fun MainScreen(
     )
 
     var selectedTab by rememberSaveable { mutableStateOf(MainTab.Feed) }
+
+    val decorators = listOf(
+        rememberSaveableStateHolderNavEntryDecorator<NavKey>(),
+        rememberViewModelStoreNavEntryDecorator()
+    )
+    val appEntryProvider = getAppEntryProvider()
+
+    val feedEntries = rememberDecoratedNavEntries(feedBackStack, decorators, appEntryProvider)
+    val searchEntries = rememberDecoratedNavEntries(searchBackStack, decorators, appEntryProvider)
+    val notificationsEntries = rememberDecoratedNavEntries(notificationsBackStack, decorators, appEntryProvider)
+    val profileEntries = rememberDecoratedNavEntries(profileBackStack, decorators, appEntryProvider)
+    val authEntries = rememberDecoratedNavEntries(authBackStack, decorators, appEntryProvider)
+
+    val activeEntries: List<NavEntry<NavKey>> = when {
+        uiState.currentLogin == null -> authEntries
+        selectedTab == MainTab.Feed -> feedEntries
+        selectedTab == MainTab.Search -> searchEntries
+        selectedTab == MainTab.Notifications -> notificationsEntries
+        selectedTab == MainTab.Profile -> profileEntries
+        else -> feedEntries
+    }
+
     var lastSeenLogin by rememberSaveable { mutableStateOf<String?>(null) }
     var lastSeenMeUserId by rememberSaveable { mutableStateOf<String?>(null) }
 
@@ -321,6 +347,7 @@ fun MainScreen(
             if (MaterialTheme.isFold) {
                 TabUI(
                     activeBackStack = activeBackStack,
+                    entries = activeEntries,
                     selectedTab = selectedTab,
                     hazeState = hazeState,
                     appNavHost = appNavHost,
@@ -338,6 +365,7 @@ fun MainScreen(
             } else {
                 PhoneUI(
                     activeBackStack = activeBackStack,
+                    entries = activeEntries,
                     selectedTab = selectedTab,
                     hazeState = hazeState,
                     appNavHost = appNavHost,

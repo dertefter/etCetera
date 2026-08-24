@@ -1,5 +1,6 @@
 package com.dertefter.settings
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.dertefter.navigation.Navigator
 import com.dertefter.settings.presentation.Event
@@ -10,6 +11,11 @@ import javax.inject.Inject
 class SettingsViewModel @Inject constructor(
     private val navigator: Navigator
 ) : ViewModel() {
+
+
+    init {
+        Log.e("sETTINGSvIVIV", "init")
+    }
 
     fun onEvent(event: Event) {
         when (event) {

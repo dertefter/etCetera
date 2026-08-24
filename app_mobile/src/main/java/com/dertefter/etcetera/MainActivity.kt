@@ -59,9 +59,9 @@ class MainActivity : ComponentActivity() {
                         MainScreen(
                             navigator,
                             uiState = uiState,
-                            appNavHost = { backStack, onBack, modifier ->
+                            appNavHost = { entries, onBack, modifier ->
                                 AppNavHost(
-                                    backStack = backStack,
+                                    entries = entries,
                                     onBack = onBack,
                                     modifier = modifier
                                 )
