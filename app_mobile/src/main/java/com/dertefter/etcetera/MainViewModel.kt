@@ -5,7 +5,6 @@ import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dertefter.data.datasource.local.TokenManager
-import com.dertefter.data.dto.app.EmojiAvatarHarmonizationColor
 import com.dertefter.data.repository.AuthRepository
 import com.dertefter.data.repository.CrashlyticsRepository
 import com.dertefter.data.repository.MeRepository
@@ -27,7 +26,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
-
 
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -106,7 +104,6 @@ class MainViewModel @Inject constructor(
         combine(currentLogin, accessToken, refreshToken) { _, _, _ -> }.onEach {
             context.startService(Intent(context, TokenRequestService::class.java))
             meRepository.fetchMe()
-        }.launchIn(viewModelScope)
-    }
+        }.launchIn(viewModelScope)    }
 
 }

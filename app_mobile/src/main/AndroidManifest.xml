@@ -49,6 +49,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver
+            android:label="@string/app_widget_top_clans_label"
+            android:name=".widget.top_clans.TopClansWidgetReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/top_clans_widget_info" />
+        </receiver>
     </application>
 
 </manifest>

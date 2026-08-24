@@ -37,4 +37,7 @@
     <string name="app_error_edit_window_expired">Editing window has expired</string>
     <string name="app_error_not_deleted">Object is not deleted</string>
     <string name="app_error_internal">Internal server error</string>
+    <string name="app_widget_top_clans_label">Top Clans</string>
+    <string name="app_widget_top_clans_empty">Clans not found</string>
+    <string name="app_widget_top_clans_desc">The most popular clans</string>
 </resources>

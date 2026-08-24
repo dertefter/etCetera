@@ -36,4 +36,7 @@
     <string name="app_error_edit_window_expired">Время для редактирования истекло</string>
     <string name="app_error_not_deleted">Объект не удален</string>
     <string name="app_error_internal">Внутренняя ошибка сервера</string>
+    <string name="app_widget_top_clans_label">Топ кланов</string>
+    <string name="app_widget_top_clans_empty">Кланы не найдены</string>
+    <string name="app_widget_top_clans_desc">Самые популярные кланы</string>
 </resources>
