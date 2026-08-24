@@ -19,6 +19,7 @@ import com.dertefter.data.datasource.local.room.entity.PagePostEntity
 import com.dertefter.data.datasource.local.room.entity.PageUserEntity
 import com.dertefter.data.datasource.local.room.entity.PostEntity
 import com.dertefter.data.datasource.local.room.entity.SearchHashtagEntity
+import com.dertefter.data.datasource.local.room.entity.TopClanEntity
 import com.dertefter.data.datasource.local.room.entity.UserEntity
 
 @Database(
@@ -32,9 +33,10 @@ import com.dertefter.data.datasource.local.room.entity.UserEntity
         PageUserEntity::class,
         SearchHashtagEntity::class,
         NotificationEntity::class,
-        PageNotificationEntity::class
+        PageNotificationEntity::class,
+        TopClanEntity::class
     ],
-    version = 52,
+    version = 53,
     exportSchema = false
 )
 

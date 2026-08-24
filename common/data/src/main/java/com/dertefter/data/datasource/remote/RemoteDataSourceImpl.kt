@@ -24,6 +24,7 @@ import com.dertefter.data.dto.notifications.NotificationsResponseDto
 import com.dertefter.data.dto.poll.VotePollRequestDto
 import com.dertefter.data.dto.search.SearchDataDto
 import com.dertefter.data.dto.search.SearchHashtagDto
+import com.dertefter.data.dto.search.TopClanDto
 import com.dertefter.data.dto.upload.AttachmentUploadResponseDto
 import com.dertefter.data.dto.user.FollowResponseDto
 import com.dertefter.data.dto.user.UserDto
@@ -31,10 +32,8 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.Response
-import org.w3c.dom.Comment
 import java.io.File
 import javax.inject.Inject
-import kotlin.time.Duration.Companion.milliseconds
 
 class RemoteDataSourceImpl @Inject constructor(
     private val apiService: ApiService
@@ -286,6 +285,12 @@ class RemoteDataSourceImpl @Inject constructor(
     override suspend fun getTrendingHashtags(): Result<List<SearchHashtagDto>> {
         return runCatching {
             apiService.trendingHashtags().handleResponse { it.data.hashtags }.getOrThrow()
+        }
+    }
+
+    override suspend fun getTopClans(): Result<List<TopClanDto>> {
+        return runCatching {
+            apiService.topClans().handleResponse { it.clans }.getOrThrow()
         }
     }
 

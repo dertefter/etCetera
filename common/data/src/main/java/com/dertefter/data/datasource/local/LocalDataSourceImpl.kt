@@ -24,6 +24,7 @@ import com.dertefter.data.dto.followers.FollowerUserDto
 import com.dertefter.data.dto.me.MeDto
 import com.dertefter.data.dto.notifications.NotificationDto
 import com.dertefter.data.dto.search.SearchHashtagDto
+import com.dertefter.data.dto.search.TopClanDto
 import com.dertefter.data.dto.user.UserDto
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -215,6 +216,14 @@ class LocalDataSourceImpl @Inject constructor(
 
     override suspend fun saveTrendingHashtags(hashtags: List<SearchHashtagDto>) {
         db().searchDao().updateTrendingHashtags(hashtags.map { it.asEntity() })
+    }
+
+    override fun getTopClans(): Flow<List<TopClanDto>?> = currentLogin.flatMapLatest { login ->
+        getDatabase(login).searchDao().getTopClans()
+    }.map { it.map { clan -> clan.asExternalModel() } }
+
+    override suspend fun saveTopClans(clans: List<TopClanDto>) {
+        db().searchDao().updateTopClans(clans.map { it.asEntity() })
     }
 
     override val emojiAvatarHarmonizationColor: Flow<String?> = settingsDataStore.data.map { preferences ->

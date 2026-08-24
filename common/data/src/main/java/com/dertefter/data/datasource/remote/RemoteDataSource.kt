@@ -21,6 +21,7 @@ import com.dertefter.data.dto.new_post.NewPostRequestDto
 import com.dertefter.data.dto.notifications.NotificationsResponseDto
 import com.dertefter.data.dto.search.SearchDataDto
 import com.dertefter.data.dto.search.SearchHashtagDto
+import com.dertefter.data.dto.search.TopClanDto
 import com.dertefter.data.dto.upload.AttachmentUploadResponseDto
 import com.dertefter.data.dto.user.FollowResponseDto
 import com.dertefter.data.dto.user.UserDto
@@ -95,6 +96,8 @@ interface RemoteDataSource {
     suspend fun getNotifications(offset: Int?): Result<NotificationsResponseDto>
 
     suspend fun getTrendingHashtags(): Result<List<SearchHashtagDto>>
+
+    suspend fun getTopClans(): Result<List<TopClanDto>>
 
     suspend fun getSearchResults(q: String): Result<SearchDataDto>
 

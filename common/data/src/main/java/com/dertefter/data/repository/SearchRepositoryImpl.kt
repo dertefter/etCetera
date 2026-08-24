@@ -5,6 +5,7 @@ import com.dertefter.data.datasource.local.LocalDataSource
 import com.dertefter.data.datasource.remote.RemoteDataSource
 import com.dertefter.data.dto.search.SearchDataDto
 import com.dertefter.data.dto.search.SearchHashtagDto
+import com.dertefter.data.dto.search.TopClanDto
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -22,6 +23,16 @@ class SearchRepositoryImpl @Inject constructor(
     override suspend fun updateTrendingHashtags(): Result<List<SearchHashtagDto>> {
         return remoteDataSource.getTrendingHashtags().onFailureLog(crashlyticsRepository).onSuccess {
             localDataSource.saveTrendingHashtags(it)
+        }
+    }
+
+    override fun getTopClans(): Flow<List<TopClanDto>?> {
+        return localDataSource.getTopClans()
+    }
+
+    override suspend fun updateTopClans(): Result<List<TopClanDto>> {
+        return remoteDataSource.getTopClans().onFailureLog(crashlyticsRepository).onSuccess {
+            localDataSource.saveTopClans(it)
         }
     }
 

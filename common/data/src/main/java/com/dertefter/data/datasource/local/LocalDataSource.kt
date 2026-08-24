@@ -8,6 +8,7 @@ import com.dertefter.data.dto.followers.FollowerUserDto
 import com.dertefter.data.dto.me.MeDto
 import com.dertefter.data.dto.notifications.NotificationDto
 import com.dertefter.data.dto.search.SearchHashtagDto
+import com.dertefter.data.dto.search.TopClanDto
 import com.dertefter.data.dto.user.UserDto
 import kotlinx.coroutines.flow.Flow
 
@@ -56,6 +57,9 @@ interface LocalDataSource {
 
     fun getTrendingHashtags(): Flow<List<SearchHashtagDto>?>
     suspend fun saveTrendingHashtags(hashtags: List<SearchHashtagDto>)
+
+    fun getTopClans(): Flow<List<TopClanDto>?>
+    suspend fun saveTopClans(clans: List<TopClanDto>)
 
     val emojiAvatarHarmonizationColor: Flow<String?>
     suspend fun updateEmojiAvatarHarmonizationColor(color: String?)
