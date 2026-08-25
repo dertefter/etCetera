@@ -155,7 +155,7 @@ fun MainScreen(
     val searchBackStack = rememberNavBackStack(Routes.Search)
     val notificationsBackStack = rememberNavBackStack(Routes.Notifications(showBackButton = false))
     val profileBackStack = rememberNavBackStack(
-        if (uiState.meUserId != null) Routes.User(uiState.meUserId) else Routes.Auth
+        if (uiState.meUserId != null) Routes.User(uiState.meUserId, showBackButton = false) else Routes.Auth
     )
 
     var selectedTab by rememberSaveable { mutableStateOf(MainTab.Feed) }
