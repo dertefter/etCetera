@@ -4,12 +4,14 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.dertefter.data.datasource.local.room.converters.RoomConverters
+import com.dertefter.data.datasource.local.room.dao.AuthSessionDao
 import com.dertefter.data.datasource.local.room.dao.CommentDao
 import com.dertefter.data.datasource.local.room.dao.NotificationDao
 import com.dertefter.data.datasource.local.room.dao.PageDao
 import com.dertefter.data.datasource.local.room.dao.PostDao
 import com.dertefter.data.datasource.local.room.dao.SearchDao
 import com.dertefter.data.datasource.local.room.dao.UserDao
+import com.dertefter.data.datasource.local.room.entity.AuthSessionEntity
 import com.dertefter.data.datasource.local.room.entity.CommentEntity
 import com.dertefter.data.datasource.local.room.entity.NotificationEntity
 import com.dertefter.data.datasource.local.room.entity.PageCommentEntity
@@ -34,9 +36,10 @@ import com.dertefter.data.datasource.local.room.entity.UserEntity
         SearchHashtagEntity::class,
         NotificationEntity::class,
         PageNotificationEntity::class,
-        TopClanEntity::class
+        TopClanEntity::class,
+        AuthSessionEntity::class
     ],
-    version = 53,
+    version = 54,
     exportSchema = false
 )
 
@@ -49,5 +52,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun commentDao(): CommentDao
     abstract fun searchDao(): SearchDao
     abstract fun notificationDao(): NotificationDao
+    abstract fun authSessionDao(): AuthSessionDao
 
 }

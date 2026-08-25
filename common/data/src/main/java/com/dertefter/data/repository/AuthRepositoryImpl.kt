@@ -3,12 +3,15 @@ package com.dertefter.data.repository
 import com.dertefter.data.common.onFailureLog
 import com.dertefter.data.datasource.local.LocalDataSource
 import com.dertefter.data.datasource.remote.RemoteDataSource
+import com.dertefter.data.dto.auth.AuthSessionDto
 import com.dertefter.data.dto.auth.SignInRequest
 import com.dertefter.data.dto.auth.SignInResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class AuthRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
     private val localDataSource: LocalDataSource,
@@ -45,6 +48,14 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun refreshToken(): Result<Unit> {
         return remoteDataSource.refreshToken().onFailureLog(crashlyticsRepository)
+    }
+
+    override fun getAuthSessions(): Flow<List<AuthSessionDto>?> = localDataSource.authSessions
+
+    override suspend fun updateAuthSessions(): Result<Unit> {
+        return remoteDataSource.getAuthSessions().onFailureLog(crashlyticsRepository).onSuccess { response ->
+            localDataSource.saveAuthSessions(response.sessions)
+        }.map { Unit }
     }
 
 }

@@ -2,6 +2,7 @@ package com.dertefter.data.datasource.local
 
 import com.dertefter.data.datasource.local.room.entity.PageEntity
 import com.dertefter.data.datasource.local.room.entity.PageType
+import com.dertefter.data.dto.auth.AuthSessionDto
 import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.dto.followers.FollowerUserDto
@@ -21,6 +22,9 @@ interface LocalDataSource {
     val loginHistory: Flow<List<String>>
 
     suspend fun removeLoginFromHistory(login: String)
+
+    val authSessions: Flow<List<AuthSessionDto>?>
+    suspend fun saveAuthSessions(sessions: List<AuthSessionDto>)
 
     val meDto: Flow<MeDto?>
 

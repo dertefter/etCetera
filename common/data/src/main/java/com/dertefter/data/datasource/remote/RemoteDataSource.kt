@@ -1,5 +1,6 @@
 package com.dertefter.data.datasource.remote
 
+import com.dertefter.data.dto.auth.AuthSessionsResponseDto
 import com.dertefter.data.dto.auth.SignInRequest
 import com.dertefter.data.dto.auth.SignInResponse
 import com.dertefter.data.dto.comments.CommentDto
@@ -31,6 +32,7 @@ interface RemoteDataSource {
 
     suspend fun signIn(signInRequest: SignInRequest): Result<SignInResponse>
     suspend fun refreshToken(): Result<Unit>
+    suspend fun getAuthSessions(): Result<AuthSessionsResponseDto>
     suspend fun getMe(): Result<MeDto>
 
     suspend fun unpinPost(postId: String): Result<Unit>

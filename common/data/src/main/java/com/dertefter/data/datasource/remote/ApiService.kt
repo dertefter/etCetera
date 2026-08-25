@@ -1,5 +1,6 @@
 package com.dertefter.data.datasource.remote
 
+import com.dertefter.data.dto.auth.AuthSessionsResponseDto
 import com.dertefter.data.dto.auth.SignInRequest
 import com.dertefter.data.dto.auth.SignInResponse
 import com.dertefter.data.dto.comments.CommentDto
@@ -48,6 +49,9 @@ interface ApiService {
 
     @POST("api/v1/auth/refresh")
     suspend fun refreshToken(@retrofit2.http.Tag login: String? = null): Response<Map<String, String>>
+
+    @GET("api/v1/auth/sessions")
+    suspend fun sessions(): Response<AuthSessionsResponseDto>
 
     @GET("api/users/me")
     suspend fun me(): Response<MeDto>

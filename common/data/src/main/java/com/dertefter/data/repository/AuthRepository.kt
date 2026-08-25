@@ -1,5 +1,6 @@
 package com.dertefter.data.repository
 
+import com.dertefter.data.dto.auth.AuthSessionDto
 import com.dertefter.data.dto.auth.SignInResponse
 import kotlinx.coroutines.flow.Flow
 
@@ -22,5 +23,9 @@ interface AuthRepository {
     ): Result<SignInResponse>
 
     suspend fun refreshToken(): Result<Unit>
+
+    fun getAuthSessions(): Flow<List<AuthSessionDto>?>
+
+    suspend fun updateAuthSessions(): Result<Unit>
 
 }

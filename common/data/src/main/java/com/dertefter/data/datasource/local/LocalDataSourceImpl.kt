@@ -18,6 +18,7 @@ import com.dertefter.data.datasource.local.room.entity.asFollowerExternalModel
 import com.dertefter.data.datasource.local.room.entity.asMeExternalModel
 import com.dertefter.data.di.AuthDataStore
 import com.dertefter.data.di.SettingsDataStore
+import com.dertefter.data.dto.auth.AuthSessionDto
 import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.dto.followers.FollowerUserDto
@@ -85,6 +86,16 @@ class LocalDataSourceImpl @Inject constructor(
             val currentHistory = preferences[LOGIN_HISTORY_KEY] ?: emptySet()
             preferences[LOGIN_HISTORY_KEY] = currentHistory - login
         }
+    }
+
+    override val authSessions: Flow<List<AuthSessionDto>?> = currentLogin.flatMapLatest { login ->
+        getDatabase(login).authSessionDao().getAuthSessions()
+    }.map { list -> list.map { it.asExternalModel() } }
+
+    override suspend fun saveAuthSessions(sessions: List<AuthSessionDto>) {
+        val dao = db().authSessionDao()
+        dao.clearAuthSessions()
+        dao.insertAuthSessions(sessions.map { it.asEntity() })
     }
 
     override val meDto: Flow<MeDto?> = currentLogin.flatMapLatest { login ->

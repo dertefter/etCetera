@@ -1,6 +1,7 @@
 package com.dertefter.data.datasource.remote
 
 import android.util.Log
+import com.dertefter.data.dto.auth.AuthSessionsResponseDto
 import com.dertefter.data.dto.auth.SignInRequest
 import com.dertefter.data.dto.auth.SignInResponse
 import com.dertefter.data.dto.comments.CommentDto
@@ -49,6 +50,12 @@ class RemoteDataSourceImpl @Inject constructor(
     override suspend fun refreshToken(): Result<Unit> {
         return runCatching {
             apiService.refreshToken().handleUnitResponse().getOrThrow()
+        }
+    }
+
+    override suspend fun getAuthSessions(): Result<AuthSessionsResponseDto> {
+        return runCatching {
+            apiService.sessions().handleResponse { it }.getOrThrow()
         }
     }
 
