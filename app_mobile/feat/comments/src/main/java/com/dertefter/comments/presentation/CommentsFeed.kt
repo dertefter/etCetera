@@ -124,12 +124,13 @@ fun CommentsFeed(
 
                 LazyColumn(
                     modifier = Modifier
+                        .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
                         .fillMaxSize()
                         .then(
                             if (scrollBehavior != null) Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
                             else Modifier
                         ),
-                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large),
+                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
                     state = listState,
                     contentPadding = contentPadding
                 ) {
@@ -148,6 +149,8 @@ fun CommentsFeed(
                             key = { _, comment -> comment.id }) { index, comment ->
                             Column(Modifier.animateItem()) {
                                 CommentCard(
+                                    index = index,
+                                    count = items.count(),
                                     meUserId = meUserId,
                                     comment = comment.toUiModel(meUserId),
                                     onLike = { onEvent(Event.OnLike(it)) },
@@ -214,7 +217,7 @@ private fun CommentAppendIndicator(state: PaginatorUiState<CommentDto>) {
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = false)
 @Composable
 fun CommentsFeedPreview() {
     AppTheme {
