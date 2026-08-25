@@ -33,7 +33,7 @@ fun AttachmentsCarousel(
         modifier = modifier
             .padding(contentPadding)
             .fillMaxWidth(),
-        itemSpacing = MaterialTheme.spacing.medium,
+        itemSpacing = MaterialTheme.spacing.small,
         preferredItemWidth = 220.dp,
         minSmallItemWidth = 32.dp
     ) { index ->
