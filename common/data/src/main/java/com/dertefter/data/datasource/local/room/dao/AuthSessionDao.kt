@@ -16,6 +16,9 @@ interface AuthSessionDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAuthSessions(sessions: List<AuthSessionEntity>)
 
+    @Query("DELETE FROM auth_sessions WHERE id = :id")
+    suspend fun deleteAuthSession(id: String)
+
     @Query("DELETE FROM auth_sessions")
     suspend fun clearAuthSessions()
 }

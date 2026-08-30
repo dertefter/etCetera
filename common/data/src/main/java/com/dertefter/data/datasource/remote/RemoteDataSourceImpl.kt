@@ -59,6 +59,18 @@ class RemoteDataSourceImpl @Inject constructor(
         }
     }
 
+    override suspend fun deleteAuthSession(sessionId: String): Result<Unit> {
+        return runCatching {
+            apiService.deleteSession(sessionId).handleUnitResponse().getOrThrow()
+        }
+    }
+
+    override suspend fun deleteAllAuthSessions(): Result<Unit> {
+        return runCatching {
+            apiService.deleteAllSessions().handleUnitResponse().getOrThrow()
+        }
+    }
+
     override suspend fun getMe(): Result<MeDto> {
         return runCatching {
             apiService.me().handleResponse { it }.getOrThrow()

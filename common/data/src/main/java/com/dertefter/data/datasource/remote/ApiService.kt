@@ -53,6 +53,14 @@ interface ApiService {
     @GET("api/v1/auth/sessions")
     suspend fun sessions(): Response<AuthSessionsResponseDto>
 
+    @DELETE("api/v1/auth/sessions/{sessionId}")
+    suspend fun deleteSession(
+        @Path("sessionId") sessionId: String
+    ): Response<Unit>
+
+    @DELETE("api/v1/auth/sessions")
+    suspend fun deleteAllSessions(): Response<Unit>
+
     @GET("api/users/me")
     suspend fun me(): Response<MeDto>
 

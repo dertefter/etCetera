@@ -36,6 +36,7 @@ data class UserEntity(
     // Me fields
     val isPhoneVerified: Boolean = false,
     val isPrivate: Boolean = false,
+    val canMessage: Boolean = true,
     val subscription: SubscriptionDto? = null,
     val isMe: Boolean = false
 )
@@ -60,7 +61,9 @@ fun UserEntity.asExternalModel() = UserDto(
     postsCount = postsCount,
     username = username,
     verified = verified,
-    wallAccess = wallAccess
+    wallAccess = wallAccess,
+    isPrivate = isPrivate,
+    canMessage = canMessage
 )
 
 fun UserEntity.asFollowerExternalModel() = FollowerUserDto(
@@ -139,7 +142,9 @@ fun UserDto.asEntity() = UserEntity(
     username = username,
     verified = verified,
     wallAccess = wallAccess,
-    isMe = false
+    isMe = false,
+    isPrivate = isPrivate,
+    canMessage = canMessage
 )
 
 fun MeDto.asEntity() = UserEntity(

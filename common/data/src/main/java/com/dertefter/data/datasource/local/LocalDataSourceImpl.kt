@@ -98,6 +98,10 @@ class LocalDataSourceImpl @Inject constructor(
         dao.insertAuthSessions(sessions.map { it.asEntity() })
     }
 
+    override suspend fun deleteAuthSession(id: String) {
+        db().authSessionDao().deleteAuthSession(id)
+    }
+
     override val meDto: Flow<MeDto?> = currentLogin.flatMapLatest { login ->
         getDatabase(login).userDao().getMe()
     }.map { it?.asMeExternalModel() }

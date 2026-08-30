@@ -25,6 +25,7 @@ interface LocalDataSource {
 
     val authSessions: Flow<List<AuthSessionDto>?>
     suspend fun saveAuthSessions(sessions: List<AuthSessionDto>)
+    suspend fun deleteAuthSession(id: String)
 
     val meDto: Flow<MeDto?>
 

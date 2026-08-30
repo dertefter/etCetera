@@ -28,4 +28,8 @@ interface AuthRepository {
 
     suspend fun updateAuthSessions(): Result<Unit>
 
+    suspend fun deleteAuthSession(sessionId: String): Result<Unit>
+
+    suspend fun deleteAllSessions(): Result<Unit>
+
 }

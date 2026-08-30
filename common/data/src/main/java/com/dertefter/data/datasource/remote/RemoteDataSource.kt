@@ -33,6 +33,8 @@ interface RemoteDataSource {
     suspend fun signIn(signInRequest: SignInRequest): Result<SignInResponse>
     suspend fun refreshToken(): Result<Unit>
     suspend fun getAuthSessions(): Result<AuthSessionsResponseDto>
+    suspend fun deleteAuthSession(sessionId: String): Result<Unit>
+    suspend fun deleteAllAuthSessions(): Result<Unit>
     suspend fun getMe(): Result<MeDto>
 
     suspend fun unpinPost(postId: String): Result<Unit>

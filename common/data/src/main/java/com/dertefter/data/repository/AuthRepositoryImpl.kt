@@ -58,4 +58,16 @@ class AuthRepositoryImpl @Inject constructor(
         }.map { Unit }
     }
 
+    override suspend fun deleteAuthSession(sessionId: String): Result<Unit> {
+        return remoteDataSource.deleteAuthSession(sessionId).onFailureLog(crashlyticsRepository).onSuccess {
+            localDataSource.deleteAuthSession(sessionId)
+        }
+    }
+
+    override suspend fun deleteAllSessions(): Result<Unit> {
+        return remoteDataSource.deleteAllAuthSessions().onFailureLog(crashlyticsRepository).onSuccess {
+            updateAuthSessions()
+        }
+    }
+
 }
