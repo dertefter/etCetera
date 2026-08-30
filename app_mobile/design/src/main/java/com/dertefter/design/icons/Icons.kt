@@ -8,6 +8,8 @@ import com.dertefter.design.R
 @Suppress("unused")
 object Icons {
 
+    val LogOut: ImageVector
+        @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_logout)
     val DominoMask: ImageVector
         @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_domino_mask)
 
