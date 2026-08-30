@@ -2,7 +2,6 @@ package com.dertefter.etcetera.navigation
 
 import android.util.Log
 import androidx.compose.animation.core.EaseIn
-import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.EaseOut
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -40,6 +39,7 @@ import com.dertefter.post.PostRoute
 import com.dertefter.search.SearchRoute
 import com.dertefter.settings.SettingsRoute
 import com.dertefter.settings_account.SettingsAccountRoute
+import com.dertefter.settings_security.SettingsSecurityRoute
 import com.dertefter.settings_theme.SettingsThemeRoute
 import com.dertefter.switch_account.SwitchAccountRoute
 import com.dertefter.user.UserRoute
@@ -63,9 +63,9 @@ fun AppNavHost(
                 animationSpec = ms.slowEffectsSpec()
             ) + scaleIn(
                 initialScale = 0.9f,
-                animationSpec =  ms.slowEffectsSpec()
+                animationSpec = ms.slowEffectsSpec()
             ) + slideInVertically(
-                initialOffsetY = {it/6},
+                initialOffsetY = { it / 6 },
                 animationSpec = ms.slowEffectsSpec()
             ) togetherWith fadeOut(
                 animationSpec = ms.fastEffectsSpec()
@@ -94,10 +94,21 @@ fun AppNavHost(
             val exit =
                 when (swipeEdge) {
                     NavigationEvent.EDGE_RIGHT -> {
-                        slideOutHorizontally( animationSpec = tween(easing = EaseIn, durationMillis = 100)) { -it }
+                        slideOutHorizontally(
+                            animationSpec = tween(
+                                easing = EaseIn,
+                                durationMillis = 100
+                            )
+                        ) { -it }
                     }
+
                     else -> {
-                        slideOutHorizontally( animationSpec = tween(easing = EaseIn, durationMillis = 100)) { it }
+                        slideOutHorizontally(
+                            animationSpec = tween(
+                                easing = EaseIn,
+                                durationMillis = 100
+                            )
+                        ) { it }
                     }
                 }
             (enter togetherWith exit)
@@ -113,15 +124,14 @@ fun RouteContent(route: Routes) {
         is Routes.Comments -> CommentsRoute(route.postId)
         is Routes.User -> UserRoute(route.userId, route.showBackButton)
         is Routes.NewPost -> NewPostRoute(route.wallRecipientId)
-    is Routes.Repost -> RepostRoute(route.postIdForRepost, route.wallRecipientId)
-    is Routes.EditPost -> EditPostRoute(route.postId)
+        is Routes.Repost -> RepostRoute(route.postIdForRepost, route.wallRecipientId)
+        is Routes.EditPost -> EditPostRoute(route.postId)
         is Routes.NewComment -> NewCommentRoute(route.postId)
         is Routes.NewCommentReply -> NewCommentReplyRoute(
             route.postId,
             route.commentId,
             route.userId
         )
-
         is Routes.AttachmentsViewer -> AttachmentViewerRoute(route.attachments, route.viewPosition)
         is Routes.Followers -> FollowersRoute(route.userId, route.startTabIsFollowing)
         is Routes.Notifications -> NotificationsRoute(route.showBackButton)
@@ -134,6 +144,7 @@ fun RouteContent(route: Routes) {
         is Routes.Settings -> SettingsRoute()
         is Routes.SettingsTheme -> SettingsThemeRoute()
         is Routes.SettingsAccount -> SettingsAccountRoute()
+        is Routes.SettingsSecurity -> SettingsSecurityRoute()
 
     }
 }
