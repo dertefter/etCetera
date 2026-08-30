@@ -73,6 +73,7 @@ include(":app_mobile:feat:switch_account")
 include(":app_mobile:feat:settings")
 include(":app_mobile:feat:settings_theme")
 include(":app_mobile:feat:settings_account")
+include(":app_mobile:feat:settings_security")
 
 
 //wearable

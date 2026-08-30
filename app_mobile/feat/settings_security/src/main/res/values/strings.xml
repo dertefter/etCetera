@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_security_title">Security</string>
+    <string name="settings_security_sessions">Active sessions</string>
+    <string name="settings_security_current_session">Current session</string>
+    <string name="settings_security_last_active">Last active: %s</string>
+    <string name="settings_security_unknown_device">Unknown device</string>
+    <string name="settings_security_unknown_os">Unknown OS</string>
+    <string name="settings_security_unknown_location">Unknown location</string>
+    <string name="settings_security_terminate_session">Terminate session</string>
+    <string name="settings_security_close">Close</string>
+    <string name="settings_security_clear_sessions">Clear sessions</string>
+</resources>

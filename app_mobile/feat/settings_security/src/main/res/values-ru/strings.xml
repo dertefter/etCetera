@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_security_title">Безопасность</string>
+    <string name="settings_security_sessions">Активные сессии</string>
+    <string name="settings_security_current_session">Эта сессия</string>
+    <string name="settings_security_last_active">Активность: %s</string>
+    <string name="settings_security_unknown_device">Неизвестное устройство</string>
+    <string name="settings_security_unknown_os">Неизвестная ОС</string>
+    <string name="settings_security_unknown_location">Местоположение неизвестно</string>
+    <string name="settings_security_terminate_session">Завершить сессию</string>
+    <string name="settings_security_close">Закрыть</string>
+    <string name="settings_security_clear_sessions">Завершить другие сессии</string>
+</resources>
