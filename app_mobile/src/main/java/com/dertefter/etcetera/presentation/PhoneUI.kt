@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -31,6 +33,7 @@ fun PhoneUI(
     activeBackStack: NavBackStack<NavKey>,
     entries: List<NavEntry<NavKey>>,
     selectedTab: MainTab,
+    notificationCount: Int?,
     hazeState: HazeState,
     appNavHost: @Composable (
         entries: List<NavEntry<NavKey>>,
@@ -39,7 +42,7 @@ fun PhoneUI(
     ) -> Unit,
     onBack: () -> Unit,
     onNavItemClick: (tab: MainTab) -> Unit
-    ){
+) {
 
     val hideNav = activeBackStack.lastOrNull() is Routes.AttachmentsViewer || activeBackStack.lastOrNull() is Routes.Auth || WindowInsets.isImeVisible
 
@@ -58,17 +61,27 @@ fun PhoneUI(
         AnimatedVisibility(
             visible = !hideNav
         ) {
-            NavigationBar() {
+            NavigationBar {
                 MainTab.entries.forEach { tab ->
                     val selected = selectedTab == tab
                     NavigationBarItem(
                         selected = selected,
-                        onClick = {onNavItemClick(tab)},
+                        onClick = { onNavItemClick(tab) },
                         icon = {
-                            Icon(
-                                imageVector = if (selected) tab.selectedIcon() else tab.icon(),
-                                contentDescription = tab.label
-                            )
+                            BadgedBox(
+                                badge = {
+                                    if (tab == MainTab.Notifications && notificationCount != null && notificationCount > 0) {
+                                        Badge {
+                                            Text(notificationCount.toString())
+                                        }
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = if (selected) tab.selectedIcon() else tab.icon(),
+                                    contentDescription = tab.label
+                                )
+                            }
                         },
                         label = { Text(tab.label) }
                     )

@@ -8,6 +8,7 @@ import com.dertefter.data.datasource.local.TokenManager
 import com.dertefter.data.repository.AuthRepository
 import com.dertefter.data.repository.CrashlyticsRepository
 import com.dertefter.data.repository.MeRepository
+import com.dertefter.data.repository.NotificationsRepository
 import com.dertefter.data.repository.SettingsRepository
 import com.dertefter.etcetera.presentation.MainUiState
 import com.dertefter.etcetera.presentation.ThemeState
@@ -33,6 +34,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     authRepository: AuthRepository,
     meRepository: MeRepository,
+    notificationsRepository: NotificationsRepository,
     crashlyticsRepository: CrashlyticsRepository,
     settingsRepository: SettingsRepository,
     private val tokenManager: TokenManager,
@@ -42,11 +44,13 @@ class MainViewModel @Inject constructor(
     val uiState: StateFlow<MainUiState> = combine(
         authRepository.currentLogin,
         meRepository.meDto.map { it?.id },
+        notificationsRepository.getNotificationCount(),
         crashlyticsRepository.currentError
-    ) { login, meId, error ->
+    ) { login, meId, notificationCount, error ->
         MainUiState(
             isReady = true,
             currentLogin = login,
+            notificationCount = notificationCount,
             meUserId = meId,
             currentError = error
         )
@@ -104,6 +108,7 @@ class MainViewModel @Inject constructor(
         combine(currentLogin, accessToken, refreshToken) { _, _, _ -> }.onEach {
             context.startService(Intent(context, TokenRequestService::class.java))
             meRepository.fetchMe()
+            notificationsRepository.updateNotificationCount()
         }.launchIn(viewModelScope)    }
 
 }

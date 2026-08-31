@@ -5,6 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.room.Room
@@ -45,6 +46,7 @@ class LocalDataSourceImpl @Inject constructor(
 ) : LocalDataSource {
 
     private val CURRENT_LOGIN_KEY = stringPreferencesKey("current_login")
+    private val NOTIFICATION_COUNT_KEY = intPreferencesKey("notification_count")
     private val LOGIN_HISTORY_KEY = stringSetPreferencesKey("login_history")
     private val EMOJI_AVATAR_HARMONIZATION_COLOR_KEY = stringPreferencesKey("emoji_avatar_harmonization_color")
     private val DARK_THEME_KEY = booleanPreferencesKey("dark_theme")
@@ -108,6 +110,16 @@ class LocalDataSourceImpl @Inject constructor(
 
     override suspend fun saveMe(meDto: MeDto) {
         db().userDao().insertUser(meDto.asEntity())
+    }
+
+    override val notificationCount: Flow<Int?> = authDataStore.data.map { preferences ->
+        preferences[NOTIFICATION_COUNT_KEY]
+    }
+
+    override suspend fun saveNotificationCount(count: Int) {
+        authDataStore.edit { preferences ->
+            preferences[NOTIFICATION_COUNT_KEY] = count
+        }
     }
 
     override fun getUser(userId: String): Flow<UserDto?> = currentLogin.flatMapLatest { login ->

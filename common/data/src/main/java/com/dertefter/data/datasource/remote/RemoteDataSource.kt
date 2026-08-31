@@ -99,6 +99,10 @@ interface RemoteDataSource {
 
     suspend fun getNotifications(offset: Int?): Result<NotificationsResponseDto>
 
+    suspend fun getNotificationCount(): Result<Int>
+
+    suspend fun readAllNotifications(): Result<Unit>
+
     suspend fun getTrendingHashtags(): Result<List<SearchHashtagDto>>
 
     suspend fun getTopClans(): Result<List<TopClanDto>>

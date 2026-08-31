@@ -301,6 +301,18 @@ class RemoteDataSourceImpl @Inject constructor(
         }
     }
 
+    override suspend fun getNotificationCount(): Result<Int> {
+        return runCatching {
+            apiService.notificationCount().handleResponse { it.count }.getOrThrow()
+        }
+    }
+
+    override suspend fun readAllNotifications(): Result<Unit> {
+        return runCatching {
+            apiService.readAllNotifications().handleUnitResponse().getOrThrow()
+        }
+    }
+
     override suspend fun getTrendingHashtags(): Result<List<SearchHashtagDto>> {
         return runCatching {
             apiService.trendingHashtags().handleResponse { it.data.hashtags }.getOrThrow()

@@ -349,6 +349,7 @@ fun MainScreen(
                     activeBackStack = activeBackStack,
                     entries = activeEntries,
                     selectedTab = selectedTab,
+                    notificationCount = uiState.notificationCount,
                     hazeState = hazeState,
                     appNavHost = appNavHost,
                     onBack = {
@@ -367,6 +368,7 @@ fun MainScreen(
                     activeBackStack = activeBackStack,
                     entries = activeEntries,
                     selectedTab = selectedTab,
+                    notificationCount = uiState.notificationCount,
                     hazeState = hazeState,
                     appNavHost = appNavHost,
                     onBack = {

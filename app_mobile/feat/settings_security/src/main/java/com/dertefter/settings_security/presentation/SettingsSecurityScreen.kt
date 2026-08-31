@@ -213,6 +213,22 @@ private fun SettingsSecurityScreenPreview() {
                         clientVersion = "1.0.0",
                         deviceModel = "Pixel 8"
                     ),
+                    AuthSessionDto(
+                        id = "1",
+                        isCurrent = false,
+                        createdAt = "2024-01-01T00:00:00Z",
+                        lastUsedAt = "2024-01-01T00:00:00Z",
+                        expiresAt = "2025-01-01T00:00:00Z",
+                        ipAddress = "192.168.1.1",
+                        ipCountry = "Russia",
+                        ipCity = "Moscow",
+                        deviceType = "Mobile",
+                        osName = "Android",
+                        osVersion = "14",
+                        clientName = "etCetera",
+                        clientVersion = "1.0.0",
+                        deviceModel = "Pixel 8"
+                    ),
                 )
             ),
             onEvent = {}

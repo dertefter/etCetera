@@ -20,6 +20,7 @@ import com.dertefter.data.dto.me.UpdateMeResponseDto
 import com.dertefter.data.dto.new_post.EditPostRequestDto
 import com.dertefter.data.dto.new_post.EditPostResponseDto
 import com.dertefter.data.dto.new_post.NewPostRequestDto
+import com.dertefter.data.dto.notifications.NotificationCountDto
 import com.dertefter.data.dto.notifications.NotificationsResponseDto
 import com.dertefter.data.dto.poll.PollVoteResponseDto
 import com.dertefter.data.dto.poll.VotePollRequestDto
@@ -74,6 +75,12 @@ interface ApiService {
         @Query("limit") limit: Int = 20,
         @Query("offset") offset: Int?,
     ): Response<NotificationsResponseDto>
+
+    @GET("api/notifications/count")
+    suspend fun notificationCount(): Response<NotificationCountDto>
+
+    @POST("api/notifications/read-all")
+    suspend fun readAllNotifications(): Response<Unit>
 
 
     @GET("api/search")

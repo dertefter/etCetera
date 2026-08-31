@@ -31,6 +31,10 @@ interface LocalDataSource {
 
     suspend fun saveMe(meDto: MeDto)
 
+    val notificationCount: Flow<Int?>
+
+    suspend fun saveNotificationCount(count: Int)
+
     fun getUser(userId: String): Flow<UserDto?>
     suspend fun saveUser(userDto: UserDto)
 

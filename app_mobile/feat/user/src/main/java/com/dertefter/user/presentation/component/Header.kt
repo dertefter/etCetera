@@ -135,8 +135,7 @@ fun Header(
                 emoji = author.avatar,
                 rotation = rotation,
                 containerSize = avatarSize,
-                fontSize = 36.sp,
-                isOnline = isOnline
+                fontSize = 36.sp
             )
         }
 

@@ -6,6 +6,7 @@ import com.dertefter.data.datasource.local.room.NotificationPagingCache
 import com.dertefter.data.datasource.remote.RemoteDataSource
 import com.dertefter.data.dto.notifications.NotificationDto
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
+import kotlinx.coroutines.flow.Flow
 import com.jamal_aliev.paginator.cursor.bookmark.CursorBookmark
 import com.jamal_aliev.paginator.cursor.cache.eviction.CursorMostRecentPagingCache
 import com.jamal_aliev.paginator.cursor.dsl.mutableCursorPaginator
@@ -66,6 +67,22 @@ class NotificationsRepositoryImpl @Inject constructor(
             initialCursor = CursorBookmark(prev = null, self = "initial", next = null)
         }.also {
             activePaginators.add(WeakReference(it))
+        }
+    }
+
+    override fun getNotificationCount(): Flow<Int?> {
+        return localDataSource.notificationCount
+    }
+
+    override suspend fun updateNotificationCount(): Result<Unit> {
+        return remoteDataSource.getNotificationCount().onFailureLog(crashlyticsRepository).onSuccess {
+            localDataSource.saveNotificationCount(it)
+        }.map { Unit }
+    }
+
+    override suspend fun readAll(): Result<Unit> {
+        return remoteDataSource.readAllNotifications().onFailureLog(crashlyticsRepository).onSuccess {
+            localDataSource.saveNotificationCount(0)
         }
     }
 }

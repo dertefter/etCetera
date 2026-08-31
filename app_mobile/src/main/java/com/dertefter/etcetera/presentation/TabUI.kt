@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -45,6 +47,7 @@ fun TabUI(
     activeBackStack: NavBackStack<NavKey>,
     entries: List<NavEntry<NavKey>>,
     selectedTab: MainTab,
+    notificationCount: Int?,
     hazeState: HazeState,
     appNavHost: @Composable (
         entries: List<NavEntry<NavKey>>,
@@ -64,6 +67,7 @@ fun TabUI(
         modifier = modifier,
         hideNav = hideNav,
         selectedTab = selectedTab,
+        notificationCount = notificationCount,
         hazeState = hazeState,
         onNavItemClick = onNavItemClick,
         content = {
@@ -84,7 +88,7 @@ fun TabUI(
                     )
                     .clipToBounds()
                     .then(
-                        if (!hideNav){
+                        if (!hideNav) {
                             Modifier
                                 .statusBarsPadding()
                                 .clip(RoundedCornerShape(topStart = topLeftCornerRadius))
@@ -101,6 +105,7 @@ fun TabUIStateless(
     modifier: Modifier = Modifier,
     hideNav: Boolean,
     selectedTab: MainTab,
+    notificationCount: Int?,
     hazeState: HazeState,
     onNavItemClick: (tab: MainTab) -> Unit,
     content: @Composable () -> Unit
@@ -142,17 +147,27 @@ fun TabUIStateless(
                         selected = selected,
                         onClick = { onNavItemClick(tab) },
                         icon = {
-                            Icon(
-                                imageVector = if (selected) tab.selectedIcon() else tab.icon(),
-                                contentDescription = tab.label
-                            )
+                            BadgedBox(
+                                badge = {
+                                    if (tab == MainTab.Notifications && notificationCount != null && notificationCount > 0) {
+                                        Badge {
+                                            Text(notificationCount.toString())
+                                        }
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = if (selected) tab.selectedIcon() else tab.icon(),
+                                    contentDescription = tab.label
+                                )
+                            }
                         },
                         label = {
                             Text(
                                 tab.label,
                                 style = if (railState.currentValue == WideNavigationRailValue.Expanded) {
                                     MaterialTheme.typography.labelLarge
-                                }else {
+                                } else {
                                     MaterialTheme.typography.labelMedium
                                 },
                                 maxLines = 1,
