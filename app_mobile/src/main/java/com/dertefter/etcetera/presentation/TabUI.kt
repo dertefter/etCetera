@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.NavBackStack
@@ -61,7 +62,7 @@ fun TabUI(
 
     val hideNav = activeBackStack.lastOrNull() is Routes.AttachmentsViewer || activeBackStack.lastOrNull() is Routes.Auth
 
-    val topLeftCornerRadius = MaterialTheme.rounding.largeIncreased
+    val topLeftCornerRadius = MaterialTheme.rounding.extraLarge
 
     TabUIStateless(
         modifier = modifier,
@@ -158,13 +159,13 @@ fun TabUIStateless(
                             ) {
                                 Icon(
                                     imageVector = if (selected) tab.selectedIcon() else tab.icon(),
-                                    contentDescription = tab.label
+                                    contentDescription = stringResource(tab.label)
                                 )
                             }
                         },
                         label = {
                             Text(
-                                tab.label,
+                                stringResource(tab.label),
                                 style = if (railState.currentValue == WideNavigationRailValue.Expanded) {
                                     MaterialTheme.typography.labelLarge
                                 } else {

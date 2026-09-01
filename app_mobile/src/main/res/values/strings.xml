@@ -47,4 +47,8 @@
         <item quantity="one">%1$s post</item>
         <item quantity="other">%1$s posts</item>
     </plurals>
+    <string name="app_main_tab_feed">Feed</string>
+    <string name="app_main_tab_search">Search</string>
+    <string name="app_main_tab_notifications">Notifications</string>
+    <string name="app_main_tab_profile">Profile</string>
 </resources>

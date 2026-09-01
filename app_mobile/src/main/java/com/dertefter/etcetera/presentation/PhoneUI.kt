@@ -18,6 +18,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavEntry
@@ -79,11 +80,11 @@ fun PhoneUI(
                             ) {
                                 Icon(
                                     imageVector = if (selected) tab.selectedIcon() else tab.icon(),
-                                    contentDescription = tab.label
+                                    contentDescription = stringResource(tab.label)
                                 )
                             }
                         },
-                        label = { Text(tab.label) }
+                        label = { Text(stringResource(tab.label)) }
                     )
                 }
             }

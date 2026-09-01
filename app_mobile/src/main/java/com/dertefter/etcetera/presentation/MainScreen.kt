@@ -1,6 +1,7 @@
 package com.dertefter.etcetera.presentation
 
 import androidx.activity.compose.BackHandler
+import androidx.annotation.StringRes
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -70,15 +71,15 @@ import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.launch
 
 enum class MainTab(
-    val label: String,
+    @StringRes val label: Int,
     val icon: @Composable () -> ImageVector,
     val selectedIcon: @Composable () -> ImageVector
 ) {
-    Feed("Лента", { Icons.Home }, { Icons.HomeFilled }),
+    Feed(R.string.app_main_tab_feed, { Icons.Home }, { Icons.HomeFilled }),
 
-    Search("Поиск", { Icons.Search }, { Icons.Search }),
-    Notifications("Уведомления", { Icons.Notifications }, { Icons.NotificationsFilled }),
-    Profile("Профиль", { Icons.User }, { Icons.UserFilled })
+    Search(R.string.app_main_tab_search, { Icons.Search }, { Icons.Search }),
+    Notifications(R.string.app_main_tab_notifications, { Icons.Notifications }, { Icons.NotificationsFilled }),
+    Profile(R.string.app_main_tab_profile, { Icons.User }, { Icons.UserFilled })
 }
 
 @Composable

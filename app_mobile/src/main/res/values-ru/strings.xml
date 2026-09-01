@@ -48,4 +48,8 @@
         <item quantity="many">%1$s постов</item>
         <item quantity="other">%1$s постов</item>
     </plurals>
+    <string name="app_main_tab_feed">Лента</string>
+    <string name="app_main_tab_search">Поиск</string>
+    <string name="app_main_tab_notifications">Уведомления</string>
+    <string name="app_main_tab_profile">Профиль</string>
 </resources>
