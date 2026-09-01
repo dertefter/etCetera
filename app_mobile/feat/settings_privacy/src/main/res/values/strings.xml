@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_privacy_title">Privacy</string>
+
+    <string name="settings_privacy_account_section">Account</string>
+    <string name="settings_privacy_private_account">Private account</string>
+    <string name="settings_privacy_private_account_desc">Only your followers can see your profile and posts</string>
+
+    <string name="settings_privacy_visibility_section">Visibility</string>
+    <string name="settings_privacy_wall_access">Wall access</string>
+    <string name="settings_privacy_wall_access_desc">Who can post on your wall or see your posts</string>
+    <string name="settings_privacy_likes_visibility">Likes visibility</string>
+    <string name="settings_privacy_likes_visibility_desc">Who can see your likes</string>
+    <string name="settings_privacy_message_access">Message access</string>
+    <string name="settings_privacy_message_access_desc">Who can send you direct messages</string>
+    <string name="settings_privacy_show_last_seen">Show last seen</string>
+    <string name="settings_privacy_show_last_seen_desc">Allow others to see when you were last online</string>
+
+    <string name="visibility_everyone">Everyone</string>
+    <string name="visibility_followers">Followers</string>
+    <string name="visibility_mutual">Mutual followers</string>
+    <string name="visibility_nobody">Nobody</string>
+</resources>

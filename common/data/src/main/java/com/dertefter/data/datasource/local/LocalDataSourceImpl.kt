@@ -17,6 +17,7 @@ import com.dertefter.data.datasource.local.room.entity.asEntity
 import com.dertefter.data.datasource.local.room.entity.asExternalModel
 import com.dertefter.data.datasource.local.room.entity.asFollowerExternalModel
 import com.dertefter.data.datasource.local.room.entity.asMeExternalModel
+import com.dertefter.data.datasource.local.room.entity.asPrivacyDto
 import com.dertefter.data.di.AuthDataStore
 import com.dertefter.data.di.SettingsDataStore
 import com.dertefter.data.dto.auth.AuthSessionDto
@@ -24,6 +25,7 @@ import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.dto.followers.FollowerUserDto
 import com.dertefter.data.dto.me.MeDto
+import com.dertefter.data.dto.me.PrivacyDto
 import com.dertefter.data.dto.notifications.NotificationDto
 import com.dertefter.data.dto.search.SearchHashtagDto
 import com.dertefter.data.dto.search.TopClanDto
@@ -110,6 +112,25 @@ class LocalDataSourceImpl @Inject constructor(
 
     override suspend fun saveMe(meDto: MeDto) {
         db().userDao().insertUser(meDto.asEntity())
+    }
+
+    override val privacy: Flow<PrivacyDto?> = currentLogin.flatMapLatest { login ->
+        getDatabase(login).userDao().getMe()
+    }.map { it?.asPrivacyDto() }
+
+    override suspend fun savePrivacy(privacyDto: PrivacyDto) {
+        val database = db()
+        database.userDao().getMeSync()?.let { me ->
+            database.userDao().insertUser(
+                me.copy(
+                    isPrivate = privacyDto.isPrivate,
+                    wallAccess = privacyDto.wallAccess,
+                    likesVisibility = privacyDto.likesVisibility,
+                    messageAccess = privacyDto.messageAccess,
+                    showLastSeen = privacyDto.showLastSeen
+                )
+            )
+        }
     }
 
     override val notificationCount: Flow<Int?> = authDataStore.data.map { preferences ->

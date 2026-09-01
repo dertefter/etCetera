@@ -5,6 +5,7 @@ import androidx.room.PrimaryKey
 import com.dertefter.data.dto.feed.PinDto
 import com.dertefter.data.dto.followers.FollowerUserDto
 import com.dertefter.data.dto.me.MeDto
+import com.dertefter.data.dto.me.PrivacyDto
 import com.dertefter.data.dto.user.LastSeenDto
 import com.dertefter.data.dto.user.SubscriptionDto
 import com.dertefter.data.dto.user.UserDto
@@ -37,6 +38,8 @@ data class UserEntity(
     val isPhoneVerified: Boolean = false,
     val isPrivate: Boolean = false,
     val canMessage: Boolean = true,
+    val messageAccess: VisibilityDto = VisibilityDto.EVERYONE,
+    val showLastSeen: Boolean = true,
     val subscription: SubscriptionDto? = null,
     val isMe: Boolean = false
 )
@@ -99,6 +102,14 @@ fun FollowerUserDto.asEntity() = UserEntity(
     postsCount = 0,
     wallAccess = VisibilityDto.EVERYONE,
     isMe = false
+)
+
+fun UserEntity.asPrivacyDto() = PrivacyDto(
+    isPrivate = isPrivate,
+    wallAccess = wallAccess,
+    likesVisibility = likesVisibility,
+    messageAccess = messageAccess,
+    showLastSeen = showLastSeen
 )
 
 fun UserEntity.asMeExternalModel() = MeDto(

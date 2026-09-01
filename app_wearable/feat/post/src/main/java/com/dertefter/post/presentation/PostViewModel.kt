@@ -29,7 +29,7 @@ class PostViewModel @Inject constructor(
     private val navigator: Navigator
 ) : ViewModel() {
 
-    val meUserId: StateFlow<String?> = meRepository.meDto
+    val meUserId: StateFlow<String?> = meRepository.me
         .map { it?.id }
         .distinctUntilChanged()
         .stateIn(

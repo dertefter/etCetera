@@ -43,7 +43,7 @@ class MainViewModel @Inject constructor(
 
     val uiState: StateFlow<MainUiState> = combine(
         authRepository.currentLogin,
-        meRepository.meDto.map { it?.id },
+        meRepository.me.map { it?.id },
         notificationsRepository.getNotificationCount(),
         crashlyticsRepository.currentError
     ) { login, meId, notificationCount, error ->
@@ -107,7 +107,7 @@ class MainViewModel @Inject constructor(
     init {
         combine(currentLogin, accessToken, refreshToken) { _, _, _ -> }.onEach {
             context.startService(Intent(context, TokenRequestService::class.java))
-            meRepository.fetchMe()
+            meRepository.updateMe()
             notificationsRepository.updateNotificationCount()
         }.launchIn(viewModelScope)    }
 

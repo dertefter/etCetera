@@ -16,8 +16,10 @@ import com.dertefter.data.dto.feed.stats.PostStatsDto
 import com.dertefter.data.dto.feed.stats.PostStatsRequest
 import com.dertefter.data.dto.followers.FollowersResponseDataDto
 import com.dertefter.data.dto.me.MeDto
+import com.dertefter.data.dto.me.PrivacyDto
 import com.dertefter.data.dto.me.UpdateMeRequestDto
 import com.dertefter.data.dto.me.UpdateMeResponseDto
+import com.dertefter.data.dto.me.UpdatePrivacyRequestDto
 import com.dertefter.data.dto.new_post.EditPostRequestDto
 import com.dertefter.data.dto.new_post.EditPostResponseDto
 import com.dertefter.data.dto.new_post.NewPostRequestDto
@@ -328,6 +330,18 @@ class RemoteDataSourceImpl @Inject constructor(
     override suspend fun getSearchResults(q: String): Result<SearchDataDto> {
         return runCatching {
             apiService.search(query = q).handleResponse { it.data }.getOrThrow()
+        }
+    }
+
+    override suspend fun getPrivacy(): Result<PrivacyDto> {
+        return runCatching {
+            apiService.privacy().handleResponse { it }.getOrThrow()
+        }
+    }
+
+    override suspend fun updatePrivacy(updatePrivacyRequestDto: UpdatePrivacyRequestDto): Result<PrivacyDto> {
+        return runCatching {
+            apiService.updatePrivacy(updatePrivacyRequestDto).handleResponse { it }.getOrThrow()
         }
     }
 }

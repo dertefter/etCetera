@@ -25,7 +25,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -52,9 +51,9 @@ class FeedViewModel @Inject constructor(
 
     private val _trendingHashtags = searchRepository.getTrendingHashtags()
 
-    private val _emojiAvatar = meRepository.meDto.map { it?.avatar }
+    private val _emojiAvatar = meRepository.me.map { it?.avatar }
 
-    private val _userId = meRepository.meDto.map { it?.id }
+    private val _userId = meRepository.me.map { it?.id }
 
     fun getPaginator(tab: FeedTab) = paginators[tab]!!
 
@@ -84,7 +83,7 @@ class FeedViewModel @Inject constructor(
 
     private fun updateMe() {
         viewModelScope.launch {
-            meRepository.fetchMe()
+            meRepository.updateMe()
         }
     }
 

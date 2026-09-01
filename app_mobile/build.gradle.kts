@@ -99,6 +99,7 @@ dependencies {
     implementation(project(":app_mobile:feat:settings_theme"))
     implementation(project(":app_mobile:feat:settings_account"))
     implementation(project(":app_mobile:feat:settings_security"))
+    implementation(project(":app_mobile:feat:settings_privacy"))
 
     implementation(libs.core.splashscreen)
     implementation(libs.activity.compose)

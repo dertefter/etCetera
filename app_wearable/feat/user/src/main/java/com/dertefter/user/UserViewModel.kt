@@ -52,7 +52,7 @@ class UserViewModel @Inject constructor(
     private val navigator: Navigator
 ) : ViewModel() {
 
-    private val _meUserId = meRepository.meDto.map {
+    private val _meUserId = meRepository.me.map {
         it?.id
     }.distinctUntilChanged()
 
@@ -149,7 +149,7 @@ class UserViewModel @Inject constructor(
                 _meUserId.collect { id ->
                     if (id == null) {
                         _isLoading.value = true
-                        meRepository.fetchMe().onFailure {
+                        meRepository.updateMe().onFailure {
                             _error.value = it.toAppError()
                             _isLoading.value = false
                         }
@@ -168,7 +168,7 @@ class UserViewModel @Inject constructor(
 
     fun updateMe(){
         viewModelScope.launch {
-            meRepository.fetchMe()
+            meRepository.updateMe()
         }
     }
 
@@ -282,7 +282,7 @@ class UserViewModel @Inject constructor(
 
             is Event.OnSaveBio -> {
                 viewModelScope.launch {
-                    meRepository.updateMe(
+                    meRepository.saveMe(
                         UpdateMeRequestDto(bio = event.bio)
                     ).onFailure {
                         Log.e("OnSaveBio", it.stackTraceToString())

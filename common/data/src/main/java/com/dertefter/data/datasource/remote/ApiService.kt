@@ -15,8 +15,10 @@ import com.dertefter.data.dto.feed.stats.PostStatsRequest
 import com.dertefter.data.dto.feed.stats.PostStatsResponse
 import com.dertefter.data.dto.followers.FollowersResponseDto
 import com.dertefter.data.dto.me.MeDto
+import com.dertefter.data.dto.me.PrivacyDto
 import com.dertefter.data.dto.me.UpdateMeRequestDto
 import com.dertefter.data.dto.me.UpdateMeResponseDto
+import com.dertefter.data.dto.me.UpdatePrivacyRequestDto
 import com.dertefter.data.dto.new_post.EditPostRequestDto
 import com.dertefter.data.dto.new_post.EditPostResponseDto
 import com.dertefter.data.dto.new_post.NewPostRequestDto
@@ -264,5 +266,13 @@ interface ApiService {
     suspend fun updateMe(
         @Body body: UpdateMeRequestDto
     ): Response<UpdateMeResponseDto>
+
+    @GET("api/users/me/privacy")
+    suspend fun privacy(): Response<PrivacyDto>
+
+    @PUT("api/users/me/privacy")
+    suspend fun updatePrivacy(
+        @Body body: UpdatePrivacyRequestDto
+    ): Response<PrivacyDto>
 
 }

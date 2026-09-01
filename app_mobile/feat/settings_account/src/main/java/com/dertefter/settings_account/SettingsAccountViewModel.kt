@@ -25,7 +25,7 @@ class SettingsAccountViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
-    private val _me = meRepository.meDto
+    private val _me = meRepository.me
     private val _isLoading = MutableStateFlow(false)
 
     private val _currentLogin = authRepository.currentLogin
@@ -120,7 +120,7 @@ class SettingsAccountViewModel @Inject constructor(
                 username = _username.value,
                 bio = _bio.value
             )
-            meRepository.updateMe(request)
+            meRepository.saveMe(request)
             _isLoading.value = false
         }
     }
@@ -128,7 +128,7 @@ class SettingsAccountViewModel @Inject constructor(
     private fun fetchMe() {
         viewModelScope.launch {
             _isLoading.value = true
-            meRepository.fetchMe()
+            meRepository.updateMe()
             _isLoading.value = false
         }
     }

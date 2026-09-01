@@ -12,10 +12,12 @@ import com.dertefter.data.dto.feed.PostDataDto
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.dto.feed.like.LikeResponseDto
 import com.dertefter.data.dto.me.MeDto
+import com.dertefter.data.dto.me.PrivacyDto
 import com.dertefter.data.dto.feed.stats.PostStatsDto
 import com.dertefter.data.dto.followers.FollowersResponseDataDto
 import com.dertefter.data.dto.me.UpdateMeRequestDto
 import com.dertefter.data.dto.me.UpdateMeResponseDto
+import com.dertefter.data.dto.me.UpdatePrivacyRequestDto
 import com.dertefter.data.dto.new_post.EditPostRequestDto
 import com.dertefter.data.dto.new_post.EditPostResponseDto
 import com.dertefter.data.dto.new_post.NewPostRequestDto
@@ -108,5 +110,9 @@ interface RemoteDataSource {
     suspend fun getTopClans(): Result<List<TopClanDto>>
 
     suspend fun getSearchResults(q: String): Result<SearchDataDto>
+
+    suspend fun getPrivacy(): Result<PrivacyDto>
+
+    suspend fun updatePrivacy(updatePrivacyRequestDto: UpdatePrivacyRequestDto): Result<PrivacyDto>
 
 }

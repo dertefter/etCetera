@@ -7,6 +7,7 @@ import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.dto.followers.FollowerUserDto
 import com.dertefter.data.dto.me.MeDto
+import com.dertefter.data.dto.me.PrivacyDto
 import com.dertefter.data.dto.notifications.NotificationDto
 import com.dertefter.data.dto.search.SearchHashtagDto
 import com.dertefter.data.dto.search.TopClanDto
@@ -30,6 +31,10 @@ interface LocalDataSource {
     val meDto: Flow<MeDto?>
 
     suspend fun saveMe(meDto: MeDto)
+
+    val privacy: Flow<PrivacyDto?>
+
+    suspend fun savePrivacy(privacyDto: PrivacyDto)
 
     val notificationCount: Flow<Int?>
 

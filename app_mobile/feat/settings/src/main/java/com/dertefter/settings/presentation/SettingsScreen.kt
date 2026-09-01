@@ -61,7 +61,7 @@ fun SettingsScreen(
                 ), SettingsItem(
                     title = stringResource(R.string.settings_security), icon = Icons.Security, route = Routes.SettingsSecurity
                 ), SettingsItem(
-                    title = stringResource(R.string.settings_privacy), icon = Icons.DominoMaskFilled, route = Routes.Settings
+                    title = stringResource(R.string.settings_privacy), icon = Icons.DominoMaskFilled, route = Routes.SettingsPrivacy
                 ),
             )
         ),

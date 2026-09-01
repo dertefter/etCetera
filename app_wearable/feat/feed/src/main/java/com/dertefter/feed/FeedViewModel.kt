@@ -54,7 +54,7 @@ class FeedViewModel @Inject constructor(
 
     private val _trendingHashtags = searchRepository.getTrendingHashtags()
 
-    private val _emojiAvatar = meRepository.meDto.map { it?.avatar }
+    private val _emojiAvatar = meRepository.me.map { it?.avatar }
 
     fun getPaginator(tab: FeedTab) = paginators[tab]!!
 
@@ -95,7 +95,7 @@ class FeedViewModel @Inject constructor(
 
     private fun updateMe() {
         viewModelScope.launch {
-            meRepository.fetchMe()
+            meRepository.updateMe()
         }
     }
 

@@ -81,7 +81,7 @@ class BannerEditViewModel @Inject constructor(
 
     private fun saveBannerId(bannerId: String?) {
         viewModelScope.launch {
-            meRepository.updateMe(
+            meRepository.saveMe(
                 UpdateMeRequestDto(
                     bannerId = bannerId
                 )

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_privacy_title">Приватность</string>
+
+    <string name="settings_privacy_account_section">Аккаунт</string>
+    <string name="settings_privacy_private_account">Закрытый профиль</string>
+    <string name="settings_privacy_private_account_desc">Только ваши подписчики смогут видеть ваш профиль и посты</string>
+
+    <string name="settings_privacy_visibility_section">Видимость</string>
+    <string name="settings_privacy_wall_access">Доступ к стене</string>
+    <string name="settings_privacy_wall_access_desc">Кто может видеть ваши посты или оставлять записи на вашей стене</string>
+    <string name="settings_privacy_likes_visibility">Видимость лайков</string>
+    <string name="settings_privacy_likes_visibility_desc">Кто может видеть список ваших лайков</string>
+    <string name="settings_privacy_message_access">Личные сообщения</string>
+    <string name="settings_privacy_message_access_desc">Кто может отправлять вам личные сообщения</string>
+    <string name="settings_privacy_show_last_seen">Последний вход</string>
+    <string name="settings_privacy_show_last_seen_desc">Разрешить другим видеть, когда вы были в сети</string>
+
+    <string name="visibility_everyone">Все</string>
+    <string name="visibility_followers">Подписчики</string>
+    <string name="visibility_mutual">Взаимные подписчики</string>
+    <string name="visibility_nobody">Никто</string>
+</resources>

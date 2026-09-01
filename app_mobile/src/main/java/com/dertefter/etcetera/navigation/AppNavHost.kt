@@ -39,6 +39,7 @@ import com.dertefter.post.PostRoute
 import com.dertefter.search.SearchRoute
 import com.dertefter.settings.SettingsRoute
 import com.dertefter.settings_account.SettingsAccountRoute
+import com.dertefter.settings_privacy.SettingsPrivacyRoute
 import com.dertefter.settings_security.SettingsSecurityRoute
 import com.dertefter.settings_theme.SettingsThemeRoute
 import com.dertefter.switch_account.SwitchAccountRoute
@@ -145,6 +146,7 @@ fun RouteContent(route: Routes) {
         is Routes.SettingsTheme -> SettingsThemeRoute()
         is Routes.SettingsAccount -> SettingsAccountRoute()
         is Routes.SettingsSecurity -> SettingsSecurityRoute()
+        is Routes.SettingsPrivacy -> SettingsPrivacyRoute()
 
     }
 }
