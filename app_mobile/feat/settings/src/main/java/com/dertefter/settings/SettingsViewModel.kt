@@ -12,11 +12,6 @@ class SettingsViewModel @Inject constructor(
     private val navigator: Navigator
 ) : ViewModel() {
 
-
-    init {
-        Log.e("sETTINGSvIVIV", "init")
-    }
-
     fun onEvent(event: Event) {
         when (event) {
             is Event.OnNavigateBack -> { navigator.navigateUp() }

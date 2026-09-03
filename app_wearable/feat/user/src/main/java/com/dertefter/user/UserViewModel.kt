@@ -235,9 +235,7 @@ class UserViewModel @Inject constructor(
             is Event.OnUpdateStats -> {
                 viewModelScope.launch {
                     if (event.ids.isNotEmpty()) {
-                        postRepository.updatePostStats(event.ids).onFailure {
-                            Log.e("UserViewModel", it.stackTraceToString())
-                        }
+                        postRepository.updatePostStats(event.ids)
                     }
                 }
             }
@@ -284,9 +282,7 @@ class UserViewModel @Inject constructor(
                 viewModelScope.launch {
                     meRepository.saveMe(
                         UpdateMeRequestDto(bio = event.bio)
-                    ).onFailure {
-                        Log.e("OnSaveBio", it.stackTraceToString())
-                    }
+                    )
                 }
 
             }
@@ -374,7 +370,6 @@ class UserViewModel @Inject constructor(
         userRepository.updateUser(userId).onSuccess { user ->
             _currentPinnedPostId.value = user.pinnedPostId
         }.onFailure {
-            Log.e("UserViewModel", it.stackTraceToString())
             _error.value = it.toAppError()
         }
         _isLoading.value = false

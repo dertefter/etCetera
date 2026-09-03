@@ -153,9 +153,7 @@ class HashtagFeedViewModel @Inject constructor(
             is Event.OnUpdateStats -> {
                 viewModelScope.launch {
                     if (event.ids.isNotEmpty()) {
-                        postRepository.updatePostStats(event.ids).onFailure {
-                            Log.e("HashtagFeedViewModel", it.stackTraceToString())
-                        }
+                        postRepository.updatePostStats(event.ids)
                     }
                 }
             }

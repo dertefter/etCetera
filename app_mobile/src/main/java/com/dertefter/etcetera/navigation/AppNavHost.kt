@@ -86,7 +86,6 @@ fun AppNavHost(
             )
         },
         predictivePopTransitionSpec = { swipeEdge: Int ->
-            Log.e("swipeEdge", swipeEdge.toString())
             val enter =
                 fadeIn(
                     initialAlpha = 0.5f,

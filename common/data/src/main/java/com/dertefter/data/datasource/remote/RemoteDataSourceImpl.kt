@@ -99,7 +99,6 @@ class RemoteDataSourceImpl @Inject constructor(
 
     override suspend fun getPosts(tab: String, cursor: String?): Result<PostDataDto> {
         return runCatching {
-            Log.e("sss getPosts","tab: $tab , cursor: $cursor")
             apiService.posts(tab = tab, cursor = cursor).handleResponse { it.data }.getOrThrow()
         }
     }
