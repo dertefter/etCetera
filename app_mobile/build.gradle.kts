@@ -72,6 +72,11 @@ android {
             }
             signingConfig = signingConfigs.getByName("release")
         }
+        debug {
+            optimization {
+                enable = true
+            }
+        }
     }
 }
 
