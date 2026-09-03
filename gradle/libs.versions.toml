@@ -1,6 +1,6 @@
 [versions]
 # Build and Plugins
-agp = "9.3.2"
+agp = "9.4.0"
 annotationExperimental = "1.6.0"
 kotlin = "2.4.10"
 ksp = "2.3.11"
@@ -17,9 +17,9 @@ palette = "1.0.0"
 
 # Jetpack Compose
 activityCompose = "1.13.0"
-composeBomAlpha = "2026.08.00"
-navigationCompose = "2.9.8"
-navigation3 = "1.2.0-alpha07"
+composeBomAlpha = "2026.08.01"
+navigationCompose = "2.10.0"
+navigation3 = "1.2.0-beta01"
 
 # UI Libraries
 coilCompose = "2.7.0"
@@ -28,13 +28,13 @@ composemediaplayer = "0.11.4"
 composeQrCode = "1.0.1"
 composeShimmer = "1.5.0"
 drawboxEnhanced = "2.1.2"
-haze = "2.0.0-beta01"
+haze = "2.0.0-beta02"
 material = "1.14.0"
-materialKolor = "5.0.0"
+materialKolor = "5.0.1"
 zoomable = "2.13.0"
 
 # Wear OS
-composeWear = "1.7.0-beta01"
+composeWear = "1.7.0-beta02"
 playServicesWearable = "20.0.1"
 wearToolingPreview = "1.0.0"
 
@@ -58,7 +58,7 @@ media3 = "1.11.0"
 paginatorBom = "10.2.2"
 
 # Widgets
-glance = "1.2.0-rc01"
+glance = "1.2.0"
 
 # Testing
 espressoCore = "3.7.0"
@@ -114,7 +114,6 @@ zoomable = { module = "net.engawapg.lib:zoomable", version.ref = "zoomable" }
 androidx-wear-tooling-preview = { group = "androidx.wear", name = "wear-tooling-preview", version.ref = "wearToolingPreview" }
 compose-wear-foundation = { group = "androidx.wear.compose", name = "compose-foundation", version.ref = "composeWear" }
 compose-wear-material3 = { group = "androidx.wear.compose", name = "compose-material3", version.ref = "composeWear" }
-compose-wear-navigation = { module = "androidx.wear.compose:compose-navigation", version.ref = "composeWear" }
 compose-wear-navigation3 = { module = "androidx.wear.compose:compose-navigation3", version.ref = "composeWear" }
 compose-wear-ui-tooling = { group = "androidx.wear.compose", name = "compose-ui-tooling", version.ref = "composeWear" }
 play-services-wearable = { group = "com.google.android.gms", name = "play-services-wearable", version.ref = "playServicesWearable" }
@@ -155,8 +154,8 @@ androidx-glance-preview = { group = "androidx.glance", name = "glance-preview", 
 # Testing
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4", version = "1.11.4" }
-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version = "1.11.4" }
+compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4", version = "1.12.0" }
+compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version = "1.12.0" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
