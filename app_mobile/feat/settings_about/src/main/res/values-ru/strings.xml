@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_about_title">О приложении</string>
+    <string name="settings_about_privacy_policy">Политика конфиденциальности</string>
+    <string name="settings_about_terms_of_use">Условия использования</string>
+    <string name="settings_about_oss_licenses">Лицензии открытого ПО</string>
+    <string name="settings_about_github_repo">GitHub репозиторий</string>
+    <string name="settings_about_app_name">etCetera</string>
+    <string name="settings_about_app_desc">Альтернативный клиент для итд</string>
+    <string name="settings_about_itd_title">итд</string>
+    <string name="settings_about_etcetera_title">etCetera</string>
+</resources>

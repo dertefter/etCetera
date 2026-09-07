@@ -69,6 +69,7 @@ mockk = "1.14.11"
 
 # Licenses
 droibitOssLicenses = "0.10.0"
+animationGraphics = "1.12.0"
 
 [libraries]
 # AndroidX Core
@@ -162,6 +163,7 @@ mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 
 # Licenses
 oss-licenses-droibit = { group = "io.github.droibit.oss-licenses-android", name = "ui-compose-material3", version.ref = "droibitOssLicenses" }
+androidx-animation-graphics = { group = "androidx.compose.animation", name = "animation-graphics", version.ref = "animationGraphics" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

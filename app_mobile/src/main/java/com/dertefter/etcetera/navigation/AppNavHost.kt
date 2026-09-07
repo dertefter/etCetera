@@ -1,6 +1,5 @@
 package com.dertefter.etcetera.navigation
 
-import android.util.Log
 import androidx.compose.animation.core.EaseIn
 import androidx.compose.animation.core.EaseOut
 import androidx.compose.animation.core.tween
@@ -38,6 +37,7 @@ import com.dertefter.notifications.NotificationsRoute
 import com.dertefter.post.PostRoute
 import com.dertefter.search.SearchRoute
 import com.dertefter.settings.SettingsRoute
+import com.dertefter.settings_about.SettingsAboutRoute
 import com.dertefter.settings_account.SettingsAccountRoute
 import com.dertefter.settings_privacy.SettingsPrivacyRoute
 import com.dertefter.settings_security.SettingsSecurityRoute
@@ -146,6 +146,7 @@ fun RouteContent(route: Routes) {
         is Routes.SettingsAccount -> SettingsAccountRoute()
         is Routes.SettingsSecurity -> SettingsSecurityRoute()
         is Routes.SettingsPrivacy -> SettingsPrivacyRoute()
+        is Routes.SettingsAbout -> SettingsAboutRoute()
 
     }
 }

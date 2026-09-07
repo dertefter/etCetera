@@ -2,11 +2,11 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.oss.licenses)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.oss.licenses)
 }
 
 kotlin {
@@ -72,11 +72,6 @@ android {
             }
             signingConfig = signingConfigs.getByName("release")
         }
-        debug {
-            optimization {
-                enable = true
-            }
-        }
     }
 }
 
@@ -105,6 +100,7 @@ dependencies {
     implementation(project(":app_mobile:feat:settings_account"))
     implementation(project(":app_mobile:feat:settings_security"))
     implementation(project(":app_mobile:feat:settings_privacy"))
+    implementation(project(":app_mobile:feat:settings_about"))
 
     implementation(libs.core.splashscreen)
     implementation(libs.activity.compose)

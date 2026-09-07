@@ -54,13 +54,16 @@ fun SettingsScreen(
             settingsItems = listOf(
                 SettingsItem(
                     title = stringResource(R.string.settings_account), icon = Icons.UserFilled, route = Routes.SettingsAccount
-                ), SettingsItem(
-                    title = stringResource(R.string.settings_billing),
-                    icon = Icons.AccountBalanceWalletFilled,
-                    route = Routes.Settings
-                ), SettingsItem(
+                ),
+                //SettingsItem(
+                //    title = stringResource(R.string.settings_billing),
+                //    icon = Icons.AccountBalanceWalletFilled,
+                //    route = Routes.Settings
+                //),
+                SettingsItem(
                     title = stringResource(R.string.settings_security), icon = Icons.Security, route = Routes.SettingsSecurity
-                ), SettingsItem(
+                ),
+                SettingsItem(
                     title = stringResource(R.string.settings_privacy), icon = Icons.DominoMaskFilled, route = Routes.SettingsPrivacy
                 ),
             )
@@ -72,7 +75,7 @@ fun SettingsScreen(
                     title = stringResource(R.string.settings_appearance), icon = Icons.PaletteFilled, route = Routes.SettingsTheme
                 ),
                 SettingsItem(
-                    title = stringResource(R.string.settings_about), icon = Icons.InfoFilled, route = Routes.Settings
+                    title = stringResource(R.string.settings_about), icon = Icons.InfoFilled, route = Routes.SettingsAbout
                 )
             )
         )

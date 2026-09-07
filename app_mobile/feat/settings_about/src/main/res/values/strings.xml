@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_about_title">About</string>
+    <string name="settings_about_privacy_policy">Privacy Policy</string>
+    <string name="settings_about_terms_of_use">Terms of Use</string>
+    <string name="settings_about_oss_licenses">Open source licenses</string>
+    <string name="settings_about_github_repo">GitHub repository</string>
+    <string name="settings_about_app_name">etCetera</string>
+    <string name="settings_about_app_desc">Alternative client for itd</string>
+    <string name="settings_about_itd_title">itd</string>
+    <string name="settings_about_etcetera_title">etCetera</string>
+</resources>

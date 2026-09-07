@@ -29,5 +29,6 @@ fun getAppEntryProvider(): (NavKey) -> NavEntry<NavKey> = entryProvider {
     entry<Routes.SettingsSecurity> { RouteContent(it) }
     entry<Routes.SwitchAccount> { RouteContent(it) }
     entry<Routes.SettingsPrivacy> { RouteContent(it) }
+    entry<Routes.SettingsAbout> { RouteContent(it) }
 
 }
