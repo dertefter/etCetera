@@ -1,5 +1,5 @@
 
-<img src="art/app_icon.svg" alt="Metrolist app icon" width="200" />
+<img src="art/app_icon.svg" alt="App Icon" width="180" />
 
 # etCetera
 
