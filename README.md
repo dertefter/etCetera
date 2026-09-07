@@ -1,3 +1,6 @@
+
+<img src="art/app_icon.svg" alt="Metrolist app icon" width="200" />
+
 # etCetera
 
 Привет, мой дорогой друг! etCetera – это альтернативный Android-клиент для социальной сети [ИТД](https://ИТД.com/) в стиле Material 3 Expressive.
