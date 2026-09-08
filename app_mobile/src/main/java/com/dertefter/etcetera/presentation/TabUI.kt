@@ -3,9 +3,13 @@ package com.dertefter.etcetera.presentation
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -26,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -124,6 +129,12 @@ fun TabUIStateless(
         }
     }
 
+    val consumedPaddingValues = if (hideNav) PaddingValues(0.dp) else PaddingValues(
+        start = WindowInsets.displayCutout.asPaddingValues().calculateStartPadding(
+            LocalLayoutDirection.current
+        ), 0.dp,0.dp,0.dp
+    )
+
     Row(
         modifier
             .hazeSource(hazeState)
@@ -181,7 +192,9 @@ fun TabUIStateless(
             }
         }
 
-        Box(Modifier.weight(1f)) {
+        Box(Modifier
+            .consumeWindowInsets(consumedPaddingValues)
+            .weight(1f)) {
             content()
         }
     }
