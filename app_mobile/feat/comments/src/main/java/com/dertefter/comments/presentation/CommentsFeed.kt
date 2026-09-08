@@ -51,6 +51,7 @@ import com.jamal_aliev.paginator.cursor.load.CursorLoadResult
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommentsFeed(
+    modifier: Modifier = Modifier,
     paginator: MutableCursorPaginator<String, CommentDto>,
     onEvent: (Event) -> Unit,
     uiState: PaginatorUiState<CommentDto>,
@@ -75,7 +76,7 @@ fun CommentsFeed(
             fadeIn(animationSpec = tween(300)) togetherWith fadeOut(animationSpec = tween(300))
         },
         label = "comments_feed_state",
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
     ) { state ->
         when (state) {
@@ -106,7 +107,6 @@ fun CommentsFeed(
                     item {
                         Box(
                             Modifier
-                                .padding(MaterialTheme.spacing.large)
                                 .fillMaxSize(), contentAlignment = Alignment.TopCenter
                         ) {
                             Text(stringResource(R.string.comments_empty))
@@ -124,7 +124,6 @@ fun CommentsFeed(
 
                 LazyColumn(
                     modifier = Modifier
-                        .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
                         .fillMaxSize()
                         .then(
                             if (scrollBehavior != null) Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
@@ -149,6 +148,7 @@ fun CommentsFeed(
                             key = { _, comment -> comment.id }) { index, comment ->
                             Column(Modifier.animateItem()) {
                                 CommentCard(
+                                    modifier = Modifier.padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
                                     index = index,
                                     count = items.count(),
                                     meUserId = meUserId,

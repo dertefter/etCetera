@@ -80,4 +80,16 @@ interface LocalDataSource {
 
     val darkTheme: Flow<Boolean?>
     suspend fun updateDarkTheme(darkTheme: Boolean?)
+
+    val postHorizontalExtraSpace: Flow<Boolean>
+    suspend fun updatePostHorizontalExtraSpace(value: Boolean)
+
+    val postContained: Flow<Boolean>
+    suspend fun updatePostContained(value: Boolean)
+
+    val postShowUsername: Flow<Boolean>
+    suspend fun updatePostShowUsername(value: Boolean)
+
+    val postSwapDateAndUsername: Flow<Boolean>
+    suspend fun updatePostSwapDateAndUsername(value: Boolean)
 }

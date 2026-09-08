@@ -237,7 +237,7 @@ fun HeaderPreview() {
                 pin = null,
             ),
             isMe = false,
-            isOnline = true,
+            isOnline = false,
             followersCount = 1,
             onFollowersClick = {},
             onFollowingClock = {},

@@ -11,4 +11,9 @@ sealed interface Event {
 
     data class OnUpdateDarkTheme(val darkTheme: Boolean?) : Event
 
+    data class OnUpdatePostHorizontalExtraSpace(val value: Boolean) : Event
+    data class OnUpdatePostContained(val value: Boolean) : Event
+    data class OnUpdatePostShowUsername(val value: Boolean) : Event
+    data class OnUpdatePostSwapDateAndUsername(val value: Boolean) : Event
+
 }

@@ -41,6 +41,8 @@ import com.dertefter.settings_about.SettingsAboutRoute
 import com.dertefter.settings_account.SettingsAccountRoute
 import com.dertefter.settings_privacy.SettingsPrivacyRoute
 import com.dertefter.settings_security.SettingsSecurityRoute
+import com.dertefter.settings_theme.EmojiAvatarsRoute
+import com.dertefter.settings_theme.PostsThemeRoute
 import com.dertefter.settings_theme.SettingsThemeRoute
 import com.dertefter.switch_account.SwitchAccountRoute
 import com.dertefter.user.UserRoute
@@ -143,6 +145,8 @@ fun RouteContent(route: Routes) {
         is Routes.SwitchAccount -> SwitchAccountRoute()
         is Routes.Settings -> SettingsRoute()
         is Routes.SettingsTheme -> SettingsThemeRoute()
+        is Routes.SettingsThemeAvatars -> EmojiAvatarsRoute()
+        is Routes.SettingsThemePosts -> PostsThemeRoute()
         is Routes.SettingsAccount -> SettingsAccountRoute()
         is Routes.SettingsSecurity -> SettingsSecurityRoute()
         is Routes.SettingsPrivacy -> SettingsPrivacyRoute()

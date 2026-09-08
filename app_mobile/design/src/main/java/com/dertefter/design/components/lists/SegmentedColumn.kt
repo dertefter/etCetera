@@ -1,5 +1,6 @@
 package com.dertefter.design.components.lists
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -124,7 +125,8 @@ private fun SegmentedColumnImpl(
 
     Column(
         modifier = modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .animateContentSize(),
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
     ) {
         if (title != null) {

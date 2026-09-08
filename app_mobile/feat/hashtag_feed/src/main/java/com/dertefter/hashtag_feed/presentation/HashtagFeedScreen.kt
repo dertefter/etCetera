@@ -167,7 +167,7 @@ private fun HashtagFeedContent(
                         .fillMaxSize(),
                     contentPadding = contentPadding,
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large),
+                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
                 ) {
                     if (paged != null) {
                         feed(

@@ -52,6 +52,10 @@ class LocalDataSourceImpl @Inject constructor(
     private val LOGIN_HISTORY_KEY = stringSetPreferencesKey("login_history")
     private val EMOJI_AVATAR_HARMONIZATION_COLOR_KEY = stringPreferencesKey("emoji_avatar_harmonization_color")
     private val DARK_THEME_KEY = booleanPreferencesKey("dark_theme")
+    private val POST_HORIZONTAL_EXTRA_SPACE_KEY = booleanPreferencesKey("post_horizontal_extra_space")
+    private val POST_CONTAINED_KEY = booleanPreferencesKey("post_contained")
+    private val POST_SHOW_USERNAME_KEY = booleanPreferencesKey("post_show_username")
+    private val POST_SWAP_DATE_AND_USERNAME_KEY = booleanPreferencesKey("post_swap_date_and_username")
     private val dbCache = mutableMapOf<String?, AppDatabase>()
 
     private fun getDatabase(login: String?): AppDatabase {
@@ -299,6 +303,46 @@ class LocalDataSourceImpl @Inject constructor(
             } else {
                 preferences[DARK_THEME_KEY] = darkTheme
             }
+        }
+    }
+
+    override val postHorizontalExtraSpace: Flow<Boolean> = settingsDataStore.data.map { preferences ->
+        preferences[POST_HORIZONTAL_EXTRA_SPACE_KEY] ?: true
+    }
+
+    override suspend fun updatePostHorizontalExtraSpace(value: Boolean) {
+        settingsDataStore.edit { preferences ->
+            preferences[POST_HORIZONTAL_EXTRA_SPACE_KEY] = value
+        }
+    }
+
+    override val postContained: Flow<Boolean> = settingsDataStore.data.map { preferences ->
+        preferences[POST_CONTAINED_KEY] ?: true
+    }
+
+    override suspend fun updatePostContained(value: Boolean) {
+        settingsDataStore.edit { preferences ->
+            preferences[POST_CONTAINED_KEY] = value
+        }
+    }
+
+    override val postShowUsername: Flow<Boolean> = settingsDataStore.data.map { preferences ->
+        preferences[POST_SHOW_USERNAME_KEY] ?: true
+    }
+
+    override suspend fun updatePostShowUsername(value: Boolean) {
+        settingsDataStore.edit { preferences ->
+            preferences[POST_SHOW_USERNAME_KEY] = value
+        }
+    }
+
+    override val postSwapDateAndUsername: Flow<Boolean> = settingsDataStore.data.map { preferences ->
+        preferences[POST_SWAP_DATE_AND_USERNAME_KEY] ?: false
+    }
+
+    override suspend fun updatePostSwapDateAndUsername(value: Boolean) {
+        settingsDataStore.edit { preferences ->
+            preferences[POST_SWAP_DATE_AND_USERNAME_KEY] = value
         }
     }
 }

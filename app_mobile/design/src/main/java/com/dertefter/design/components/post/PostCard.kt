@@ -2,6 +2,9 @@ package com.dertefter.design.components.post
 
 import android.content.ClipData
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -12,8 +15,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -42,6 +47,11 @@ import com.dertefter.design.components.avatar.EmojiAvatar
 import com.dertefter.design.components.poll.PollCard
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
+import com.dertefter.design.theme.postContained
+import com.dertefter.design.theme.postHorizontalExtraSpace
+import com.dertefter.design.theme.postShowUsername
+import com.dertefter.design.theme.postSwapDateAndUsername
+import com.dertefter.design.theme.rounding
 import com.dertefter.design.theme.spacing
 import kotlinx.coroutines.launch
 
@@ -70,12 +80,42 @@ fun PostCard(
     val finalOnLinkClick = onLinkClick ?: { url -> uriHandler.openUri(url) }
     val clipboard = LocalClipboard.current
     val scope = rememberCoroutineScope()
+
+    val horizontalExtraSpace by animateDpAsState(
+        if (MaterialTheme.postContained) {
+            if (MaterialTheme.postHorizontalExtraSpace){
+                MaterialTheme.spacing.defaultScreenPadding
+            } else {
+                0.dp
+            }
+        } else{ MaterialTheme.spacing.defaultScreenPadding }
+    )
+
+    val containerPadding by animateDpAsState(
+        if (MaterialTheme.postContained){
+            MaterialTheme.spacing.large
+        }else{ 0.dp }
+    )
+
+    val cardColor by animateColorAsState(
+        if (MaterialTheme.postContained){
+            MaterialTheme.colorScheme.surfaceContainer
+        }else{  MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0f) }
+    )
+
+    val cornerRadius by animateDpAsState(
+        if (MaterialTheme.postContained){
+            MaterialTheme.rounding.extraLarge
+        }else{ 0.dp }
+    )
+
     Box(
         modifier = modifier
-            .clip(MaterialTheme.shapes.extraLarge)
+            .padding(horizontal = horizontalExtraSpace)
+            .clip(RoundedCornerShape(cornerRadius))
             .clickable(onClick = { onOpenPost(post.id) })
-            .background(MaterialTheme.colorScheme.surfaceContainer)
-            .padding(MaterialTheme.spacing.large)
+            .background(cardColor)
+            .padding(containerPadding)
             .fillMaxWidth()
     ) {
         Column(
@@ -106,21 +146,47 @@ fun PostCard(
                         pin = post.author.pin,
                         modifier = Modifier.fillMaxWidth()
                     )
-                    Text(
-                        text = "@${post.author.username}",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                    Crossfade(
+                        targetState = MaterialTheme.postSwapDateAndUsername to MaterialTheme.postShowUsername
+                    ) { (swap, show) ->
+                        if (!swap && show) {
+                            Text(
+                                text = "@${post.author.username}",
+                                style = MaterialTheme.typography.labelLargeEmphasized,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        } else if (swap) {
+                            PrettyDate(
+                                createdDate = post.getCreatedAtDate(),
+                                editedDate = post.getEditedAtDate(),
+                                textStyle = MaterialTheme.typography.labelLargeEmphasized,
+                            )
+                        }
+                    }
+
                 }
 
-                PrettyDate(
-                    createdDate = post.getCreatedAtDate(),
-                    editedDate = post.getEditedAtDate(),
-                    modifier = Modifier
-                )
-
+                Crossfade(
+                    targetState = MaterialTheme.postSwapDateAndUsername to MaterialTheme.postShowUsername
+                ) { (swap, show) ->
+                    if (swap && show) {
+                        Text(
+                            text = "@${post.author.username}",
+                            style = MaterialTheme.typography.labelLargeEmphasized,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    } else if (!swap) {
+                        PrettyDate(
+                            createdDate = post.getCreatedAtDate(),
+                            editedDate = post.getEditedAtDate(),
+                            textStyle = MaterialTheme.typography.labelMediumEmphasized,
+                        )
+                    }
+                }
 
                 AnimatedVisibility(
                     visible = post.isPinned
@@ -128,7 +194,7 @@ fun PostCard(
                     Icon(
                         imageVector = Icons.Keep,
                         contentDescription = null,
-                        modifier = Modifier.size(20.dp),
+                        modifier = Modifier.size(16.dp),
                     )
                 }
 
@@ -332,14 +398,24 @@ fun PostCard(
                     )
                 }
             }
+            AnimatedVisibility(
+                visible = !MaterialTheme.postContained
+            ) {
+                HorizontalDivider(
+                    modifier = Modifier.padding(bottom = MaterialTheme.spacing.medium)
+                )
+            }
+
         }
     }
 }
 
-@Preview(showBackground = false)
+@Preview(showBackground = true)
 @Composable
 fun PostCardPreview() {
-    AppTheme {
+    AppTheme(
+        postContained = false
+    ) {
         PostCard(
             post = PostUiModel(
                 id = "1",

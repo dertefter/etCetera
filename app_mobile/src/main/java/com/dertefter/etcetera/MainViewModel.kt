@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dertefter.data.datasource.local.TokenManager
+import com.dertefter.data.dto.app.EmojiAvatarHarmonizationColor
 import com.dertefter.data.repository.AuthRepository
 import com.dertefter.data.repository.CrashlyticsRepository
 import com.dertefter.data.repository.MeRepository
@@ -62,11 +63,25 @@ class MainViewModel @Inject constructor(
 
     val themeState: StateFlow<ThemeState?> = combine(
         settingsRepository.emojiAvatarHarmonizationColor,
-        settingsRepository.darkTheme
-    ) { emojiAvatarHarmonizationColor, darkTheme ->
+        settingsRepository.darkTheme,
+        settingsRepository.postHorizontalExtraSpace,
+        settingsRepository.postContained,
+        settingsRepository.postShowUsername,
+        settingsRepository.postSwapDateAndUsername
+    ) { params: Array<Any?> ->
+        val emojiAvatarHarmonizationColor = params[0] as EmojiAvatarHarmonizationColor
+        val darkTheme = params[1] as Boolean?
+        val postHorizontalExtraSpace = params[2] as Boolean
+        val postContained = params[3] as Boolean
+        val postShowUsername = params[4] as Boolean
+        val postSwapDateAndUsername = params[5] as Boolean
         ThemeState(
             emojiAvatarHarmonizationColor,
-            darkTheme
+            darkTheme,
+            postHorizontalExtraSpace,
+            postContained,
+            postShowUsername,
+            postSwapDateAndUsername
         )
     }.stateIn(
         viewModelScope,

@@ -8,4 +8,18 @@
     <string name="settings_theme_emoji_avatar">Эмодзи аватарки</string>
     <string name="settings_theme_preview">Предпросмотр</string>
     <string name="settings_theme_emoji_harmonization">Гармонизация фона эмодзи</string>
+    <string name="settings_theme_posts_view">Вид постов</string>
+    <string name="settings_theme_post_preview_text">Это пример того, как будут выглядеть посты в ленте. Настройте вид поста ниже</string>
+    <string name="settings_theme_posts_appearance">Внешний вид постов</string>
+    <string name="settings_theme_post_containers">Контейнеры</string>
+    <string name="settings_theme_post_horizontal_padding">Отступ от краёв экрана</string>
+    <string name="settings_theme_post_show_username">Показывать юзернейм</string>
+    <string name="settings_theme_post_swap_date_username">Поменять дату и юзернейм местами</string>
+    <string name="settings_theme_harmonization_primary">Основной</string>
+    <string name="settings_theme_harmonization_secondary">Вторичный</string>
+    <string name="settings_theme_harmonization_tertiary">Третичный</string>
+    <string name="settings_theme_harmonization_surface_container">Контейнер поверхности</string>
+    <string name="settings_theme_harmonization_primary_container">Основной контейнер</string>
+    <string name="settings_theme_harmonization_secondary_container">Вторичный контейнер</string>
+    <string name="settings_theme_harmonization_tertiary_container">Третичный контейнер</string>
 </resources>

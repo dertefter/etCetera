@@ -2,6 +2,7 @@ package com.dertefter.settings_theme
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dertefter.data.dto.app.EmojiAvatarHarmonizationColor
 import com.dertefter.data.repository.SettingsRepository
 import com.dertefter.navigation.Navigator
 import com.dertefter.settings_theme.presentation.Event
@@ -23,11 +24,29 @@ class SettingsThemeViewModel @Inject constructor(
 
     private val _darkTheme = settingsRepository.darkTheme
 
+    private val _postHorizontalExtraSpace = settingsRepository.postHorizontalExtraSpace
+
+    private val _postContained = settingsRepository.postContained
+
+    private val _postShowUsername = settingsRepository.postShowUsername
+
+    private val _postSwapDateAndUsername = settingsRepository.postSwapDateAndUsername
+
     val uiState = combine(
         _emojiAvatarHarmonizationColor,
-        _darkTheme
-    ) { color, darkTheme ->
-        UiState(color, darkTheme)
+        _darkTheme,
+        _postHorizontalExtraSpace,
+        _postContained,
+        _postShowUsername,
+        _postSwapDateAndUsername
+    ) { params: Array<Any?> ->
+        val color = params[0] as EmojiAvatarHarmonizationColor
+        val darkTheme = params[1] as Boolean?
+        val postHorizontalExtraSpace = params[2] as Boolean
+        val postContained = params[3] as Boolean
+        val postShowUsername = params[4] as Boolean
+        val postSwapDateAndUsername = params[5] as Boolean
+        UiState(color, darkTheme, postHorizontalExtraSpace, postContained, postShowUsername, postSwapDateAndUsername)
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
@@ -56,6 +75,30 @@ class SettingsThemeViewModel @Inject constructor(
             is Event.OnUpdateEmojiAvatarHarmonizationColor -> {
                 viewModelScope.launch {
                     settingsRepository.updateEmojiAvatarHarmonizationColor(event.color)
+                }
+            }
+
+            is Event.OnUpdatePostHorizontalExtraSpace -> {
+                viewModelScope.launch {
+                    settingsRepository.updatePostHorizontalExtraSpace(event.value)
+                }
+            }
+
+            is Event.OnUpdatePostContained -> {
+                viewModelScope.launch {
+                    settingsRepository.updatePostContained(event.value)
+                }
+            }
+
+            is Event.OnUpdatePostShowUsername -> {
+                viewModelScope.launch {
+                    settingsRepository.updatePostShowUsername(event.value)
+                }
+            }
+
+            is Event.OnUpdatePostSwapDateAndUsername -> {
+                viewModelScope.launch {
+                    settingsRepository.updatePostSwapDateAndUsername(event.value)
                 }
             }
         }

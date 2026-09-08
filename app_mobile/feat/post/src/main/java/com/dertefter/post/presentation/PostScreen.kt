@@ -151,8 +151,6 @@ fun PostScreenContent(
                                 item(key = "post_card_${post.id}") {
                                     PostCard(
                                         post = post,
-                                        modifier = Modifier
-                                            .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
                                         onLike = { onEvent(Event.OnLike) },
                                         onUnlike = { onEvent(Event.OnUnlike) },
                                         onUserClick = { userId -> onEvent(Event.OnOpenUser(userId)) },
@@ -255,10 +253,12 @@ fun PostScreenContent(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = false)
 @Composable
 fun PostScreenPreview() {
-    AppTheme {
+    AppTheme(
+        postHorizontalExtraSpace = false
+    ) {
         val sampleAuthor = AuthorUiModel(
             id = "author1",
             username = "johndoe",

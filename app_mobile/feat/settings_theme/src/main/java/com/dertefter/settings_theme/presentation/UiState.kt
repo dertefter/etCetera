@@ -4,5 +4,9 @@ import com.dertefter.data.dto.app.EmojiAvatarHarmonizationColor
 
 data class UiState(
     val emojiAvatarHarmonizeColor: EmojiAvatarHarmonizationColor,
-    val darkTheme: Boolean?
+    val darkTheme: Boolean?,
+    val postHorizontalExtraSpace: Boolean,
+    val postContained: Boolean,
+    val postShowUsername: Boolean,
+    val postSwapDateAndUsername: Boolean
 )

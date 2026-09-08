@@ -39,6 +39,13 @@ val LocalIsTab = staticCompositionLocalOf { false }
 
 val LocalEmojiAvatarHarmonizationColor = staticCompositionLocalOf { EmojiAvatarHarmonizationColor.PRIMARY_CONTAINER }
 
+val LocalPostHorizontalExtraSpace = staticCompositionLocalOf { true }
+val LocalPostContained = staticCompositionLocalOf { true }
+val LocalAttachmentsHorizontalExtraSpace = staticCompositionLocalOf { true }
+val LocalAttachmentsIsCarousel = staticCompositionLocalOf { true }
+val LocalPostShowUsername = staticCompositionLocalOf { true }
+val LocalPostSwapDateAndUsername = staticCompositionLocalOf { false }
+
 @Immutable
 data class CustomColors(
     val likeColor: Color = Color.Unspecified,
@@ -84,6 +91,36 @@ val MaterialTheme.isTab: Boolean
     @ReadOnlyComposable
     get() = LocalIsTab.current
 
+val MaterialTheme.postHorizontalExtraSpace: Boolean
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalPostHorizontalExtraSpace.current
+
+val MaterialTheme.postContained: Boolean
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalPostContained.current
+
+val MaterialTheme.attachmentsHorizontalExtraSpace: Boolean
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalAttachmentsHorizontalExtraSpace.current
+
+val MaterialTheme.attachmentsIsCarousel: Boolean
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalAttachmentsIsCarousel.current
+
+val MaterialTheme.postShowUsername: Boolean
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalPostShowUsername.current
+
+val MaterialTheme.postSwapDateAndUsername: Boolean
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalPostSwapDateAndUsername.current
+
 
 enum class EmojiAvatarHarmonizationColor {
     PRIMARY,
@@ -105,6 +142,12 @@ fun AppTheme(
     darkTheme: Boolean? = isSystemInDarkTheme(),
     dynamicColor: Boolean = true,
     emojiAvatarHarmonizeColor: EmojiAvatarHarmonizationColor = EmojiAvatarHarmonizationColor.PRIMARY_CONTAINER,
+    postHorizontalExtraSpace: Boolean = true,
+    postContained: Boolean = true,
+    attachmentsHorizontalExtraSpace: Boolean = true,
+    attachmentsIsCarousel: Boolean = true,
+    postShowUsername: Boolean = true,
+    postSwapDateAndUsername: Boolean = false,
     content: @Composable () -> Unit
 ) {
 
@@ -145,7 +188,7 @@ fun AppTheme(
         }
     }
 
-    val likeSourceColor = Color(0xFFFA237E)
+    val likeSourceColor = Color(0xFFF53585)
 
     CompositionLocalProvider(
         LocalSpacing provides Spacing(),
@@ -154,6 +197,12 @@ fun AppTheme(
         LocalIsTab provides isTab,
         LocalIsDark provides darkTheme,
         LocalEmojiAvatarHarmonizationColor provides emojiAvatarHarmonizeColor,
+        LocalPostHorizontalExtraSpace provides postHorizontalExtraSpace,
+        LocalPostContained provides postContained,
+        LocalAttachmentsHorizontalExtraSpace provides attachmentsHorizontalExtraSpace,
+        LocalAttachmentsIsCarousel provides attachmentsIsCarousel,
+        LocalPostShowUsername provides postShowUsername,
+        LocalPostSwapDateAndUsername provides postSwapDateAndUsername,
     ) {
         MaterialExpressiveTheme (
             motionScheme = MotionScheme.expressive(),

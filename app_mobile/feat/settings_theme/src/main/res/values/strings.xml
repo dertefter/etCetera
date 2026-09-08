@@ -8,4 +8,18 @@
     <string name="settings_theme_emoji_avatar">Emoji avatars</string>
     <string name="settings_theme_preview">Preview</string>
     <string name="settings_theme_emoji_harmonization">Emoji background harmonization</string>
+    <string name="settings_theme_posts_view">Post view</string>
+    <string name="settings_theme_post_preview_text">This is an example of how posts will look in the feed. Customize the post view below.</string>
+    <string name="settings_theme_posts_appearance">Post appearance</string>
+    <string name="settings_theme_post_containers">Containers</string>
+    <string name="settings_theme_post_horizontal_padding">Extra horizontal space</string>
+    <string name="settings_theme_post_show_username">Show username</string>
+    <string name="settings_theme_post_swap_date_username">Swap date and username</string>
+    <string name="settings_theme_harmonization_primary">Primary</string>
+    <string name="settings_theme_harmonization_secondary">Secondary</string>
+    <string name="settings_theme_harmonization_tertiary">Tertiary</string>
+    <string name="settings_theme_harmonization_surface_container">Surface container</string>
+    <string name="settings_theme_harmonization_primary_container">Primary container</string>
+    <string name="settings_theme_harmonization_secondary_container">Secondary container</string>
+    <string name="settings_theme_harmonization_tertiary_container">Tertiary container</string>
 </resources>

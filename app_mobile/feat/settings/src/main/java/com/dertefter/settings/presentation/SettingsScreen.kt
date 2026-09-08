@@ -95,13 +95,13 @@ fun SettingsScreen(
     )
 
     val iconSourceColors = listOf(
-        Color(0xFF00FF91),
-        Color(0xFF005EFF),
-        Color(0xFFC800FF),
-        Color(0xFF1AFF00),
-        Color(0xFFFFC800),
-        Color(0xFFFF8C00),
-        Color(0xFF00FFE1),
+        Color(0xFFE64A19),
+        Color(0xFF1976D2),
+        Color(0xFF512DA8),
+        Color(0xFF388E3C),
+        Color(0xFFFFA000),
+        Color(0xFF00796B),
+        Color(0xFFAFB42B),
     )
 
     val iconColors = iconSourceColors.map {

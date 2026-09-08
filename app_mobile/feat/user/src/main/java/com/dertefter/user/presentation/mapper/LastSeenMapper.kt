@@ -24,5 +24,5 @@ fun LastSeenDto?.toPresentationString(context: Context, online: Boolean): String
         is LastSeenDto.LongAgo -> context.getString(R.string.user_last_seen_long_ago)
     }
 
-    return "${context.getString(R.string.user_last_seen_prefix)}$formatted"
+    return "${context.getString(R.string.user_last_seen_prefix)} $formatted"
 }

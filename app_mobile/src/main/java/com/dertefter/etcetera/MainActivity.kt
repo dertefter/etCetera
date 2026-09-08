@@ -54,7 +54,11 @@ class MainActivity : ComponentActivity() {
 
                     AppTheme(
                         emojiAvatarHarmonizeColor = harmonizationColor,
-                        darkTheme = darkTheme
+                        darkTheme = darkTheme,
+                        postHorizontalExtraSpace = themeState.postHorizontalExtraSpace,
+                        postContained = themeState.postContained,
+                        postShowUsername = themeState.postShowUsername,
+                        postSwapDateAndUsername = themeState.postSwapDateAndUsername
                     ) {
                         MainScreen(
                             navigator,

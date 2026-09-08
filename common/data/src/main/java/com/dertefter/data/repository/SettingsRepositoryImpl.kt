@@ -32,4 +32,28 @@ class SettingsRepositoryImpl @Inject constructor(
     override suspend fun updateDarkTheme(darkTheme: Boolean?) {
         localDataSource.updateDarkTheme(darkTheme)
     }
+
+    override val postHorizontalExtraSpace: Flow<Boolean> = localDataSource.postHorizontalExtraSpace
+
+    override suspend fun updatePostHorizontalExtraSpace(value: Boolean) {
+        localDataSource.updatePostHorizontalExtraSpace(value)
+    }
+
+    override val postContained: Flow<Boolean> = localDataSource.postContained
+
+    override suspend fun updatePostContained(value: Boolean) {
+        localDataSource.updatePostContained(value)
+    }
+
+    override val postShowUsername: Flow<Boolean> = localDataSource.postShowUsername
+
+    override suspend fun updatePostShowUsername(value: Boolean) {
+        localDataSource.updatePostShowUsername(value)
+    }
+
+    override val postSwapDateAndUsername: Flow<Boolean> = localDataSource.postSwapDateAndUsername
+
+    override suspend fun updatePostSwapDateAndUsername(value: Boolean) {
+        localDataSource.updatePostSwapDateAndUsername(value)
+    }
 }

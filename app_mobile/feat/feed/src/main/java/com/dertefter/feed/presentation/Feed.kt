@@ -97,7 +97,6 @@ fun Feed(
 
                 LazyVerticalStaggeredGrid (
                     modifier = Modifier
-                        .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
                         .fillMaxSize()
                         .then(
                             if (scrollBehavior != null) Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
@@ -106,7 +105,7 @@ fun Feed(
                     state = gridState,
                     contentPadding = contentPadding,
                     columns = StaggeredGridCells.Adaptive(minSize = 500.dp),
-                    verticalItemSpacing = MaterialTheme.spacing.large,
+                    verticalItemSpacing = MaterialTheme.spacing.medium,
                     horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
                 ) {
                     paginated(paged) {

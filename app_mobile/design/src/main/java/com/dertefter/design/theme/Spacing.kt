@@ -12,6 +12,7 @@ data class Spacing(
     val small: Dp = 4.dp,
     val medium: Dp = 8.dp,
     val large: Dp = 12.dp,
+    val largeIncreased: Dp = 14.dp,
     val extraLarge: Dp = 16.dp,
 
     val defaultScreenPadding: Dp = large,

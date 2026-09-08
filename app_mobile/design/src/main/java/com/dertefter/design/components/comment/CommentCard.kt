@@ -66,9 +66,9 @@ fun CommentCard(
     var isExpanded by remember { mutableStateOf(false) }
 
     val bgColor = if (!isReply)
-        MaterialTheme.colorScheme.surface.copy(alpha = 0.8f)
+        MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.8f)
     else
-        MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.7f)
+        MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.7f)
 
     Column{
 

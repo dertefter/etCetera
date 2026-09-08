@@ -1,7 +1,6 @@
 package com.dertefter.user.presentation
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
@@ -70,35 +69,30 @@ private fun LazyListScope.postItems(
     isMe: Boolean = false,
 ) {
     itemsIndexed(items, key = { _, post -> "post_${post.id}" }) { _, post ->
-        Column(
-            Modifier
+        PostCard(
+            modifier = Modifier
                 .animateItem()
-                .padding(bottom = MaterialTheme.spacing.large)
-        ) {
-            PostCard(
-                post = post.toUiModel(),
-                modifier = Modifier
-                    .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
-                onLike = { onEvent(Event.OnLike(post.id)) },
-                onUnlike = { onEvent(Event.OnUnlike(post.id)) },
-                onCommentsClick = { onEvent(Event.OnNavigateToComments(post.id)) },
-                isOnMyWall = isMe,
-                onUserClick = { userId -> onEvent(Event.OnOpenUser(userId)) },
-                onVote = { optionIds -> onEvent(Event.OnVote(post.id, optionIds)) },
-                onOpenPost = { postId -> onEvent(Event.OnOpenPost(postId)) },
-                onAttachmentClick = { attachments, position ->
-                    onEvent(Event.OnOpenAttachmentsViewer(attachments, position))
-                },
-                onHashtagClick = {
-                    onEvent(Event.OnOpenHashtag(it))
-                },
-                onPin = { onEvent(Event.OnPin(post.id)) },
-                onUnpin = { onEvent(Event.OnUnpin(post.id)) },
-                onEdit = { onEvent(Event.OnEditPost(it)) },
-                onDelete = { onEvent(Event.OnDeletePost(post.id)) },
-                onRepostClick = { onEvent(Event.OnRepost(post.id)) }
-            )
-        }
+                .padding(bottom = MaterialTheme.spacing.medium),
+            post = post.toUiModel(),
+            onLike = { onEvent(Event.OnLike(post.id)) },
+            onUnlike = { onEvent(Event.OnUnlike(post.id)) },
+            onCommentsClick = { onEvent(Event.OnNavigateToComments(post.id)) },
+            isOnMyWall = isMe,
+            onUserClick = { userId -> onEvent(Event.OnOpenUser(userId)) },
+            onVote = { optionIds -> onEvent(Event.OnVote(post.id, optionIds)) },
+            onOpenPost = { postId -> onEvent(Event.OnOpenPost(postId)) },
+            onAttachmentClick = { attachments, position ->
+                onEvent(Event.OnOpenAttachmentsViewer(attachments, position))
+            },
+            onHashtagClick = {
+                onEvent(Event.OnOpenHashtag(it))
+            },
+            onPin = { onEvent(Event.OnPin(post.id)) },
+            onUnpin = { onEvent(Event.OnUnpin(post.id)) },
+            onEdit = { onEvent(Event.OnEditPost(it)) },
+            onDelete = { onEvent(Event.OnDeletePost(post.id)) },
+            onRepostClick = { onEvent(Event.OnRepost(post.id)) }
+        )
     }
 }
 

@@ -22,6 +22,12 @@ sealed interface Routes : NavKey {
     data object SettingsTheme : Routes
 
     @Serializable
+    data object SettingsThemeAvatars : Routes
+
+    @Serializable
+    data object SettingsThemePosts : Routes
+
+    @Serializable
     data object SettingsPrivacy : Routes
 
     @Serializable
