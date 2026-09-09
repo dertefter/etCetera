@@ -6,6 +6,6 @@ import com.dertefter.data.dto.user.UserDto
 data class UserUiState(
     val userDto: UserDto? = null,
     val isMe: Boolean = false,
-    val isLoading: Boolean = true,
+    val isLoading: Boolean = false,
     val error: AppError? = null,
 )

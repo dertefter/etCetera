@@ -50,6 +50,8 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
@@ -187,8 +189,15 @@ fun UserScreen(
     } ?: ""
 
     val currentTabUiState = uiStates[selectedTab]
-    val isRefreshing = userUiState.isLoading
     val pullToRefreshState = rememberPullToRefreshState()
+
+    var pullRefreshing by remember { mutableStateOf(false) }
+
+    LaunchedEffect(userUiState.isLoading) {
+        if (!userUiState.isLoading) {
+            pullRefreshing = false
+        }
+    }
 
     LaunchedEffect(lazyListState) {
         delay(Constants.STATS_UPDATE_DELAY_MS.milliseconds)
@@ -208,16 +217,17 @@ fun UserScreen(
         modifier = Modifier
             .fillMaxSize(),
         state = pullToRefreshState,
-        isRefreshing = isRefreshing,
+        isRefreshing = pullRefreshing,
         enabled = true,
         onRefresh = {
+            pullRefreshing = true
             onEvent(Event.OnRefresh(selectedTab))
         },
         indicator = {
             PullToRefreshIndicator(
                 modifier = Modifier.align(Alignment.TopCenter),
                 state = pullToRefreshState,
-                isRefreshing = isRefreshing,
+                isRefreshing = pullRefreshing,
             )
         }
     ) {
