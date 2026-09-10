@@ -29,15 +29,51 @@
 
 <h1><a id="screenshots"></a>Screenshots</h1>
 
-<img src="art/s1.png" width="30%" />
-<img src="art/s2.png" width="30%" />
-<img src="art/s3.png" width="30%" />
-<img src="art/s4.png" width="30%" />
-<img src="art/s5.png" width="30%" />
-<img src="art/s6.png" width="30%" />
-<img src="art/s7.png" width="30%" />
-<img src="art/s8.png" width="30%" />
-<img src="art/s9.png" width="30%" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="art/s1_dark.png">
+  <img src="art/s1.png" width="30%" />
+</picture>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="art/s2_dark.png">
+  <img src="art/s2.png" width="30%" />
+</picture>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="art/s3_dark.png">
+  <img src="art/s3.png" width="30%" />
+</picture>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="art/s4_dark.png">
+  <img src="art/s4.png" width="30%" />
+</picture>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="art/s5_dark.png">
+  <img src="art/s5.png" width="30%" />
+</picture>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="art/s6_dark.png">
+  <img src="art/s6.png" width="30%" />
+</picture>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="art/s7_dark.png">
+  <img src="art/s7.png" width="30%" />
+</picture>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="art/s8_dark.png">
+  <img src="art/s8.png" width="30%" />
+</picture>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="art/s9_dark.png">
+  <img src="art/s9.png" width="30%" />
+</picture>
+
 </div>
 
 ### Сборка из исходников
