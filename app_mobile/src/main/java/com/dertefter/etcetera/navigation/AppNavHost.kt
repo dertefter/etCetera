@@ -1,16 +1,10 @@
 package com.dertefter.etcetera.navigation
 
-import androidx.compose.animation.core.EaseIn
-import androidx.compose.animation.core.EaseOut
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
-import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -18,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.ui.NavDisplay
-import androidx.navigationevent.NavigationEvent
 import com.dertefter.attachment_viewer.AttachmentViewerRoute
 import com.dertefter.auth.AuthRoute
 import com.dertefter.banner_edit.BannerEditRoute
@@ -46,75 +39,54 @@ import com.dertefter.settings_theme.PostsThemeRoute
 import com.dertefter.settings_theme.SettingsThemeRoute
 import com.dertefter.switch_account.SwitchAccountRoute
 import com.dertefter.user.UserRoute
+import kotlin.math.roundToInt
+
 
 @Composable
 fun AppNavHost(
-    modifier: Modifier = Modifier,
-    entries: List<NavEntry<NavKey>>,
-    onBack: () -> Unit
+    modifier: Modifier = Modifier, entries: List<NavEntry<NavKey>>, onBack: () -> Unit
 ) {
 
     val ms = MaterialTheme.motionScheme
+
+    fun sharedAxisXTransitionSpec(): ContentTransform = ContentTransform(
+        slideInHorizontally(
+            animationSpec = ms.defaultSpatialSpec(),
+            initialOffsetX = { (0.1f * it).roundToInt() },
+        ) + fadeIn(
+            animationSpec = ms.slowEffectsSpec(),
+        ),
+        slideOutHorizontally(
+            animationSpec = ms.slowEffectsSpec(),
+            targetOffsetX = { (-0.1f * it).roundToInt() },
+        ) + fadeOut(
+            animationSpec = ms.slowEffectsSpec(),
+        ),
+    )
+
+
+    fun sharedAxisXPopTransitionSpec(): ContentTransform = ContentTransform(
+        slideInHorizontally(
+            animationSpec = ms.defaultSpatialSpec(),
+            initialOffsetX = { (-0.1f * it).roundToInt() },
+        ) + fadeIn(
+            animationSpec = ms.fastEffectsSpec(),
+        ),
+        slideOutHorizontally(
+            animationSpec = ms.defaultSpatialSpec(),
+            targetOffsetX = { (0.1f * it).roundToInt() },
+        ) + fadeOut(
+            animationSpec = ms.fastEffectsSpec(),
+        ),
+    )
 
     NavDisplay(
         modifier = modifier.background(MaterialTheme.colorScheme.background),
         entries = entries,
         onBack = onBack,
-        transitionSpec = {
-            fadeIn(
-                initialAlpha = 0.5f,
-                animationSpec = ms.slowEffectsSpec()
-            ) + scaleIn(
-                initialScale = 0.9f,
-                animationSpec = ms.slowEffectsSpec()
-            ) + slideInVertically(
-                initialOffsetY = { it / 6 },
-                animationSpec = ms.slowEffectsSpec()
-            ) togetherWith fadeOut(
-                animationSpec = ms.fastEffectsSpec()
-            )
-        },
-        popTransitionSpec = {
-            fadeIn(
-                animationSpec = ms.slowEffectsSpec()
-            ) togetherWith fadeOut(
-                animationSpec = tween(easing = EaseIn, durationMillis = 120)
-            ) + scaleOut(
-                targetScale = 0.9f,
-                animationSpec = tween(easing = EaseIn, durationMillis = 200)
-            ) + slideOutVertically(
-                targetOffsetY = { it / 6 },
-                animationSpec = tween(easing = EaseIn, durationMillis = 200)
-            )
-        },
-        predictivePopTransitionSpec = { swipeEdge: Int ->
-            val enter =
-                fadeIn(
-                    initialAlpha = 0.5f,
-                    animationSpec = tween(easing = EaseOut, durationMillis = 150)
-                )
-            val exit =
-                when (swipeEdge) {
-                    NavigationEvent.EDGE_RIGHT -> {
-                        slideOutHorizontally(
-                            animationSpec = tween(
-                                easing = EaseIn,
-                                durationMillis = 100
-                            )
-                        ) { -it }
-                    }
-
-                    else -> {
-                        slideOutHorizontally(
-                            animationSpec = tween(
-                                easing = EaseIn,
-                                durationMillis = 100
-                            )
-                        ) { it }
-                    }
-                }
-            (enter togetherWith exit)
-        }
+        transitionSpec = { sharedAxisXTransitionSpec() },
+        popTransitionSpec = { sharedAxisXPopTransitionSpec() },
+        predictivePopTransitionSpec = { sharedAxisXPopTransitionSpec() },
     )
 }
 
@@ -130,10 +102,9 @@ fun RouteContent(route: Routes) {
         is Routes.EditPost -> EditPostRoute(route.postId)
         is Routes.NewComment -> NewCommentRoute(route.postId)
         is Routes.NewCommentReply -> NewCommentReplyRoute(
-            route.postId,
-            route.commentId,
-            route.userId
+            route.postId, route.commentId, route.userId
         )
+
         is Routes.AttachmentsViewer -> AttachmentViewerRoute(route.attachments, route.viewPosition)
         is Routes.Followers -> FollowersRoute(route.userId, route.startTabIsFollowing)
         is Routes.Notifications -> NotificationsRoute(route.showBackButton)
