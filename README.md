@@ -28,8 +28,6 @@
 
 <div align="center">
 
-<h1><a id="screenshots"></a>Screenshots</h1>
-
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="art/s1_dark.png">
   <img src="art/s1.png" width="30%" />
