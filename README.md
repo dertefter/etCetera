@@ -25,7 +25,20 @@
 
 
 ### Скриншоты
-(скоро появятся)
+<div align="center">
+
+<h1><a id="screenshots"></a>Screenshots</h1>
+
+<img src="art/s1.png" width="30%" />
+<img src="art/s2.png" width="30%" />
+<img src="art/s3.png" width="30%" />
+<img src="art/s4.png" width="30%" />
+<img src="art/s5.png" width="30%" />
+<img src="art/s6.png" width="30%" />
+<img src="art/s7.png" width="30%" />
+<img src="art/s8.png" width="30%" />
+<img src="art/s9.png" width="30%" />
+</div>
 
 ### Сборка из исходников
 
