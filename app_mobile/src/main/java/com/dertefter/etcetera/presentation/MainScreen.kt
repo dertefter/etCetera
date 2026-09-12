@@ -1,29 +1,22 @@
 package com.dertefter.etcetera.presentation
 
+import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.annotation.StringRes
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material3.BottomSheetDefaults
-import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,26 +27,22 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberDecoratedNavEntries
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
-import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
-import com.dertefter.etcetera.navigation.getAppEntryProvider
 import com.dertefter.comments.CommentsRoute
 import com.dertefter.data.common.AppError
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.isFold
-import com.dertefter.design.theme.spacing
 import com.dertefter.etcetera.R
+import com.dertefter.etcetera.navigation.getAppEntryProvider
 import com.dertefter.navigation.NavigationAction
 import com.dertefter.navigation.Navigator
 import com.dertefter.navigation.Routes
@@ -64,11 +53,6 @@ import com.dertefter.new_post.NewPostRoute
 import com.dertefter.new_post.RepostRoute
 import com.dertefter.report.ReportRoute
 import com.dertefter.switch_account.SwitchAccountRoute
-import dev.chrisbanes.haze.HazeInput
-import dev.chrisbanes.haze.blur.hazeBlur
-import dev.chrisbanes.haze.blur.materials.HazeMaterials
-import dev.chrisbanes.haze.hazeSource
-import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.launch
 
 enum class MainTab(
@@ -141,7 +125,8 @@ fun getErrorMessage(e: AppError?): String? {
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun MainScreen(
     navigator: Navigator,
@@ -228,13 +213,9 @@ fun MainScreen(
 
 
     var bottomSheetRoute by remember { mutableStateOf<Routes?>(null) }
-    val scaffoldState = rememberBottomSheetScaffoldState(
-        bottomSheetState = rememberBottomSheetState(
-            initialValue = SheetValue.Hidden
-        )
+    val sheetState = rememberBottomSheetState(
+        initialValue = SheetValue.Hidden
     )
-
-    val hazeState = rememberHazeState()
 
     val scope = rememberCoroutineScope()
 
@@ -262,98 +243,35 @@ fun MainScreen(
         }
     }
 
-    BackHandler(
-        enabled = scaffoldState.bottomSheetState.currentValue != SheetValue.Hidden
-    ) {
-        scope.launch {
-            scaffoldState.bottomSheetState.hide()
-        }
-    }
-
-    val blurRadius by animateDpAsState(
-        targetValue = if (scaffoldState.bottomSheetState.currentValue == SheetValue.Expanded) 80.dp else 30.dp,
-        animationSpec = MaterialTheme.motionScheme.slowEffectsSpec()
-    )
-
-    val scrimAlpha by animateFloatAsState(
-        targetValue = if (scaffoldState.bottomSheetState.targetValue != SheetValue.Hidden) 0.32f else 0f,
-        animationSpec = MaterialTheme.motionScheme.slowEffectsSpec()
-    )
-
-    val hazeStyle = HazeMaterials.regular(
-        containerColor = MaterialTheme.colorScheme.surfaceContainer
-    ).then {
-        blurRadius(blurRadius)
-    }
-
     LaunchedEffect(bottomSheetRoute) {
         if (bottomSheetRoute != null) {
-            scaffoldState.bottomSheetState.partialExpand()
+            sheetState.partialExpand()
         } else {
-            scaffoldState.bottomSheetState.hide()
+            sheetState.hide()
         }
     }
 
-    LaunchedEffect(scaffoldState.bottomSheetState.currentValue) {
-        if (scaffoldState.bottomSheetState.currentValue == SheetValue.Hidden) {
+    LaunchedEffect(sheetState.currentValue) {
+        if (sheetState.currentValue == SheetValue.Hidden) {
             bottomSheetRoute = null
         }
     }
 
-    BottomSheetScaffold(
-        modifier = Modifier.imePadding(),
-        scaffoldState = scaffoldState,
-        sheetPeekHeight = 400.dp,
-        sheetContainerColor = Color.Transparent,
-        sheetContentColor = MaterialTheme.colorScheme.onSurface,
-        sheetDragHandle = null,
-        sheetShadowElevation = 0.dp,
+    Scaffold(
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
-        },
-        sheetContent = {
-            Column(
-                modifier = Modifier
-                    .statusBarsPadding()
-                    .fillMaxSize()
-                    .clip(BottomSheetDefaults.ExpandedShape)
-                    .hazeBlur(
-                        input = HazeInput.Sources(hazeState),
-                        style = hazeStyle
-                    ),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
-            ) {
-                BottomSheetDefaults.DragHandle()
-                when (val route = bottomSheetRoute) {
-                    is Routes.Report -> ReportRoute(route.targetType, route.targetId)
-                    is Routes.SwitchAccount -> SwitchAccountRoute()
-                    is Routes.Comments -> CommentsRoute(route.postId)
-                    is Routes.NewPost -> NewPostRoute(route.wallRecipientId)
-                    is Routes.Repost -> RepostRoute(route.postIdForRepost, route.wallRecipientId)
-                    is Routes.EditPost -> EditPostRoute(route.postId)
-                    is Routes.NewComment -> NewCommentRoute(route.postId)
-                    is Routes.NewCommentReply -> NewCommentReplyRoute(
-                        route.postId,
-                        route.commentId,
-                        route.userId
-                    )
-
-                    else -> {
-                        Spacer(Modifier.height(1.dp))
-                    }
-                }
-            }
         }
-    ) {
-        Box(Modifier.fillMaxSize()) {
+    ) { _ ->
+        Box(
+            Modifier
+                .fillMaxSize()
+        ) {
             if (MaterialTheme.isFold) {
                 TabUI(
                     activeBackStack = activeBackStack,
                     entries = activeEntries,
                     selectedTab = selectedTab,
                     notificationCount = uiState.notificationCount,
-                    hazeState = hazeState,
                     appNavHost = appNavHost,
                     onBack = {
                         if (activeBackStack.size > 1) {
@@ -372,7 +290,6 @@ fun MainScreen(
                     entries = activeEntries,
                     selectedTab = selectedTab,
                     notificationCount = uiState.notificationCount,
-                    hazeState = hazeState,
                     appNavHost = appNavHost,
                     onBack = {
                         if (activeBackStack.size > 1) {
@@ -386,22 +303,34 @@ fun MainScreen(
                     }
                 )
             }
+        }
+    }
 
-            if (scaffoldState.bottomSheetState.targetValue != SheetValue.Hidden || scaffoldState.bottomSheetState.currentValue != SheetValue.Hidden) {
-                Box(
-                    Modifier
-                        .fillMaxSize()
-                        .hazeSource(hazeState)
-                        .background(Color.Black.copy(alpha = scrimAlpha))
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null
-                        ) {
-                            scope.launch {
-                                scaffoldState.bottomSheetState.hide()
-                            }
-                        }
+    if (bottomSheetRoute != null || sheetState.isVisible) {
+        ModalBottomSheet(
+            modifier = Modifier.imePadding(),
+            onDismissRequest = {
+                bottomSheetRoute = null
+            },
+            sheetState = sheetState,
+        ) {
+            when (val route = bottomSheetRoute) {
+                is Routes.Report -> ReportRoute(route.targetType, route.targetId)
+                is Routes.SwitchAccount -> SwitchAccountRoute()
+                is Routes.Comments -> CommentsRoute(route.postId)
+                is Routes.NewPost -> NewPostRoute(route.wallRecipientId)
+                is Routes.Repost -> RepostRoute(route.postIdForRepost, route.wallRecipientId)
+                is Routes.EditPost -> EditPostRoute(route.postId)
+                is Routes.NewComment -> NewCommentRoute(route.postId)
+                is Routes.NewCommentReply -> NewCommentReplyRoute(
+                    route.postId,
+                    route.commentId,
+                    route.userId
                 )
+
+                else -> {
+                    Spacer(Modifier.height(1.dp))
+                }
             }
         }
     }
@@ -412,7 +341,7 @@ fun MainScreen(
             val backStack = currentActiveBackStack
             when (action) {
                 is NavigationAction.Navigate -> {
-                    scaffoldState.bottomSheetState.hide()
+                    scope.launch { sheetState.hide() }
                     backStack.add(action.route)
                 }
 
@@ -438,7 +367,7 @@ fun MainScreen(
                 }
 
                 is NavigationAction.HideBottomSheet -> {
-                    scaffoldState.bottomSheetState.hide()
+                    scope.launch { sheetState.hide() }
                     bottomSheetRoute = null
                 }
             }

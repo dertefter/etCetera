@@ -6,9 +6,12 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fitInside
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.WindowInsetsRulers
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.ui.NavDisplay
@@ -45,7 +48,10 @@ import kotlin.math.roundToInt
 
 @Composable
 fun AppNavHost(
-    modifier: Modifier = Modifier, entries: List<NavEntry<NavKey>>, onBack: () -> Unit
+    modifier: Modifier = Modifier
+        ,
+    entries: List<NavEntry<NavKey>>,
+    onBack: () -> Unit
 ) {
 
     val ms = MaterialTheme.motionScheme
@@ -68,13 +74,13 @@ fun AppNavHost(
 
     fun sharedAxisXPopTransitionSpec(): ContentTransform = ContentTransform(
         slideInHorizontally(
-            animationSpec = ms.defaultSpatialSpec(),
+            animationSpec = ms.slowEffectsSpec(),
             initialOffsetX = { (-0.1f * it).roundToInt() },
         ) + fadeIn(
-            animationSpec = ms.fastEffectsSpec(),
+            animationSpec = ms.slowEffectsSpec(),
         ),
         slideOutHorizontally(
-            animationSpec = ms.defaultSpatialSpec(),
+            animationSpec = ms.fastEffectsSpec(),
             targetOffsetX = { (0.1f * it).roundToInt() },
         ) + fadeOut(
             animationSpec = ms.fastEffectsSpec(),
@@ -82,7 +88,10 @@ fun AppNavHost(
     )
 
     NavDisplay(
-        modifier = modifier.background(MaterialTheme.colorScheme.background),
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.background)
+            .fitInside(WindowInsetsRulers.Ime.current)
+            .fillMaxSize(),
         entries = entries,
         onBack = onBack,
         transitionSpec = { sharedAxisXTransitionSpec() },

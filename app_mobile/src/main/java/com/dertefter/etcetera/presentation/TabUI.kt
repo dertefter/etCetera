@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -44,8 +45,6 @@ import com.dertefter.navigation.Routes
 import com.gigamole.composefadingedges.FadingEdgesGravity
 import com.gigamole.composefadingedges.fill.FadingEdgesFillType
 import com.gigamole.composefadingedges.verticalFadingEdges
-import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.hazeSource
 
 @Composable
 fun TabUI(
@@ -54,7 +53,6 @@ fun TabUI(
     entries: List<NavEntry<NavKey>>,
     selectedTab: MainTab,
     notificationCount: Int?,
-    hazeState: HazeState,
     appNavHost: @Composable (
         entries: List<NavEntry<NavKey>>,
         onBack: () -> Unit,
@@ -69,18 +67,31 @@ fun TabUI(
 
     val topLeftCornerRadius = MaterialTheme.rounding.extraLarge
 
+    val consumedPaddingValues = if (hideNav) PaddingValues(0.dp) else PaddingValues(
+        start = WindowInsets.displayCutout.asPaddingValues().calculateStartPadding(
+            LocalLayoutDirection.current
+        ), 0.dp,0.dp,0.dp
+    )
+
+
+
     TabUIStateless(
         modifier = modifier,
         hideNav = hideNav,
         selectedTab = selectedTab,
         notificationCount = notificationCount,
-        hazeState = hazeState,
         onNavItemClick = onNavItemClick,
         content = {
             appNavHost(
                 entries,
                 onBack,
                 Modifier
+                    .consumeWindowInsets(consumedPaddingValues)
+                    .then (
+                        if (WindowInsets.isImeVisible){
+                            Modifier.consumeWindowInsets(WindowInsets.navigationBars)
+                        } else Modifier
+                    )
                     .then(
                         if (!hideNav) {
                             Modifier.verticalFadingEdges(
@@ -112,7 +123,6 @@ fun TabUIStateless(
     hideNav: Boolean,
     selectedTab: MainTab,
     notificationCount: Int?,
-    hazeState: HazeState,
     onNavItemClick: (tab: MainTab) -> Unit,
     content: @Composable () -> Unit
 ) {
@@ -129,15 +139,10 @@ fun TabUIStateless(
         }
     }
 
-    val consumedPaddingValues = if (hideNav) PaddingValues(0.dp) else PaddingValues(
-        start = WindowInsets.displayCutout.asPaddingValues().calculateStartPadding(
-            LocalLayoutDirection.current
-        ), 0.dp,0.dp,0.dp
-    )
+
 
     Row(
         modifier
-            .hazeSource(hazeState)
             .background(MaterialTheme.colorScheme.surfaceContainerHigh)
             .fillMaxSize()
     ) {
@@ -193,7 +198,6 @@ fun TabUIStateless(
         }
 
         Box(Modifier
-            .consumeWindowInsets(consumedPaddingValues)
             .weight(1f)) {
             content()
         }
