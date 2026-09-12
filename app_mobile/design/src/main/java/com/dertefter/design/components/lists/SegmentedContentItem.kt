@@ -40,9 +40,10 @@ fun SegmentedContentItem(
 }
 
 @Composable
-private fun segmentedListItemShapes(
+fun segmentedListItemShapes(
     index: Int,
-    count: Int
+    count: Int,
+    selected: Boolean = false
 ): ListItemShapes {
     val rounding = MaterialTheme.rounding
     val segmentRadius = rounding.small
@@ -50,11 +51,11 @@ private fun segmentedListItemShapes(
     val interactiveRadius = rounding.largeIncreased
 
     return remember(index, count, segmentRadius, edgeRadius, interactiveRadius) {
-        val topRadius = if (index == 0) edgeRadius else segmentRadius
-        val bottomRadius = if (index == count - 1) edgeRadius else segmentRadius
+        val topRadius = if (selected) rounding.extraLarge else if (index == 0) edgeRadius else segmentRadius
+        val bottomRadius = if (selected) rounding.extraLarge else if (index == count - 1) edgeRadius else segmentRadius
 
-        val interactiveTopRadius = if (index == 0) interactiveRadius else segmentRadius
-        val interactiveBottomRadius = if (index == count - 1) interactiveRadius else segmentRadius
+        val interactiveTopRadius = if (selected) rounding.extraLarge else if (index == 0) interactiveRadius else segmentRadius
+        val interactiveBottomRadius = if (selected) rounding.extraLarge else if (index == count - 1) interactiveRadius else segmentRadius
 
         ListItemShapes(
             shape = RoundedCornerShape(
