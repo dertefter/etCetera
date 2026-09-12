@@ -126,7 +126,7 @@ private fun PaginatedLazyStaggeredGridScope.postItems(
     items: List<PostDto>,
     onEvent: (Event) -> Unit
 ) {
-    itemsIndexed<Any, PostDto>(items, key = { _, post -> "post_${post.id}" }) { _, post ->
+    itemsIndexed<Any, PostDto>(items.distinctBy { it.id }, key = { _, post -> "post_${post.id}" }) { _, post ->
         PostCard(
             post = post.toUiModel(),
             modifier = Modifier

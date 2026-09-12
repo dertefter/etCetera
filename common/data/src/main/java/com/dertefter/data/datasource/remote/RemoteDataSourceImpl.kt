@@ -30,6 +30,7 @@ import com.dertefter.data.dto.search.SearchDataDto
 import com.dertefter.data.dto.search.SearchHashtagDto
 import com.dertefter.data.dto.search.TopClanDto
 import com.dertefter.data.dto.upload.AttachmentUploadResponseDto
+import com.dertefter.data.dto.user.BlockResponseDto
 import com.dertefter.data.dto.user.FollowResponseDto
 import com.dertefter.data.dto.user.UserDto
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -270,6 +271,18 @@ class RemoteDataSourceImpl @Inject constructor(
     override suspend fun unfollow(userId: String): Result<FollowResponseDto> {
         return runCatching {
             apiService.unfollow(userId).handleResponse { it }.getOrThrow()
+        }
+    }
+
+    override suspend fun block(userId: String): Result<BlockResponseDto> {
+        return runCatching {
+            apiService.block(userId).handleResponse { it }.getOrThrow()
+        }
+    }
+
+    override suspend fun unblock(userId: String): Result<BlockResponseDto> {
+        return runCatching {
+            apiService.unblock(userId).handleResponse { it }.getOrThrow()
         }
     }
 

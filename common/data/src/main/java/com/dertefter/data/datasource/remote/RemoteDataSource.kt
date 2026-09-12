@@ -28,6 +28,7 @@ import com.dertefter.data.dto.search.SearchDataDto
 import com.dertefter.data.dto.search.SearchHashtagDto
 import com.dertefter.data.dto.search.TopClanDto
 import com.dertefter.data.dto.upload.AttachmentUploadResponseDto
+import com.dertefter.data.dto.user.BlockResponseDto
 import com.dertefter.data.dto.user.FollowResponseDto
 import com.dertefter.data.dto.user.UserDto
 import java.io.File
@@ -94,6 +95,10 @@ interface RemoteDataSource {
     suspend fun follow(userId: String): Result<FollowResponseDto>
 
     suspend fun unfollow(userId: String): Result<FollowResponseDto>
+
+    suspend fun block(userId: String): Result<BlockResponseDto>
+
+    suspend fun unblock(userId: String): Result<BlockResponseDto>
 
     suspend fun updateMe(updateMeRequestDto: UpdateMeRequestDto): Result<UpdateMeResponseDto>
 

@@ -18,6 +18,7 @@ data class UserDto(
     val isFollowing: Boolean = false,
     val lastSeen: LastSeenDto? = null,
     val likesVisibility: VisibilityDto = VisibilityDto.NOBODY,
+    val isBlockedByMe: Boolean = false,
     val online: Boolean = false,
     val pin: PinDto? = null,
     val pinnedPostId: String? = null,

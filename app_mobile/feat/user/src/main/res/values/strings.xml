@@ -12,6 +12,8 @@
     <string name="user_share">Share</string>
     <string name="user_more">More</string>
     <string name="user_block">Block</string>
+    <string name="user_unblock">Unblock</string>
+    <string name="user_report">Report</string>
     <string name="user_create_post">Create post</string>
     <string name="user_scroll_to_top">Scroll to top</string>
     <string name="user_unfollow">Unfollow</string>
@@ -40,4 +42,5 @@
     <string name="user_last_seen_this_month">this month</string>
     <string name="user_last_seen_long_ago">long ago</string>
     <string name="user_online">Online</string>
+    <string name="user_blocked">User blocked</string>
 </resources>

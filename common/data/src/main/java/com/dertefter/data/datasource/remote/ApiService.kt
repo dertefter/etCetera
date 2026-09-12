@@ -31,6 +31,7 @@ import com.dertefter.data.dto.reports.ReportResponseDto
 import com.dertefter.data.dto.search.SearchResponseDto
 import com.dertefter.data.dto.search.TopClansResponseDto
 import com.dertefter.data.dto.upload.AttachmentUploadResponseDto
+import com.dertefter.data.dto.user.BlockResponseDto
 import com.dertefter.data.dto.user.FollowResponseDto
 import com.dertefter.data.dto.user.UserDto
 import okhttp3.MultipartBody
@@ -263,6 +264,16 @@ interface ApiService {
     suspend fun unfollow(
         @Path("userId") userId: String
     ): Response<FollowResponseDto>
+
+    @POST("api/users/{userId}/block")
+    suspend fun block(
+        @Path("userId") userId: String
+    ): Response<BlockResponseDto>
+
+    @DELETE("api/users/{userId}/block")
+    suspend fun unblock(
+        @Path("userId") userId: String
+    ): Response<BlockResponseDto>
 
     @PUT("api/users/me")
     suspend fun updateMe(

@@ -68,7 +68,7 @@ private fun LazyListScope.postItems(
     onEvent: (Event) -> Unit,
     isMe: Boolean = false,
 ) {
-    itemsIndexed(items, key = { _, post -> "post_${post.id}" }) { _, post ->
+    itemsIndexed(items.distinctBy { it.id }, key = { _, post -> "post_${post.id}" }) { _, post ->
         PostCard(
             modifier = Modifier
                 .animateItem()

@@ -160,6 +160,12 @@ class CommentsViewModel @Inject constructor(
                 )
             }
 
+            is Event.OnReport -> {
+                navigator.openAsBottomSheet(
+                    Routes.Report(targetType = "comment", event.commentId)
+                )
+            }
+
         }
     }
 

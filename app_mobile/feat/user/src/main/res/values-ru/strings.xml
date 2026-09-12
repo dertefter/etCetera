@@ -12,6 +12,8 @@
     <string name="user_share">Поделиться</string>
     <string name="user_more">Еще</string>
     <string name="user_block">Заблокировать</string>
+    <string name="user_unblock">Разблокировать</string>
+    <string name="user_report">Пожаловаться</string>
     <string name="user_create_post">Создать пост</string>
     <string name="user_scroll_to_top">Наверх</string>
     <string name="user_unfollow">Отписаться</string>
@@ -44,4 +46,5 @@
     <string name="user_last_seen_this_month">в этом месяце</string>
     <string name="user_last_seen_long_ago">давно</string>
     <string name="user_online">В сети</string>
+    <string name="user_blocked">Пользователь заблокирован</string>
 </resources>

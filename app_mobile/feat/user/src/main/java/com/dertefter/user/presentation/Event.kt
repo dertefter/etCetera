@@ -23,7 +23,7 @@ sealed interface Event {
 
     data class OnDeletePost(val postId: String) : Event
     data class OnShare(val userId: String) : Event
-    data class OnBlock(val userId: String) : Event
+    data class OnBlock(val userId: String, val isBlocked: Boolean) : Event
 
     data class OnSaveBio(val bio: String) : Event
 

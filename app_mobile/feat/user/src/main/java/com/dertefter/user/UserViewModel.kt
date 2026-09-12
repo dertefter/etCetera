@@ -263,7 +263,13 @@ class UserViewModel @Inject constructor(
             }
 
             is Event.OnBlock -> {
-                // TODO
+                viewModelScope.launch {
+                    if (event.isBlocked) {
+                        userRepository.block(event.userId)
+                    } else {
+                        userRepository.unblock(event.userId)
+                    }
+                }
             }
 
             is Event.OnFollow -> {

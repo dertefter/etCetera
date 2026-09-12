@@ -19,7 +19,6 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarScrollBehavior
@@ -144,7 +143,7 @@ fun CommentsFeed(
 
                     paginated(paged) {
                         itemsIndexed(
-                            items,
+                            items.distinctBy { it.id },
                             key = { _, comment -> comment.id }) { index, comment ->
                             Column(Modifier.animateItem()) {
                                 CommentCard(
@@ -169,13 +168,13 @@ fun CommentsFeed(
                                             Event.OnDeleteComment(commentId)
                                         )
 
+                                    },
+                                    onReport = { commentId ->
+                                        onEvent(
+                                            Event.OnReport(commentId)
+                                        )
                                     }
                                 )
-                                if (index < items.lastIndex) {
-                                    HorizontalDivider(
-                                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
-                                    )
-                                }
                             }
                         }
 

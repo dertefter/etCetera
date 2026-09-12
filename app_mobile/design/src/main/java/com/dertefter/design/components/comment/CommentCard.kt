@@ -61,7 +61,8 @@ fun CommentCard(
     meUserId: String? = null,
     index: Int,
     count: Int,
-    isReply: Boolean = false
+    isReply: Boolean = false,
+    onReport: (commentId: String) -> Unit = {}
 ) {
     var isExpanded by remember { mutableStateOf(false) }
 
@@ -137,18 +138,6 @@ fun CommentCard(
                             shape = MaterialTheme.shapes.largeIncreased,
                             onDismissRequest = { showMenu = false }) {
 
-                            DropdownMenuItem(
-                                text = { Text(stringResource(R.string.design_comment_report)) },
-                                onClick = {
-                                    onEdit(comment.id)
-                                    showMenu = false
-                                },
-                                leadingIcon = {
-                                    Icon(Icons.Error,
-                                        contentDescription = stringResource(R.string.design_comment_report)
-                                    )
-                                })
-
                             if (isOwner) {
                                 DropdownMenuItem(
                                     text = { Text(stringResource(R.string.design_post_edit)) },
@@ -173,6 +162,20 @@ fun CommentCard(
                                         Icon(
                                             imageVector = Icons.Delete,
                                             contentDescription = stringResource(R.string.design_post_delete),
+                                            tint = MaterialTheme.colorScheme.error
+                                        )
+                                    })
+                            }else {
+                                DropdownMenuItem(
+                                    text = { Text(stringResource(R.string.design_comment_report)) },
+                                    onClick = {
+                                        onReport(comment.id)
+                                        showMenu = false
+                                    },
+                                    leadingIcon = {
+                                        Icon(
+                                            imageVector = Icons.Error,
+                                            contentDescription = stringResource(R.string.design_comment_report),
                                             tint = MaterialTheme.colorScheme.error
                                         )
                                     })
@@ -285,7 +288,8 @@ fun CommentCard(
                         meUserId = meUserId,
                         index = index,
                         count = comment.replies.count(),
-                        isReply = true
+                        isReply = true,
+                        modifier = Modifier.padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
                     )
                 }
                 if ((comment.repliesCount ?: 0) > (comment.replies?.size ?: 0)) {

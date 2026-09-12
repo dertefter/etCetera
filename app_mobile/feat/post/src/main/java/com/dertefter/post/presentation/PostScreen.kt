@@ -155,7 +155,7 @@ fun PostScreenContent(
                                         onUnlike = { onEvent(Event.OnUnlike) },
                                         onUserClick = { userId -> onEvent(Event.OnOpenUser(userId)) },
                                         onVote = { optionIds -> onEvent(Event.OnVote(optionIds)) },
-                                        onOpenPost = { onEvent(Event.OnOpenPost(it)) },
+                                        onOpenPost = { postId -> onEvent(Event.OnOpenPost(postId)) },
                                         onAttachmentClick = { attachments, position ->
                                             onEvent(
                                                 Event.OnOpenAttachmentsViewer(

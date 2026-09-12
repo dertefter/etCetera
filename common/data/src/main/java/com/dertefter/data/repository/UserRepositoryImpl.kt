@@ -1,10 +1,14 @@
 package com.dertefter.data.repository
 
+import android.util.Log
 import com.dertefter.data.common.onFailureLog
 import com.dertefter.data.datasource.local.LocalDataSource
 import com.dertefter.data.datasource.remote.RemoteDataSource
+import com.dertefter.data.dto.followers.FollowerUserDto
+import com.dertefter.data.dto.user.BlockResponseDto
 import com.dertefter.data.dto.user.FollowResponseDto
 import com.dertefter.data.dto.user.UserDto
+import com.jamal_aliev.paginator.cursor.extension.updateWhere
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import javax.inject.Inject
@@ -43,6 +47,22 @@ class UserRepositoryImpl @Inject constructor(
             handleFollowResponse(userId, response)
         }.onFailure {
             applyOptimisticFollow(userId, true)
+        }
+    }
+
+    override suspend fun block(userId: String): Result<BlockResponseDto> {
+        return remoteDataSource.block(userId).onFailureLog(crashlyticsRepository).onSuccess {
+            localDataSource.getUser(userId).firstOrNull()?.let { user ->
+                localDataSource.saveUser(user.copy(isBlockedByMe = it.blocked))
+            }
+        }
+    }
+
+    override suspend fun unblock(userId: String): Result<BlockResponseDto> {
+        return remoteDataSource.unblock(userId).onFailureLog(crashlyticsRepository).onSuccess {
+            localDataSource.getUser(userId).firstOrNull()?.let { user ->
+                localDataSource.saveUser(user.copy(isBlockedByMe = it.blocked))
+            }
         }
     }
 

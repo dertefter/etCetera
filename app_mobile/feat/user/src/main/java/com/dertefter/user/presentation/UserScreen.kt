@@ -16,10 +16,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -30,6 +27,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonGroup
 import androidx.compose.material3.ButtonGroupDefaults
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -48,16 +46,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -192,6 +189,7 @@ fun UserScreen(
     val pullToRefreshState = rememberPullToRefreshState()
 
     var pullRefreshing by remember { mutableStateOf(false) }
+    var showOverflowMenu by remember { mutableStateOf(false) }
 
     LaunchedEffect(userUiState.isLoading) {
         if (!userUiState.isLoading) {
@@ -239,7 +237,7 @@ fun UserScreen(
                 TopAppBar(
                     scrollBehavior = scrollBehavior,
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.background,
+                        containerColor = MaterialTheme.colorScheme.background.copy(alpha = 0f),
                         scrolledContainerColor = appBarContainerColor
                     ),
                     navigationIcon = {
@@ -274,21 +272,84 @@ fun UserScreen(
                         }
                     },
                     actions = {
-                        AppNavigationIcon(
-                            icon = Icons.Share,
-                            onClick = {
-                                if (shareText.isNotEmpty()) {
-                                    val sendIntent: Intent = Intent().apply {
-                                        action = Intent.ACTION_SEND
-                                        putExtra(Intent.EXTRA_TEXT, shareText)
-                                        type = "text/plain"
+                        Box {
+                            AppNavigationIcon(
+                                icon = Icons.MoreVert,
+                                onClick = { showOverflowMenu = true },
+                                contentDescription = stringResource(R.string.user_more)
+                            )
+                            DropdownMenu(
+                                expanded = showOverflowMenu,
+                                onDismissRequest = { showOverflowMenu = false },
+                                shape = MaterialTheme.shapes.largeIncreased,
+                            ) {
+                                DropdownMenuItem(
+                                    text = { Text(stringResource(R.string.user_share)) },
+                                    leadingIcon = {
+                                        Icon(
+                                            imageVector = Icons.Share,
+                                            contentDescription = null
+                                        )
+                                    },
+                                    onClick = {
+                                        showOverflowMenu = false
+                                        if (shareText.isNotEmpty()) {
+                                            val sendIntent: Intent = Intent().apply {
+                                                action = Intent.ACTION_SEND
+                                                putExtra(Intent.EXTRA_TEXT, shareText)
+                                                type = "text/plain"
+                                            }
+                                            val shareIntent = Intent.createChooser(sendIntent, null)
+                                            context.startActivity(shareIntent)
+                                        }
                                     }
-                                    val shareIntent = Intent.createChooser(sendIntent, null)
-                                    context.startActivity(shareIntent)
+                                )
+                                if (!userUiState.isMe) {
+                                    userUiState.userDto?.let { userDto ->
+                                        DropdownMenuItem(
+                                            text = { Text(stringResource(R.string.user_report)) },
+                                            leadingIcon = {
+                                                Icon(
+                                                    imageVector = Icons.Error,
+                                                    tint = MaterialTheme.colorScheme.error,
+                                                    contentDescription = null
+                                                )
+                                            },
+                                            onClick = {
+                                                showOverflowMenu = false
+                                                onEvent(Event.OnReport(targetType = "user", userDto.id))
+                                            }
+                                        )
+
+                                        DropdownMenuItem(
+                                            text = {
+                                                Text(
+                                                    if (userDto.isBlockedByMe) stringResource(R.string.user_unblock)
+                                                    else stringResource(R.string.user_block)
+                                                )
+                                            },
+                                            leadingIcon = {
+                                                Icon(
+                                                    imageVector = Icons.Error,
+                                                    tint = MaterialTheme.colorScheme.error,
+                                                    contentDescription = null
+                                                )
+                                            },
+                                            onClick = {
+                                                showOverflowMenu = false
+                                                onEvent(
+                                                    Event.OnBlock(
+                                                        userId = userDto.id,
+                                                        isBlocked = !userDto.isBlockedByMe
+                                                    )
+                                                )
+                                            }
+                                        )
+                                    }
                                 }
-                            },
-                            contentDescription = stringResource(R.string.user_share)
-                        )
+
+                            }
+                        }
                         if (userUiState.isMe) {
                             AppNavigationIcon(
                                 icon = Icons.Settings,
@@ -374,17 +435,11 @@ fun UserScreen(
         )
         { contentPadding ->
             if (userUiState.userDto != null) {
-                val layoutDirection = LocalLayoutDirection.current
                 LazyColumn(
                     state = lazyListState,
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(top = contentPadding.calculateTopPadding()),
-                    contentPadding = PaddingValues(
-                        start = contentPadding.calculateStartPadding(layoutDirection),
-                        end = contentPadding.calculateEndPadding(layoutDirection),
-                        bottom = contentPadding.calculateBottomPadding()
-                    ),
+                        .fillMaxSize(),
+                    contentPadding = contentPadding,
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
 
@@ -498,89 +553,103 @@ fun UserScreen(
                         }
                     }
 
-                    stickyHeader(key = "tabs") {
-                        val stickyHeaderBackground by animateColorAsState(
-                            targetValue = if (isStickyHeaderStuck) MaterialTheme.colorScheme.surfaceContainer else MaterialTheme.colorScheme.surface,
-                            label = "stickyHeaderBackground"
-                        )
-                        ButtonGroup(
-                            overflowIndicator = { ButtonGroupDefaults.OverflowIndicator(it) },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(stickyHeaderBackground)
-                                .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
-                                .padding(bottom = MaterialTheme.spacing.large),
-                            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
-                        ) {
-                            val groupScope = this
-                            tabs.forEachIndexed { index, title ->
+                    if (!userUiState.userDto.isBlockedByMe){
+                        stickyHeader(key = "tabs") {
+                            val stickyHeaderBackground by animateColorAsState(
+                                targetValue = if (isStickyHeaderStuck) MaterialTheme.colorScheme.surfaceContainer else MaterialTheme.colorScheme.surface,
+                                label = "stickyHeaderBackground"
+                            )
+                            ButtonGroup(
+                                overflowIndicator = { ButtonGroupDefaults.OverflowIndicator(it) },
+                                modifier = Modifier
+                                    .animateItem()
+                                    .fillMaxWidth()
+                                    .background(stickyHeaderBackground)
+                                    .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
+                                    .padding(bottom = MaterialTheme.spacing.large),
+                                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+                            ) {
+                                val groupScope = this
+                                tabs.forEachIndexed { index, title ->
 
-                                customItem(
-                                    buttonGroupContent = {
-                                        ToggleButton(
-                                            checked = selectedTab == title,
-                                            onCheckedChange = {
-                                                if (it) {
-                                                    onEvent(Event.OnTabSelected(title))
-                                                }
-                                            },
-                                            shapes = when (index) {
-                                                0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
-                                                tabs.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
-                                                else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
-                                            },
-                                            modifier = with(groupScope) { Modifier.weight(1f) }
-                                        ) {
-                                            val text = when (title) {
-                                                FeedTab.POSTS -> stringResource(R.string.user_posts)
-                                                FeedTab.LIKES -> stringResource(R.string.user_liked)
-                                            }
-                                            val checked = selectedTab == title
-
-                                            val animatedWeight by animateFloatAsState(
-                                                targetValue = if (checked) 900f else 500f,
-                                                label = "WeightAnimation"
-                                            )
-
-                                            val variableFontFamily = FontFamily(
-                                                Font(
-                                                    resId = com.dertefter.design.R.font.google_sans,
-                                                    variationSettings = FontVariation.Settings(
-                                                        FontVariation.weight(animatedWeight.toInt()),
-                                                    )
-                                                )
-                                            )
-
-                                            Text(
-                                                text,
-                                                fontFamily = variableFontFamily,
-                                                maxLines = 1,
-                                                overflow = TextOverflow.Ellipsis,
-                                                style = MaterialTheme.typography.bodyMedium
-                                            )
-                                        }
-                                    },
-                                    menuContent = { menuState ->
-                                        DropdownMenuItem(
-                                            text = {
+                                    customItem(
+                                        buttonGroupContent = {
+                                            ToggleButton(
+                                                checked = selectedTab == title,
+                                                onCheckedChange = {
+                                                    if (it) {
+                                                        onEvent(Event.OnTabSelected(title))
+                                                    }
+                                                },
+                                                shapes = when (index) {
+                                                    0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
+                                                    tabs.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
+                                                    else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
+                                                },
+                                                modifier = with(groupScope) { Modifier.weight(1f) }
+                                            ) {
                                                 val text = when (title) {
                                                     FeedTab.POSTS -> stringResource(R.string.user_posts)
                                                     FeedTab.LIKES -> stringResource(R.string.user_liked)
                                                 }
-                                                Text(text)
-                                            },
-                                            onClick = {
-                                                onEvent(Event.OnTabSelected(title))
-                                                menuState.dismiss()
+                                                val checked = selectedTab == title
+
+                                                val animatedWeight by animateFloatAsState(
+                                                    targetValue = if (checked) 900f else 500f,
+                                                    label = "WeightAnimation"
+                                                )
+
+                                                val variableFontFamily = FontFamily(
+                                                    Font(
+                                                        resId = com.dertefter.design.R.font.google_sans,
+                                                        variationSettings = FontVariation.Settings(
+                                                            FontVariation.weight(animatedWeight.toInt()),
+                                                        )
+                                                    )
+                                                )
+
+                                                Text(
+                                                    text,
+                                                    fontFamily = variableFontFamily,
+                                                    maxLines = 1,
+                                                    overflow = TextOverflow.Ellipsis,
+                                                    style = MaterialTheme.typography.bodyMedium
+                                                )
                                             }
-                                        )
-                                    }
-                                )
+                                        },
+                                        menuContent = { menuState ->
+                                            DropdownMenuItem(
+                                                text = {
+                                                    val text = when (title) {
+                                                        FeedTab.POSTS -> stringResource(R.string.user_posts)
+                                                        FeedTab.LIKES -> stringResource(R.string.user_liked)
+                                                    }
+                                                    Text(text)
+                                                },
+                                                onClick = {
+                                                    onEvent(Event.OnTabSelected(title))
+                                                    menuState.dismiss()
+                                                }
+                                            )
+                                        }
+                                    )
+                                }
                             }
                         }
                     }
 
-                    if (currentTabUiState != null && paged != null) {
+
+                    if (userUiState.userDto.isBlockedByMe){
+                        item{
+                            Text(
+                                stringResource(R.string.user_blocked),
+                                color = MaterialTheme.colorScheme.outline,
+                                modifier = Modifier
+                                    .animateItem()
+                                    .padding(MaterialTheme.spacing.large)
+                            )
+                        }
+                    } else if (currentTabUiState != null && paged != null) {
                         feed(
                             uiState = currentTabUiState,
                             isMe = userUiState.isMe && selectedTab == FeedTab.POSTS,

@@ -33,6 +33,7 @@ data class UserEntity(
     val username: String,
     val verified: Boolean,
     val wallAccess: VisibilityDto,
+    val isBlockedByMe: Boolean = false,
 
     // Me fields
     val isPhoneVerified: Boolean = false,
@@ -65,6 +66,7 @@ fun UserEntity.asExternalModel() = UserDto(
     username = username,
     verified = verified,
     wallAccess = wallAccess,
+    isBlockedByMe = isBlockedByMe,
     isPrivate = isPrivate,
     canMessage = canMessage
 )
@@ -153,6 +155,7 @@ fun UserDto.asEntity() = UserEntity(
     username = username,
     verified = verified,
     wallAccess = wallAccess,
+    isBlockedByMe = isBlockedByMe,
     isMe = false,
     isPrivate = isPrivate,
     canMessage = canMessage

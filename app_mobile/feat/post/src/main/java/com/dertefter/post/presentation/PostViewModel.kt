@@ -83,7 +83,7 @@ class PostViewModel @Inject constructor(
             }
 
             is Event.OnOpenPost -> {
-                navigator.navigate(Routes.User(event.postId))
+                navigator.navigate(Routes.Post(event.postId))
             }
 
             is Event.OnOpenHashtag -> {

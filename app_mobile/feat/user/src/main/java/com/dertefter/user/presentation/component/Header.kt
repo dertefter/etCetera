@@ -4,13 +4,11 @@ import android.content.res.Configuration
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -48,7 +46,6 @@ import com.dertefter.user.presentation.mapper.toPresentationString
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import kotlin.math.absoluteValue
-import kotlin.math.sqrt
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -92,42 +89,49 @@ fun Header(
             contentAlignment = Alignment.BottomCenter
         ){
             if (!bannerUrl.isNullOrEmpty() || isMe){
-                Box(
+                AsyncImage(
+                    model = bannerUrl,
+                    contentDescription = null,
                     modifier = Modifier
-                        .blur(120.dp * scrollFraction, edgeTreatment =  BlurredEdgeTreatment.Unbounded)
+                        .blur(60.dp, edgeTreatment =  BlurredEdgeTreatment.Unbounded)
                         .padding(bottom = avatarSize / 2)
-                        .alpha(sqrt(1f - scrollFraction))
                         .clip(MaterialTheme.shapes.extraLarge)
-                        .clickable(onClick = onBannerClick)
-                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .alpha(0.7f)
+                        .background(MaterialTheme.colorScheme.surfaceContainerLow)
                         .fillMaxWidth()
                         .height(172.dp),
-                ){
-                    AsyncImage(
-                        model = bannerUrl,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .hazeSource(state = hazeState)
-                            .fillMaxSize(),
-                        contentScale = ContentScale.Crop,
-                    )
+                    contentScale = ContentScale.Crop,
+                )
 
-                    if (isMe){
-                        AppNavigationIcon(
-                            onClick = onEditClick,
-                            modifier = Modifier
-                                .align(Alignment.TopEnd)
-                                .padding(MaterialTheme.spacing.medium),
-                            containerColor = MaterialTheme.colorScheme.surfaceDim.copy(alpha = 0.5f),
-                            contentColor = MaterialTheme.colorScheme.onSurface,
-                            icon = Icons.Edit,
-                            contentDescription = stringResource(R.string.user_edit_banner),
-                            hazeState = hazeState
-                        )
-                    }
-                }
+                AsyncImage(
+                    model = bannerUrl,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .hazeSource(state = hazeState)
+                        .padding(bottom = avatarSize / 2)
+                        .clip(MaterialTheme.shapes.extraLarge)
+                        .background(MaterialTheme.colorScheme.surfaceContainerLow)
+                        .fillMaxWidth()
+                        .height(172.dp),
+                    contentScale = ContentScale.Crop,
+                )
             }
-            
+
+
+
+            if (isMe){
+                AppNavigationIcon(
+                    onClick = onEditClick,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(MaterialTheme.spacing.medium),
+                    containerColor = MaterialTheme.colorScheme.surfaceDim.copy(alpha = 0.5f),
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                    icon = Icons.Edit,
+                    contentDescription = stringResource(R.string.user_edit_banner),
+                    hazeState = hazeState
+                )
+            }
 
 
 

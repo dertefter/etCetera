@@ -2,7 +2,7 @@
 # Build and Plugins
 agp = "9.4.0"
 annotationExperimental = "1.6.0"
-kotlin = "2.4.10"
+kotlin = "2.4.20"
 ksp = "2.3.11"
 ossLicensesPlugin = "0.13.0"
 
@@ -18,8 +18,8 @@ palette = "1.0.0"
 # Jetpack Compose
 activityCompose = "1.13.0"
 composeBomAlpha = "2026.08.01"
-navigationCompose = "2.10.0"
-navigation3 = "1.2.0-beta01"
+navigationCompose = "2.10.1"
+navigation3 = "1.2.0-rc01"
 
 # UI Libraries
 coilCompose = "2.7.0"
@@ -34,7 +34,7 @@ materialKolor = "5.0.1"
 zoomable = "2.13.0"
 
 # Wear OS
-composeWear = "1.7.0-beta02"
+composeWear = "1.7.0-rc01"
 playServicesWearable = "20.0.1"
 wearToolingPreview = "1.0.0"
 
@@ -49,13 +49,13 @@ okhttpUrlconnection = "5.5.0"
 retrofit = "3.0.0"
 
 # Database
-room = "2.8.4"
+room = "2.8.5"
 
 # Media
-media3 = "1.11.0"
+media3 = "1.11.1"
 
 # Paging
-paginatorBom = "10.2.2"
+paginatorBom = "10.2.3"
 
 # Widgets
 glance = "1.2.0"
@@ -69,7 +69,7 @@ mockk = "1.14.11"
 
 # Licenses
 droibitOssLicenses = "0.10.0"
-animationGraphics = "1.12.0"
+animationGraphics = "1.12.1"
 
 [libraries]
 # AndroidX Core
@@ -155,8 +155,8 @@ androidx-glance-preview = { group = "androidx.glance", name = "glance-preview", 
 # Testing
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4", version = "1.12.0" }
-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version = "1.12.0" }
+compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4", version = "1.12.1" }
+compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version = "1.12.1" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
