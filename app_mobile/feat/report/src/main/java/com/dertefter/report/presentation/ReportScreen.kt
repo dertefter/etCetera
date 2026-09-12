@@ -2,6 +2,12 @@ package com.dertefter.report.presentation
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,30 +16,35 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dertefter.design.components.appbar.AppToolbar
-import com.dertefter.design.components.buttons.AppNavigationIcon
+import com.dertefter.design.components.lists.segmentedListItemShapes
 import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.components.text_fields.TextFieldItem
 import com.dertefter.design.icons.Icons
@@ -50,7 +61,17 @@ fun ReportScreen(
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val scrollState = rememberScrollState()
 
-    val reasons = listOf<Pair<String, Int>>(
+    val infiniteTransition = rememberInfiniteTransition(label = "AngleTransition")
+    val angle by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 180f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(14000, easing = LinearEasing)
+        ),
+        label = "AngleAnimation"
+    )
+
+    val reasons = listOf(
         "spam" to R.string.report_reason_spam,
         "violence" to R.string.report_reason_violence,
         "harassment" to R.string.report_reason_hate,
@@ -60,13 +81,13 @@ fun ReportScreen(
     )
 
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.surface,
+        containerColor = Color.Transparent,
         topBar = {
             AppToolbar(
                 title = stringResource(R.string.report_title),
-                navigationIcon = {
-                    AppNavigationIcon(onClick = { onEvent(Event.OnNavigateBack) })
-                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Transparent
+                ),
                 scrollBehavior = scrollBehavior
             )
         },
@@ -78,17 +99,22 @@ fun ReportScreen(
             if (isSuccess) {
                 Column(
                     modifier = Modifier
+                        .padding(horizontal = MaterialTheme.spacing.extraLarge)
                         .padding(contentPadding)
                         .fillMaxSize()
-                        .padding(MaterialTheme.spacing.medium),
+                            .padding(MaterialTheme.spacing.medium),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
+                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
                 ) {
                     Icon(
                         imageVector = Icons.Check,
                         contentDescription = null,
-                        modifier = Modifier.size(64.dp),
-                        tint = MaterialTheme.colorScheme.primary
+                        modifier = Modifier
+                            .clip(MaterialShapes.Cookie12Sided.toShape(startAngle = angle.toInt()))
+                            .background(MaterialTheme.colorScheme.primaryContainer)
+                            .padding(MaterialTheme.spacing.extraLarge)
+                            .size(64.dp),
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                     Text(
                         text = stringResource(R.string.report_success_title),
@@ -120,35 +146,29 @@ fun ReportScreen(
                         .padding(MaterialTheme.spacing.medium),
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
                 ) {
-                    Text(
-                        text = stringResource(R.string.report_subtitle),
-                        style = MaterialTheme.typography.titleMedium
-                    )
-
-                    Column(Modifier.selectableGroup()) {
-                        reasons.forEach { pair ->
+                    Column(
+                        Modifier.selectableGroup(),
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+                    ) {
+                        reasons.forEachIndexed { index, pair ->
                             val id = pair.first
                             val labelRes = pair.second
-                            Row(
-                                Modifier
-                                    .fillMaxWidth()
-                                    .selectable(
-                                        selected = (uiState.reason == id),
-                                        onClick = { onEvent(Event.OnReasonSelected(id)) },
-                                        role = Role.RadioButton
-                                    )
-                                    .padding(vertical = MaterialTheme.spacing.small),
-                                verticalAlignment = Alignment.CenterVertically
+                            val selected = uiState.reason == id
+                            ListItem(
+                                selected = selected,
+                                leadingContent = { RadioButton(selected = selected, onClick = null) },
+                                onClick = { onEvent(Event.OnReasonSelected(id)) },
+                                colors = ListItemDefaults.colors(
+                                    containerColor = MaterialTheme.colorScheme.surfaceContainer
+                                ),
+                                shapes = segmentedListItemShapes(
+                                    index = index,
+                                    count = reasons.count(),
+                                    selected = selected
+                                )
+
                             ) {
-                                RadioButton(
-                                    selected = (uiState.reason == id),
-                                    onClick = null
-                                )
-                                Text(
-                                    text = stringResource(labelRes),
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    modifier = Modifier.padding(start = MaterialTheme.spacing.medium)
-                                )
+                                Text(stringResource(labelRes))
                             }
                         }
                     }
@@ -210,7 +230,7 @@ fun ReportScreen(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = false)
 @Composable
 fun ReportScreenPreview() {
     AppTheme {

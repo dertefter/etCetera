@@ -29,7 +29,7 @@ class ReportViewModel @Inject constructor(
     fun onEvent(event: Event) {
         when (event) {
             is Event.OnNavigateBack -> {
-                navigator.navigateUp()
+                navigator.hideBottomSheet()
             }
             is Event.OnReasonSelected -> {
                 _uiState.update { it.copy(reason = event.reason) }
