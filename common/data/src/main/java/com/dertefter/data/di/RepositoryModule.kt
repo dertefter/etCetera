@@ -18,6 +18,8 @@ import com.dertefter.data.repository.NotificationsRepository
 import com.dertefter.data.repository.NotificationsRepositoryImpl
 import com.dertefter.data.repository.PostRepository
 import com.dertefter.data.repository.PostRepositoryImpl
+import com.dertefter.data.repository.ReportsRepository
+import com.dertefter.data.repository.ReportsRepositoryImpl
 import com.dertefter.data.repository.SearchRepository
 import com.dertefter.data.repository.SearchRepositoryImpl
 import com.dertefter.data.repository.SettingsRepository
@@ -105,4 +107,10 @@ abstract class RepositoryModule {
     abstract fun bindSettingsRepository(
         settingsRepositoryImpl: SettingsRepositoryImpl
     ): SettingsRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindReportsRepository(
+        reportsRepositoryImpl: ReportsRepositoryImpl
+    ): ReportsRepository
 }

@@ -74,7 +74,8 @@ fun PostCard(
     onOpenPost: (String) -> Unit,
     onHashtagClick: (hashtagId: String) -> Unit,
     onLinkClick: ((url: String) -> Unit)? = null,
-    onAttachmentClick: (attachments: List<AttachmentUiModel>, position: Int) -> Unit
+    onAttachmentClick: (attachments: List<AttachmentUiModel>, position: Int) -> Unit,
+    onReport: (targetId: String) -> Unit
 ) {
     val uriHandler = LocalUriHandler.current
     val finalOnLinkClick = onLinkClick ?: { url -> uriHandler.openUri(url) }
@@ -272,6 +273,21 @@ fun PostCard(
                                     )
                                 })
                         }
+                        if (!post.isOwner){
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.design_comment_report)) },
+                                onClick = {
+                                    onReport(post.id)
+                                    showMenu = false
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Error,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.error
+                                    )
+                                })
+                        }
                     }
                 }
             }
@@ -442,7 +458,7 @@ fun PostCardPreview() {
                 createdAt = "2026-08-05T12:00:00Z",
                 editedAt = null,
                 originalPost = null
-            ), isOnMyWall = true, onHashtagClick = {},
+            ), isOnMyWall = false, onHashtagClick = {},
             onAttachmentClick = { _, _ -> },
             onOpenPost = {},
             onDelete = {},
@@ -453,7 +469,8 @@ fun PostCardPreview() {
             onLike = {},
             onUnlike = {},
             onUserClick = {},
-            onRepostClick = {}
+            onRepostClick = {},
+            onReport = {}
         )
     }
 }

@@ -1,16 +1,15 @@
 package com.dertefter.hashtag_feed
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.repository.FeedRepository
 import com.dertefter.data.repository.PostRepository
+import com.dertefter.hashtag_feed.presentation.Event
+import com.dertefter.hashtag_feed.presentation.mapper.toNavigationModel
 import com.dertefter.navigation.Navigator
 import com.dertefter.navigation.Routes
 import com.dertefter.navigation.Routes.Comments
-import com.dertefter.data.dto.feed.PostDto
-import com.dertefter.hashtag_feed.presentation.Event
-import com.dertefter.hashtag_feed.presentation.mapper.toNavigationModel
 import com.jamal_aliev.paginator.core.page.PaginatorUiState
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
 import com.jamal_aliev.paginator.cursor.bookmark.CursorBookmark
@@ -179,6 +178,11 @@ class HashtagFeedViewModel @Inject constructor(
                 )
             }
 
+            is Event.OnReport -> {
+                navigator.openAsBottomSheet(
+                    Routes.Report(targetType = event.targetType, targetId = event.targetId)
+                )
+            }
 
         }
     }

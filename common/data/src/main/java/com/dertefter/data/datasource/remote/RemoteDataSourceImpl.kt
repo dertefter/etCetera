@@ -1,6 +1,5 @@
 package com.dertefter.data.datasource.remote
 
-import android.util.Log
 import com.dertefter.data.dto.auth.AuthSessionsResponseDto
 import com.dertefter.data.dto.auth.SignInRequest
 import com.dertefter.data.dto.auth.SignInResponse
@@ -25,6 +24,8 @@ import com.dertefter.data.dto.new_post.EditPostResponseDto
 import com.dertefter.data.dto.new_post.NewPostRequestDto
 import com.dertefter.data.dto.notifications.NotificationsResponseDto
 import com.dertefter.data.dto.poll.VotePollRequestDto
+import com.dertefter.data.dto.reports.ReportDataDto
+import com.dertefter.data.dto.reports.ReportRequestDto
 import com.dertefter.data.dto.search.SearchDataDto
 import com.dertefter.data.dto.search.SearchHashtagDto
 import com.dertefter.data.dto.search.TopClanDto
@@ -341,6 +342,12 @@ class RemoteDataSourceImpl @Inject constructor(
     override suspend fun updatePrivacy(updatePrivacyRequestDto: UpdatePrivacyRequestDto): Result<PrivacyDto> {
         return runCatching {
             apiService.updatePrivacy(updatePrivacyRequestDto).handleResponse { it }.getOrThrow()
+        }
+    }
+
+    override suspend fun createReport(reportRequestDto: ReportRequestDto): Result<ReportDataDto> {
+        return runCatching {
+            apiService.createReport(reportRequestDto).handleResponse { it.data }.getOrThrow()
         }
     }
 }

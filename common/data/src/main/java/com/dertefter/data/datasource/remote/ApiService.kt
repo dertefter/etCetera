@@ -26,6 +26,8 @@ import com.dertefter.data.dto.notifications.NotificationCountDto
 import com.dertefter.data.dto.notifications.NotificationsResponseDto
 import com.dertefter.data.dto.poll.PollVoteResponseDto
 import com.dertefter.data.dto.poll.VotePollRequestDto
+import com.dertefter.data.dto.reports.ReportRequestDto
+import com.dertefter.data.dto.reports.ReportResponseDto
 import com.dertefter.data.dto.search.SearchResponseDto
 import com.dertefter.data.dto.search.TopClansResponseDto
 import com.dertefter.data.dto.upload.AttachmentUploadResponseDto
@@ -274,5 +276,10 @@ interface ApiService {
     suspend fun updatePrivacy(
         @Body body: UpdatePrivacyRequestDto
     ): Response<PrivacyDto>
+
+    @POST("api/reports")
+    suspend fun createReport(
+        @Body body: ReportRequestDto
+    ): Response<ReportResponseDto>
 
 }

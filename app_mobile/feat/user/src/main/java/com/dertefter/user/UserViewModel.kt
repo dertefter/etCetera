@@ -1,6 +1,5 @@
 package com.dertefter.user
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dertefter.data.common.AppError
@@ -348,6 +347,12 @@ class UserViewModel @Inject constructor(
 
             is Event.OnOpenHashtag -> {
                 navigator.navigate(Routes.HashtagFeed(event.name))
+            }
+
+            is Event.OnReport -> {
+                navigator.openAsBottomSheet(
+                    Routes.Report(targetType = event.targetType, targetId = event.targetId)
+                )
             }
         }
     }

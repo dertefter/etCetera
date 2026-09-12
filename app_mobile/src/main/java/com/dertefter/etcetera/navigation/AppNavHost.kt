@@ -28,6 +28,7 @@ import com.dertefter.new_post.NewPostRoute
 import com.dertefter.new_post.RepostRoute
 import com.dertefter.notifications.NotificationsRoute
 import com.dertefter.post.PostRoute
+import com.dertefter.report.ReportRoute
 import com.dertefter.search.SearchRoute
 import com.dertefter.settings.SettingsRoute
 import com.dertefter.settings_about.SettingsAboutRoute
@@ -101,10 +102,7 @@ fun RouteContent(route: Routes) {
         is Routes.Repost -> RepostRoute(route.postIdForRepost, route.wallRecipientId)
         is Routes.EditPost -> EditPostRoute(route.postId)
         is Routes.NewComment -> NewCommentRoute(route.postId)
-        is Routes.NewCommentReply -> NewCommentReplyRoute(
-            route.postId, route.commentId, route.userId
-        )
-
+        is Routes.NewCommentReply -> NewCommentReplyRoute(route.postId, route.commentId, route.userId)
         is Routes.AttachmentsViewer -> AttachmentViewerRoute(route.attachments, route.viewPosition)
         is Routes.Followers -> FollowersRoute(route.userId, route.startTabIsFollowing)
         is Routes.Notifications -> NotificationsRoute(route.showBackButton)
@@ -122,6 +120,7 @@ fun RouteContent(route: Routes) {
         is Routes.SettingsSecurity -> SettingsSecurityRoute()
         is Routes.SettingsPrivacy -> SettingsPrivacyRoute()
         is Routes.SettingsAbout -> SettingsAboutRoute()
+        is Routes.Report -> ReportRoute(route.targetType, route.targetId)
 
     }
 }

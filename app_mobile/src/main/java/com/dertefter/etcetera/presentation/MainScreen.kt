@@ -62,6 +62,7 @@ import com.dertefter.new_post.NewCommentReplyRoute
 import com.dertefter.new_post.NewCommentRoute
 import com.dertefter.new_post.NewPostRoute
 import com.dertefter.new_post.RepostRoute
+import com.dertefter.report.ReportRoute
 import com.dertefter.switch_account.SwitchAccountRoute
 import dev.chrisbanes.haze.HazeInput
 import dev.chrisbanes.haze.blur.hazeBlur
@@ -325,6 +326,7 @@ fun MainScreen(
             ) {
                 BottomSheetDefaults.DragHandle()
                 when (val route = bottomSheetRoute) {
+                    is Routes.Report -> ReportRoute(route.targetType, route.targetId)
                     is Routes.SwitchAccount -> SwitchAccountRoute()
                     is Routes.Comments -> CommentsRoute(route.postId)
                     is Routes.NewPost -> NewPostRoute(route.wallRecipientId)

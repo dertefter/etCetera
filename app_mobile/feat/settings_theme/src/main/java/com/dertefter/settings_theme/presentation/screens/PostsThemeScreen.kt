@@ -111,7 +111,8 @@ fun PostsThemeScreen(
                     onLike = {},
                     onUnlike = {},
                     onUserClick = {},
-                    onRepostClick = {}
+                    onRepostClick = {},
+                    onReport = {}
                 )
             }
 

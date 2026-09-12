@@ -112,6 +112,10 @@ class FeedViewModel @Inject constructor(
                navigator.navigate(Routes.Search)
             }
 
+            is Event.OnReport -> {
+                navigator.openAsBottomSheet(Routes.Report(event.targetType, event.targetId))
+            }
+
             is Event.OnPin -> {
                 viewModelScope.launch {
                     postRepository.pinPost(event.postId)

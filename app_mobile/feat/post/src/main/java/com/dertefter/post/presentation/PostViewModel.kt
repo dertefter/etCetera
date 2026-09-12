@@ -157,6 +157,12 @@ class PostViewModel @Inject constructor(
                     postRepository.votePoll(id, event.optionIds)
                 }
             }
+
+            is Event.OnReport -> {
+                navigator.openAsBottomSheet(
+                    Routes.Report(targetType = event.targetType, targetId = event.targetId)
+                )
+            }
         }
     }
 }

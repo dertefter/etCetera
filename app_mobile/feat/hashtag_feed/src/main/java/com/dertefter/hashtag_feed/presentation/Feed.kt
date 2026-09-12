@@ -80,7 +80,8 @@ private fun LazyListScope.postItems(
                 onUnpin = { onEvent(Event.OnUnpin(post.id)) },
                 onEdit = { onEvent(Event.OnEditPost(it)) },
                 onVote = { optionIds -> onEvent(Event.OnVote(post.id, optionIds)) },
-                onRepostClick = { onEvent(Event.OnRepost(post.id)) }
+                onRepostClick = { onEvent(Event.OnRepost(post.id)) },
+                onReport = { onEvent(Event.OnReport("post", post.id)) }
             )
         }
     }

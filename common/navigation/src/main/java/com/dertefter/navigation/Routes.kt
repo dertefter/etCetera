@@ -98,4 +98,7 @@ sealed interface Routes : NavKey {
     @Serializable
     data class HashtagFeed(val hashtagName: String) : Routes
 
+    @Serializable
+    data class Report(val targetType: String, val targetId: String) : Routes
+
 }

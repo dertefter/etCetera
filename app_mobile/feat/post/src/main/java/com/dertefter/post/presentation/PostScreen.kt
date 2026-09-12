@@ -173,7 +173,8 @@ fun PostScreenContent(
                                         onCommentsClick = {},
                                         onPin = { onEvent(Event.OnPin(post.id)) },
                                         onUnpin = { onEvent(Event.OnUnpin(post.id)) },
-                                        onRepostClick = { onEvent(Event.OnRepost(post.id)) }
+                                        onRepostClick = { onEvent(Event.OnRepost(post.id)) },
+                                        onReport = { onEvent(Event.OnReport("post", post.id)) }
                                     )
                                 }
                                 item {

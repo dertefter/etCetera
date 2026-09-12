@@ -79,7 +79,7 @@ include(":app_mobile:feat:settings_account")
 include(":app_mobile:feat:settings_security")
 include(":app_mobile:feat:settings_privacy")
 include(":app_mobile:feat:settings_about")
-
+include(":app_mobile:feat:report")
 
 //wearable
 include(":app_wearable")

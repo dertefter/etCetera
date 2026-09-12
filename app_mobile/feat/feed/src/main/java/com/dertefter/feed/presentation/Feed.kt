@@ -150,7 +150,8 @@ private fun PaginatedLazyStaggeredGridScope.postItems(
             onPin = { onEvent(Event.OnPin(post.id)) },
             onUnpin = { onEvent(Event.OnUnpin(post.id)) },
             onEdit = { onEvent(Event.OnEditPost(it)) },
-            onRepostClick = { onEvent(Event.OnRepost(post.id)) }
+            onRepostClick = { onEvent(Event.OnRepost(post.id)) },
+            onReport = {onEvent(Event.OnReport("post",post.id))}
         )
     }
 }

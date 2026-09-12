@@ -51,5 +51,8 @@ sealed interface Event {
     data class OnOpenHashtag(val name: String) : Event
 
     data class OnUnfollow(val userId: String) : Event
+
+    data class OnReport(val targetType: String, val targetId: String) : Event
+
     data class  OnOpenAttachmentsViewer(val attachments: List<AttachmentUiModel>, val position: Int = 0)  : Event
 }

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="report_title">Report</string>
+    <string name="report_subtitle">Choose a reason</string>
+    <string name="report_reason_spam">Spam or unwanted content</string>
+    <string name="report_reason_violence">Violence or dangerous acts</string>
+    <string name="report_reason_hate">Hate speech or harassment</string>
+    <string name="report_reason_adult">Adult content (18+)</string>
+    <string name="report_reason_misinfo">Misinformation or deception</string>
+    <string name="report_reason_other">Other</string>
+    <string name="report_description_hint">Describe in more detail (optional)...</string>
+    <string name="report_action_cancel">Cancel</string>
+    <string name="report_action_send">Send</string>
+    <string name="report_action_sending">Sending...</string>
+    <string name="report_success_title">Thanks for the report!</string>
+    <string name="report_success_subtitle">We will review your report and take necessary action. You are helping to make the community better.</string>
+    <string name="report_action_ok">Understood</string>
+</resources>

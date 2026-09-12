@@ -22,6 +22,8 @@ import com.dertefter.data.dto.new_post.EditPostRequestDto
 import com.dertefter.data.dto.new_post.EditPostResponseDto
 import com.dertefter.data.dto.new_post.NewPostRequestDto
 import com.dertefter.data.dto.notifications.NotificationsResponseDto
+import com.dertefter.data.dto.reports.ReportDataDto
+import com.dertefter.data.dto.reports.ReportRequestDto
 import com.dertefter.data.dto.search.SearchDataDto
 import com.dertefter.data.dto.search.SearchHashtagDto
 import com.dertefter.data.dto.search.TopClanDto
@@ -114,5 +116,7 @@ interface RemoteDataSource {
     suspend fun getPrivacy(): Result<PrivacyDto>
 
     suspend fun updatePrivacy(updatePrivacyRequestDto: UpdatePrivacyRequestDto): Result<PrivacyDto>
+
+    suspend fun createReport(reportRequestDto: ReportRequestDto): Result<ReportDataDto>
 
 }

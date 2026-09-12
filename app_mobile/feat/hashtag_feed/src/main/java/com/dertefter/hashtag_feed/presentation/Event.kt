@@ -29,5 +29,7 @@ sealed interface Event {
 
     data class OnOpenUser(val userId: String) : Event
 
+    data class OnReport(val targetType: String, val targetId: String) : Event
+
     data class  OnOpenAttachmentsViewer(val attachments: List<AttachmentUiModel>, val position: Int = 0)  : Event
 }
