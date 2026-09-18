@@ -21,6 +21,7 @@ import androidx.compose.material3.rememberBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -212,7 +213,8 @@ fun MainScreen(
     }
 
 
-    var bottomSheetRoute by remember { mutableStateOf<Routes?>(null) }
+    val bottomSheetBackStack = remember { mutableStateListOf<Routes>() }
+    val bottomSheetRoute = bottomSheetBackStack.lastOrNull()
     val sheetState = rememberBottomSheetState(
         initialValue = SheetValue.Hidden
     )
@@ -253,7 +255,7 @@ fun MainScreen(
 
     LaunchedEffect(sheetState.currentValue) {
         if (sheetState.currentValue == SheetValue.Hidden) {
-            bottomSheetRoute = null
+            bottomSheetBackStack.clear()
         }
     }
 
@@ -310,10 +312,15 @@ fun MainScreen(
         ModalBottomSheet(
             modifier = Modifier.imePadding(),
             onDismissRequest = {
-                bottomSheetRoute = null
+                bottomSheetBackStack.clear()
             },
             sheetState = sheetState,
         ) {
+            BackHandler(
+                enabled = bottomSheetBackStack.size > 1
+            ) {
+                bottomSheetBackStack.removeAt(bottomSheetBackStack.lastIndex)
+            }
             when (val route = bottomSheetRoute) {
                 is Routes.Report -> ReportRoute(route.targetType, route.targetId)
                 is Routes.SwitchAccount -> SwitchAccountRoute()
@@ -363,12 +370,12 @@ fun MainScreen(
                 }
 
                 is NavigationAction.OpenAsBottomSheet -> {
-                    bottomSheetRoute = action.route
+                    bottomSheetBackStack.add(action.route)
                 }
 
                 is NavigationAction.HideBottomSheet -> {
                     scope.launch { sheetState.hide() }
-                    bottomSheetRoute = null
+                    bottomSheetBackStack.clear()
                 }
             }
         }
