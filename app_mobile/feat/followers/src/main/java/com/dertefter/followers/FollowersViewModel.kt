@@ -35,8 +35,6 @@ class FollowersViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _userId = MutableStateFlow<String?>(null)
-    val userId: String get() = _userId.value ?: ""
-
     val tabs = Tab.entries
 
     private val _selectedTab = MutableStateFlow(Tab.FOLLOWERS)
