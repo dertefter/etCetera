@@ -1,9 +1,9 @@
 [versions]
 # Build and Plugins
-agp = "9.4.0"
+agp = "9.4.1"
 annotationExperimental = "1.6.0"
 kotlin = "2.4.20"
-ksp = "2.3.11"
+ksp = "2.3.12"
 ossLicensesPlugin = "0.13.0"
 
 # AndroidX Core
@@ -17,7 +17,7 @@ palette = "1.0.0"
 
 # Jetpack Compose
 activityCompose = "1.13.0"
-composeBomAlpha = "2026.08.01"
+composeBomAlpha = "2026.09.00"
 navigationCompose = "2.10.1"
 navigation3 = "1.2.0-rc01"
 
@@ -28,7 +28,7 @@ composemediaplayer = "0.11.4"
 composeQrCode = "1.0.1"
 composeShimmer = "1.5.0"
 drawboxEnhanced = "2.1.2"
-haze = "2.0.0-beta02"
+haze = "2.0.0-rc02"
 material = "1.14.0"
 materialKolor = "5.0.1"
 zoomable = "2.13.0"
