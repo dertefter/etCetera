@@ -12,6 +12,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.input.TextObfuscationMode
+import androidx.compose.foundation.text.input.rememberTextFieldState
+import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,6 +25,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedSecureTextField
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetValue
@@ -30,13 +34,13 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -55,6 +59,23 @@ fun AuthScreen(onEvent: (Event) -> Unit, uiState: UiState) {
     val uriHandler = LocalUriHandler.current
 
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+
+    val passwordState = rememberTextFieldState(initialText = uiState.password)
+
+    LaunchedEffect(passwordState) {
+        snapshotFlow { passwordState.text.toString() }
+            .collect { newPassword ->
+                if (newPassword != uiState.password) {
+                    onEvent(Event.OnPasswordChanged(newPassword))
+                }
+            }
+    }
+
+    LaunchedEffect(uiState.password) {
+        if (passwordState.text.toString() != uiState.password) {
+            passwordState.setTextAndPlaceCursorAtEnd(uiState.password)
+        }
+    }
 
     if (uiState.isTurnstileVisible) {
         ModalBottomSheet(
@@ -124,13 +145,11 @@ fun AuthScreen(onEvent: (Event) -> Unit, uiState: UiState) {
                     shape = MaterialTheme.shapes.large
                 )
 
-                OutlinedTextField(
-                    value = uiState.password,
-                    onValueChange = { onEvent(Event.OnPasswordChanged(it)) },
+                OutlinedSecureTextField(
+                    state = passwordState,
                     label = { Text(stringResource(R.string.auth_password_hint)) },
                     modifier = Modifier.fillMaxWidth(),
-                    visualTransformation = if (uiState.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                    singleLine = true,
+                    textObfuscationMode = if (uiState.isPasswordVisible) TextObfuscationMode.Visible else TextObfuscationMode.Hidden,
                     trailingIcon = {
                         IconButton(onClick = { onEvent(Event.OnTogglePasswordVisibility) }) {
                             Icon(

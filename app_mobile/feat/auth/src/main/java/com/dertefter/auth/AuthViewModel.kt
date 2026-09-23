@@ -58,11 +58,6 @@ class AuthViewModel @Inject constructor(
 
     fun onEvent(event: Event) {
         when (event) {
-            is Event.OnLogout -> {
-                viewModelScope.launch {
-                    //logoutUseCase()
-                }
-            }
 
             is Event.OnLoginChanged -> {
                 _login.value = event.login
@@ -88,8 +83,6 @@ class AuthViewModel @Inject constructor(
             Event.OnDismissTurnstile -> {
                 _isTurnstileVisible.value = false
             }
-
-            Event.OnNavigateBack -> {}
 
         }
     }
