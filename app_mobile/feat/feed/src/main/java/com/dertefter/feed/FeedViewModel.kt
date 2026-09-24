@@ -14,18 +14,15 @@ import com.dertefter.navigation.Navigator
 import com.dertefter.navigation.Routes
 import com.jamal_aliev.paginator.core.page.PaginatorUiState
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
-import com.jamal_aliev.paginator.cursor.bookmark.CursorBookmark
 import com.jamal_aliev.paginator.cursor.extension.distinctBy
 import com.jamal_aliev.paginator.cursor.extension.prefetchController
 import com.jamal_aliev.paginator.cursor.extension.uiState
-import com.jamal_aliev.paginator.cursor.extension.warmUpFromPersistent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -48,12 +45,6 @@ class FeedViewModel @Inject constructor(
     private val paginators = tabs.associateWith { tab ->
         feedRepository.getFeedPaginator(tab.value)
     }
-
-    private val _trendingHashtags = searchRepository.getTrendingHashtags()
-
-    private val _emojiAvatar = meRepository.me.map { it?.avatar }
-
-    private val _userId = meRepository.me.map { it?.id }
 
     fun getPaginator(tab: FeedTab) = paginators[tab]!!
 
@@ -93,15 +84,7 @@ class FeedViewModel @Inject constructor(
             paginator.prefetchController(
                 scope = viewModelScope, prefetchDistance = 3
             )
-            val inserted = paginator.warmUpFromPersistent()
-            if (inserted > 0) {
-                paginator.jump(CursorBookmark(prev = null, self = "initial", next = null))
-                paginator.refresh(
-                    cursors = listOf(CursorBookmark(prev = null, self = "initial", next = null))
-                )
-            } else {
-                paginator.restart(silentlyLoading = true)
-            }
+            paginator.restart(silentlyLoading = true)
         }
     }
 
