@@ -16,12 +16,9 @@ import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.navigation.Routes
 import com.jamal_aliev.paginator.core.page.PaginatorUiState
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
-import com.jamal_aliev.paginator.cursor.bookmark.CursorBookmark
 import com.jamal_aliev.paginator.cursor.extension.distinctBy
 import com.jamal_aliev.paginator.cursor.extension.prefetchController
-import com.jamal_aliev.paginator.cursor.extension.refreshAll
 import com.jamal_aliev.paginator.cursor.extension.uiState
-import com.jamal_aliev.paginator.cursor.extension.warmUpFromPersistent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -93,13 +90,7 @@ class CommentsViewModel @Inject constructor(
             paginator.prefetchController(
                 scope = viewModelScope, prefetchDistance = 3
             )
-            val inserted = paginator.warmUpFromPersistent()
-            if (inserted > 0) {
-                paginator.jump(CursorBookmark(prev = null, self = "initial", next = null))
-                paginator.refreshAll()
-            } else {
-                paginator.restart()
-            }
+            paginator.restart(silentlyLoading = false)
         }
     }
 
