@@ -5,6 +5,9 @@ import android.graphics.drawable.BitmapDrawable
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -34,12 +37,12 @@ import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeFlexibleTopAppBar
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberSliderState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -60,6 +63,8 @@ import coil.request.ImageRequest
 import coil.request.SuccessResult
 import com.dertefter.banner_edit.R
 import com.dertefter.design.components.buttons.AppNavigationIcon
+import com.dertefter.design.components.loading.AppLoadingIndicator
+import com.dertefter.design.components.loading.Shimmer
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import uk.codecymru.drawbox.box.DrawBox
@@ -161,7 +166,8 @@ fun BannerEditScreen(
                                 PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                             )
                         },
-                        shape = MaterialTheme.shapes.medium
+                        shape = MaterialTheme.shapes.medium,
+                        enabled = uiState.uploadStatus != UploadStatus.UPLOADING
                     ) {
                         Icon(
                             imageVector = Icons.AttachFile,
@@ -194,13 +200,22 @@ fun BannerEditScreen(
                     modifier = Modifier.fillMaxSize()
                 )
 
-                if (uiState.uploadStatus == UploadStatus.UPLOADING) {
-                    LinearProgressIndicator(
+                this@Column.AnimatedVisibility(
+                    modifier = Modifier.fillMaxSize(),
+                    enter = fadeIn(),
+                    exit = fadeOut(),
+                    visible = uiState.uploadStatus == UploadStatus.UPLOADING
+                ) {
+                    Shimmer(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .align(Alignment.BottomCenter)
+                            .clickable(onClick = {})
+                            .fillMaxSize()
+                    )
+                    AppLoadingIndicator(
+                        modifier = Modifier.padding(60.dp)
                     )
                 }
+
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -228,10 +243,14 @@ fun BannerEditScreen(
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Slider(
+                        val sliderState = rememberSliderState(
                             value = strokeWidth,
+                            trackRange = 1f..100f
+                        )
+                        sliderState.value = strokeWidth
+                        Slider(
+                            state = sliderState,
                             onValueChange = { drawController.strokeWidth.value = it },
-                            valueRange = 1f..100f,
                             modifier = Modifier.weight(1f)
                         )
                     }
@@ -289,6 +308,6 @@ fun BannerColorPicker(
 @Composable
 fun BannerEditScreenPreview(){
     AppTheme {
-        BannerEditScreen(UiState()) {}
+        BannerEditScreen(UiState(uploadStatus = UploadStatus.UPLOADING)) {}
     }
 }
