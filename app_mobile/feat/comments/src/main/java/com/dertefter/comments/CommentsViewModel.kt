@@ -4,10 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dertefter.comments.presentation.CommentSort
 import com.dertefter.comments.presentation.Event
+import com.dertefter.comments.usecase.DeleteCommentUseCase
+import com.dertefter.comments.usecase.GetCommentsPaginatorUseCase
+import com.dertefter.comments.usecase.GetMeUseCase
+import com.dertefter.comments.usecase.GetRepliesUseCase
+import com.dertefter.comments.usecase.LikeCommentUseCase
+import com.dertefter.comments.usecase.NavigateToScreenUseCase
+import com.dertefter.comments.usecase.OpenAsBottomSheetUseCase
+import com.dertefter.comments.usecase.UnlikeCommentUseCase
 import com.dertefter.data.dto.comments.CommentDto
-import com.dertefter.data.repository.CommentsRepository
-import com.dertefter.data.repository.MeRepository
-import com.dertefter.navigation.Navigator
 import com.dertefter.navigation.Routes
 import com.jamal_aliev.paginator.core.page.PaginatorUiState
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
@@ -31,12 +36,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CommentsViewModel @Inject constructor(
-    private val commentsRepository: CommentsRepository,
-    meRepository: MeRepository,
-    private val navigator: Navigator
+    getMeUseCase: GetMeUseCase,
+    private val getCommentsPaginatorUseCase: GetCommentsPaginatorUseCase,
+    private val deleteCommentUseCase: DeleteCommentUseCase,
+    private val likeCommentUseCase: LikeCommentUseCase,
+    private val unlikeCommentUseCase: UnlikeCommentUseCase,
+    private val getRepliesUseCase: GetRepliesUseCase,
+    private val openAsBottomSheetUseCase: OpenAsBottomSheetUseCase,
+    private val navigateToScreenUseCase: NavigateToScreenUseCase
 ) : ViewModel() {
 
-    val meUserId: StateFlow<String?> = meRepository.me
+    val meUserId: StateFlow<String?> = getMeUseCase()
         .map { it?.id }
         .distinctUntilChanged()
         .stateIn(
@@ -59,7 +69,7 @@ class CommentsViewModel @Inject constructor(
         currentPostId = postId
         val key = "$postId-${sort.value}"
         return paginators.getOrPut(key) {
-            commentsRepository.getCommentsPaginator(postId, sort.value).also {
+            getCommentsPaginatorUseCase(postId, sort.value).also {
                 setupPaginator(it)
             }
         }
@@ -98,42 +108,46 @@ class CommentsViewModel @Inject constructor(
 
             is Event.OnDeleteComment -> {
                 viewModelScope.launch {
-                    commentsRepository.deleteComment(commentId = event.commentId)
+                    deleteCommentUseCase(commentId = event.commentId)
                 }
             }
 
             is Event.OnNewComment -> {
-                currentPostId?.let{ postId ->
-                    navigator.openAsBottomSheet(Routes.NewComment(postId = postId ))
+                currentPostId?.let { postId ->
+                    openAsBottomSheetUseCase(Routes.NewComment(postId = postId))
                 }
             }
 
             is Event.OnReply -> {
-                currentPostId?.let{ postId ->
-                    navigator.openAsBottomSheet(Routes.NewCommentReply(
-                        postId = postId,
-                        commentId = event.commentId,
-                        userId = event.userId
-                    )
+                currentPostId?.let { postId ->
+                    openAsBottomSheetUseCase(
+                        Routes.NewCommentReply(
+                            postId = postId,
+                            commentId = event.commentId,
+                            userId = event.userId
+                        )
                     )
                 }
             }
 
             is Event.OnLike -> {
                 viewModelScope.launch {
-                    commentsRepository.likeComment(event.commentId)
+                    likeCommentUseCase(event.commentId)
                 }
             }
+
             is Event.OnUnlike -> {
                 viewModelScope.launch {
-                    commentsRepository.unlikeComment(event.commentId)
+                    unlikeCommentUseCase(event.commentId)
                 }
             }
+
             is Event.OnTabSelected -> {
                 if (_selectedTab.value != event.tab) {
                     _selectedTab.value = event.tab
                 }
             }
+
             Event.OnLoadMore -> {
                 viewModelScope.launch {
                     val postId = currentPostId ?: return@launch
@@ -142,11 +156,13 @@ class CommentsViewModel @Inject constructor(
                     paginators[key]?.goNextPage()
                 }
             }
+
             is Event.OnLoadMoreReplies -> {
                 viewModelScope.launch {
-                    commentsRepository.getReplies(event.commentId, null)
+                    getRepliesUseCase(event.commentId, null)
                 }
             }
+
             is Event.OnRefresh -> {
                 viewModelScope.launch {
                     val key = "${event.postId}-${event.tab.value}"
@@ -155,13 +171,11 @@ class CommentsViewModel @Inject constructor(
             }
 
             is Event.OnOpenUser -> {
-                navigator.navigate(
-                    Routes.User(event.userId)
-                )
+                navigateToScreenUseCase(Routes.User(event.userId))
             }
 
             is Event.OnReport -> {
-                navigator.openAsBottomSheet(
+                openAsBottomSheetUseCase(
                     Routes.Report(targetType = "comment", event.commentId)
                 )
             }
