@@ -16,6 +16,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
+import androidx.compose.material3.rememberSliderState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -175,11 +176,15 @@ fun VideoAttachment(
                         contentDescription = null
                     )
                 }
-                Slider(
+                val sliderState = rememberSliderState(
                     value = playerState.sliderPos,
+                    trackRange = 0f..1000f
+                )
+                sliderState.value = playerState.sliderPos
+                Slider(
+                    state = sliderState,
                     onValueChange = { playerState.seekStart(it) },
                     onValueChangeFinished = { playerState.seekFinished() },
-                    valueRange = 0f..1000f,
                     modifier = Modifier.fillMaxWidth()
                 )
             }

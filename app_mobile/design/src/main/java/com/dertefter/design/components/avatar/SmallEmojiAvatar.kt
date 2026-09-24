@@ -21,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
+import androidx.compose.material3.rememberSliderState
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -263,10 +264,14 @@ fun PreviewAv() {
                 fontSize = 40.sp
             )
 
-            Slider(
+            val sliderState = rememberSliderState(
                 value = rotation,
-                onValueChange = { rotation = it },
-                valueRange = 0f..180f
+                trackRange = 0f..180f
+            )
+            sliderState.value = rotation
+            Slider(
+                state = sliderState,
+                onValueChange = { rotation = it }
             )
 
             Button(
