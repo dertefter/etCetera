@@ -3,7 +3,6 @@ package com.dertefter.user.presentation
 import com.dertefter.design.components.post.AttachmentUiModel
 
 sealed interface Event {
-    data object OnLoadMore : Event
     data class OnRefresh(val tab: FeedTab) : Event
 
     data class OnRepost(val postId: String) : Event
@@ -22,7 +21,6 @@ sealed interface Event {
     data class OnVote(val postId: String, val optionIds: List<String>) : Event
 
     data class OnDeletePost(val postId: String) : Event
-    data class OnShare(val userId: String) : Event
     data class OnBlock(val userId: String, val isBlocked: Boolean) : Event
 
     data class OnSaveBio(val bio: String) : Event

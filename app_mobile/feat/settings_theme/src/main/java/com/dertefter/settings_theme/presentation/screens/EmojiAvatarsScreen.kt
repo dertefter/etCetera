@@ -1,7 +1,5 @@
 package com.dertefter.settings_theme.presentation.screens
 
-import com.dertefter.settings_theme.presentation.Event
-import com.dertefter.settings_theme.presentation.UiState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -40,7 +38,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.dertefter.data.dto.app.EmojiAvatarHarmonizationColor
 import com.dertefter.design.components.avatar.EmojiAvatar
 import com.dertefter.design.components.buttons.AppNavigationIcon
@@ -49,6 +46,8 @@ import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
 import com.dertefter.settings_theme.R
+import com.dertefter.settings_theme.presentation.Event
+import com.dertefter.settings_theme.presentation.UiState
 import com.gigamole.composefadingedges.horizontalFadingEdges
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -108,8 +107,7 @@ fun EmojiAvatarsScreen(
                     previewEmojiList.forEach {
                         EmojiAvatar(
                             emoji = it,
-                            containerSize = 74.dp,
-                            fontSize = 26.sp
+                            containerSize = 74.dp
                         )
                     }
                 }

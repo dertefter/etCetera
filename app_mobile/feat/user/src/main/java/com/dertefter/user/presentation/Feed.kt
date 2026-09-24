@@ -106,13 +106,13 @@ private fun UserFeedAppendIndicator(state: PaginatorUiState<PostDto>) {
         contentAlignment = Alignment.Center
     ) {
         when (state) {
-            is PaginatorUiState.Loading -> AppLoadingIndicator()
+            is PaginatorUiState.Loading, PaginatorUiState.Idle -> AppLoadingIndicator()
             is PaginatorUiState.Error -> Text(
                 stringResource(R.string.user_loading_error, state.state.exception.message ?: "")
             )
             is PaginatorUiState.Content -> {
                 state.appendState?.let { appendState ->
-                    if (appendState.isProgressState()) {
+                    if (appendState.isProgressState() ) {
                         AppLoadingIndicator()
                     } else if (appendState.isErrorState()) {
                         Text(stringResource(R.string.user_append_error))

@@ -20,11 +20,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,30 +45,21 @@ fun NotificationsScreen(
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val pullToRefreshState = rememberPullToRefreshState()
-    val isRefreshing = (uiState is PaginatorUiState.Content<*>)
-
-    var pullRefreshing by remember { mutableStateOf(false) }
-
-    LaunchedEffect(isRefreshing) {
-        if (!isRefreshing) {
-            pullRefreshing = false
-        }
-    }
+    val isRefreshing = (uiState is PaginatorUiState.Loading<*> || uiState == PaginatorUiState.Idle)
 
 
     PullToRefreshBox(
         modifier = Modifier.fillMaxSize(),
         state = pullToRefreshState,
-        isRefreshing = pullRefreshing,
+        isRefreshing = isRefreshing,
         onRefresh = {
-            pullRefreshing = true
             onEvent(Event.OnRefresh)
                     },
         indicator = {
             PullToRefreshIndicator(
                 modifier = Modifier.align(Alignment.TopCenter),
                 state = pullToRefreshState,
-                isRefreshing = pullRefreshing
+                isRefreshing = isRefreshing
             )
         }
     ) {

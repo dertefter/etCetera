@@ -17,7 +17,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.dertefter.data.dto.followers.FollowerUserDto
 import com.dertefter.design.components.avatar.DisplayName
 import com.dertefter.design.components.avatar.EmojiAvatar
@@ -106,7 +105,6 @@ fun FollowerUserCardVertical(
         EmojiAvatar(
             emoji = followerUser.avatar,
             containerSize = 86.dp,
-            fontSize = 32.sp,
             onClick = onClick
         )
 

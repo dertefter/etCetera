@@ -36,7 +36,6 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.dertefter.data.dto.me.MeDto
 import com.dertefter.data.dto.user.VisibilityDto
 import com.dertefter.design.components.PullToRefreshIndicator
@@ -214,8 +213,7 @@ fun SettingsAccountScreen(
                                     }
                                     EmojiAvatar(
                                         emoji = me.avatar,
-                                        containerSize = 48.dp,
-                                        fontSize = 18.sp
+                                        containerSize = 48.dp
                                     )
                                 }
                             }

@@ -64,9 +64,9 @@ class NotificationsViewModel @Inject constructor(
             val inserted = paginator.warmUpFromPersistent()
             if (inserted > 0) {
                 paginator.jump(CursorBookmark(prev = null, self = "initial", next = null))
-                paginator.refreshAll()
+                paginator.refreshAll(loadingSilently = true, finalSilently = true)
             } else {
-                paginator.restart()
+                paginator.restart(silentlyLoading = true)
             }
         }
     }

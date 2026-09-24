@@ -3,7 +3,6 @@ package com.dertefter.design.components.avatar
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.LruCache
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -11,10 +10,11 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Badge
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
@@ -39,11 +39,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Wallpapers
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.createBitmap
@@ -69,10 +71,8 @@ fun EmojiAvatar(
     modifier: Modifier = Modifier,
     emoji: String,
     containerSize: Dp = 52.dp,
-    fontSize: TextUnit = 20.sp,
     rotation: Float = 0f,
     onClick: () -> Unit = {},
-    isOnline: Boolean = false
 ) {
 
     val targetColor by animateColorAsState(
@@ -88,7 +88,7 @@ fun EmojiAvatar(
     )
 
     val targetBgColor = targetColor
-    val targetShadowColor = MaterialTheme.colorScheme.onPrimaryFixed
+    val targetShadowColor = MaterialTheme.colorScheme.onTertiaryFixed
     val fallbackColor = MaterialTheme.colorScheme.surfaceContainer
 
     var baseEmojiColor by remember(emoji) { mutableStateOf<Color?>(null) }
@@ -133,12 +133,16 @@ fun EmojiAvatar(
     }
 
 
-    val textStyle = remember(harmonizedShadowColor) {
+    val isInspection = LocalInspectionMode.current
+    val fontFamily = FontFamily.Default
+
+    val textStyle = remember(harmonizedShadowColor, isInspection) {
         TextStyle(
             shadow = Shadow(
                 color = harmonizedShadowColor,
-                blurRadius = 16f
-            )
+                blurRadius = 20f
+            ),
+            fontFamily = fontFamily
         )
     }
 
@@ -162,26 +166,17 @@ fun EmojiAvatar(
                 .background(harmonizedBgColor),
             contentAlignment = Alignment.Center
         ) {
+            val dynamicFontSize = (containerSize.value * 0.4f).sp
             Text(
                 text = emoji,
                 maxLines = 1,
-                fontSize = fontSize,
-                modifier = Modifier.graphicsLayer { rotationZ = -rotation },
+                fontSize = dynamicFontSize,
+                modifier = Modifier
+                    .graphicsLayer { rotationZ = -rotation },
                 textAlign = TextAlign.Center,
-                style = textStyle
+                style = textStyle,
+                fontFamily = fontFamily
             )
-        }
-
-
-        AnimatedVisibility(
-            visible = isOnline,
-            modifier = Modifier
-                .align(
-                    Alignment.BottomEnd
-                )
-                .padding(MaterialTheme.spacing.medium)
-        ) {
-            Badge {}
         }
     }
 
@@ -220,8 +215,8 @@ private suspend fun extractEmojiColor(
         canvas.drawText(emoji, x, y, paint)
         val palette = Palette.from(bitmap).generate()
         palette.getVibrantColor(
-            palette.getDominantColor(
-                palette.getMutedColor(
+            palette.getVibrantColor(
+                palette.getDominantColor(
                     palette.getDarkVibrantColor(defaultColorInt)
                 )
             )
@@ -232,8 +227,49 @@ private suspend fun extractEmojiColor(
     result
 }
 
+
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
-@Preview
+@Preview(wallpaper = Wallpapers.BLUE_DOMINATED_EXAMPLE)
+@Composable
+fun PreviewAv2() {
+    val emojiList = listOf(
+        "👻", "💽", "🌈", "🍎",
+        "⚽", "🚗", "📱", "💻",
+        "⌚", "🎧", "📷", "💡",
+        "🔑", "🎁", "🎈", "🎉",
+        "🎨", "🎭", "🎮", "🎲",
+        "🎯", "🎳"
+    )
+
+    AppTheme(
+        emojiAvatarHarmonizeColor = EmojiAvatarHarmonizationColor.PRIMARY
+    ) {
+        Column{
+            emojiList.chunked(4).forEach { chunk ->
+                Row(
+                    modifier = Modifier
+                ) {
+                    chunk.forEach { emoji ->
+                        EmojiAvatar(
+                            modifier = Modifier,
+                            emoji = emoji)
+                    }
+
+                    // Заполняем последнюю неполную строку
+                    repeat(4 - chunk.size) {
+                        Spacer(
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+//@Preview
 @Composable
 fun PreviewAv() {
     var darkTheme by remember { mutableStateOf(true) }
@@ -244,7 +280,7 @@ fun PreviewAv() {
         darkTheme = darkTheme,
     ) {
         val emojiList = listOf(
-            "🖼️", "🪲", "⚙️", "😍", "🖼️", "❤️", "😆", "🔥", "🌈", "🍎", "⚽", "🚗", "📱", "💻", "⌚",
+            "👻", "💽", "🌈", "🍎", "⚽", "🚗", "📱", "💻", "⌚",
             "🎧", "📷", "💡", "🔑", "🎁", "🎈", "🎉", "🎨", "🎭", "🎮", "🎲", "🎯", "🎳"
         )
 
@@ -261,7 +297,6 @@ fun PreviewAv() {
                 emoji = emojiList[currentEmojiIndex],
                 rotation = rotation,
                 containerSize = 100.dp,
-                fontSize = 40.sp
             )
 
             val sliderState = rememberSliderState(
