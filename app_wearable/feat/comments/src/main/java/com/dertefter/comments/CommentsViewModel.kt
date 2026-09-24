@@ -50,8 +50,7 @@ class CommentsViewModel @Inject constructor(
 
     fun getPaginator(postId: String): MutableCursorPaginator<String, CommentDto> {
         currentPostId = postId
-        val key = postId
-        return paginators.getOrPut(key) {
+        return paginators.getOrPut(postId) {
             commentsRepository.getCommentsPaginator(postId, CommentSort.POPULAR.value).also {
                 setupPaginator(it)
             }
@@ -60,8 +59,7 @@ class CommentsViewModel @Inject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     fun getUiState(postId: String): StateFlow<PaginatorUiState<CommentDto>> {
-        val key = postId
-        return _uiStates.getOrPut(key) {
+        return _uiStates.getOrPut(postId) {
             getPaginator(postId).uiState.stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5000),
