@@ -1,7 +1,10 @@
 package com.dertefter.design.components.comment
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItemDefaults
@@ -25,12 +29,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,8 +49,12 @@ import com.dertefter.design.components.post.AttachmentUiModel
 import com.dertefter.design.components.post.AttachmentsCarousel
 import com.dertefter.design.components.post.AuthorUiModel
 import com.dertefter.design.components.post.LikeButton
+import com.dertefter.design.components.post.PrettyDate
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
+import com.dertefter.design.theme.postContained
+import com.dertefter.design.theme.postShowUsername
+import com.dertefter.design.theme.postSwapDateAndUsername
 import com.dertefter.design.theme.spacing
 
 @Composable
@@ -67,9 +77,20 @@ fun CommentCard(
     var isExpanded by remember { mutableStateOf(false) }
 
     val bgColor = if (!isReply)
-        MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.8f)
+        MaterialTheme.colorScheme.surfaceContainerHigh
     else
-        MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.7f)
+        MaterialTheme.colorScheme.secondaryContainer
+
+    val cardColorAlpha by animateFloatAsState(
+        if (MaterialTheme.postContained) { 1f } else { 0f }
+    )
+
+    val containerPadding by animateDpAsState(
+        if (MaterialTheme.postContained){
+            MaterialTheme.spacing.large
+        }else{ 0.dp }
+    )
+
 
     Column{
 
@@ -84,8 +105,8 @@ fun CommentCard(
         {
             Column(
                 modifier = Modifier
-                    .background(bgColor)
-                    .padding(MaterialTheme.spacing.large)
+                    .background(bgColor.copy(alpha = cardColorAlpha))
+                    .padding(containerPadding)
                     .fillMaxWidth()
                     .animateContentSize(),
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
@@ -94,31 +115,74 @@ fun CommentCard(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large)
                 ) {
                     Row(
                         modifier = Modifier
                             .clickable(onClick = { onUserClick(comment.author.id) })
                             .weight(1f),
-                        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+                        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
+                        verticalAlignment = Alignment.CenterVertically
                     )
                     {
                         EmojiAvatar(
                             emoji = comment.author.avatar,
-                            containerSize = 40.dp
+                            containerSize = 44.dp
                         )
-                        Column {
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .clip(MaterialTheme.shapes.medium)
+                                .clickable(
+                                    onClick = { onUserClick(comment.author.id) })
+                        )
+                        {
                             DisplayName(
                                 name = comment.author.displayName,
                                 verified = comment.author.verified,
                                 hasNuksta = comment.author.hasNuksta,
-                                pin = comment.author.pin
+                                pin = comment.author.pin,
+                                modifier = Modifier.fillMaxWidth()
                             )
-                            Text(
-                                text = "@${comment.author.username}",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
+                            Crossfade(
+                                targetState = MaterialTheme.postSwapDateAndUsername to MaterialTheme.postShowUsername
+                            ) { (swap, show) ->
+                                if (!swap && show) {
+                                    Text(
+                                        text = "@${comment.author.username}",
+                                        style = MaterialTheme.typography.labelLargeEmphasized,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                } else if (swap) {
+                                    PrettyDate(
+                                        createdDate = comment.getCreatedAtDate(),
+                                        editedDate = null,
+                                        textStyle = MaterialTheme.typography.labelLargeEmphasized,
+                                    )
+                                }
+                            }
+
+                        }
+
+                        Crossfade(
+                            targetState = MaterialTheme.postSwapDateAndUsername to MaterialTheme.postShowUsername
+                        ) { (swap, show) ->
+                            if (swap && show) {
+                                Text(
+                                    text = "@${comment.author.username}",
+                                    style = MaterialTheme.typography.labelLargeEmphasized,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            } else if (!swap) {
+                                PrettyDate(
+                                    createdDate = comment.getCreatedAtDate(),
+                                    editedDate = null,
+                                    textStyle = MaterialTheme.typography.labelMediumEmphasized,
+                                )
+                            }
                         }
                     }
                     var showMenu by remember { mutableStateOf(false) }
@@ -261,6 +325,12 @@ fun CommentCard(
 
                 }
             }
+        }
+
+        if (!MaterialTheme.postContained) {
+            HorizontalDivider(
+                modifier = Modifier.padding(vertical = MaterialTheme.spacing.medium)
+            )
         }
 
         AnimatedVisibility(visible = isExpanded && (comment.repliesCount ?: 0) > 0) {
