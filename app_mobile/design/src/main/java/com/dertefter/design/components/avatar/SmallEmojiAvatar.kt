@@ -254,8 +254,6 @@ fun PreviewAv2() {
                             modifier = Modifier,
                             emoji = emoji)
                     }
-
-                    // Заполняем последнюю неполную строку
                     repeat(4 - chunk.size) {
                         Spacer(
                             modifier = Modifier.weight(1f)

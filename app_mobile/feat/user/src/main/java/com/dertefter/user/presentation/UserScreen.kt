@@ -305,6 +305,23 @@ fun UserScreen(
                                     }
                                 )
                                 if (!userUiState.isMe) {
+
+                                    userUiState.userDto?.banner?.let { banner ->
+                                        DropdownMenuItem(
+                                            text = { Text("Украсть баннер") },
+                                            leadingIcon = {
+                                                Icon(
+                                                    imageVector = Icons.Cached,
+                                                    contentDescription = null
+                                                )
+                                            },
+                                            onClick = {
+                                                showOverflowMenu = false
+                                                onEvent(Event.OnStoleBanner(banner))
+                                            }
+                                        )
+                                    }
+
                                     userUiState.userDto?.let { userDto ->
                                         DropdownMenuItem(
                                             text = { Text(stringResource(R.string.user_report)) },

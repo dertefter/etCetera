@@ -24,6 +24,7 @@ import com.dertefter.user.usecase.NavigateToScreenUseCase
 import com.dertefter.user.usecase.OpenAsBottomSheetUseCase
 import com.dertefter.user.usecase.PinPostUseCase
 import com.dertefter.user.usecase.SaveMeUseCase
+import com.dertefter.user.usecase.StoleBannerUseCase
 import com.dertefter.user.usecase.UnblockUserUseCase
 import com.dertefter.user.usecase.UnlikePostUseCase
 import com.dertefter.user.usecase.UnfollowUserUseCase
@@ -81,7 +82,8 @@ class UserViewModel @Inject constructor(
     private val getLikedPostsPaginatorUseCase: GetLikedPostsPaginatorUseCase,
     private val navigateToScreenUseCase: NavigateToScreenUseCase,
     private val openAsBottomSheetUseCase: OpenAsBottomSheetUseCase,
-    private val navigateBackUseCase: NavigateBackUseCase
+    private val navigateBackUseCase: NavigateBackUseCase,
+    private val stoleBannerUseCase: StoleBannerUseCase
 ) : ViewModel() {
 
     private val _meUserId = getMeUseCase().map {
@@ -175,6 +177,12 @@ class UserViewModel @Inject constructor(
 
     fun onEvent(event: Event) {
         when (event) {
+
+            is Event.OnStoleBanner -> {
+                viewModelScope.launch {
+                    stoleBannerUseCase(event.banner)
+                }
+            }
 
             is Event.OnNavigateToAuth -> {
                 navigateToScreenUseCase(Routes.Auth)
