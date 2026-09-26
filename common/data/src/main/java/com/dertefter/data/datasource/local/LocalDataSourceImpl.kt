@@ -147,8 +147,12 @@ class LocalDataSourceImpl @Inject constructor(
         }
     }
 
-    override fun getUser(userId: String): Flow<UserDto?> = currentLogin.flatMapLatest { login ->
+    override fun getUserById(userId: String): Flow<UserDto?> = currentLogin.flatMapLatest { login ->
         getDatabase(login).userDao().getUser(userId)
+    }.map { it?.asExternalModel() }
+
+    override fun getUserByUsername(username: String): Flow<UserDto?> = currentLogin.flatMapLatest { login ->
+        getDatabase(login).userDao().getUserByUsername(username)
     }.map { it?.asExternalModel() }
 
     override suspend fun saveUser(userDto: UserDto) {

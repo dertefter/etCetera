@@ -34,3 +34,31 @@ fun UserRoute(
         onEvent = viewModel::onEvent
     )
 }
+
+@Composable
+fun UserByUsernameRoute(
+    username: String,
+    showBackButton: Boolean,
+    viewModel: UserViewModel = hiltViewModel(),
+) {
+    val userUiState by viewModel.userUiState.collectAsStateWithLifecycle()
+    val selectedTab by viewModel.selectedTab.collectAsStateWithLifecycle()
+    val paginators by viewModel.paginators.collectAsStateWithLifecycle()
+
+    val uiStates = viewModel.tabs.associateWith { tab ->
+        viewModel.uiStates[tab]!!.collectAsStateWithLifecycle().value
+    }
+
+    LaunchedEffect(username) {
+        viewModel.initWithUsername(username)
+    }
+
+    UserScreen(
+        userUiState = userUiState,
+        selectedTab = selectedTab,
+        uiStates = uiStates,
+        paginators = paginators,
+        showBackButton = showBackButton,
+        onEvent = viewModel::onEvent
+    )
+}

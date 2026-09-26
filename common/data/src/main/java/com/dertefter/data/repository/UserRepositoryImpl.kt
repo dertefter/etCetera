@@ -1,14 +1,11 @@
 package com.dertefter.data.repository
 
-import android.util.Log
 import com.dertefter.data.common.onFailureLog
 import com.dertefter.data.datasource.local.LocalDataSource
 import com.dertefter.data.datasource.remote.RemoteDataSource
-import com.dertefter.data.dto.followers.FollowerUserDto
 import com.dertefter.data.dto.user.BlockResponseDto
 import com.dertefter.data.dto.user.FollowResponseDto
 import com.dertefter.data.dto.user.UserDto
-import com.jamal_aliev.paginator.cursor.extension.updateWhere
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import javax.inject.Inject
@@ -22,8 +19,12 @@ class UserRepositoryImpl @Inject constructor(
     private val crashlyticsRepository: CrashlyticsRepository,
 ) : UserRepository {
 
-    override fun getUser(userId: String): Flow<UserDto?> {
-        return localDataSource.getUser(userId)
+    override fun getUserById(userId: String): Flow<UserDto?> {
+        return localDataSource.getUserById(userId)
+    }
+
+    override fun getUserByUsername(username: String): Flow<UserDto?> {
+        return localDataSource.getUserByUsername(username)
     }
 
     override suspend fun updateUser(userId: String): Result<UserDto> {
@@ -52,7 +53,7 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun block(userId: String): Result<BlockResponseDto> {
         return remoteDataSource.block(userId).onFailureLog(crashlyticsRepository).onSuccess {
-            localDataSource.getUser(userId).firstOrNull()?.let { user ->
+            localDataSource.getUserById(userId).firstOrNull()?.let { user ->
                 localDataSource.saveUser(user.copy(isBlockedByMe = it.blocked))
             }
         }
@@ -60,7 +61,7 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun unblock(userId: String): Result<BlockResponseDto> {
         return remoteDataSource.unblock(userId).onFailureLog(crashlyticsRepository).onSuccess {
-            localDataSource.getUser(userId).firstOrNull()?.let { user ->
+            localDataSource.getUserById(userId).firstOrNull()?.let { user ->
                 localDataSource.saveUser(user.copy(isBlockedByMe = it.blocked))
             }
         }
@@ -68,7 +69,7 @@ class UserRepositoryImpl @Inject constructor(
 
     private suspend fun applyOptimisticFollow(userId: String, following: Boolean) {
         followersRepository.updateFollowingStatus(userId, following)
-        localDataSource.getUser(userId).firstOrNull()?.let { user ->
+        localDataSource.getUserById(userId).firstOrNull()?.let { user ->
             if (user.isFollowing != following) {
                 val newCount = if (following) user.followersCount + 1 else (user.followersCount - 1).coerceAtLeast(0)
                 localDataSource.saveUser(user.copy(isFollowing = following, followersCount = newCount))
@@ -78,7 +79,7 @@ class UserRepositoryImpl @Inject constructor(
 
     private suspend fun handleFollowResponse(userId: String, response: FollowResponseDto) {
         followersRepository.updateFollowingStatus(userId, response.following)
-        localDataSource.getUser(userId).firstOrNull()?.let { user ->
+        localDataSource.getUserById(userId).firstOrNull()?.let { user ->
             localDataSource.saveUser(
                 user.copy(
                     isFollowing = response.following,

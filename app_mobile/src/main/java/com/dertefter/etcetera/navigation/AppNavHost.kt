@@ -42,6 +42,7 @@ import com.dertefter.settings_theme.EmojiAvatarsRoute
 import com.dertefter.settings_theme.PostsThemeRoute
 import com.dertefter.settings_theme.SettingsThemeRoute
 import com.dertefter.switch_account.SwitchAccountRoute
+import com.dertefter.user.UserByUsernameRoute
 import com.dertefter.user.UserRoute
 import kotlin.math.roundToInt
 
@@ -107,6 +108,7 @@ fun RouteContent(route: Routes) {
         is Routes.Feed -> FeedRoute()
         is Routes.Comments -> CommentsRoute(route.postId)
         is Routes.User -> UserRoute(route.userId, route.showBackButton)
+        is Routes.UserByUsername -> UserByUsernameRoute(route.username, route.showBackButton)
         is Routes.NewPost -> NewPostRoute(route.wallRecipientId)
         is Routes.Repost -> RepostRoute(route.postIdForRepost, route.wallRecipientId)
         is Routes.EditPost -> EditPostRoute(route.postId)

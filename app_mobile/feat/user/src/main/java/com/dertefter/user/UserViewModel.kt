@@ -17,7 +17,8 @@ import com.dertefter.user.usecase.FollowUserUseCase
 import com.dertefter.user.usecase.GetLikedPostsPaginatorUseCase
 import com.dertefter.user.usecase.GetMeUseCase
 import com.dertefter.user.usecase.GetPostsPaginatorUseCase
-import com.dertefter.user.usecase.GetUserUseCase
+import com.dertefter.user.usecase.GetUserByIdUseCase
+import com.dertefter.user.usecase.GetUserByUsernameUseCase
 import com.dertefter.user.usecase.LikePostUseCase
 import com.dertefter.user.usecase.NavigateBackUseCase
 import com.dertefter.user.usecase.NavigateToScreenUseCase
@@ -26,8 +27,8 @@ import com.dertefter.user.usecase.PinPostUseCase
 import com.dertefter.user.usecase.SaveMeUseCase
 import com.dertefter.user.usecase.StoleBannerUseCase
 import com.dertefter.user.usecase.UnblockUserUseCase
-import com.dertefter.user.usecase.UnlikePostUseCase
 import com.dertefter.user.usecase.UnfollowUserUseCase
+import com.dertefter.user.usecase.UnlikePostUseCase
 import com.dertefter.user.usecase.UnpinPostUseCase
 import com.dertefter.user.usecase.UpdateMeUseCase
 import com.dertefter.user.usecase.UpdatePostStatsUseCase
@@ -50,6 +51,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -65,7 +67,8 @@ class UserViewModel @Inject constructor(
     getMeUseCase: GetMeUseCase,
     private val updateMeUseCase: UpdateMeUseCase,
     private val saveMeUseCase: SaveMeUseCase,
-    private val getUserUseCase: GetUserUseCase,
+    private val getUserByIdUseCase: GetUserByIdUseCase,
+    private val getUserByUsernameUseCase: GetUserByUsernameUseCase,
     private val updateUserUseCase: UpdateUserUseCase,
     private val followUserUseCase: FollowUserUseCase,
     private val unfollowUserUseCase: UnfollowUserUseCase,
@@ -123,7 +126,7 @@ class UserViewModel @Inject constructor(
             flowOf(UserUiState())
         } else {
             combine(
-                getUserUseCase(userId),
+                getUserByIdUseCase(userId),
                 _isMe,
                 _isLoading,
                 _error
@@ -150,6 +153,22 @@ class UserViewModel @Inject constructor(
         initJob = viewModelScope.launch {
             _userId.value = userId
             update()
+        }
+    }
+
+    fun initWithUsername(username: String) {
+        initJob?.cancel()
+        initJob = viewModelScope.launch {
+            _isLoading.value = true
+            val userId: String? = updateUserUseCase(username)
+                .getOrNull()?.id ?: getUserByUsernameUseCase(username).first()?.id
+            if (userId != null){
+                initWithUserId(userId)
+            } else {
+                _isLoading.value = false
+                _error.value = AppError.ApiError(code = null, message = null)
+            }
+
         }
     }
 

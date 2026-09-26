@@ -1,5 +1,6 @@
 package com.dertefter.etcetera
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,8 +12,9 @@ import androidx.compose.runtime.getValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dertefter.design.theme.AppTheme
-import com.dertefter.etcetera.presentation.MainScreen
 import com.dertefter.etcetera.navigation.AppNavHost
+import com.dertefter.etcetera.navigation.DeepLinkParser
+import com.dertefter.etcetera.presentation.MainScreen
 import com.dertefter.navigation.Navigator
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -31,6 +33,10 @@ class MainActivity : ComponentActivity() {
         val splashScreen = installSplashScreen()
 
         super.onCreate(savedInstanceState)
+
+        if (savedInstanceState == null) {
+            handleDeepLink(intent)
+        }
 
         splashScreen.setKeepOnScreenCondition {
             !viewModel.isReady.value
@@ -80,4 +86,16 @@ class MainActivity : ComponentActivity() {
 
         }
     }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleDeepLink(intent)
+    }
+
+    private fun handleDeepLink(intent: Intent?) {
+        val route = DeepLinkParser.parse(intent?.data)
+        route?.let { navigator.navigate(it) }
+    }
 }
+

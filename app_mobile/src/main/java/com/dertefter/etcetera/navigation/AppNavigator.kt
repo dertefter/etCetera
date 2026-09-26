@@ -12,7 +12,7 @@ import javax.inject.Singleton
 @Singleton
 class AppNavigator @Inject constructor() : Navigator {
 
-    private val _navigationActions = Channel<NavigationAction>()
+    private val _navigationActions = Channel<NavigationAction>(Channel.BUFFERED)
     override val navigationActions: Flow<NavigationAction> = _navigationActions.receiveAsFlow()
 
     override fun navigate(route: Routes) {

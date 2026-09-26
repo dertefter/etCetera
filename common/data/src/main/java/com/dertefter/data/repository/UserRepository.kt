@@ -7,7 +7,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
 
-    fun getUser(userId: String): Flow<UserDto?>
+    fun getUserById(userId: String): Flow<UserDto?>
+
+    fun getUserByUsername(username: String): Flow<UserDto?>
 
     suspend fun updateUser(userId: String): Result<UserDto>
 

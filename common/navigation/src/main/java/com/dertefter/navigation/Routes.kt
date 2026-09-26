@@ -91,6 +91,11 @@ sealed interface Routes : NavKey {
     ) : Routes
 
     @Serializable
+    data class UserByUsername(
+        val username: String, val showBackButton: Boolean = true
+    ) : Routes
+
+    @Serializable
     data class Followers(
         val userId: String, val startTabIsFollowing: Boolean = false
     ) : Routes

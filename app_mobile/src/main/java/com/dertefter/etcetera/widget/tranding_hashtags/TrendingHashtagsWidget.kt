@@ -1,10 +1,13 @@
 package com.dertefter.etcetera.widget.tranding_hashtags
 
 import android.content.Context
+import android.content.Intent
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.glance.ColorFilter
@@ -15,11 +18,11 @@ import androidx.glance.Image
 import androidx.glance.ImageProvider
 import androidx.glance.LocalContext
 import androidx.glance.LocalSize
-import androidx.glance.action.actionStartActivity
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.CircularProgressIndicator
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.SizeMode
+import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.lazy.GridCells
 import androidx.glance.appwidget.lazy.LazyVerticalGrid
@@ -93,8 +96,7 @@ class TrendingHashtagsWidget : GlanceAppWidget() {
             modifier = GlanceModifier
                 .cornerRadius(outCornerRadius)
                 .fillMaxSize()
-                .background(backgroundColor)
-                .clickable(actionStartActivity<MainActivity>()),
+                .background(backgroundColor),
             contentAlignment = Alignment.BottomCenter
         ){
             if (isLoading) {
@@ -167,9 +169,18 @@ class TrendingHashtagsWidget : GlanceAppWidget() {
     @Composable
     internal fun HashtagItem(hashtag: SearchHashtagDto, modifier: GlanceModifier) {
         val context = LocalContext.current
+        val intent = remember(hashtag.name, context) {
+            Intent(
+                Intent.ACTION_VIEW,
+                "https://xn--d1ah4a.com/hashtag/${hashtag.name}".toUri()
+            ).apply {
+                setClass(context, MainActivity::class.java)
+            }
+        }
         Column(
             modifier = modifier
                 .cornerRadius(itemCornerRadius)
+                .clickable(actionStartActivity(intent))
                 .padding(14.dp)
                 .background(GlanceTheme.colors.primaryContainer),
         ) {

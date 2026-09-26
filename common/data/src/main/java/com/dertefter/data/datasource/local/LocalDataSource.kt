@@ -40,7 +40,10 @@ interface LocalDataSource {
 
     suspend fun saveNotificationCount(count: Int)
 
-    fun getUser(userId: String): Flow<UserDto?>
+    fun getUserById(userId: String): Flow<UserDto?>
+
+    fun getUserByUsername(username: String): Flow<UserDto?>
+
     suspend fun saveUser(userDto: UserDto)
 
     suspend fun upsertPage(page: PageEntity)
