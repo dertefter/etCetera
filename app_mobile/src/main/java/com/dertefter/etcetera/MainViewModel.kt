@@ -67,7 +67,12 @@ class MainViewModel @Inject constructor(
         settingsRepository.postHorizontalExtraSpace,
         settingsRepository.postContained,
         settingsRepository.postShowUsername,
-        settingsRepository.postSwapDateAndUsername
+        settingsRepository.postSwapDateAndUsername,
+        settingsRepository.navFloating,
+        settingsRepository.navLabeled,
+        settingsRepository.navBlurred,
+        settingsRepository.appBarBlurred,
+        settingsRepository.appBarFaded
     ) { params: Array<Any?> ->
         val emojiAvatarHarmonizationColor = params[0] as EmojiAvatarHarmonizationColor
         val darkTheme = params[1] as Boolean?
@@ -75,13 +80,23 @@ class MainViewModel @Inject constructor(
         val postContained = params[3] as Boolean
         val postShowUsername = params[4] as Boolean
         val postSwapDateAndUsername = params[5] as Boolean
+        val navFloating = params[6] as Boolean
+        val navLabeled = params[7] as Boolean
+        val navBlurred = params[8] as Boolean
+        val appBarBlurred = params[9] as Boolean
+        val appBarFaded = params[10] as Boolean?
         ThemeState(
             emojiAvatarHarmonizationColor,
             darkTheme,
             postHorizontalExtraSpace,
             postContained,
             postShowUsername,
-            postSwapDateAndUsername
+            postSwapDateAndUsername,
+            navFloating,
+            navLabeled,
+            navBlurred,
+            appBarBlurred,
+            appBarFaded
         )
     }.stateIn(
         viewModelScope,

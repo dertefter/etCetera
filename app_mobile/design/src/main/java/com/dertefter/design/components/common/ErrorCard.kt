@@ -86,13 +86,15 @@ fun ErrorCard(
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun ErrorCardePreview() {
-    AppTheme {
-        ErrorCard(
-            title = "Не удалосб загурзитб данные",
-            message = "Ляля тополя",
-            onRetry = {},
-            modifier = Modifier.padding(16.dp)
-        )
-    }
+    AppTheme(
+        content = {
+            ErrorCard(
+                title = "Не удалосб загурзитб данные",
+                message = "Ляля тополя",
+                onRetry = {},
+                modifier = Modifier.padding(16.dp)
+            )
+        },
+    )
 
 }

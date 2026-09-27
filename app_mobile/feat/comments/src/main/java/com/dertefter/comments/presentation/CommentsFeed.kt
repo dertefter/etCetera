@@ -27,15 +27,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dertefter.comments.R
 import com.dertefter.comments.presentation.mapper.toUiModel
 import com.dertefter.data.dto.comments.CommentDto
-import com.dertefter.data.dto.feed.AuthorDto
 import com.dertefter.design.components.comment.CommentCard
 import com.dertefter.design.components.loading.AppLoadingIndicator
-import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
 import com.jamal_aliev.paginator.compose.cursor.paginated
 import com.jamal_aliev.paginator.compose.cursor.rememberPaginated
@@ -43,9 +40,6 @@ import com.jamal_aliev.paginator.core.extension.isErrorState
 import com.jamal_aliev.paginator.core.extension.isProgressState
 import com.jamal_aliev.paginator.core.page.PaginatorUiState
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
-import com.jamal_aliev.paginator.cursor.bookmark.CursorBookmark
-import com.jamal_aliev.paginator.cursor.dsl.mutableCursorPaginator
-import com.jamal_aliev.paginator.cursor.load.CursorLoadResult
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -213,63 +207,5 @@ private fun CommentAppendIndicator(state: PaginatorUiState<CommentDto>) {
 
             else -> {}
         }
-    }
-}
-
-@Preview(showBackground = false)
-@Composable
-fun CommentsFeedPreview() {
-    AppTheme {
-        val sampleAuthor = AuthorDto(
-            id = "1",
-            avatar = "😊",
-            username = "johndoe",
-            verified = true,
-            hasNuksta = false,
-            displayName = "John Doe"
-        )
-
-        val sampleComments = listOf(
-            CommentDto(
-                id = "1",
-                content = "This is a sample comment",
-                author = sampleAuthor,
-                likesCount = 10,
-                repliesCount = 2,
-                isLiked = false,
-                createdAt = "2023-10-27T10:00:00Z"
-            ),
-            CommentDto(
-                id = "2",
-                content = "Another sample comment with some more text to see how it looks when it wraps to multiple lines in the preview.",
-                author = sampleAuthor,
-                likesCount = 5,
-                repliesCount = 0,
-                isLiked = true,
-                createdAt = "2023-10-27T11:00:00Z"
-            )
-        )
-
-        val samplePaginator = mutableCursorPaginator {
-            load {
-                CursorLoadResult(
-                    data = sampleComments,
-                    bookmark = CursorBookmark(null, "initial", null)
-                )
-            }
-        }
-
-        val uiState = PaginatorUiState.Content(
-            prependState = null,
-            items = sampleComments,
-            appendState = null
-        )
-
-        CommentsFeed(
-            paginator = samplePaginator,
-            onEvent = {},
-            uiState = uiState,
-            meUserId = "",
-        )
     }
 }

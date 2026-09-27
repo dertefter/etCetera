@@ -64,7 +64,12 @@ class MainActivity : ComponentActivity() {
                         postHorizontalExtraSpace = themeState.postHorizontalExtraSpace,
                         postContained = themeState.postContained,
                         postShowUsername = themeState.postShowUsername,
-                        postSwapDateAndUsername = themeState.postSwapDateAndUsername
+                        postSwapDateAndUsername = themeState.postSwapDateAndUsername,
+                        navFloating = themeState.navFloating,
+                        navLabeled = themeState.navLabeled,
+                        navBlurred = themeState.navBlurred,
+                        appBarBlurred = themeState.appBarBlurred,
+                        appBarFaded = themeState.appBarFaded
                     ) {
                         MainScreen(
                             navigator,

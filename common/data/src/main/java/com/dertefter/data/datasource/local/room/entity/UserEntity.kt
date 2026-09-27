@@ -15,6 +15,7 @@ import com.dertefter.data.dto.user.VisibilityDto
 data class UserEntity(
     @PrimaryKey val id: String,
     val avatar: String,
+    val clanAvatar: String,
     val banner: String?,
     val bio: String?,
     val createdAt: String,
@@ -46,6 +47,7 @@ data class UserEntity(
 )
 
 fun UserEntity.asExternalModel() = UserDto(
+    clanAvatar = clanAvatar,
     avatar = avatar,
     banner = banner,
     bio = bio,
@@ -89,6 +91,7 @@ fun FollowerUserDto.asEntity() = UserEntity(
     isFollowing = isFollowing,
 
     // Default values for other fields
+    clanAvatar = avatar,
     banner = null,
     bio = null,
     createdAt = "",
@@ -115,6 +118,7 @@ fun UserEntity.asPrivacyDto() = PrivacyDto(
 )
 
 fun UserEntity.asMeExternalModel() = MeDto(
+    clanAvatar = clanAvatar,
     avatar = avatar,
     banner = banner,
     bio = bio,
@@ -135,6 +139,7 @@ fun UserEntity.asMeExternalModel() = MeDto(
 )
 
 fun UserDto.asEntity() = UserEntity(
+    clanAvatar = clanAvatar,
     avatar = avatar,
     banner = banner,
     bio = bio,
@@ -162,6 +167,7 @@ fun UserDto.asEntity() = UserEntity(
 )
 
 fun MeDto.asEntity() = UserEntity(
+    clanAvatar = clanAvatar,
     avatar = avatar,
     banner = banner,
     bio = bio,

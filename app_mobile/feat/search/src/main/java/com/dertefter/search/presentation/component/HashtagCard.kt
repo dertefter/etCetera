@@ -76,15 +76,17 @@ fun SearchHashtagCard(
 @Preview(showBackground = false)
 @Composable
 fun SearchHashtagCardPreview() {
-    AppTheme {
-        SearchHashtagCard(
-            hashtag = SearchHashtagDto(
-                id = "1",
-                name = "android",
-                postsCount = 123
+    AppTheme(
+        content = {
+            SearchHashtagCard(
+                hashtag = SearchHashtagDto(
+                    id = "1",
+                    name = "android",
+                    postsCount = 123
+                )
             )
-        )
-    }
+        },
+    )
 }
 
 

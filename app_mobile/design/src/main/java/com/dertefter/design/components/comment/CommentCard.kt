@@ -42,8 +42,8 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dertefter.design.R
+import com.dertefter.design.components.avatar.Avatar
 import com.dertefter.design.components.avatar.DisplayName
-import com.dertefter.design.components.avatar.EmojiAvatar
 import com.dertefter.design.components.lists.SegmentedContentItem
 import com.dertefter.design.components.post.AttachmentUiModel
 import com.dertefter.design.components.post.AttachmentsCarousel
@@ -124,8 +124,8 @@ fun CommentCard(
                         verticalAlignment = Alignment.CenterVertically
                     )
                     {
-                        EmojiAvatar(
-                            emoji = comment.author.avatar,
+                        Avatar(
+                            data = comment.author.avatar,
                             containerSize = 44.dp
                         )
                         Column(
@@ -380,59 +380,61 @@ fun CommentCard(
 @Preview(showBackground = false)
 @Composable
 fun CommentCardPreview() {
-    AppTheme {
-        CommentCard(
-            index = 0,
-            count = 0,
-            comment = CommentUiModel(
-                id = "1",
-                content = "This is a sample comment content. It can be long enough to span multiple lines and test the layout of the CommentCard.",
-                author = AuthorUiModel(
-                    id = "author1",
-                    avatar = "😊",
-                    username = "johndoe",
-                    verified = true,
-                    hasNuksta = false,
-                    displayName = "John Doe",
-                    pin = null
-                ),
-                likesCount = 42,
-                repliesCount = 3,
-                isLiked = false,
-                createdAt = "2023-10-27T12:00:00Z",
-                replyTo = ReplyToUiModel(
-                    id = "dddd",
-                    username = "ddddddd",
-                    displayName = "уииии"
-                ),
-                attachments = listOf(
-                    AttachmentUiModel(
-                        id = "1",
-                        type = "image",
-                        url = "https://picsum.photos/400/300",
-                        mimeType = "image/jpeg"
+    AppTheme(
+        content = {
+            CommentCard(
+                index = 0,
+                count = 0,
+                comment = CommentUiModel(
+                    id = "1",
+                    content = "This is a sample comment content. It can be long enough to span multiple lines and test the layout of the CommentCard.",
+                    author = AuthorUiModel(
+                        id = "author1",
+                        avatar = "😊",
+                        username = "johndoe",
+                        verified = true,
+                        hasNuksta = false,
+                        displayName = "John Doe",
+                        pin = null,
+                    ),
+                    likesCount = 42,
+                    repliesCount = 3,
+                    isLiked = false,
+                    createdAt = "2023-10-27T12:00:00Z",
+                    replyTo = ReplyToUiModel(
+                        id = "dddd",
+                        username = "ddddddd",
+                        displayName = "уииии"
+                    ),
+                    attachments = listOf(
+                        AttachmentUiModel(
+                            id = "1",
+                            type = "image",
+                            url = "https://picsum.photos/400/300",
+                            mimeType = "image/jpeg"
+                        )
+                    ),
+                    replies = listOf(
+                        CommentUiModel(
+                            id = "2",
+                            content = "This is a reply to the first comment.",
+                            author = AuthorUiModel(
+                                id = "author2",
+                                avatar = "😎",
+                                username = "janedoe",
+                                verified = false,
+                                hasNuksta = false,
+                                displayName = "Jane Doe",
+                                pin = null
+                            ),
+                            likesCount = 5,
+                            repliesCount = 0,
+                            isLiked = true,
+                            createdAt = "2023-10-27T13:00:00Z"
+                        )
                     )
                 ),
-                replies = listOf(
-                    CommentUiModel(
-                        id = "2",
-                        content = "This is a reply to the first comment.",
-                        author = AuthorUiModel(
-                            id = "author2",
-                            avatar = "😎",
-                            username = "janedoe",
-                            verified = false,
-                            hasNuksta = false,
-                            displayName = "Jane Doe",
-                            pin = null
-                        ),
-                        likesCount = 5,
-                        repliesCount = 0,
-                        isLiked = true,
-                        createdAt = "2023-10-27T13:00:00Z"
-                    )
-                )
-            ),
-        )
-    }
+            )
+        },
+    )
 }

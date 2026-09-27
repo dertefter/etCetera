@@ -22,7 +22,7 @@ import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
 import com.dertefter.data.dto.followers.FollowerUserDto
 import com.dertefter.design.components.avatar.DisplayName
-import com.dertefter.design.components.avatar.SmallEmojiAvatar
+import com.dertefter.design.components.avatar.Avatar
 import com.dertefter.design.theme.WearableTheme
 import com.dertefter.design.theme.spacing
 
@@ -44,7 +44,7 @@ fun FollowerUserCard(
             .padding(horizontal = MaterialTheme.spacing.medium, vertical = MaterialTheme.spacing.medium),
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
     ) {
-        SmallEmojiAvatar(
+        Avatar(
             emoji = followerUser.avatar,
             containerSize = 32.dp,
             fontSize = 14.sp

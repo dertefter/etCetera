@@ -80,10 +80,12 @@ fun AppAboutHeader(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 @Composable
 fun AppAboutHeaderPreview() {
-    AppTheme {
-        AppAboutHeader(
-            appName = "etCetera",
-            desc = "v 1.0.0"
-        )
-    }
+    AppTheme(
+        content = {
+            AppAboutHeader(
+                appName = "etCetera",
+                desc = "v 1.0.0"
+            )
+        },
+    )
 }

@@ -83,12 +83,14 @@ fun ErrorLarge(
 @Preview(locale = "en", showBackground = true)
 @Composable
 fun ErrorLargePreview() {
-    AppTheme {
-        ErrorLarge(
-            onRetry = {},
-            title = "Title string",
-            message = "Lalal ccko cjkcs"
-        )
-    }
+    AppTheme(
+        content = {
+            ErrorLarge(
+                onRetry = {},
+                title = "Title string",
+                message = "Lalal ccko cjkcs"
+            )
+        },
+    )
 
 }

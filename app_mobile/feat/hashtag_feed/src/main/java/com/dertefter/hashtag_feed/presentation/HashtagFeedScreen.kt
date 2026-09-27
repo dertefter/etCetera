@@ -11,12 +11,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -33,15 +33,19 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.design.components.PullToRefreshIndicator
+import com.dertefter.design.components.appbar.AppTopBar
 import com.dertefter.design.components.buttons.AppNavigationIcon
 import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
+import com.dertefter.design.theme.bottomNavHeight
 import com.dertefter.design.theme.spacing
 import com.jamal_aliev.paginator.compose.cursor.rememberPaginated
 import com.jamal_aliev.paginator.core.extension.isProgressState
 import com.jamal_aliev.paginator.core.page.PaginatorUiState
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -57,6 +61,7 @@ fun HashtagFeedScreen(
     val paged = paginator?.rememberPaginated(state = lazyListState)
     val isRefreshing = (uiState.uiState is PaginatorUiState.Content<PostDto> && uiState.uiState.prependState.isProgressState())
     val pullToRefreshState = rememberPullToRefreshState()
+    val hazeState = rememberHazeState()
 
     LaunchedEffect(lazyListState) {
         delay(2000.milliseconds)
@@ -88,7 +93,8 @@ fun HashtagFeedScreen(
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
-                LargeFlexibleTopAppBar(
+                AppTopBar(
+                    hazeState = hazeState,
                     scrollBehavior = scrollBehavior,
                     navigationIcon = {
                         AppNavigationIcon(
@@ -110,6 +116,7 @@ fun HashtagFeedScreen(
             }
         ) { contentPadding ->
             HashtagFeedContent(
+                modifier = Modifier.hazeSource(hazeState),
                 uiState = uiState.uiState,
                 contentPadding = contentPadding,
                 listState = lazyListState,
@@ -124,6 +131,7 @@ fun HashtagFeedScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HashtagFeedContent(
+    modifier: Modifier = Modifier,
     uiState: PaginatorUiState<PostDto>,
     contentPadding: PaddingValues,
     listState: LazyListState,
@@ -144,7 +152,7 @@ private fun HashtagFeedContent(
             fadeIn(animationSpec = tween(300)) togetherWith fadeOut(animationSpec = tween(300))
         },
         label = "hashtag_feed_state",
-        modifier = Modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize()
     ) { state ->
         when (state) {
             PaginatorUiState.Idle -> {
@@ -165,7 +173,8 @@ private fun HashtagFeedContent(
                     modifier = Modifier
                         .nestedScroll(scrollBehavior.nestedScrollConnection)
                         .fillMaxSize(),
-                    contentPadding = contentPadding,
+                    contentPadding = contentPadding
+                            + PaddingValues(bottom = MaterialTheme.bottomNavHeight, top = MaterialTheme.spacing.defaultScreenPadding),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
                 ) {
@@ -185,13 +194,15 @@ private fun HashtagFeedContent(
 @Preview(showBackground = true)
 @Composable
 fun HashtagFeedScreenPreview() {
-    AppTheme {
-        HashtagFeedScreen(
-            onEvent = {},
-            uiState = UiState(
-                hashtag = "test",
-                isLoading = false
-            ),
-        )
-    }
+    AppTheme(
+        content = {
+            HashtagFeedScreen(
+                onEvent = {},
+                uiState = UiState(
+                    hashtag = "test",
+                    isLoading = false
+                ),
+            )
+        },
+    )
 }

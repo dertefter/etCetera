@@ -34,7 +34,7 @@ import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
 import com.dertefter.design.R
 import com.dertefter.design.components.avatar.DisplayName
-import com.dertefter.design.components.avatar.SmallEmojiAvatar
+import com.dertefter.design.components.avatar.Avatar
 import com.dertefter.design.components.post.AttachmentUiModel
 import com.dertefter.design.components.post.AttachmentsCarousel
 import com.dertefter.design.components.post.AuthorUiModel
@@ -81,7 +81,7 @@ fun CommentCard(
                             onClick = { onUserClick(comment.author.id) })
                 )
                 {
-                    SmallEmojiAvatar(
+                    Avatar(
                         emoji = comment.author.avatar,
                         modifier = Modifier.size(32.dp),
                         fontSize = 14.sp

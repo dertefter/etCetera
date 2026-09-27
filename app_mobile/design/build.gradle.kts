@@ -36,7 +36,6 @@ dependencies {
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.palette)
-    implementation(libs.haze.blur.materials)
     implementation(platform(libs.compose.bom.alpha))
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.graphics)
@@ -48,8 +47,10 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.kdroidfilter.composemediaplayer)
     implementation(libs.androidx.media3.exoplayer)
-    implementation(libs.haze)
-    implementation(libs.haze.blur)
+    api(libs.haze)
+    api(libs.haze.blur)
+    api(libs.haze.blur.materials)
+    api(libs.haze.blur.material3)
     implementation(libs.zoomable)
 
 }

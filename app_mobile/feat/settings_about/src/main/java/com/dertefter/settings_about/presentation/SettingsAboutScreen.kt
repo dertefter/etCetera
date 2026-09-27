@@ -2,35 +2,37 @@ package com.dertefter.settings_about.presentation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.dertefter.design.components.appbar.AppTopBar
+import com.dertefter.design.components.appbar.AppTopBarStyle
 import com.dertefter.design.components.buttons.AppNavigationIcon
 import com.dertefter.design.components.lists.SegmentedColumn
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
+import com.dertefter.design.theme.bottomNavHeight
 import com.dertefter.design.theme.spacing
 import com.dertefter.settings_about.R
 import com.dertefter.settings_about.presentation.components.AppAboutHeader
 import com.github.droibit.oss_licenses.ui.compose.material3.OssLicensesActivity
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.rememberHazeState
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -43,6 +45,8 @@ fun SettingsAboutScreen(
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     val titleAlpha = (scrollBehavior.state.overlappedFraction).coerceIn(0f, 1f)
+
+    val hazeState = rememberHazeState()
 
     val itdItems = listOf(
         Item(
@@ -88,7 +92,9 @@ fun SettingsAboutScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            AppTopBar(
+                hazeState = hazeState,
+                appTopBarStyle = AppTopBarStyle.SMALL,
                 title = {
                     Text(
                         text = stringResource(R.string.settings_about_app_name),
@@ -114,19 +120,16 @@ fun SettingsAboutScreen(
 
         ) { contentPadding ->
 
-        val contentPadding = PaddingValues(
-            top = contentPadding.calculateTopPadding() + MaterialTheme.spacing.medium,
-            bottom = contentPadding.calculateBottomPadding() + MaterialTheme.spacing.medium,
-            start = contentPadding.calculateStartPadding(LocalLayoutDirection.current) + MaterialTheme.spacing.defaultScreenPadding,
-            end = contentPadding.calculateEndPadding(LocalLayoutDirection.current) + MaterialTheme.spacing.defaultScreenPadding
-        )
-
         LazyColumn(
             modifier = Modifier
+                .hazeSource(hazeState)
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
                 .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large),
             contentPadding = contentPadding
+                    + PaddingValues(bottom = MaterialTheme.bottomNavHeight)
+                    + PaddingValues(vertical = MaterialTheme.spacing.medium)
+                    + PaddingValues(horizontal = MaterialTheme.spacing.defaultScreenPadding)
         ) {
             item {
                 AppAboutHeader(

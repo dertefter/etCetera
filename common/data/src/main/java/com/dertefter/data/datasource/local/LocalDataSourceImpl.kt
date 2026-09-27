@@ -56,6 +56,11 @@ class LocalDataSourceImpl @Inject constructor(
     private val POST_CONTAINED_KEY = booleanPreferencesKey("post_contained")
     private val POST_SHOW_USERNAME_KEY = booleanPreferencesKey("post_show_username")
     private val POST_SWAP_DATE_AND_USERNAME_KEY = booleanPreferencesKey("post_swap_date_and_username")
+    private val NAV_FLOATING_KEY = booleanPreferencesKey("nav_floating")
+    private val NAV_LABELED_KEY = booleanPreferencesKey("nav_labeled")
+    private val NAV_BLURRED_KEY = booleanPreferencesKey("nav_blurred")
+    private val APP_BAR_BLURRED_KEY = booleanPreferencesKey("app_bar_blurred")
+    private val APP_BAR_FADED_KEY = booleanPreferencesKey("app_bar_faded")
     private val dbCache = mutableMapOf<String?, AppDatabase>()
 
     private fun getDatabase(login: String?): AppDatabase {
@@ -347,6 +352,60 @@ class LocalDataSourceImpl @Inject constructor(
     override suspend fun updatePostSwapDateAndUsername(value: Boolean) {
         settingsDataStore.edit { preferences ->
             preferences[POST_SWAP_DATE_AND_USERNAME_KEY] = value
+        }
+    }
+
+    override val navFloating: Flow<Boolean> = settingsDataStore.data.map { preferences ->
+        preferences[NAV_FLOATING_KEY] ?: true
+    }
+
+    override suspend fun updateNavFloating(value: Boolean) {
+        settingsDataStore.edit { preferences ->
+            preferences[NAV_FLOATING_KEY] = value
+        }
+    }
+
+    override val navLabeled: Flow<Boolean> = settingsDataStore.data.map { preferences ->
+        preferences[NAV_LABELED_KEY] ?: false
+    }
+
+    override suspend fun updateNavLabeled(value: Boolean) {
+        settingsDataStore.edit { preferences ->
+            preferences[NAV_LABELED_KEY] = value
+        }
+    }
+
+    override val navBlurred: Flow<Boolean> = settingsDataStore.data.map { preferences ->
+        preferences[NAV_BLURRED_KEY] ?: true
+    }
+
+    override suspend fun updateNavBlurred(value: Boolean) {
+        settingsDataStore.edit { preferences ->
+            preferences[NAV_BLURRED_KEY] = value
+        }
+    }
+
+    override val appBarBlurred: Flow<Boolean> = settingsDataStore.data.map { preferences ->
+        preferences[APP_BAR_BLURRED_KEY] ?: true
+    }
+
+    override suspend fun updateAppBarBlurred(value: Boolean) {
+        settingsDataStore.edit { preferences ->
+            preferences[APP_BAR_BLURRED_KEY] = value
+        }
+    }
+
+    override val appBarFaded: Flow<Boolean?> = settingsDataStore.data.map { preferences ->
+        preferences[APP_BAR_FADED_KEY]
+    }
+
+    override suspend fun updateAppBarFaded(value: Boolean?) {
+        settingsDataStore.edit { preferences ->
+            if (value == null) {
+                preferences.remove(APP_BAR_FADED_KEY)
+            } else {
+                preferences[APP_BAR_FADED_KEY] = value
+            }
         }
     }
 }

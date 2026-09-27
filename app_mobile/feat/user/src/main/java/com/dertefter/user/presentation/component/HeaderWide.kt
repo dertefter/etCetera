@@ -22,9 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -35,8 +33,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.dertefter.data.dto.user.LastSeenDto
+import com.dertefter.design.components.avatar.Avatar
 import com.dertefter.design.components.avatar.DisplayName
-import com.dertefter.design.components.avatar.EmojiAvatar
 import com.dertefter.design.components.buttons.AppNavigationIcon
 import com.dertefter.design.components.post.AuthorUiModel
 import com.dertefter.design.icons.Icons
@@ -92,7 +90,6 @@ fun HeaderWide(
             if (!bannerUrl.isNullOrEmpty() || isMe){
                 Box(
                     modifier = Modifier
-                        .blur(120.dp * scrollFraction, edgeTreatment =  BlurredEdgeTreatment.Unbounded)
                         .alpha(sqrt(1f - scrollFraction))
                         .clip(MaterialTheme.shapes.extraLarge)
                         .clickable(onClick = onBannerClick)
@@ -140,8 +137,8 @@ fun HeaderWide(
                         )
                 )
                 {
-                    EmojiAvatar(
-                        emoji = author.avatar,
+                    Avatar(
+                        data = author.avatar,
                         rotation = rotation,
                         containerSize = avatarSize
                     )
@@ -237,24 +234,26 @@ fun HeaderWide(
 )
 @Composable
 fun HeaderWidePrev() {
-    AppTheme {
-        HeaderWide(
-            bannerUrl = "https://picsum.photos/800/200",
-            author = AuthorUiModel(
-                id = "author1",
-                username = "johndoe",
-                displayName = "John Doe",
-                avatar = "😐",
-                hasNuksta = true,
-                verified = true,
-                pin = null,
-            ),
-            isMe = false,
-            lastSeenDto = LastSeenDto.JustNow,
-            onFollowingClock = {},
-            onFollowersClick = {},
-            followingCount = 1,
-            followersCount = 2
-        )
-    }
+    AppTheme(
+        content = {
+            HeaderWide(
+                bannerUrl = "https://picsum.photos/800/200",
+                author = AuthorUiModel(
+                    id = "author1",
+                    username = "johndoe",
+                    displayName = "John Doe",
+                    avatar = "😐",
+                    hasNuksta = true,
+                    verified = true,
+                    pin = null,
+                ),
+                isMe = false,
+                lastSeenDto = LastSeenDto.JustNow,
+                onFollowingClock = {},
+                onFollowersClick = {},
+                followingCount = 1,
+                followersCount = 2
+            )
+        },
+    )
 }

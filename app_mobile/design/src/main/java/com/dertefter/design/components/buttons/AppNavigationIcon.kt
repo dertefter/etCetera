@@ -97,27 +97,32 @@ fun AppNavigationIcon(
 @Preview
 @Composable
 private fun AppNavigationIconPreview() {
-    AppTheme {
-        Box(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.surface)
-                .padding(16.dp)
-        ) {
-            AppNavigationIcon(onClick = {})
-        }
-    }
+    AppTheme(
+        content = {
+            Box(
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.surface)
+                    .padding(16.dp)
+            ) {
+                AppNavigationIcon(onClick = {})
+            }
+        },
+    )
 }
 
 @Preview
 @Composable
 private fun AppNavigationIconDarkPreview() {
-    AppTheme(darkTheme = true) {
-        Box(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.surface)
-                .padding(16.dp)
-        ) {
-            AppNavigationIcon(onClick = {})
-        }
-    }
+    AppTheme(
+        darkTheme = true,
+        content = {
+            Box(
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.surface)
+                    .padding(16.dp)
+            ) {
+                AppNavigationIcon(onClick = {})
+            }
+        },
+    )
 }

@@ -16,6 +16,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
@@ -23,6 +24,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import com.materialkolor.ktx.harmonize
@@ -45,6 +47,13 @@ val LocalAttachmentsHorizontalExtraSpace = staticCompositionLocalOf { true }
 val LocalAttachmentsIsCarousel = staticCompositionLocalOf { true }
 val LocalPostShowUsername = staticCompositionLocalOf { true }
 val LocalPostSwapDateAndUsername = staticCompositionLocalOf { false }
+val LocalBottomNavHeight = compositionLocalOf { 0.dp }
+
+val LocalNavFloating = staticCompositionLocalOf { true }
+val LocalNavLabeled = staticCompositionLocalOf { false }
+val LocalNavBlurred = staticCompositionLocalOf { true }
+val LocalAppBarBlurred = staticCompositionLocalOf { true }
+val LocalAppBarFaded = staticCompositionLocalOf<Boolean?> { null }
 
 @Immutable
 data class CustomColors(
@@ -121,8 +130,39 @@ val MaterialTheme.postSwapDateAndUsername: Boolean
     @ReadOnlyComposable
     get() = LocalPostSwapDateAndUsername.current
 
+val MaterialTheme.bottomNavHeight: Dp
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalBottomNavHeight.current
+
+val MaterialTheme.navFloating: Boolean
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalNavFloating.current
+
+val MaterialTheme.navLabeled: Boolean
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalNavLabeled.current
+
+val MaterialTheme.navBlurred: Boolean
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalNavBlurred.current
+
+val MaterialTheme.appBarBlurred: Boolean
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalAppBarBlurred.current
+
+val MaterialTheme.appBarFaded: Boolean?
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalAppBarFaded.current
+
 
 enum class EmojiAvatarHarmonizationColor {
+    DEFAULT,
     PRIMARY,
     SECONDARY,
     TERTIARY,
@@ -141,14 +181,20 @@ enum class EmojiAvatarHarmonizationColor {
 fun AppTheme(
     darkTheme: Boolean? = isSystemInDarkTheme(),
     dynamicColor: Boolean = true,
-    emojiAvatarHarmonizeColor: EmojiAvatarHarmonizationColor = EmojiAvatarHarmonizationColor.PRIMARY_CONTAINER,
+    emojiAvatarHarmonizeColor: EmojiAvatarHarmonizationColor = EmojiAvatarHarmonizationColor.DEFAULT,
     postHorizontalExtraSpace: Boolean = true,
     postContained: Boolean = true,
     attachmentsHorizontalExtraSpace: Boolean = true,
     attachmentsIsCarousel: Boolean = true,
     postShowUsername: Boolean = true,
     postSwapDateAndUsername: Boolean = false,
-    content: @Composable () -> Unit
+    bottomNavHeight: Dp = 0.dp,
+    navFloating: Boolean = true,
+    navLabeled: Boolean = false,
+    navBlurred: Boolean = true,
+    appBarBlurred: Boolean = true,
+    appBarFaded: Boolean? = null,
+    content: @Composable () -> Unit,
 ) {
 
 
@@ -203,6 +249,12 @@ fun AppTheme(
         LocalAttachmentsIsCarousel provides attachmentsIsCarousel,
         LocalPostShowUsername provides postShowUsername,
         LocalPostSwapDateAndUsername provides postSwapDateAndUsername,
+        LocalBottomNavHeight provides bottomNavHeight,
+        LocalNavFloating provides navFloating,
+        LocalNavLabeled provides navLabeled,
+        LocalNavBlurred provides navBlurred,
+        LocalAppBarBlurred provides appBarBlurred,
+        LocalAppBarFaded provides appBarFaded,
     ) {
         MaterialExpressiveTheme (
             motionScheme = MotionScheme.expressive(),

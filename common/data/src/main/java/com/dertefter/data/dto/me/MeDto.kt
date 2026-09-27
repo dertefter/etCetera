@@ -7,6 +7,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class MeDto(
+    val clanAvatar: String,
     val avatar: String,
     val banner: String?,
     val bio: String?,

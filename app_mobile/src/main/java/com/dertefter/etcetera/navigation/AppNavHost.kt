@@ -7,11 +7,9 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fitInside
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.WindowInsetsRulers
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.ui.NavDisplay
@@ -38,7 +36,9 @@ import com.dertefter.settings_about.SettingsAboutRoute
 import com.dertefter.settings_account.SettingsAccountRoute
 import com.dertefter.settings_privacy.SettingsPrivacyRoute
 import com.dertefter.settings_security.SettingsSecurityRoute
+import com.dertefter.settings_theme.AppBarThemingRoute
 import com.dertefter.settings_theme.EmojiAvatarsRoute
+import com.dertefter.settings_theme.NavThemingRoute
 import com.dertefter.settings_theme.PostsThemeRoute
 import com.dertefter.settings_theme.SettingsThemeRoute
 import com.dertefter.switch_account.SwitchAccountRoute
@@ -91,7 +91,6 @@ fun AppNavHost(
     NavDisplay(
         modifier = modifier
             .background(MaterialTheme.colorScheme.background)
-            .fitInside(WindowInsetsRulers.Ime.current)
             .fillMaxSize(),
         entries = entries,
         onBack = onBack,
@@ -127,6 +126,8 @@ fun RouteContent(route: Routes) {
         is Routes.SettingsTheme -> SettingsThemeRoute()
         is Routes.SettingsThemeAvatars -> EmojiAvatarsRoute()
         is Routes.SettingsThemePosts -> PostsThemeRoute()
+        is Routes.SettingsThemeNav -> NavThemingRoute()
+        is Routes.SettingsThemeAppBar -> AppBarThemingRoute()
         is Routes.SettingsAccount -> SettingsAccountRoute()
         is Routes.SettingsSecurity -> SettingsSecurityRoute()
         is Routes.SettingsPrivacy -> SettingsPrivacyRoute()

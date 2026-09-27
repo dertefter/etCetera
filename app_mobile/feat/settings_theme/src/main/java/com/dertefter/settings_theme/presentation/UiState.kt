@@ -8,5 +8,12 @@ data class UiState(
     val postHorizontalExtraSpace: Boolean,
     val postContained: Boolean,
     val postShowUsername: Boolean,
-    val postSwapDateAndUsername: Boolean
+    val postSwapDateAndUsername: Boolean,
+
+    val navFloating: Boolean,
+    val navLabeled: Boolean,
+    val navBlurred: Boolean,
+    val appBarBlurred: Boolean = true,
+    val appBarFaded: Boolean? = null,
+
 )

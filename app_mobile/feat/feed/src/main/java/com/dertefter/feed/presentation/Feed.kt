@@ -5,7 +5,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -106,7 +105,6 @@ fun Feed(
                     contentPadding = contentPadding,
                     columns = StaggeredGridCells.Adaptive(minSize = 500.dp),
                     verticalItemSpacing = MaterialTheme.spacing.medium,
-                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
                 ) {
                     paginated(paged) {
 

@@ -22,4 +22,17 @@
     <string name="settings_theme_harmonization_primary_container">Основной контейнер</string>
     <string name="settings_theme_harmonization_secondary_container">Вторичный контейнер</string>
     <string name="settings_theme_harmonization_tertiary_container">Третичный контейнер</string>
+    <string name="settings_theme_nav_bar">Панель навигации</string>
+    <string name="settings_theme_harmonization_default">Стандарт</string>
+    <string name="settings_theme_nav_bar_style">Стиль панели навигации</string>
+    <string name="settings_theme_nav_floating">Плавающая панель навигации</string>
+    <string name="settings_theme_nav_labeled">Подписи</string>
+    <string name="settings_theme_nav_blurred">Размытие фона</string>
+    <string name="settings_theme_app_bar">Верхняя панель</string>
+    <string name="settings_theme_app_bar_style">Стиль верхней панели</string>
+    <string name="settings_theme_app_bar_background">Фон верхней панели</string>
+    <string name="settings_theme_app_bar_blurred">Эффекты размытия</string>
+    <string name="settings_theme_app_bar_background_auto">Авто</string>
+    <string name="settings_theme_app_bar_background_fade">Фейд</string>
+    <string name="settings_theme_app_bar_background_solid">Заливка</string>
 </resources>

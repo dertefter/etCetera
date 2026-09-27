@@ -175,17 +175,19 @@ fun NewPollCard(
 )
 @Composable
 fun NewPollCardPreview() {
-    AppTheme {
-        NewPollCard(
-            title = "Sample Poll",
-            questions = listOf(
-                NewPollOptionUiModel("Option 1", "1"),
-                NewPollOptionUiModel("Option 2", "2"),
-                NewPollOptionUiModel("", "3")
-            ),
-            isMultipleChoice = false
-        )
-    }
+    AppTheme(
+        content = {
+            NewPollCard(
+                title = "Sample Poll",
+                questions = listOf(
+                    NewPollOptionUiModel("Option 1", "1"),
+                    NewPollOptionUiModel("Option 2", "2"),
+                    NewPollOptionUiModel("", "3")
+                ),
+                isMultipleChoice = false
+            )
+        },
+    )
 }
 
 @Preview(showBackground = false,
@@ -193,16 +195,18 @@ fun NewPollCardPreview() {
 )
 @Composable
 fun NewPollCardPreview2() {
-    AppTheme {
-        NewPollCard(
-            title = "Sample Poll",
-            questions = listOf(
-                NewPollOptionUiModel("Option 1", "1"),
-                NewPollOptionUiModel("Option 2", "2"),
-                NewPollOptionUiModel("", "3")
-            ),
-            isMultipleChoice = true
-        )
-    }
+    AppTheme(
+        content = {
+            NewPollCard(
+                title = "Sample Poll",
+                questions = listOf(
+                    NewPollOptionUiModel("Option 1", "1"),
+                    NewPollOptionUiModel("Option 2", "2"),
+                    NewPollOptionUiModel("", "3")
+                ),
+                isMultipleChoice = true
+            )
+        },
+    )
 }
 

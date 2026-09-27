@@ -8,5 +8,10 @@ data class ThemeState(
     val postHorizontalExtraSpace: Boolean,
     val postContained: Boolean,
     val postShowUsername: Boolean,
-    val postSwapDateAndUsername: Boolean
+    val postSwapDateAndUsername: Boolean,
+    val navFloating: Boolean,
+    val navLabeled: Boolean,
+    val navBlurred: Boolean,
+    val appBarBlurred: Boolean,
+    val appBarFaded: Boolean?
 )

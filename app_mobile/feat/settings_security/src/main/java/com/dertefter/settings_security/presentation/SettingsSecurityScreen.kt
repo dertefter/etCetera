@@ -3,17 +3,15 @@ package com.dertefter.settings_security.presentation
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FabPosition
-import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -29,21 +27,24 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.DialogProperties
 import com.dertefter.data.dto.auth.AuthSessionDto
 import com.dertefter.design.components.PullToRefreshIndicator
+import com.dertefter.design.components.appbar.AppTopBar
 import com.dertefter.design.components.buttons.AppNavigationIcon
 import com.dertefter.design.components.lists.SegmentedColumn
 import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
+import com.dertefter.design.theme.bottomNavHeight
 import com.dertefter.design.theme.spacing
 import com.dertefter.settings_security.R
 import com.dertefter.settings_security.presentation.component.SessionDialogContent
 import com.dertefter.settings_security.presentation.component.SessionItemContent
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.rememberHazeState
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -54,6 +55,8 @@ fun SettingsSecurityScreen(
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val pullToRefreshState = rememberPullToRefreshState()
     var selectedSession by remember { mutableStateOf<AuthSessionDto?>(null) }
+
+    val hazeState = rememberHazeState()
 
     PullToRefreshBox(
         modifier = Modifier.fillMaxSize(),
@@ -72,7 +75,8 @@ fun SettingsSecurityScreen(
     ) {
         Scaffold(
             topBar = {
-                LargeFlexibleTopAppBar(
+                AppTopBar(
+                    hazeState = hazeState,
                     title = {
                         Text(text = stringResource(R.string.settings_security_title))
                     },
@@ -108,19 +112,16 @@ fun SettingsSecurityScreen(
 
         ) { contentPadding ->
 
-            val combinedPadding = PaddingValues(
-                top = contentPadding.calculateTopPadding() + MaterialTheme.spacing.medium,
-                bottom = contentPadding.calculateBottomPadding() + MaterialTheme.spacing.medium,
-                start = contentPadding.calculateStartPadding(LocalLayoutDirection.current) + MaterialTheme.spacing.defaultScreenPadding,
-                end = contentPadding.calculateEndPadding(LocalLayoutDirection.current) + MaterialTheme.spacing.defaultScreenPadding
-            )
-
             LazyColumn(
                 modifier = Modifier
+                    .hazeSource(hazeState)
                     .nestedScroll(scrollBehavior.nestedScrollConnection)
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
-                contentPadding = combinedPadding,
+                contentPadding = contentPadding
+                        + PaddingValues(bottom = MaterialTheme.bottomNavHeight)
+                        + PaddingValues(vertical = MaterialTheme.spacing.medium)
+                        + PaddingValues(horizontal = MaterialTheme.spacing.defaultScreenPadding),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 

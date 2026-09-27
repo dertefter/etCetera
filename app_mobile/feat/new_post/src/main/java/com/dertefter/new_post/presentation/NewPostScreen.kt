@@ -375,16 +375,18 @@ fun NewPostScreen(
 @Preview(showBackground = true)
 @Composable
 private fun NewPostScreenPreview() {
-    AppTheme {
-        NewPostScreen(
-            uiState = UiState(
-                content = "Hello",
-                spans = emptyList(),
-                uploads = emptyList(),
-                isUploadingPost = true
-            ),
-            onEvent = {},
-            screenMode = ScreenMode.REPOST
-        )
-    }
+    AppTheme(
+        content = {
+            NewPostScreen(
+                uiState = UiState(
+                    content = "Hello",
+                    spans = emptyList(),
+                    uploads = emptyList(),
+                    isUploadingPost = true
+                ),
+                onEvent = {},
+                screenMode = ScreenMode.REPOST
+            )
+        },
+    )
 }

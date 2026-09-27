@@ -7,18 +7,16 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Scaffold
@@ -33,22 +31,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dertefter.data.dto.app.EmojiAvatarHarmonizationColor
-import com.dertefter.design.components.avatar.EmojiAvatar
+import com.dertefter.design.components.appbar.AppTopBar
+import com.dertefter.design.components.avatar.Avatar
 import com.dertefter.design.components.buttons.AppNavigationIcon
 import com.dertefter.design.components.lists.SegmentedColumn
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
+import com.dertefter.design.theme.bottomNavHeight
 import com.dertefter.design.theme.spacing
 import com.dertefter.settings_theme.R
 import com.dertefter.settings_theme.presentation.Event
 import com.dertefter.settings_theme.presentation.UiState
 import com.gigamole.composefadingedges.horizontalFadingEdges
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.rememberHazeState
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -62,9 +63,12 @@ fun EmojiAvatarsScreen(
 
     val previewEmojiList = listOf("💙", "🦎", "🎁", "⚙️", "🥲", "🍃", "👽", "🦐")
 
+    val hazeState = rememberHazeState()
+
     Scaffold(
         topBar = {
-            LargeFlexibleTopAppBar(
+            AppTopBar(
+                hazeState = hazeState,
                 title = {
                     Text(text = stringResource(R.string.settings_theme_emoji_avatar))
                 },
@@ -79,19 +83,16 @@ fun EmojiAvatarsScreen(
             )
         }) { contentPadding ->
 
-        val contentPadding = PaddingValues(
-            top = contentPadding.calculateTopPadding() + MaterialTheme.spacing.medium,
-            bottom = contentPadding.calculateBottomPadding() + MaterialTheme.spacing.medium,
-            start = contentPadding.calculateStartPadding(LocalLayoutDirection.current) + MaterialTheme.spacing.defaultScreenPadding,
-            end = contentPadding.calculateEndPadding(LocalLayoutDirection.current) + MaterialTheme.spacing.defaultScreenPadding
-        )
-
         LazyColumn(
             modifier = Modifier
+                .hazeSource(hazeState)
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
                 .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large),
             contentPadding = contentPadding
+                    + PaddingValues(bottom = MaterialTheme.bottomNavHeight)
+                    + PaddingValues(vertical = MaterialTheme.spacing.medium)
+                    + PaddingValues(horizontal = MaterialTheme.spacing.defaultScreenPadding)
         ) {
 
             item {
@@ -105,8 +106,8 @@ fun EmojiAvatarsScreen(
                     horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
                 ) {
                     previewEmojiList.forEach {
-                        EmojiAvatar(
-                            emoji = it,
+                        Avatar(
+                            data = it,
                             containerSize = 74.dp
                         )
                     }
@@ -169,6 +170,7 @@ fun EmojiAvatarsScreen(
 @Composable
 private fun EmojiAvatarHarmonizationColor.getDisplayName(): String {
     return when (this) {
+        EmojiAvatarHarmonizationColor.DEFAULT -> stringResource(R.string.settings_theme_harmonization_default)
         EmojiAvatarHarmonizationColor.PRIMARY -> stringResource(R.string.settings_theme_harmonization_primary)
         EmojiAvatarHarmonizationColor.SECONDARY -> stringResource(R.string.settings_theme_harmonization_secondary)
         EmojiAvatarHarmonizationColor.TERTIARY -> stringResource(R.string.settings_theme_harmonization_tertiary)
@@ -183,6 +185,7 @@ private fun EmojiAvatarHarmonizationColor.getDisplayName(): String {
 private fun EmojiAvatarHarmonizationColor.getColors(): Pair<Color, Color> {
     val colorScheme = MaterialTheme.colorScheme
     return when (this) {
+        EmojiAvatarHarmonizationColor.DEFAULT -> colorScheme.surfaceVariant to colorScheme.onSurfaceVariant
         EmojiAvatarHarmonizationColor.PRIMARY -> colorScheme.primary to colorScheme.onPrimary
         EmojiAvatarHarmonizationColor.SECONDARY -> colorScheme.secondary to colorScheme.onSecondary
         EmojiAvatarHarmonizationColor.TERTIARY -> colorScheme.tertiary to colorScheme.onTertiary
@@ -196,18 +199,21 @@ private fun EmojiAvatarHarmonizationColor.getColors(): Pair<Color, Color> {
 @Preview(showBackground = true)
 @Composable
 private fun EmojiAvatarsScreenPreview() {
-    AppTheme {
-        EmojiAvatarsScreen(
-            uiState = UiState(
-                emojiAvatarHarmonizeColor = EmojiAvatarHarmonizationColor.PRIMARY_CONTAINER,
-                darkTheme = false,
-                postHorizontalExtraSpace = true,
-                postContained = true,
-                postShowUsername = true,
-                postSwapDateAndUsername = true
-            ),
-            onEvent = {}
-        )
-    }
+    AppTheme(
+        content = {
+            EmojiAvatarsScreen(
+                uiState = UiState(
+                    emojiAvatarHarmonizeColor = EmojiAvatarHarmonizationColor.PRIMARY_CONTAINER,
+                    darkTheme = false,
+                    postHorizontalExtraSpace = true,
+                    postContained = true,
+                    postShowUsername = true,
+                    postSwapDateAndUsername = true,
+                    false,false,false
+                ),
+                onEvent = {}
+            )
+        },
+    )
 }
 

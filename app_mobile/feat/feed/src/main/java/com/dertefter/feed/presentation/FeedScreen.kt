@@ -1,37 +1,24 @@
 package com.dertefter.feed.presentation
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonGroup
 import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.Icon
-import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SmallFloatingActionButton
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
 import androidx.compose.material3.TopAppBarDefaults
@@ -45,8 +32,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -54,13 +39,16 @@ import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.Wallpapers
-import androidx.compose.ui.unit.dp
 import com.dertefter.data.dto.feed.AuthorDto
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.design.components.PullToRefreshIndicator
+import com.dertefter.design.components.appbar.AppTopBar
+import com.dertefter.design.components.buttons.FloatingAction
+import com.dertefter.design.components.buttons.FloatingActions
+import com.dertefter.design.components.buttons.FloatingActionsScrolledStatus
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
-import com.dertefter.design.theme.rounding
+import com.dertefter.design.theme.bottomNavHeight
 import com.dertefter.design.theme.spacing
 import com.dertefter.feed.R
 import com.jamal_aliev.paginator.core.extension.isProgressState
@@ -69,6 +57,8 @@ import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
 import com.jamal_aliev.paginator.cursor.bookmark.CursorBookmark
 import com.jamal_aliev.paginator.cursor.dsl.mutableCursorPaginator
 import com.jamal_aliev.paginator.cursor.load.CursorLoadResult
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class, ExperimentalFoundationApi::class)
@@ -111,6 +101,8 @@ fun FeedScreen(
     val currentUiState = uiStates[currentTab]
     val isRefreshing = currentUiState is PaginatorUiState.Content && currentUiState.prependState.isProgressState()
 
+    val hazeState = rememberHazeState()
+
     LaunchedEffect(
         popularScrollBehavior.state.heightOffset,
         clanScrollBehavior.state.heightOffset,
@@ -134,24 +126,19 @@ fun FeedScreen(
 
     val currentListState = gridStates[tabs[pagerState.currentPage]]!!
 
-    val isUpFabVisible by remember(currentListState) {
+    val floatingActionsScrolledStatus by remember(currentListState) {
         derivedStateOf {
-            currentListState.firstVisibleItemIndex > 3
+            when {
+                currentListState.firstVisibleItemIndex > 3 -> FloatingActionsScrolledStatus.MORE_SCROLLED
+                scrollBehavior.state.overlappedFraction > 0f -> FloatingActionsScrolledStatus.SCROLLED
+                else -> FloatingActionsScrolledStatus.IDLE
+            }
         }
     }
 
-    val addFabSize by animateDpAsState(
-        animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
-        targetValue = if (isUpFabVisible) 40.dp else 64.dp
-    )
-
-    val addFabCornerRadius by animateDpAsState(
-        animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
-        targetValue = if (isUpFabVisible) MaterialTheme.rounding.medium else MaterialTheme.rounding.largeIncreased
-    )
-
     PullToRefreshBox(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize(),
         state = pullToRefreshState,
         isRefreshing = isRefreshing,
         onRefresh = { onEvent(Event.OnRefresh(currentTab)) },
@@ -166,30 +153,19 @@ fun FeedScreen(
     ) {
         Scaffold(
             topBar = {
-                val containerColor = lerp(
-                    MaterialTheme.colorScheme.surface,
-                    MaterialTheme.colorScheme.surfaceContainer,
-                    scrollBehavior.state.overlappedFraction
-                )
-                Surface(color = containerColor) {
-                    Column {
-                        LargeFlexibleTopAppBar(
-                            title = {
-                                Text(stringResource(R.string.feed_title))
-                            },
-                            colors = TopAppBarDefaults.topAppBarColors(
-                                containerColor = Color.Transparent,
-                                scrolledContainerColor = Color.Transparent
-                            ),
-                            scrollBehavior = scrollBehavior,
-                        )
-
+                AppTopBar(
+                    hazeState = hazeState,
+                    title = {
+                        Text(stringResource(R.string.feed_title))
+                    },
+                    scrollBehavior = scrollBehavior,
+                    supportingContent = {
                         ButtonGroup(
                             overflowIndicator = { ButtonGroupDefaults.OverflowIndicator(it) },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
-                                .padding(bottom = MaterialTheme.spacing.small),
+                                .padding(bottom = MaterialTheme.spacing.small)
+                                .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
                             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
                         )
                         {
@@ -268,63 +244,40 @@ fun FeedScreen(
                             }
                         }
                     }
-                }
+                )
 
             },
             floatingActionButton = {
-                Column(
-                    horizontalAlignment = Alignment.End,
-                ) {
-                    SmallFloatingActionButton(
-                        modifier = Modifier.size(addFabSize),
-                        shape = RoundedCornerShape(addFabCornerRadius),
-                        onClick = { onEvent(Event.OnOpenNewPost) },
-                    ) {
-                        Icon(Icons.Add, stringResource(R.string.feed_create_post))
-                    }
-
-                    AnimatedVisibility(
-                        visible = isUpFabVisible,
-                        enter = fadeIn(
-                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
-                        ) + scaleIn(
-                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
-                        ) + expandVertically(
-                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
-                        ),
-                        exit = fadeOut(
-                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
-                        ) + scaleOut(
-                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
-                        ) + shrinkVertically(
-                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
-                        )
-                    ) {
-                        SmallFloatingActionButton(
-                            modifier = Modifier
-                                .padding(top = MaterialTheme.spacing.large)
-                                .size(64.dp),
-                            shape = MaterialTheme.shapes.largeIncreased,
-                            onClick = {
-                                scope.launch {
-                                    currentListState.animateScrollToItem(0)
-                                }
-                                scrollBehavior.state.heightOffset = 0f
-                                scrollBehavior.state.contentOffset = 0f
-                            },
-                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                            contentColor = MaterialTheme.colorScheme.secondary
-                        ) {
-                            Icon(Icons.ArrowWarmUp, stringResource(R.string.feed_scroll_to_top))
+                FloatingActions(
+                    modifier = Modifier
+                        .padding(bottom = MaterialTheme.bottomNavHeight),
+                    floatingActionsScrolledStatus = floatingActionsScrolledStatus,
+                    primaryFloatingAction = FloatingAction(
+                        icon = Icons.Add,
+                        contentDescription = stringResource(R.string.feed_create_post),
+                        onClick = { onEvent(Event.OnOpenNewPost) }
+                    ),
+                    secondaryFloatingAction = FloatingAction(
+                        icon = Icons.ArrowWarmUp,
+                        contentDescription = stringResource(R.string.feed_scroll_to_top),
+                        onClick = {
+                            scope.launch {
+                                currentListState.animateScrollToItem(0)
+                            }
+                            scrollBehavior.state.heightOffset = 0f
+                            scrollBehavior.state.contentOffset = 0f
                         }
-                    }
-                }
+                    )
+                )
             }
         ) { contentPadding ->
-            Box(Modifier.fillMaxSize()) {
+            Box(Modifier
+                .fillMaxSize()) {
                 HorizontalPager(
                     state = pagerState,
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .hazeSource(hazeState)
+                        .fillMaxSize(),
                     userScrollEnabled = false
                 ) { page ->
                     val tab = tabs[page]
@@ -332,7 +285,8 @@ fun FeedScreen(
                         paginator = paginators[tab]!!,
                         onEvent = onEvent,
                         uiState = uiStates[tab]!!,
-                        contentPadding = contentPadding,
+                        contentPadding = contentPadding
+                                + PaddingValues(bottom = MaterialTheme.bottomNavHeight),
                         scrollBehavior = scrollBehaviors[tab]!!,
                         gridState = gridStates[tab]!!
                     )
@@ -348,157 +302,159 @@ fun FeedScreen(
 )
 @Composable
 fun FeedScreenPreview() {
-    AppTheme {
-        val sampleAuthor = AuthorDto(
-            id = "1",
-            avatar = "😊",
-            username = "johndoe",
-            verified = true,
-            hasNuksta = false,
-            displayName = "John Doe"
-        )
-
-        val samplePosts = listOf(
-            PostDto(
+    AppTheme(
+        content = {
+            val sampleAuthor = AuthorDto(
                 id = "1",
-                content = "This is a sample post",
-                spans = emptyList(),
-                likesCount = 10,
-                commentsCount = 2,
-                repostsCount = 1,
-                viewsCount = 100,
-                author = sampleAuthor,
-                attachments = emptyList(),
-                isLiked = false,
-                isReposted = false,
-                isOwner = false,
-                isViewed = true,
-                createdAt = "2023-10-27T10:00:00Z",
-                vs = ""
-            ),
-            PostDto(
-                id = "2",
-                content = "Another sample post",
-                spans = emptyList(),
-                likesCount = 5,
-                commentsCount = 0,
-                repostsCount = 0,
-                viewsCount = 50,
-                author = sampleAuthor,
-                attachments = emptyList(),
-                isLiked = true,
-                isReposted = false,
-                isOwner = false,
-                isViewed = true,
-                createdAt = "2023-10-27T11:00:00Z",
-                vs = ""
-            ),
-            PostDto(
-                id = "3",
-                content = "Another sample post",
-                spans = emptyList(),
-                likesCount = 5,
-                commentsCount = 0,
-                repostsCount = 0,
-                viewsCount = 50,
-                author = sampleAuthor,
-                attachments = emptyList(),
-                isLiked = true,
-                isReposted = false,
-                isOwner = false,
-                isViewed = true,
-                createdAt = "2023-10-27T11:00:00Z",
-                vs = ""
-            ),
-            PostDto(
-                id = "4",
-                content = "Another sample post",
-                spans = emptyList(),
-                likesCount = 5,
-                commentsCount = 0,
-                repostsCount = 0,
-                viewsCount = 50,
-                author = sampleAuthor,
-                attachments = emptyList(),
-                isLiked = true,
-                isReposted = false,
-                isOwner = false,
-                isViewed = true,
-                createdAt = "2023-10-27T11:00:00Z",
-                vs = ""
-            ),
-            PostDto(
-                id = "5",
-                content = "Another sample post",
-                spans = emptyList(),
-                likesCount = 5,
-                commentsCount = 0,
-                repostsCount = 0,
-                viewsCount = 50,
-                author = sampleAuthor,
-                attachments = emptyList(),
-                isLiked = true,
-                isReposted = false,
-                isOwner = false,
-                isViewed = true,
-                createdAt = "2023-10-27T11:00:00Z",
-                vs = ""
-            ),
-            PostDto(
-                id = "7",
-                content = "Another sample post",
-                spans = emptyList(),
-                likesCount = 5,
-                commentsCount = 0,
-                repostsCount = 0,
-                viewsCount = 50,
-                author = sampleAuthor,
-                attachments = emptyList(),
-                isLiked = true,
-                isReposted = false,
-                isOwner = false,
-                isViewed = true,
-                createdAt = "2023-10-27T11:00:00Z",
-                vs = ""
+                avatar = "😊",
+                username = "johndoe",
+                verified = true,
+                hasNuksta = false,
+                displayName = "John Doe"
             )
-        )
 
-        val samplePaginator = mutableCursorPaginator {
-            load {
-                CursorLoadResult(
-                    data = samplePosts,
-                    bookmark = CursorBookmark(null, "initial", null)
+            val samplePosts = listOf(
+                PostDto(
+                    id = "1",
+                    content = "This is a sample post",
+                    spans = emptyList(),
+                    likesCount = 10,
+                    commentsCount = 2,
+                    repostsCount = 1,
+                    viewsCount = 100,
+                    author = sampleAuthor,
+                    attachments = emptyList(),
+                    isLiked = false,
+                    isReposted = false,
+                    isOwner = false,
+                    isViewed = true,
+                    createdAt = "2023-10-27T10:00:00Z",
+                    vs = ""
+                ),
+                PostDto(
+                    id = "2",
+                    content = "Another sample post",
+                    spans = emptyList(),
+                    likesCount = 5,
+                    commentsCount = 0,
+                    repostsCount = 0,
+                    viewsCount = 50,
+                    author = sampleAuthor,
+                    attachments = emptyList(),
+                    isLiked = true,
+                    isReposted = false,
+                    isOwner = false,
+                    isViewed = true,
+                    createdAt = "2023-10-27T11:00:00Z",
+                    vs = ""
+                ),
+                PostDto(
+                    id = "3",
+                    content = "Another sample post",
+                    spans = emptyList(),
+                    likesCount = 5,
+                    commentsCount = 0,
+                    repostsCount = 0,
+                    viewsCount = 50,
+                    author = sampleAuthor,
+                    attachments = emptyList(),
+                    isLiked = true,
+                    isReposted = false,
+                    isOwner = false,
+                    isViewed = true,
+                    createdAt = "2023-10-27T11:00:00Z",
+                    vs = ""
+                ),
+                PostDto(
+                    id = "4",
+                    content = "Another sample post",
+                    spans = emptyList(),
+                    likesCount = 5,
+                    commentsCount = 0,
+                    repostsCount = 0,
+                    viewsCount = 50,
+                    author = sampleAuthor,
+                    attachments = emptyList(),
+                    isLiked = true,
+                    isReposted = false,
+                    isOwner = false,
+                    isViewed = true,
+                    createdAt = "2023-10-27T11:00:00Z",
+                    vs = ""
+                ),
+                PostDto(
+                    id = "5",
+                    content = "Another sample post",
+                    spans = emptyList(),
+                    likesCount = 5,
+                    commentsCount = 0,
+                    repostsCount = 0,
+                    viewsCount = 50,
+                    author = sampleAuthor,
+                    attachments = emptyList(),
+                    isLiked = true,
+                    isReposted = false,
+                    isOwner = false,
+                    isViewed = true,
+                    createdAt = "2023-10-27T11:00:00Z",
+                    vs = ""
+                ),
+                PostDto(
+                    id = "7",
+                    content = "Another sample post",
+                    spans = emptyList(),
+                    likesCount = 5,
+                    commentsCount = 0,
+                    repostsCount = 0,
+                    viewsCount = 50,
+                    author = sampleAuthor,
+                    attachments = emptyList(),
+                    isLiked = true,
+                    isReposted = false,
+                    isOwner = false,
+                    isViewed = true,
+                    createdAt = "2023-10-27T11:00:00Z",
+                    vs = ""
                 )
-            }
-        }
-        val paginators = mapOf(
-            FeedTab.POPULAR to samplePaginator,
-            FeedTab.CLAN to samplePaginator,
-            FeedTab.FOLLOWING to samplePaginator
-        )
-        val uiStates = mapOf(
-            FeedTab.POPULAR to PaginatorUiState.Content(
-                prependState = null,
-                items = samplePosts,
-                appendState = null
-            ),
-            FeedTab.CLAN to PaginatorUiState.Content(
-                prependState = null,
-                items = samplePosts,
-                appendState = null
-            ),
-            FeedTab.FOLLOWING to PaginatorUiState.Content(
-                prependState = null,
-                items = samplePosts,
-                appendState = null
             )
-        )
 
-        FeedScreen(
-            onEvent = {},
-            selectedTab = FeedTab.POPULAR,
-            uiStates = uiStates,
-            paginators = paginators,
-        )
-    }
+            val samplePaginator = mutableCursorPaginator {
+                load {
+                    CursorLoadResult(
+                        data = samplePosts,
+                        bookmark = CursorBookmark(null, "initial", null)
+                    )
+                }
+            }
+            val paginators = mapOf(
+                FeedTab.POPULAR to samplePaginator,
+                FeedTab.CLAN to samplePaginator,
+                FeedTab.FOLLOWING to samplePaginator
+            )
+            val uiStates = mapOf(
+                FeedTab.POPULAR to PaginatorUiState.Content(
+                    prependState = null,
+                    items = samplePosts,
+                    appendState = null
+                ),
+                FeedTab.CLAN to PaginatorUiState.Content(
+                    prependState = null,
+                    items = samplePosts,
+                    appendState = null
+                ),
+                FeedTab.FOLLOWING to PaginatorUiState.Content(
+                    prependState = null,
+                    items = samplePosts,
+                    appendState = null
+                )
+            )
+
+            FeedScreen(
+                onEvent = {},
+                selectedTab = FeedTab.POPULAR,
+                uiStates = uiStates,
+                paginators = paginators,
+            )
+        },
+    )
 }

@@ -1,5 +1,6 @@
 package com.dertefter.data.common
 
+import android.util.Log
 import com.dertefter.data.repository.CrashlyticsRepository
 import kotlinx.coroutines.CancellationException
 
@@ -8,6 +9,7 @@ import kotlinx.coroutines.CancellationException
  */
 fun <T> Result<T>.onFailureLog(repository: CrashlyticsRepository): Result<T> = onFailure {
     if (it !is CancellationException) {
+        Log.e("onFailureLog", it.stackTraceToString())
         repository.showError(it)
     }
 }

@@ -22,4 +22,17 @@
     <string name="settings_theme_harmonization_primary_container">Primary container</string>
     <string name="settings_theme_harmonization_secondary_container">Secondary container</string>
     <string name="settings_theme_harmonization_tertiary_container">Tertiary container</string>
+    <string name="settings_theme_harmonization_default">Default</string>
+    <string name="settings_theme_nav_bar">Navigation bar</string>
+    <string name="settings_theme_nav_bar_style">Navigation bar style</string>
+    <string name="settings_theme_nav_floating">Floating navigation bar</string>
+    <string name="settings_theme_nav_labeled">Labels</string>
+    <string name="settings_theme_nav_blurred">Background blur</string>
+    <string name="settings_theme_app_bar">Top bar</string>
+    <string name="settings_theme_app_bar_style">Top bar style</string>
+    <string name="settings_theme_app_bar_background">Top bar background</string>
+    <string name="settings_theme_app_bar_blurred">Background blur</string>
+    <string name="settings_theme_app_bar_background_auto">Auto</string>
+    <string name="settings_theme_app_bar_background_fade">Fade</string>
+    <string name="settings_theme_app_bar_background_solid">Solid</string>
 </resources>

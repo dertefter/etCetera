@@ -18,9 +18,9 @@ class SettingsRepositoryImpl @Inject constructor(
                 try {
                     EmojiAvatarHarmonizationColor.valueOf(it)
                 } catch (_: IllegalArgumentException) {
-                    EmojiAvatarHarmonizationColor.PRIMARY_CONTAINER
+                    EmojiAvatarHarmonizationColor.DEFAULT
                 }
-            } ?: EmojiAvatarHarmonizationColor.PRIMARY_CONTAINER
+            } ?: EmojiAvatarHarmonizationColor.DEFAULT
         }
 
     override suspend fun updateEmojiAvatarHarmonizationColor(color: EmojiAvatarHarmonizationColor) {
@@ -55,5 +55,35 @@ class SettingsRepositoryImpl @Inject constructor(
 
     override suspend fun updatePostSwapDateAndUsername(value: Boolean) {
         localDataSource.updatePostSwapDateAndUsername(value)
+    }
+
+    override val navFloating: Flow<Boolean> = localDataSource.navFloating
+
+    override suspend fun updateNavFloating(value: Boolean) {
+        localDataSource.updateNavFloating(value)
+    }
+
+    override val navLabeled: Flow<Boolean> = localDataSource.navLabeled
+
+    override suspend fun updateNavLabeled(value: Boolean) {
+        localDataSource.updateNavLabeled(value)
+    }
+
+    override val navBlurred: Flow<Boolean> = localDataSource.navBlurred
+
+    override suspend fun updateNavBlurred(value: Boolean) {
+        localDataSource.updateNavBlurred(value)
+    }
+
+    override val appBarBlurred: Flow<Boolean> = localDataSource.appBarBlurred
+
+    override suspend fun updateAppBarBlurred(value: Boolean) {
+        localDataSource.updateAppBarBlurred(value)
+    }
+
+    override val appBarFaded: Flow<Boolean?> = localDataSource.appBarFaded
+
+    override suspend fun updateAppBarFaded(value: Boolean?) {
+        localDataSource.updateAppBarFaded(value)
     }
 }

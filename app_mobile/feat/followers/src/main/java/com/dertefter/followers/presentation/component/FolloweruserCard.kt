@@ -15,13 +15,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dertefter.data.dto.followers.FollowerUserDto
+import com.dertefter.design.components.avatar.Avatar
 import com.dertefter.design.components.avatar.DisplayName
-import com.dertefter.design.components.avatar.EmojiAvatar
 import com.dertefter.design.components.lists.SegmentedContentItem
-import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
 import com.dertefter.followers.R
 
@@ -48,8 +46,8 @@ fun FollowerUserCard(
             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large)
         )
         {
-            EmojiAvatar(
-                emoji = followerUser.avatar,
+            Avatar(
+                data = followerUser.avatar,
                 containerSize = 48.dp,
                 onClick = onClick
             )
@@ -102,8 +100,8 @@ fun FollowerUserCardVertical(
             .clickable { onClick() },
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
     ) {
-        EmojiAvatar(
-            emoji = followerUser.avatar,
+        Avatar(
+            data = followerUser.avatar,
             containerSize = 86.dp,
             onClick = onClick
         )
@@ -129,39 +127,5 @@ fun FollowerUserCardVertical(
                 Text(stringResource(R.string.followers_follow))
             }
         }
-    }
-}
-
-@Preview(showBackground = false)
-@Composable
-fun FollowerUserCardPreview() {
-    AppTheme {
-        FollowerUserCardVertical(
-            followerUser = FollowerUserDto(
-                id = "1",
-                username = "johndoe",
-                displayName = "John Doe",
-                avatar = "👤",
-                verified = true,
-                isFollowing = false
-            )
-        )
-    }
-}
-
-@Preview(showBackground = false)
-@Composable
-fun FollowerUserCardFollowingPreview() {
-    AppTheme {
-        FollowerUserCard(
-            followerUser = FollowerUserDto(
-                id = "1",
-                username = "johndoe",
-                displayName = "John Doe",
-                avatar = "👤",
-                verified = true,
-                isFollowing = true
-            )
-        )
     }
 }

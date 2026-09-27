@@ -3,14 +3,12 @@ package com.dertefter.settings_theme.presentation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -19,17 +17,20 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.dertefter.data.dto.app.EmojiAvatarHarmonizationColor
+import com.dertefter.design.components.appbar.AppTopBar
 import com.dertefter.design.components.buttons.AppNavigationIcon
 import com.dertefter.design.components.lists.SegmentedColumn
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
+import com.dertefter.design.theme.bottomNavHeight
 import com.dertefter.design.theme.spacing
 import com.dertefter.navigation.Routes
 import com.dertefter.settings_theme.R
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.rememberHazeState
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -39,9 +40,13 @@ fun SettingsThemeScreen(
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
+    val hazeState = rememberHazeState()
+
     Scaffold(
         topBar = {
-            LargeFlexibleTopAppBar(
+
+            AppTopBar(
+                hazeState = hazeState,
                 title = {
                     Text(text = stringResource(R.string.settings_theme_title))
                 },
@@ -56,19 +61,16 @@ fun SettingsThemeScreen(
             )
         }) { contentPadding ->
 
-        val contentPadding = PaddingValues(
-            top = contentPadding.calculateTopPadding() + MaterialTheme.spacing.medium,
-            bottom = contentPadding.calculateBottomPadding() + MaterialTheme.spacing.medium,
-            start = contentPadding.calculateStartPadding(LocalLayoutDirection.current) + MaterialTheme.spacing.defaultScreenPadding,
-            end = contentPadding.calculateEndPadding(LocalLayoutDirection.current) + MaterialTheme.spacing.defaultScreenPadding
-        )
-
         LazyColumn(
             modifier = Modifier
+                .hazeSource(hazeState)
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
                 .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large),
             contentPadding = contentPadding
+                    + PaddingValues(bottom = MaterialTheme.bottomNavHeight)
+                    + PaddingValues(vertical = MaterialTheme.spacing.medium)
+                    + PaddingValues(horizontal = MaterialTheme.spacing.defaultScreenPadding)
         ) {
 
             item{
@@ -125,6 +127,16 @@ fun SettingsThemeScreen(
                     ) {
                         Text(stringResource(R.string.settings_theme_posts_view))
                     }
+                    item(
+                        onClick = { onEvent(Event.OnNavigateTo(Routes.SettingsThemeNav)) }
+                    ) {
+                        Text(stringResource(R.string.settings_theme_nav_bar))
+                    }
+                    item(
+                        onClick = { onEvent(Event.OnNavigateTo(Routes.SettingsThemeAppBar)) }
+                    ) {
+                        Text(stringResource(R.string.settings_theme_app_bar))
+                    }
                 }
             }
 
@@ -145,7 +157,7 @@ private fun SettingsThemeScreenPreview() {
                 postHorizontalExtraSpace = true,
                 postContained = true,
                 postShowUsername = true,
-                postSwapDateAndUsername = true
+                postSwapDateAndUsername = true, true, true, true
             ),
             onEvent = {}
         )

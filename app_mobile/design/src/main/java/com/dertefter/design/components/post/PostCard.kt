@@ -42,8 +42,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dertefter.design.R
+import com.dertefter.design.components.avatar.Avatar
 import com.dertefter.design.components.avatar.DisplayName
-import com.dertefter.design.components.avatar.EmojiAvatar
 import com.dertefter.design.components.poll.PollCard
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
@@ -129,8 +129,8 @@ fun PostCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
             ) {
-                EmojiAvatar(
-                    emoji = post.author.avatar,
+                Avatar(
+                    data = post.author.avatar,
                     onClick = { onUserClick(post.author.id) }
                 )
                 Column(

@@ -43,7 +43,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.dertefter.design.components.appbar.AppToolbar
+import com.dertefter.design.components.appbar.AppTopBar
+import com.dertefter.design.components.appbar.AppTopBarStyle
 import com.dertefter.design.components.lists.segmentedListItemShapes
 import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.components.text_fields.TextFieldItem
@@ -83,11 +84,11 @@ fun ReportScreen(
     Scaffold(
         containerColor = Color.Transparent,
         topBar = {
-            AppToolbar(
-                title = stringResource(R.string.report_title),
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent
-                ),
+            AppTopBar(
+                appTopBarStyle = AppTopBarStyle.SMALL,
+                title = {
+                    Text(stringResource(R.string.report_title))
+                },
                 scrollBehavior = scrollBehavior
             )
         },
@@ -102,7 +103,7 @@ fun ReportScreen(
                         .padding(horizontal = MaterialTheme.spacing.extraLarge)
                         .padding(contentPadding)
                         .fillMaxSize()
-                            .padding(MaterialTheme.spacing.medium),
+                        .padding(MaterialTheme.spacing.medium),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
                 ) {

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,7 +26,6 @@ import androidx.wear.compose.foundation.lazy.TransformingLazyColumn
 import androidx.wear.compose.foundation.lazy.TransformingLazyColumnItemScope
 import androidx.wear.compose.foundation.lazy.TransformingLazyColumnScope
 import androidx.wear.compose.foundation.lazy.TransformingLazyColumnState
-import androidx.wear.compose.foundation.lazy.itemsIndexed
 import androidx.wear.compose.foundation.lazy.rememberTransformingLazyColumnState
 import androidx.wear.compose.material3.FilledTonalIconButton
 import androidx.wear.compose.material3.Icon
@@ -36,8 +36,13 @@ import androidx.wear.compose.material3.lazy.TransformationSpec
 import androidx.wear.compose.material3.lazy.rememberTransformationSpec
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.design.components.common.TransformingListItem
-import com.dertefter.design.components.post.PostCard
+import com.dertefter.design.components.post.PostAttachments
 import com.dertefter.design.components.post.PostCardShimmer
+import com.dertefter.design.components.post.PostContent
+import com.dertefter.design.components.post.PostFooter
+import com.dertefter.design.components.post.PostHeader
+import com.dertefter.design.components.post.PostOriginalPost
+import com.dertefter.design.components.post.PostPoll
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.spacing
 import com.dertefter.feed.R
@@ -110,8 +115,8 @@ fun Feed(
         TransformingLazyColumn(
             Modifier.fillMaxSize(),
             state = listState,
-            contentPadding = contentPadding,
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraLarge)
+            contentPadding = contentPadding + PaddingValues(vertical = MaterialTheme.spacing.small),
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
         ) {
             header?.invoke(this, transformationSpec)
             if (items.isEmpty() && (uiState is PaginatorUiState.Loading || uiState is PaginatorUiState.Idle)) {
@@ -171,30 +176,83 @@ private fun TransformingLazyColumnScope.postItems(
     onEvent: (Event) -> Unit,
     transformationSpec: TransformationSpec
 ) {
-    itemsIndexed(items, key = { _, post -> post.id }) { _, post ->
-        TransformingListItem(transformationSpec = transformationSpec) {
-            PostCard(
-                post = post.toUiModel(),
-                onLike = { onEvent(Event.OnLike(post.id)) },
-                onUnlike = { onEvent(Event.OnUnlike(post.id)) },
-                onCommentsClick = { onEvent(Event.OnNavigateToComments(post.id)) },
-                onUserClick = { userId -> onEvent(Event.OnOpenUser(userId)) },
-                onVote = { optionIds -> onEvent(Event.OnVote(post.id, optionIds)) },
-                onOpenPost = { postId -> onEvent(Event.OnOpenPost(postId)) },
-                onAttachmentClick = { attachments, position ->
-                    onEvent(Event.OnOpenAttachmentsViewer(attachments, position))
-                },
-                onDelete = { onEvent(Event.OnDeletePost(post.id)) },
-                onHashtagClick = {
-                    onEvent(
-                        Event.OnOpenHashtag(it)
-                    )
-                },
-                onPin = { onEvent(Event.OnPin(post.id)) },
-                onUnpin = { onEvent(Event.OnUnpin(post.id)) },
-                onRepostClick = { onEvent(Event.OnRepost(post.id)) }
-            )
+
+    items.forEachIndexed { _, post ->
+        val postUiModel = post.toUiModel()
+        item {
+            TransformingListItem(transformationSpec = transformationSpec) {
+                PostHeader(
+                    post = postUiModel,
+                    onUserClick = { userId -> onEvent(Event.OnOpenUser(userId)) },
+                    onEdit = {},
+                    onPin = { onEvent(Event.OnPin(post.id)) },
+                    onUnpin = { onEvent(Event.OnUnpin(post.id)) },
+                    onDelete = { onEvent(Event.OnDeletePost(post.id)) }
+                )
+            }
         }
+
+        item {
+            TransformingListItem(transformationSpec = transformationSpec) {
+                PostContent(
+                    post = postUiModel,
+                    onOpenPost = { postId -> onEvent(Event.OnOpenPost(postId)) },
+                    onHashtagClick = { onEvent(Event.OnOpenHashtag(it)) },
+                    onUserClick = { userId -> onEvent(Event.OnOpenUser(userId)) }
+                )
+            }
+        }
+
+        item {
+            TransformingListItem(transformationSpec = transformationSpec) {
+                PostAttachments(
+                    attachments = postUiModel.attachments,
+                    onAttachmentClick = { attachments, position ->
+                        onEvent(Event.OnOpenAttachmentsViewer(attachments, position))
+                    }
+                )
+            }
+        }
+
+        item {
+
+            TransformingListItem(transformationSpec = transformationSpec) {
+                PostPoll(
+                    poll = postUiModel.poll,
+                    onVote = { optionIds -> onEvent(Event.OnVote(post.id, optionIds)) }
+                )
+            }
+        }
+
+        item {
+            TransformingListItem(transformationSpec = transformationSpec) {
+                PostOriginalPost(
+                    originalPost = postUiModel.originalPost,
+                    onOpenPost = { postId -> onEvent(Event.OnOpenPost(postId)) },
+                    onHashtagClick = { onEvent(Event.OnOpenHashtag(it)) },
+                    onUserClick = { userId -> onEvent(Event.OnOpenUser(userId)) },
+                    onAttachmentClick = { attachments, position ->
+                        onEvent(Event.OnOpenAttachmentsViewer(attachments, position))
+                    }
+                )
+            }
+        }
+
+        item {
+            TransformingListItem(transformationSpec = transformationSpec) {
+                PostFooter(
+                    modifier = Modifier
+                        .padding(horizontal = MaterialTheme.spacing.medium)
+                        .padding(bottom = MaterialTheme.spacing.medium),
+                    post = postUiModel,
+                    onLike = { onEvent(Event.OnLike(post.id)) },
+                    onUnlike = { onEvent(Event.OnUnlike(post.id)) },
+                    onCommentsClick = { onEvent(Event.OnNavigateToComments(post.id)) },
+                    onRepostClick = { onEvent(Event.OnRepost(post.id)) }
+                )
+            }
+        }
+
     }
 }
 

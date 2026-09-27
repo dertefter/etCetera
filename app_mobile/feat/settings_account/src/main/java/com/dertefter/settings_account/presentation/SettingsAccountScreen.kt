@@ -4,22 +4,25 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -27,26 +30,35 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dertefter.data.dto.me.MeDto
 import com.dertefter.data.dto.user.VisibilityDto
 import com.dertefter.design.components.PullToRefreshIndicator
-import com.dertefter.design.components.avatar.EmojiAvatar
+import com.dertefter.design.components.appbar.AppTopBar
+import com.dertefter.design.components.avatar.Avatar
 import com.dertefter.design.components.buttons.AppNavigationIcon
 import com.dertefter.design.components.lists.SegmentedColumn
 import com.dertefter.design.components.text_fields.TextFieldItem
+import com.dertefter.design.components.util.collapse
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
+import com.dertefter.design.theme.bottomNavHeight
 import com.dertefter.design.theme.spacing
 import com.dertefter.settings_account.R
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.rememberHazeState
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -54,8 +66,31 @@ fun SettingsAccountScreen(
     uiState: UiState,
     onEvent: (Event) -> Unit,
 ) {
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val topAppBarState = rememberTopAppBarState()
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(topAppBarState)
     val pullToRefreshState = rememberPullToRefreshState()
+    val lazyColumnState = rememberLazyListState()
+
+    val density = LocalDensity.current
+    val imeBottomPadding = WindowInsets.ime.asPaddingValues().calculateBottomPadding()
+    val coroutineScope = rememberCoroutineScope()
+    val hazeState = rememberHazeState()
+
+    LaunchedEffect(imeBottomPadding) {
+        if (imeBottomPadding > 0.dp) {
+            coroutineScope.launch {
+                lazyColumnState.animateScrollBy(
+                    with(density) {
+                        imeBottomPadding.toPx()
+                    }
+                )
+            }
+            topAppBarState.collapse()
+
+        }
+    }
+
+
 
     PullToRefreshBox(
         modifier = Modifier.fillMaxSize(),
@@ -73,65 +108,64 @@ fun SettingsAccountScreen(
         }
     ) {
         Scaffold(
-        topBar = {
-            LargeFlexibleTopAppBar(
-                title = {
-                    Text(text = stringResource(R.string.settings_account_title))
-                },
-                navigationIcon = {
-                    AppNavigationIcon(
-                        icon = Icons.ArrowBack,
-                        onClick = { onEvent(Event.OnNavigateBack) },
-                        contentDescription = stringResource(com.dertefter.design.R.string.design_back_content_desc)
-                    )
-                },
-                scrollBehavior = scrollBehavior,
-            )
-        },
-        floatingActionButton = {
-            AnimatedVisibility(
-                visible = uiState.canSave,
-                enter = scaleIn(),
-                exit = scaleOut()
-            ) {
-                FloatingActionButton(
-                    onClick = { onEvent(Event.OnSave) }
+            topBar = {
+                AppTopBar(
+                    hazeState = hazeState,
+                    title = {
+                        Text(text = stringResource(R.string.settings_account_title))
+                    },
+                    navigationIcon = {
+                        AppNavigationIcon(
+                            icon = Icons.ArrowBack,
+                            onClick = { onEvent(Event.OnNavigateBack) },
+                            contentDescription = stringResource(com.dertefter.design.R.string.design_back_content_desc)
+                        )
+                    },
+                    scrollBehavior = scrollBehavior,
+                )
+            },
+            floatingActionButton = {
+                AnimatedVisibility(
+                    visible = uiState.canSave,
+                    enter = scaleIn(),
+                    exit = scaleOut()
                 ) {
-                    Icon(
-                        Icons.Save,
-                        contentDescription = stringResource(R.string.settings_account_save)
-                    )
+                    FloatingActionButton(
+                        onClick = { onEvent(Event.OnSave) }
+                    ) {
+                        Icon(
+                            Icons.Save,
+                            contentDescription = stringResource(R.string.settings_account_save)
+                        )
+                    }
                 }
             }
-        }
 
 
-    ) { contentPadding ->
-
-        val contentPadding = PaddingValues(
-            top = contentPadding.calculateTopPadding() + MaterialTheme.spacing.medium,
-            bottom = contentPadding.calculateBottomPadding() + MaterialTheme.spacing.medium,
-            start = contentPadding.calculateStartPadding(LocalLayoutDirection.current) + MaterialTheme.spacing.defaultScreenPadding,
-            end = contentPadding.calculateEndPadding(LocalLayoutDirection.current) + MaterialTheme.spacing.defaultScreenPadding
-        )
+        ) { contentPadding ->
 
             LazyColumn(
+                state = lazyColumnState,
                 modifier = Modifier
+                    .hazeSource(hazeState)
                     .nestedScroll(scrollBehavior.nestedScrollConnection)
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large),
                 contentPadding = contentPadding
+                        + PaddingValues(bottom = MaterialTheme.bottomNavHeight)
+                        + PaddingValues(vertical = MaterialTheme.spacing.medium)
+                        + PaddingValues(horizontal = MaterialTheme.spacing.defaultScreenPadding)
             ) {
 
                 uiState.currentLogin?.let { currentLogin ->
-                    item{
+                    item {
                         SegmentedColumn(
                             title = stringResource(R.string.settings_account_section_title)
-                        ){
+                        ) {
                             item(
                                 itemInnerPadding = PaddingValues()
-                            ){
-                                Column{
+                            ) {
+                                Column {
 
                                     Text(
                                         currentLogin,
@@ -139,15 +173,14 @@ fun SettingsAccountScreen(
                                         color = MaterialTheme.colorScheme.onSecondaryContainer,
                                         modifier = Modifier
                                             .padding(
-                                            start = MaterialTheme.spacing.large,
-                                            end = MaterialTheme.spacing.large,
-                                            top = MaterialTheme.spacing.large
-                                        )
+                                                start = MaterialTheme.spacing.large,
+                                                end = MaterialTheme.spacing.large,
+                                                top = MaterialTheme.spacing.large
+                                            )
                                             .clip(MaterialTheme.shapes.medium)
                                             .background(MaterialTheme.colorScheme.secondaryContainer)
                                             .padding(MaterialTheme.spacing.large)
-                                            .fillMaxWidth()
-                                        ,
+                                            .fillMaxWidth(),
                                     )
 
                                     Row(
@@ -161,7 +194,7 @@ fun SettingsAccountScreen(
                                                     Event.OnOpenSwitchAccount
                                                 )
                                             },
-                                        ){
+                                        ) {
                                             Text(
                                                 stringResource(R.string.settings_account_switch_account)
                                             )
@@ -173,7 +206,7 @@ fun SettingsAccountScreen(
                                             colors = ButtonDefaults.textButtonColors(
                                                 contentColor = MaterialTheme.colorScheme.error
                                             )
-                                        ){
+                                        ) {
                                             Text(
                                                 stringResource(R.string.settings_account_logout)
                                             )
@@ -189,20 +222,20 @@ fun SettingsAccountScreen(
                 }
 
                 uiState.me?.let { me ->
-                    item{
+                    item {
                         SegmentedColumn(
                             title = stringResource(R.string.settings_account_info_section_title)
-                        ){
-                            item{
+                        ) {
+                            item {
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large)
-                                ){
+                                ) {
                                     Column(
                                         modifier = Modifier.weight(1f),
                                         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
-                                    ){
+                                    ) {
                                         Text(
                                             text = stringResource(R.string.settings_account_emoji_clan_title)
                                         )
@@ -211,8 +244,8 @@ fun SettingsAccountScreen(
                                             style = MaterialTheme.typography.labelMedium
                                         )
                                     }
-                                    EmojiAvatar(
-                                        emoji = me.avatar,
+                                    Avatar(
+                                        data = me.avatar,
                                         containerSize = 48.dp
                                     )
                                 }
@@ -220,7 +253,7 @@ fun SettingsAccountScreen(
 
                             item(
                                 itemInnerPadding = PaddingValues()
-                            ){
+                            ) {
                                 TextFieldItem(
                                     value = uiState.displayNameInput,
                                     hint = stringResource(R.string.settings_account_display_name_hint),
@@ -231,7 +264,7 @@ fun SettingsAccountScreen(
 
                             item(
                                 itemInnerPadding = PaddingValues()
-                            ){
+                            ) {
                                 TextFieldItem(
                                     value = uiState.usernameInput,
                                     hint = stringResource(R.string.settings_account_username_hint),
@@ -242,7 +275,7 @@ fun SettingsAccountScreen(
 
                             item(
                                 itemInnerPadding = PaddingValues()
-                            ){
+                            ) {
                                 TextFieldItem(
                                     value = uiState.bioInput,
                                     hint = stringResource(R.string.settings_account_bio_hint),
@@ -253,15 +286,15 @@ fun SettingsAccountScreen(
                             }
 
 
-
                         }
                     }
                 }
 
+
             }
 
 
-    }
+        }
     }
 }
 
@@ -272,6 +305,7 @@ fun SettingsAccountScreenPreview() {
         SettingsAccountScreen(
             uiState = UiState(
                 me = MeDto(
+                    clanAvatar = "🦐",
                     avatar = "🦐",
                     banner = null,
                     bio = "Bio",

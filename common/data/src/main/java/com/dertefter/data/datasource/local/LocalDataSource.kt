@@ -95,4 +95,19 @@ interface LocalDataSource {
 
     val postSwapDateAndUsername: Flow<Boolean>
     suspend fun updatePostSwapDateAndUsername(value: Boolean)
+
+    val navFloating: Flow<Boolean>
+    suspend fun updateNavFloating(value: Boolean)
+
+    val navLabeled: Flow<Boolean>
+    suspend fun updateNavLabeled(value: Boolean)
+
+    val navBlurred: Flow<Boolean>
+    suspend fun updateNavBlurred(value: Boolean)
+
+    val appBarBlurred: Flow<Boolean>
+    suspend fun updateAppBarBlurred(value: Boolean)
+
+    val appBarFaded: Flow<Boolean?>
+    suspend fun updateAppBarFaded(value: Boolean?)
 }

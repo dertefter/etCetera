@@ -59,7 +59,7 @@ fun PollOptionDto.toUiModel(isChecked: Boolean) = PollOptionUiModel(
 
 fun AttachmentUiModel.toNavigationModel() = AttachmentNavigationModel(id, type, url, mimeType)
 fun AuthorDto.toUiModel() = AuthorUiModel(id, username, displayName, avatar, hasNuksta, verified, pin?.toUiModel())
-fun ShortAuthorDto.toUiModel() = AuthorUiModel(id, username, displayName, avatar, hasNuksta, verified, pin?.toUiModel())
+fun ShortAuthorDto.toUiModel() = AuthorUiModel(id, username, displayName, avatar,hasNuksta, verified, pin?.toUiModel())
 fun PinDto.toUiModel() = PinUiModel(description, name, slug, url)
 fun AttachmentDto.toUiModel() = AttachmentUiModel(id, type, url, mimeType)
 

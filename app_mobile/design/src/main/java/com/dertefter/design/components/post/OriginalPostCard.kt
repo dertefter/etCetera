@@ -36,8 +36,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dertefter.design.R
+import com.dertefter.design.components.avatar.Avatar
 import com.dertefter.design.components.avatar.DisplayName
-import com.dertefter.design.components.avatar.EmojiAvatar
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
@@ -88,8 +88,8 @@ fun OriginalPostCard(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
                 ) {
-                    EmojiAvatar(
-                        emoji = originalPost.author.avatar,
+                    Avatar(
+                        data = originalPost.author.avatar,
                         onClick = { onUserClick(originalPost.author.id) },
                         containerSize = 48.dp
                     )
@@ -230,37 +230,39 @@ fun OriginalPostCard(
 @Preview(showBackground = true)
 @Composable
 fun OriginalPostCardPreview() {
-    AppTheme {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            OriginalPostCard(
-                originalPost = OriginalPostUiModel(
-                    id = "1",
-                    content = "This is a sample post content with some text to see how it looks in the card.",
-                    spans = emptyList(),
-                    author = AuthorUiModel(
-                        id = "user1",
-                        username = "johndoe",
-                        displayName = "John Doe",
-                        avatar = "😊",
-                        hasNuksta = true, verified = true, pin = null
+    AppTheme(
+        content = {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                OriginalPostCard(
+                    originalPost = OriginalPostUiModel(
+                        id = "1",
+                        content = "This is a sample post content with some text to see how it looks in the card.",
+                        spans = emptyList(),
+                        author = AuthorUiModel(
+                            id = "user1",
+                            username = "johndoe",
+                            displayName = "John Doe",
+                            avatar = "😊",
+                            hasNuksta = true, verified = true, pin = null
+                        ),
+                        attachments = listOf(
+                            AttachmentUiModel(
+                                id = "a1",
+                                type = "image",
+                                url = "https://picsum.photos/400/300"
+                            )
+                        ),
+                        poll = null,
+                        createdAt = "2024-08-05T12:00:00Z",
+                        editedAt = null,
+                        isDeleted = false
                     ),
-                    attachments = listOf(
-                        AttachmentUiModel(
-                            id = "a1",
-                            type = "image",
-                            url = "https://picsum.photos/400/300"
-                        )
-                    ),
-                    poll = null,
-                    createdAt = "2024-08-05T12:00:00Z",
-                    editedAt = null,
-                    isDeleted = false
-                ),
-                onAttachmentClick = {_,_ -> }
-            )
-        }
-    }
+                    onAttachmentClick = {_,_ -> }
+                )
+            }
+        },
+    )
 }

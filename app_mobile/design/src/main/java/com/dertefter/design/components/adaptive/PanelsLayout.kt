@@ -166,36 +166,38 @@ fun PanelsLayout(
 @Preview(showBackground = true, device = "spec:width=673dp,height=841dp")
 @Composable
 fun PanelsLayoutPreview2() {
-    AppTheme {
-        PanelsLayout(
-            contentLeft = {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.surface),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "Left Panel",
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
+    AppTheme(
+        content = {
+            PanelsLayout(
+                contentLeft = {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(MaterialTheme.colorScheme.surface),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "Left Panel",
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    }
+                },
+                contentRight = {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(MaterialTheme.colorScheme.surface),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "Right Panel",
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
+                    }
                 }
-            },
-            contentRight = {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.surface),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "Right Panel",
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer
-                    )
-                }
-            }
-        )
-    }
+            )
+        },
+    )
 }

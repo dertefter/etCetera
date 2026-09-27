@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class UserDto(
     val avatar: String = "",
+    val clanAvatar: String = "",
     val banner: String? = null,
     val bio: String? = null,
     val createdAt: String = "",

@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
 import com.dertefter.design.components.avatar.DisplayName
-import com.dertefter.design.components.avatar.SmallEmojiAvatar
+import com.dertefter.design.components.avatar.Avatar
 import com.dertefter.design.theme.WearableTheme
 import com.dertefter.design.theme.spacing
 import com.valentinilk.shimmer.shimmer
@@ -61,10 +61,9 @@ fun CommentCardShimmer(
                         verticalAlignment = Alignment.CenterVertically
                     )
                     {
-                        SmallEmojiAvatar(
-                            emoji = "",
-                            containerSize = 40.dp,
-                            harmonizeColor = MaterialTheme.colorScheme.onSurfaceVariant
+                        Avatar(
+                            data = "",
+                            containerSize = 40.dp
                         )
                         Column (
                             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)

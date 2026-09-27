@@ -16,8 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import com.dertefter.data.dto.search.SearchUserDto
+import com.dertefter.design.components.avatar.Avatar
 import com.dertefter.design.components.avatar.DisplayName
-import com.dertefter.design.components.avatar.EmojiAvatar
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
@@ -38,8 +38,8 @@ fun SearchUserCard(
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large)
     ) {
-        EmojiAvatar(
-            emoji = searchUser.avatar
+        Avatar(
+            data = searchUser.avatar
         )
         Column(
             modifier = Modifier.weight(1f)

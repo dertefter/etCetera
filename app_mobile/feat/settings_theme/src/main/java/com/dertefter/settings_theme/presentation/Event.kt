@@ -16,4 +16,11 @@ sealed interface Event {
     data class OnUpdatePostShowUsername(val value: Boolean) : Event
     data class OnUpdatePostSwapDateAndUsername(val value: Boolean) : Event
 
+    data class OnUpdateNavFloating(val value: Boolean) : Event
+    data class OnUpdateNavLabeled(val value: Boolean) : Event
+    data class OnUpdateNavBlurred(val value: Boolean) : Event
+
+    data class OnUpdateAppBarBlurred(val value: Boolean) : Event
+    data class OnUpdateAppBarFaded(val value: Boolean?) : Event
+
 }

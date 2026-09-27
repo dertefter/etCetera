@@ -120,18 +120,20 @@ fun DisplayName(
 @Preview(showSystemUi = true)
 @Composable
 fun DisplayNamePrev(){
-    AppTheme {
-        DisplayName(
-            name = "JKVFKLVKVNKJFVNDKJNVKJDNVKJFDVJKDFVBKJDFBVKFDBVKJDBVKJDBVKJDF",
-            verified = true,
-            hasNuksta = true,
-            pin = PinUiModel(
-                description = "wawawa",
-                name = "awawaw",
-                slug = "awawaw",
-                url = null
-            ),
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
+    AppTheme(
+        content = {
+            DisplayName(
+                name = "JKVFKLVKVNKJFVNDKJNVKJDNVKJFDVJKDFVBKJDFBVKFDBVKJDBVKJDBVKJDF",
+                verified = true,
+                hasNuksta = true,
+                pin = PinUiModel(
+                    description = "wawawa",
+                    name = "awawaw",
+                    slug = "awawaw",
+                    url = null
+                ),
+                modifier = Modifier.fillMaxWidth()
+            )
+        },
+    )
 }

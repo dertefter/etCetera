@@ -14,7 +14,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -25,7 +24,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import com.dertefter.design.components.appbar.AppTopBar
 import com.dertefter.design.icons.Icons
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.rememberHazeState
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -34,6 +36,8 @@ fun CrashReportsScreen(
     uiState: UiState,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+
+    val hazeState = rememberHazeState()
 
     if (uiState.selectedReportContent != null) {
         AlertDialog(
@@ -58,7 +62,8 @@ fun CrashReportsScreen(
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            LargeFlexibleTopAppBar(
+            AppTopBar(
+                hazeState = hazeState,
                 navigationIcon = {
                     IconButton(onClick = { onEvent(Event.OnBack) }) {
                         Icon(imageVector = Icons.ArrowBack, contentDescription = "Назад")
@@ -82,7 +87,9 @@ fun CrashReportsScreen(
                 }
             } else {
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier
+                        .hazeSource(hazeState)
+                        .fillMaxSize()
                 ) {
                     items(uiState.reports) { report ->
                         ListItem(

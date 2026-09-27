@@ -28,6 +28,8 @@ fun getAppEntryProvider(): (NavKey) -> NavEntry<NavKey> = entryProvider {
     entry<Routes.SettingsTheme> { RouteContent(it) }
     entry<Routes.SettingsThemeAvatars> { RouteContent(it) }
     entry<Routes.SettingsThemePosts> { RouteContent(it) }
+    entry<Routes.SettingsThemeNav> { RouteContent(it) }
+    entry<Routes.SettingsThemeAppBar> { RouteContent(it) }
     entry<Routes.SettingsAccount> { RouteContent(it) }
     entry<Routes.SettingsSecurity> { RouteContent(it) }
     entry<Routes.SwitchAccount> { RouteContent(it) }

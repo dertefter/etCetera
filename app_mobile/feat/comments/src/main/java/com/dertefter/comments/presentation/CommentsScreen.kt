@@ -148,67 +148,69 @@ fun CommentsScreen(
 @Preview(showBackground = true)
 @Composable
 fun CommentsScreenPreview() {
-    AppTheme {
-        val sampleAuthor = AuthorDto(
-            id = "1",
-            avatar = "😊",
-            username = "johndoe",
-            verified = true,
-            hasNuksta = false,
-            displayName = "John Doe"
-        )
-
-        val sampleComments = listOf(
-            CommentDto(
+    AppTheme(
+        content = {
+            val sampleAuthor = AuthorDto(
                 id = "1",
-                content = "This is a sample comment",
-                author = sampleAuthor,
-                likesCount = 10,
-                repliesCount = 2,
-                isLiked = false,
-                createdAt = "2023-10-27T10:00:00Z"
-            ),
-            CommentDto(
-                id = "2",
-                content = "Another sample comment with some more text to see how it looks when it wraps to multiple lines in the preview.",
-                author = sampleAuthor,
-                likesCount = 5,
-                repliesCount = 0,
-                isLiked = true,
-                createdAt = "2023-10-27T11:00:00Z"
+                avatar = "😊",
+                username = "johndoe",
+                verified = true,
+                hasNuksta = false,
+                displayName = "John Doe"
             )
-        )
 
-        val samplePaginator = mutableCursorPaginator {
-            load {
-                CursorLoadResult(
-                    data = sampleComments,
-                    bookmark = CursorBookmark(null, "initial", null)
+            val sampleComments = listOf(
+                CommentDto(
+                    id = "1",
+                    content = "This is a sample comment",
+                    author = sampleAuthor,
+                    likesCount = 10,
+                    repliesCount = 2,
+                    isLiked = false,
+                    createdAt = "2023-10-27T10:00:00Z"
+                ),
+                CommentDto(
+                    id = "2",
+                    content = "Another sample comment with some more text to see how it looks when it wraps to multiple lines in the preview.",
+                    author = sampleAuthor,
+                    likesCount = 5,
+                    repliesCount = 0,
+                    isLiked = true,
+                    createdAt = "2023-10-27T11:00:00Z"
                 )
-            }
-        }
-        val paginators = mapOf(
-            CommentSort.POPULAR to samplePaginator,
-            CommentSort.NEWEST to samplePaginator
-        )
-        val uiStates = mapOf(
-            CommentSort.POPULAR to PaginatorUiState.Content(
-                prependState = null,
-                items = sampleComments,
-                appendState = null
-            ),
-            CommentSort.NEWEST to PaginatorUiState.Content(
-                prependState = null,
-                items = sampleComments,
-                appendState = null
             )
-        )
 
-        CommentsScreen(
-            onEvent = {},
-            selectedTab = CommentSort.POPULAR,
-            uiStates = uiStates,
-            paginators = paginators
-        )
-    }
+            val samplePaginator = mutableCursorPaginator {
+                load {
+                    CursorLoadResult(
+                        data = sampleComments,
+                        bookmark = CursorBookmark(null, "initial", null)
+                    )
+                }
+            }
+            val paginators = mapOf(
+                CommentSort.POPULAR to samplePaginator,
+                CommentSort.NEWEST to samplePaginator
+            )
+            val uiStates = mapOf(
+                CommentSort.POPULAR to PaginatorUiState.Content(
+                    prependState = null,
+                    items = sampleComments,
+                    appendState = null
+                ),
+                CommentSort.NEWEST to PaginatorUiState.Content(
+                    prependState = null,
+                    items = sampleComments,
+                    appendState = null
+                )
+            )
+
+            CommentsScreen(
+                onEvent = {},
+                selectedTab = CommentSort.POPULAR,
+                uiStates = uiStates,
+                paginators = paginators
+            )
+        },
+    )
 }

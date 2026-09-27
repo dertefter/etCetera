@@ -107,14 +107,16 @@ fun DominantEmoji(
 @Preview(showBackground = true)
 @Composable
 fun DominantEmojiPreview() {
-    AppTheme {
-        Box(
-            modifier = Modifier.fillMaxSize()
-        ){
+    AppTheme(
+        content = {
+            Box(
+                modifier = Modifier.fillMaxSize()
+            ){
 
-        }
-        DominantEmoji(
-            dominantEmoji = "🙃"
-        )
-    }
+            }
+            DominantEmoji(
+                dominantEmoji = "🙃"
+            )
+        },
+    )
 }

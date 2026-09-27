@@ -3,19 +3,15 @@ package com.dertefter.etcetera.presentation
 import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.rememberBottomSheetState
 import androidx.compose.runtime.Composable
@@ -259,53 +255,43 @@ fun MainScreen(
         }
     }
 
-    Scaffold(
-        snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState)
-        }
-    ) { _ ->
-        Box(
-            Modifier
-                .fillMaxSize()
-        ) {
-            if (MaterialTheme.isFold) {
-                TabUI(
-                    activeBackStack = activeBackStack,
-                    entries = activeEntries,
-                    selectedTab = selectedTab,
-                    notificationCount = uiState.notificationCount,
-                    appNavHost = appNavHost,
-                    onBack = {
-                        if (activeBackStack.size > 1) {
-                            activeBackStack.removeAt(activeBackStack.lastIndex)
-                        } else if (uiState.currentLogin != null && selectedTab != MainTab.Feed) {
-                            selectedTab = MainTab.Feed
-                        }
-                    },
-                    onNavItemClick = { tab ->
-                        selectedTab = tab
-                    }
-                )
-            } else {
-                PhoneUI(
-                    activeBackStack = activeBackStack,
-                    entries = activeEntries,
-                    selectedTab = selectedTab,
-                    notificationCount = uiState.notificationCount,
-                    appNavHost = appNavHost,
-                    onBack = {
-                        if (activeBackStack.size > 1) {
-                            activeBackStack.removeAt(activeBackStack.lastIndex)
-                        } else if (uiState.currentLogin != null && selectedTab != MainTab.Feed) {
-                            selectedTab = MainTab.Feed
-                        }
-                    },
-                    onNavItemClick = { tab ->
-                        selectedTab = tab
-                    }
-                )
+    if (MaterialTheme.isFold) {
+        TabUI(
+            activeBackStack = activeBackStack,
+            entries = activeEntries,
+            selectedTab = selectedTab,
+            notificationCount = uiState.notificationCount,
+            appNavHost = appNavHost,
+            onBack = {
+                if (activeBackStack.size > 1) {
+                    activeBackStack.removeAt(activeBackStack.lastIndex)
+                } else if (uiState.currentLogin != null && selectedTab != MainTab.Feed) {
+                    selectedTab = MainTab.Feed
+                }
+            },
+            onNavItemClick = { tab ->
+                selectedTab = tab
             }
-        }
+        )
+    }
+    else {
+        PhoneUI(
+            activeBackStack = activeBackStack,
+            entries = activeEntries,
+            selectedTab = selectedTab,
+            notificationCount = uiState.notificationCount,
+            appNavHost = appNavHost,
+            onBack = {
+                if (activeBackStack.size > 1) {
+                    activeBackStack.removeAt(activeBackStack.lastIndex)
+                } else if (uiState.currentLogin != null && selectedTab != MainTab.Feed) {
+                    selectedTab = MainTab.Feed
+                }
+            },
+            onNavItemClick = { tab ->
+                selectedTab = tab
+            }
+        )
     }
 
     if (bottomSheetRoute != null || sheetState.isVisible) {

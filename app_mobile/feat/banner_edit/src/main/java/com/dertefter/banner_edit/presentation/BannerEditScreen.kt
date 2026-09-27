@@ -36,7 +36,6 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
@@ -62,11 +61,14 @@ import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.request.SuccessResult
 import com.dertefter.banner_edit.R
+import com.dertefter.design.components.appbar.AppTopBar
 import com.dertefter.design.components.buttons.AppNavigationIcon
 import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.components.loading.Shimmer
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.rememberHazeState
 import uk.codecymru.drawbox.box.DrawBox
 import uk.codecymru.drawbox.controller.DrawController
 
@@ -128,9 +130,13 @@ fun BannerEditScreen(
         }
     )
 
+    val hazeState = rememberHazeState()
+
+
     Scaffold(
         topBar = {
-            LargeFlexibleTopAppBar(
+            AppTopBar(
+                hazeState = hazeState,
                 title = {
                     Text(stringResource(R.string.banner_edit_title))
                 },
@@ -180,6 +186,7 @@ fun BannerEditScreen(
     ) { contentPadding ->
         Column(
             modifier = Modifier
+                .hazeSource(hazeState)
                 .padding(contentPadding)
                 .fillMaxSize()
                 .verticalScroll(scrollState)
@@ -307,7 +314,9 @@ fun BannerColorPicker(
 @Preview
 @Composable
 fun BannerEditScreenPreview(){
-    AppTheme {
-        BannerEditScreen(UiState(uploadStatus = UploadStatus.UPLOADING)) {}
-    }
+    AppTheme(
+        content = {
+            BannerEditScreen(UiState(uploadStatus = UploadStatus.UPLOADING)) {}
+        },
+    )
 }

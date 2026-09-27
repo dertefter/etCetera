@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
@@ -22,7 +23,6 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedSecureTextField
@@ -45,11 +45,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dertefter.auth.R
+import com.dertefter.design.components.appbar.AppTopBar
 import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
+import com.dertefter.design.theme.bottomNavHeight
 import com.dertefter.design.theme.rounding
 import com.dertefter.design.theme.spacing
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.rememberHazeState
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -61,6 +65,8 @@ fun AuthScreen(onEvent: (Event) -> Unit, uiState: UiState) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     val passwordState = rememberTextFieldState(initialText = uiState.password)
+
+    val hazeState = rememberHazeState()
 
     LaunchedEffect(passwordState) {
         snapshotFlow { passwordState.text.toString() }
@@ -95,7 +101,8 @@ fun AuthScreen(onEvent: (Event) -> Unit, uiState: UiState) {
 
     Scaffold(
         topBar = {
-            LargeFlexibleTopAppBar(
+            AppTopBar(
+                hazeState = hazeState,
                 title = {
                     Text(stringResource(R.string.auth_login_title))
                 },
@@ -104,17 +111,19 @@ fun AuthScreen(onEvent: (Event) -> Unit, uiState: UiState) {
                 },
                 scrollBehavior = scrollBehavior
             )
-
         },
         floatingActionButtonPosition = FabPosition.Center
     )
     { contentPadding ->
         Column(
             modifier = Modifier
+                .hazeSource(hazeState)
                 .fillMaxSize()
                 .padding(contentPadding)
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
                 .verticalScroll(rememberScrollState())
+                .imePadding()
+                .padding(bottom = MaterialTheme.bottomNavHeight)
                 .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
@@ -203,6 +212,7 @@ fun AuthScreen(onEvent: (Event) -> Unit, uiState: UiState) {
                 Button(
                     onClick = { onEvent(Event.OnSubmit) },
                     modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
                         .padding(bottom = MaterialTheme.spacing.extraLarge)
                         .widthIn(max = 400.dp),
                     enabled = uiState.login.isNotBlank() && uiState.password.isNotBlank() && uiState.isLoginValid,
@@ -211,19 +221,18 @@ fun AuthScreen(onEvent: (Event) -> Unit, uiState: UiState) {
                     AnimatedContent(
                         targetState = uiState.isLoading,
                         modifier = Modifier
-                            .padding(horizontal = MaterialTheme.spacing.small),
+                            .padding(horizontal = MaterialTheme.spacing.medium),
                         label = ""
                     ) { isLoading ->
                         if (isLoading) {
                             AppLoadingIndicator(
-                                modifier = Modifier.size(40.dp),
+                                modifier = Modifier.size(24.dp),
                                 color = MaterialTheme.colorScheme.onPrimary
                             )
                         } else {
                             Text(
                                 text = stringResource(R.string.auth_login_button),
                                 modifier = Modifier
-                                    .fillMaxWidth()
                                     .align(Alignment.CenterVertically),
                                 textAlign = TextAlign.Center
                             )
@@ -247,14 +256,16 @@ fun AuthScreen(onEvent: (Event) -> Unit, uiState: UiState) {
 @Preview(showBackground = true)
 @Composable
 fun AuthScreenPreview2() {
-    AppTheme {
-        AuthScreen(
-            onEvent = {},
-            uiState = UiState(isLoading = false,
-                login = "1",
-                password = "f"
+    AppTheme(
+        content = {
+            AuthScreen(
+                onEvent = {},
+                uiState = UiState(isLoading = false,
+                    login = "1",
+                    password = "f"
+                )
             )
-        )
-    }
+        },
+    )
 }
 

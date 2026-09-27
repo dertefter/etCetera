@@ -80,15 +80,17 @@ fun ImageAttachment(
 @Preview(showBackground = false)
 @Composable
 fun ImageAttachmentPreview() {
-    AppTheme {
-        ImageAttachment(
-            attachment = AttachmentUiModel(
-                id = "1",
-                type = "image",
-                url = "https://picsum.photos/400/300",
-                mimeType = "image/jpeg"
-            ),
-            modifier = Modifier.size(200.dp),
-        )
-    }
+    AppTheme(
+        content = {
+            ImageAttachment(
+                attachment = AttachmentUiModel(
+                    id = "1",
+                    type = "image",
+                    url = "https://picsum.photos/400/300",
+                    mimeType = "image/jpeg"
+                ),
+                modifier = Modifier.size(200.dp),
+            )
+        },
+    )
 }

@@ -186,28 +186,30 @@ fun LikeButton(
 @Preview(showBackground = true, widthDp = 100, heightDp = 100)
 @Composable
 fun LikeButtonPreview() {
-    AppTheme() {
-        val values = listOf(1, 2, 6, 10, 100, 200, 1000, 10000, 0)
-        var index by remember { mutableIntStateOf(0) }
-        var isLiked by remember { mutableStateOf(true) }
+    AppTheme(
+        content = {
+            val values = listOf(1, 2, 6, 10, 100, 200, 1000, 10000, 0)
+            var index by remember { mutableIntStateOf(0) }
+            var isLiked by remember { mutableStateOf(true) }
 
-        LaunchedEffect(Unit) {
-            while (true) {
-                delay(8000.milliseconds)
-                index = (index + 1) % values.size
+            LaunchedEffect(Unit) {
+                while (true) {
+                    delay(8000.milliseconds)
+                    index = (index + 1) % values.size
+                }
             }
-        }
 
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ){
-            LikeButton(
-                likes = values[index],
-                isLiked = isLiked,
-                onClick = { isLiked = !isLiked }
-            )
-        }
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ){
+                LikeButton(
+                    likes = values[index],
+                    isLiked = isLiked,
+                    onClick = { isLiked = !isLiked }
+                )
+            }
 
-    }
+        },
+    )
 }

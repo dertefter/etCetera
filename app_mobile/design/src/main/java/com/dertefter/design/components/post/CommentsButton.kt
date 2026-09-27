@@ -122,18 +122,22 @@ fun CommentsButton(
 @Preview(showBackground = false)
 @Composable
 fun CommentsButtonPreview() {
-    AppTheme {
-        CommentsButton(
-            comments = 10
-        )
-    }
+    AppTheme(
+        content = {
+            CommentsButton(
+                comments = 10
+            )
+        },
+    )
 }
 @Preview(showBackground = false)
 @Composable
 fun CommentsButtonPreview2() {
-    AppTheme {
-        CommentsButton(
-            comments = 0
-        )
-    }
+    AppTheme(
+        content = {
+            CommentsButton(
+                comments = 0
+            )
+        },
+    )
 }

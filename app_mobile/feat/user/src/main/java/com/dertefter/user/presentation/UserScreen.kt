@@ -1,29 +1,24 @@
 package com.dertefter.user.presentation
 
 import android.content.Intent
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonGroup
 import androidx.compose.material3.ButtonGroupDefaults
@@ -35,10 +30,8 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -55,6 +48,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -67,14 +61,19 @@ import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.dto.user.UserDto
 import com.dertefter.data.dto.user.VisibilityDto
 import com.dertefter.design.components.PullToRefreshIndicator
-import com.dertefter.design.components.avatar.EmojiAvatar
+import com.dertefter.design.components.appbar.AppTopBar
+import com.dertefter.design.components.appbar.AppTopBarStyle
+import com.dertefter.design.components.avatar.Avatar
 import com.dertefter.design.components.buttons.AppNavigationIcon
+import com.dertefter.design.components.buttons.FloatingAction
+import com.dertefter.design.components.buttons.FloatingActions
+import com.dertefter.design.components.buttons.FloatingActionsScrolledStatus
 import com.dertefter.design.components.common.ErrorLarge
 import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
+import com.dertefter.design.theme.bottomNavHeight
 import com.dertefter.design.theme.isFold
-import com.dertefter.design.theme.rounding
 import com.dertefter.design.theme.spacing
 import com.dertefter.user.R
 import com.dertefter.user.presentation.component.BioCard
@@ -84,6 +83,8 @@ import com.dertefter.user.presentation.mapper.toUiModel
 import com.jamal_aliev.paginator.compose.cursor.rememberPaginated
 import com.jamal_aliev.paginator.core.page.PaginatorUiState
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
@@ -109,23 +110,15 @@ fun UserScreen(
 
     val scope = rememberCoroutineScope()
 
-    val isUpFabVisible by remember(lazyListState) {
+    val floatingActionsScrolledStatus by remember(lazyListState) {
         derivedStateOf {
-            lazyListState.firstVisibleItemIndex > 6
+            when {
+                lazyListState.firstVisibleItemIndex > 6 -> FloatingActionsScrolledStatus.MORE_SCROLLED
+                lazyListState.firstVisibleItemIndex > 0 -> FloatingActionsScrolledStatus.SCROLLED
+                else -> FloatingActionsScrolledStatus.IDLE
+            }
         }
     }
-
-    val addFabSize by animateDpAsState(
-        animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
-        targetValue = if (isUpFabVisible) 40.dp else 64.dp,
-        label = "addFabSize"
-    )
-
-    val addFabCornerRadius by animateDpAsState(
-        animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
-        targetValue = if (isUpFabVisible) MaterialTheme.rounding.medium else MaterialTheme.rounding.largeIncreased,
-        label = "addFabCornerRadius"
-    )
 
     val isStickyHeaderStuck by remember(lazyListState) {
         derivedStateOf {
@@ -163,23 +156,9 @@ fun UserScreen(
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
-    val isScrolled by remember {
-        derivedStateOf {
-            lazyListState.firstVisibleItemIndex > 0 || lazyListState.firstVisibleItemScrollOffset > 0
-        }
-    }
+    val hazeState = rememberHazeState()
 
-    val appBarTitleAlpha by animateFloatAsState(
-        targetValue = if (isScrolled) 1f else 0f,
-        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-        label = "appBarTitleAlpha"
-    )
-
-    val appBarContainerColor by animateColorAsState(
-        targetValue = if (isScrolled) MaterialTheme.colorScheme.surfaceContainer else MaterialTheme.colorScheme.surface,
-        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-        label = "appBarContainerColor"
-    )
+    val appBarTitleAlpha = scrollBehavior.state.overlappedFraction
 
     val shareText = userUiState.userDto?.let {
         stringResource(R.string.user_share_profile_url, it.username)
@@ -211,6 +190,20 @@ fun UserScreen(
         }
     }
 
+    val density = LocalDensity.current
+    val imeBottomPadding = WindowInsets.ime.asPaddingValues().calculateBottomPadding()
+
+    LaunchedEffect(imeBottomPadding) {
+        if (imeBottomPadding > 0.dp) {
+            lazyListState.animateScrollBy(
+                with(density) {
+                    imeBottomPadding.toPx()
+                }
+            )
+        }
+    }
+
+
     PullToRefreshBox(
         modifier = Modifier
             .fillMaxSize(),
@@ -231,15 +224,12 @@ fun UserScreen(
     ) {
         Scaffold(
             modifier = Modifier
-                .nestedScroll(scrollBehavior.nestedScrollConnection)
                 .fillMaxSize(),
             topBar = {
-                TopAppBar(
+                AppTopBar(
+                    appTopBarStyle = AppTopBarStyle.SMALL,
+                    hazeState = hazeState,
                     scrollBehavior = scrollBehavior,
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.background.copy(alpha = 0f),
-                        scrolledContainerColor = appBarContainerColor
-                    ),
                     navigationIcon = {
                         if (showBackButton){
                             AppNavigationIcon(
@@ -259,8 +249,8 @@ fun UserScreen(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
                             ) {
-                                EmojiAvatar(
-                                    emoji = it.avatar,
+                                Avatar(
+                                    data = it.avatar,
                                     containerSize = 40.dp
                                 )
                                 Text(
@@ -380,74 +370,28 @@ fun UserScreen(
                 )
             },
             floatingActionButton = {
-                Column(
-                    horizontalAlignment = Alignment.End,
-                ) {
-
-                    AnimatedVisibility(
-                        visible = isNewPostButtonShow,
-                        enter = fadeIn(
-                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
-                        ) + scaleIn(
-                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
-                        ) + expandVertically(
-                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
-                        ),
-                        exit = fadeOut(
-                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
-                        ) + scaleOut(
-                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
-                        ) + shrinkVertically(
-                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
+                FloatingActions(
+                    modifier = Modifier
+                        .padding(bottom = MaterialTheme.bottomNavHeight),
+                    floatingActionsScrolledStatus = floatingActionsScrolledStatus,
+                    primaryFloatingAction = if (isNewPostButtonShow) {
+                        FloatingAction(
+                            icon = Icons.Add,
+                            contentDescription = stringResource(R.string.user_create_post),
+                            onClick = { onEvent(Event.OnOpenNewPost) }
                         )
-                    ) {
-                        SmallFloatingActionButton(
-                            modifier = Modifier.size(addFabSize),
-                            shape = RoundedCornerShape(addFabCornerRadius),
-                            onClick = {
-                                onEvent(Event.OnOpenNewPost)
-                            },
-                        ) {
-                            Icon(Icons.Add, stringResource(R.string.user_create_post))
+                    } else null,
+                    secondaryFloatingAction = FloatingAction(
+                        icon = Icons.ArrowWarmUp,
+                        contentDescription = stringResource(R.string.user_scroll_to_top),
+                        onClick = {
+                            scope.launch {
+                                lazyListState.animateScrollToItem(0)
+                                scrollBehavior.state.contentOffset = 0f
+                            }
                         }
-                    }
-
-
-                    AnimatedVisibility(
-                        visible = isUpFabVisible,
-                        enter = fadeIn(
-                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
-                        ) + scaleIn(
-                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
-                        ) + expandVertically(
-                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
-                        ),
-                        exit = fadeOut(
-                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
-                        ) + scaleOut(
-                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
-                        ) + shrinkVertically(
-                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
-                        )
-                    ) {
-                        SmallFloatingActionButton(
-                            modifier = Modifier
-                                .padding(top = MaterialTheme.spacing.large)
-                                .size(64.dp),
-                            shape = RoundedCornerShape(MaterialTheme.rounding.largeIncreased),
-                            onClick = {
-                                scope.launch {
-                                    lazyListState.animateScrollToItem(0)
-                                    scrollBehavior.state.contentOffset = 0f
-                                }
-                            },
-                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                            contentColor = MaterialTheme.colorScheme.secondary
-                        ) {
-                            Icon(Icons.ArrowWarmUp, stringResource(R.string.user_scroll_to_top))
-                        }
-                    }
-                }
+                    )
+                )
             }
         )
         { contentPadding ->
@@ -455,8 +399,11 @@ fun UserScreen(
                 LazyColumn(
                     state = lazyListState,
                     modifier = Modifier
+                        .hazeSource(hazeState)
+                        .nestedScroll(scrollBehavior.nestedScrollConnection)
                         .fillMaxSize(),
-                    contentPadding = contentPadding,
+                    contentPadding = contentPadding
+                            + PaddingValues(bottom = MaterialTheme.bottomNavHeight),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
 
@@ -571,7 +518,7 @@ fun UserScreen(
                     }
 
                     if (!userUiState.userDto.isBlockedByMe){
-                        stickyHeader(key = "tabs") {
+                        item(key = "tabs") {
                             val stickyHeaderBackground by animateColorAsState(
                                 targetValue = if (isStickyHeaderStuck) MaterialTheme.colorScheme.surfaceContainer else MaterialTheme.colorScheme.surface,
                                 label = "stickyHeaderBackground"

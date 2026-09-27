@@ -21,9 +21,8 @@ import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
 import coil.compose.AsyncImage
 import com.dertefter.design.components.avatar.DisplayName
-import com.dertefter.design.components.avatar.SmallEmojiAvatar
+import com.dertefter.design.components.avatar.Avatar
 import com.dertefter.design.components.post.AuthorUiModel
-import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.WearableTheme
 import com.dertefter.design.theme.spacing
 
@@ -63,7 +62,7 @@ fun Header(
             }
 
 
-            SmallEmojiAvatar(
+            Avatar(
                 emoji = author.avatar,
                 containerSize = avatarSize,
                 fontSize = 14.sp

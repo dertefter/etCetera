@@ -2,6 +2,7 @@
 # Build and Plugins
 agp = "9.4.1"
 annotationExperimental = "1.6.0"
+hazeBlurMaterial3 = "2.0.0"
 kotlin = "2.4.20"
 ksp = "2.3.12"
 ossLicensesPlugin = "0.13.0"
@@ -28,7 +29,7 @@ composemediaplayer = "0.11.4"
 composeQrCode = "1.0.1"
 composeShimmer = "1.5.0"
 drawboxEnhanced = "2.1.2"
-haze = "2.0.0-rc02"
+haze = "2.0.0"
 material = "1.14.0"
 materialKolor = "5.0.1"
 zoomable = "2.14.0"
@@ -91,6 +92,7 @@ compose-ui = { group = "androidx.compose.ui", name = "ui" }
 compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+haze-blur-material3 = { module = "dev.chrisbanes.haze:haze-blur-material3", version.ref = "hazeBlurMaterial3" }
 lifecycle-viewmodel-navigation3 = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "lifecycleRuntimeKtx" }
 navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "navigation3" }

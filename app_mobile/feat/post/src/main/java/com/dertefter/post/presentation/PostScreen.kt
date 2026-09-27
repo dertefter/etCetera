@@ -1,16 +1,17 @@
 package com.dertefter.post.presentation
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.plus
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -27,7 +28,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dertefter.comments.CommentsViewModel
@@ -35,19 +35,17 @@ import com.dertefter.comments.presentation.CommentSort
 import com.dertefter.comments.presentation.CommentsFeed
 import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.design.components.PullToRefreshIndicator
+import com.dertefter.design.components.appbar.AppTopBar
 import com.dertefter.design.components.buttons.AppNavigationIcon
-import com.dertefter.design.components.post.AuthorUiModel
 import com.dertefter.design.components.post.PostCard
-import com.dertefter.design.components.post.PostUiModel
 import com.dertefter.design.icons.Icons
-import com.dertefter.design.theme.AppTheme
+import com.dertefter.design.theme.bottomNavHeight
 import com.dertefter.design.theme.spacing
 import com.dertefter.post.R
 import com.jamal_aliev.paginator.core.page.PaginatorUiState
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
-import com.jamal_aliev.paginator.cursor.bookmark.CursorBookmark
-import com.jamal_aliev.paginator.cursor.dsl.mutableCursorPaginator
-import com.jamal_aliev.paginator.cursor.load.CursorLoadResult
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.rememberHazeState
 import com.dertefter.comments.presentation.Event as CommentsEvent
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -96,6 +94,8 @@ fun PostScreenContent(
 
     var pullRefreshing by remember { mutableStateOf(false) }
 
+    val hazeState = rememberHazeState()
+
     LaunchedEffect(uiState.isLoading) {
         if (!uiState.isLoading) {
             pullRefreshing = false
@@ -124,7 +124,8 @@ fun PostScreenContent(
     ) {
         Scaffold(
             topBar = {
-                LargeFlexibleTopAppBar(
+                AppTopBar(
+                    hazeState = hazeState,
                     title = {
                         Text(stringResource(R.string.post_title))
                     },
@@ -145,7 +146,7 @@ fun PostScreenContent(
                             paginator = commentsPaginator,
                             onEvent = onCommentsEvent,
                             uiState = commentsUiState,
-                            contentPadding = contentPadding,
+                            contentPadding = contentPadding + PaddingValues(bottom = MaterialTheme.bottomNavHeight),
                             scrollBehavior = scrollBehavior,
                             header = {
                                 item(key = "post_card_${post.id}") {
@@ -246,6 +247,7 @@ fun PostScreenContent(
 
                                 }
                             },
+                            modifier = Modifier.hazeSource(hazeState)
                         )
                     }
                 }
@@ -254,88 +256,3 @@ fun PostScreenContent(
     }
 }
 
-@Preview(showBackground = false)
-@Composable
-fun PostScreenPreview() {
-    AppTheme(
-        postHorizontalExtraSpace = false
-    ) {
-        val sampleAuthor = AuthorUiModel(
-            id = "author1",
-            username = "johndoe",
-            displayName = "John Doe",
-            avatar = "😐",
-            hasNuksta = true,
-            verified = true,
-            pin = null
-        )
-
-        val samplePost = PostUiModel(
-            id = "1",
-            content = "This is a sample post content for the preview.",
-            spans = emptyList(),
-            author = sampleAuthor,
-            attachments = emptyList(),
-            poll = null,
-            likesCount = 10,
-            isLiked = false,
-            commentsCount = 5,
-            repostsCount = 2,
-            isReposted = true,
-            viewsCount = 100,
-            dominantEmoji = "🦎",
-            isPinned = false,
-            isOwner = false,
-            createdAt = "2024-08-05T12:00:00Z",
-            editedAt = null,
-            originalPost = null
-        )
-
-        val sampleComments = listOf(
-            CommentDto(
-                id = "1",
-                content = "This is a sample comment",
-                author = com.dertefter.data.dto.feed.AuthorDto(
-                    id = "1",
-                    avatar = "😊",
-                    username = "johndoe",
-                    verified = true,
-                    hasNuksta = false,
-                    displayName = "John Doe"
-                ),
-                likesCount = 10,
-                repliesCount = 2,
-                isLiked = false,
-                createdAt = "2023-10-27T10:00:00Z"
-            )
-        )
-
-        val samplePaginator = mutableCursorPaginator {
-            load {
-                CursorLoadResult(
-                    data = sampleComments,
-                    bookmark = CursorBookmark(null, "initial", null)
-                )
-            }
-        }
-
-        val uiState = UiState(
-            post = samplePost,
-            isLoading = false
-        )
-
-        PostScreenContent(
-            uiState = uiState,
-            meUserId = "author1",
-            onEvent = {},
-            commentSort = CommentSort.POPULAR,
-            commentsUiState = PaginatorUiState.Content(
-                prependState = null,
-                items = sampleComments,
-                appendState = null
-            ),
-            commentsPaginator = samplePaginator,
-            onCommentsEvent = {}
-        )
-    }
-}

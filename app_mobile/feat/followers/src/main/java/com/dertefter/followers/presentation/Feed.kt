@@ -10,11 +10,10 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -29,11 +28,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.dertefter.data.dto.followers.FollowerUserDto
 import com.dertefter.design.components.loading.AppLoadingIndicator
+import com.dertefter.design.theme.bottomNavHeight
 import com.dertefter.design.theme.spacing
 import com.dertefter.followers.R
 import com.dertefter.followers.presentation.component.FollowerUserCard
@@ -116,13 +115,10 @@ fun Feed(
                             else Modifier
                         ),
                     state = listState,
-                    contentPadding = PaddingValues(
-                        top = contentPadding.calculateTopPadding() + MaterialTheme.spacing.defaultScreenPadding,
-                        bottom = contentPadding.calculateBottomPadding() + MaterialTheme.spacing.defaultScreenPadding,
-                        start = contentPadding.calculateStartPadding(LocalLayoutDirection.current) + MaterialTheme.spacing.defaultScreenPadding,
-                        end = contentPadding.calculateEndPadding(LocalLayoutDirection.current) + MaterialTheme.spacing.defaultScreenPadding
-                    ),
-                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large),
+                    contentPadding = contentPadding
+                            + PaddingValues(bottom = MaterialTheme.bottomNavHeight, top = MaterialTheme.spacing.defaultScreenPadding)
+                            + PaddingValues(horizontal = MaterialTheme.spacing.defaultScreenPadding),
+                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
                     verticalArrangement = Arrangement.spacedBy(verticalSpace)
                 ) {
                     paginated(paged) {

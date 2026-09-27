@@ -8,7 +8,7 @@ data class ActorDto(
     @SerialName("id") val id: String,
     @SerialName("displayName") val displayName: String,
     @SerialName("username") val username: String,
-    @SerialName("avatar") val avatar: String, // Содержит эмодзи или URL
+    @SerialName("avatar") val avatar: String,
     @SerialName("isFollowing") val isFollowing: Boolean,
     @SerialName("isFollowedBy") val isFollowedBy: Boolean
 )

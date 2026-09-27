@@ -113,10 +113,12 @@ fun BioCard(
 @Preview
 @Composable
 private fun BioCardPreview() {
-    AppTheme {
-        BioCard(
-            bio = "This is a sample bio text for the BioCard component. It should show how the text is rendered within the card.",
-            canEdit = true
-        )
-    }
+    AppTheme(
+        content = {
+            BioCard(
+                bio = "This is a sample bio text for the BioCard component. It should show how the text is rendered within the card.",
+                canEdit = true
+            )
+        },
+    )
 }

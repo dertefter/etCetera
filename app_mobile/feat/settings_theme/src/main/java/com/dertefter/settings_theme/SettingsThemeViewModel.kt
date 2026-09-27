@@ -32,13 +32,28 @@ class SettingsThemeViewModel @Inject constructor(
 
     private val _postSwapDateAndUsername = settingsRepository.postSwapDateAndUsername
 
+    private val _navFloating = settingsRepository.navFloating
+
+    private val _navLabeled = settingsRepository.navLabeled
+
+    private val _navBlurred = settingsRepository.navBlurred
+
+    private val _appBarBlurred = settingsRepository.appBarBlurred
+
+    private val _appBarFaded = settingsRepository.appBarFaded
+
     val uiState = combine(
         _emojiAvatarHarmonizationColor,
         _darkTheme,
         _postHorizontalExtraSpace,
         _postContained,
         _postShowUsername,
-        _postSwapDateAndUsername
+        _postSwapDateAndUsername,
+        _navFloating,
+        _navLabeled,
+        _navBlurred,
+        _appBarBlurred,
+        _appBarFaded
     ) { params: Array<Any?> ->
         val color = params[0] as EmojiAvatarHarmonizationColor
         val darkTheme = params[1] as Boolean?
@@ -46,7 +61,12 @@ class SettingsThemeViewModel @Inject constructor(
         val postContained = params[3] as Boolean
         val postShowUsername = params[4] as Boolean
         val postSwapDateAndUsername = params[5] as Boolean
-        UiState(color, darkTheme, postHorizontalExtraSpace, postContained, postShowUsername, postSwapDateAndUsername)
+        val navFloating = params[6] as Boolean
+        val navLabeled = params[7] as Boolean
+        val navBlurred = params[8] as Boolean
+        val appBarBlurred = params[9] as Boolean
+        val appBarFaded = params[10] as Boolean?
+        UiState(color, darkTheme, postHorizontalExtraSpace, postContained, postShowUsername, postSwapDateAndUsername, navFloating, navLabeled, navBlurred, appBarBlurred, appBarFaded)
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
@@ -99,6 +119,36 @@ class SettingsThemeViewModel @Inject constructor(
             is Event.OnUpdatePostSwapDateAndUsername -> {
                 viewModelScope.launch {
                     settingsRepository.updatePostSwapDateAndUsername(event.value)
+                }
+            }
+
+            is Event.OnUpdateNavFloating -> {
+                viewModelScope.launch {
+                    settingsRepository.updateNavFloating(event.value)
+                }
+            }
+
+            is Event.OnUpdateNavLabeled -> {
+                viewModelScope.launch {
+                    settingsRepository.updateNavLabeled(event.value)
+                }
+            }
+
+            is Event.OnUpdateNavBlurred -> {
+                viewModelScope.launch {
+                    settingsRepository.updateNavBlurred(event.value)
+                }
+            }
+
+            is Event.OnUpdateAppBarBlurred -> {
+                viewModelScope.launch {
+                    settingsRepository.updateAppBarBlurred(event.value)
+                }
+            }
+
+            is Event.OnUpdateAppBarFaded -> {
+                viewModelScope.launch {
+                    settingsRepository.updateAppBarFaded(event.value)
                 }
             }
         }
