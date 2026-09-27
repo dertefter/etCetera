@@ -8,7 +8,7 @@ ossLicensesPlugin = "0.13.0"
 
 # AndroidX Core
 appcompat = "1.8.0"
-coreKtx = "1.19.0"
+coreKtx = "1.19.1"
 coreSplashscreen = "1.2.0"
 datastoreCore = "1.2.1"
 datastorePreferences = "1.2.1"
@@ -17,9 +17,9 @@ palette = "1.0.0"
 
 # Jetpack Compose
 activityCompose = "1.13.0"
-composeBomAlpha = "2026.09.00"
-navigationCompose = "2.10.1"
-navigation3 = "1.2.0-rc01"
+composeBomAlpha = "2026.09.01"
+navigationCompose = "2.10.2"
+navigation3 = "1.2.0"
 
 # UI Libraries
 coilCompose = "2.7.0"
@@ -31,10 +31,10 @@ drawboxEnhanced = "2.1.2"
 haze = "2.0.0-rc02"
 material = "1.14.0"
 materialKolor = "5.0.1"
-zoomable = "2.13.0"
+zoomable = "2.14.0"
 
 # Wear OS
-composeWear = "1.7.0-rc01"
+composeWear = "1.7.0"
 playServicesWearable = "20.0.1"
 wearToolingPreview = "1.0.0"
 
