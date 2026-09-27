@@ -11,6 +11,11 @@
     <string name="span_strike">Strikethrough</string>
     <string name="span_monospace">Monospace</string>
     <string name="span_spoiler">Spoiler</string>
+    <string name="span_link">Link</string>
+    <string name="dialog_add_link_title">Insert link</string>
+    <string name="dialog_link_placeholder">https://example.com</string>
+    <string name="action_ok">OK</string>
+    <string name="action_cancel">Cancel</string>
     <string name="action_add_poll">Add poll</string>
     <string name="action_add_media">Add media</string>
     <string name="action_save">Save</string>

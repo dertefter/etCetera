@@ -25,7 +25,11 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.contextmenu.builder.TextContextMenuBuilderScope
 import androidx.compose.foundation.text.contextmenu.builder.item
 import androidx.compose.foundation.text.contextmenu.modifier.appendTextContextMenuComponents
+import androidx.compose.foundation.text.input.OutputTransformation
+import androidx.compose.foundation.text.input.TextFieldLineLimits
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledIconButton
@@ -33,8 +37,10 @@ import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -50,8 +56,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -76,23 +81,35 @@ fun NewPostScreen(
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val scrollState = rememberScrollState()
 
-    var textFieldValue by remember {
-        mutableStateOf(TextFieldValue(uiState.content))
-    }
+    val textFieldState = rememberTextFieldState(initialText = uiState.content)
 
     LaunchedEffect(uiState.content) {
-        if (uiState.content != textFieldValue.text) {
-            textFieldValue = textFieldValue.copy(text = uiState.content)
+        if (textFieldState.text.toString() != uiState.content) {
+            textFieldState.edit {
+                replace(0, length, uiState.content)
+            }
         }
     }
 
-    val selection = textFieldValue.selection
+    LaunchedEffect(textFieldState.text) {
+        val currentText = textFieldState.text.toString()
+        if (currentText != uiState.content) {
+            onEvent(Event.OnContentChanged(currentText))
+        }
+    }
+
+    val selection = textFieldState.selection
     val boldLabel = stringResource(R.string.span_bold)
     val italicLabel = stringResource(R.string.span_italic)
     val underlineLabel = stringResource(R.string.span_underline)
     val strikeLabel = stringResource(R.string.span_strike)
     val monospaceLabel = stringResource(R.string.span_monospace)
     val spoilerLabel = stringResource(R.string.span_spoiler)
+    val linkLabel = stringResource(R.string.span_link)
+
+    var showLinkDialog by remember { mutableStateOf(false) }
+    var linkDialogSelection by remember { mutableStateOf(TextRange.Zero) }
+    var linkUrlInput by remember { mutableStateOf("") }
 
     val menuBuilder: TextContextMenuBuilderScope.() -> Unit = {
         item(label = boldLabel, key = "bold", onClick = { onEvent(Event.OnSpanToggled("bold", selection.min, selection.max)) })
@@ -101,6 +118,11 @@ fun NewPostScreen(
         item(label = strikeLabel, key = "strike", onClick = { onEvent(Event.OnSpanToggled("strike", selection.min, selection.max)) })
         item(label = monospaceLabel, key = "monospace", onClick = { onEvent(Event.OnSpanToggled("monospace", selection.min, selection.max)) })
         item(label = spoilerLabel, key = "spoiler", onClick = { onEvent(Event.OnSpanToggled("spoiler", selection.min, selection.max)) })
+        item(label = linkLabel, key = "link", onClick = {
+            linkDialogSelection = selection
+            linkUrlInput = ""
+            showLinkDialog = true
+        })
     }
 
 
@@ -116,6 +138,47 @@ fun NewPostScreen(
             }
         }
     )
+
+    if (showLinkDialog) {
+        AlertDialog(
+            onDismissRequest = { showLinkDialog = false },
+            title = {
+                Text(text = stringResource(R.string.dialog_add_link_title))
+            },
+            text = {
+                OutlinedTextField(
+                    value = linkUrlInput,
+                    onValueChange = { linkUrlInput = it },
+                    placeholder = { Text(stringResource(R.string.dialog_link_placeholder)) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        if (linkUrlInput.isNotBlank()) {
+                            onEvent(
+                                Event.OnLinkAdded(
+                                    url = linkUrlInput,
+                                    start = linkDialogSelection.min,
+                                    end = linkDialogSelection.max
+                                )
+                            )
+                        }
+                        showLinkDialog = false
+                    }
+                ) {
+                    Text(text = stringResource(R.string.action_ok))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showLinkDialog = false }) {
+                    Text(text = stringResource(R.string.action_cancel))
+                }
+            }
+        )
+    }
 
     Scaffold(
         containerColor = Color.Transparent,
@@ -213,14 +276,19 @@ fun NewPostScreen(
                 )
             }
 
-            BasicTextField(
-                value = textFieldValue.copy(annotatedString = buildPostAnnotatedString(textFieldValue.text, uiState.spans)),
-                onValueChange = {
-                    textFieldValue = it
-                    if (it.text != uiState.content) {
-                        onEvent(Event.OnContentChanged(it.text))
+            val interactionSource = remember { MutableInteractionSource() }
+            val currentText = textFieldState.text.toString()
+            val annotatedString = buildPostAnnotatedString(currentText, uiState.spans)
+            val outputTransformation = remember(annotatedString) {
+                OutputTransformation {
+                    annotatedString.spanStyles.forEach { range ->
+                        addStyle(range.item, range.start, range.end)
                     }
-                },
+                }
+            }
+
+            BasicTextField(
+                state = textFieldState,
                 modifier = Modifier
                     .appendTextContextMenuComponents {
                         menuBuilder()
@@ -232,35 +300,34 @@ fun NewPostScreen(
                     fontSize = 18.sp
                 ),
                 cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
-                decorationBox = { innerTextField ->
-                    TextFieldDefaults.DecorationBox(
-                        value = uiState.content,
-                        innerTextField = innerTextField,
-                        enabled = true,
-                        singleLine = false,
-                        visualTransformation = VisualTransformation.None,
-                        interactionSource = remember { MutableInteractionSource() },
-                        placeholder = {
-                            Text(
-                                text = when (screenMode){
-                                    ScreenMode.NEW_POST -> stringResource(R.string.post_placeholder)
-                                    ScreenMode.REPOST -> stringResource(R.string.repost_placeholder)
-                                    ScreenMode.EDIT_POST -> stringResource(R.string.post_placeholder)
-                                    ScreenMode.NEW_COMMENT -> stringResource(R.string.comment_placeholder)
-                                }
-                            )
-                                      },
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color.Transparent,
-                            unfocusedContainerColor = Color.Transparent,
-                            disabledContainerColor = Color.Transparent,
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent,
-                            cursorColor = MaterialTheme.colorScheme.primary,
-                        ),
-                        contentPadding = PaddingValues(0.dp)
-                    )
-                }
+                lineLimits = TextFieldLineLimits.MultiLine(),
+                outputTransformation = outputTransformation,
+                decorator = TextFieldDefaults.decorator(
+                    state = textFieldState,
+                    enabled = true,
+                    lineLimits = TextFieldLineLimits.MultiLine(),
+                    outputTransformation = outputTransformation,
+                    interactionSource = interactionSource,
+                    placeholder = {
+                        Text(
+                            text = when (screenMode){
+                                ScreenMode.NEW_POST -> stringResource(R.string.post_placeholder)
+                                ScreenMode.REPOST -> stringResource(R.string.repost_placeholder)
+                                ScreenMode.EDIT_POST -> stringResource(R.string.post_placeholder)
+                                ScreenMode.NEW_COMMENT -> stringResource(R.string.comment_placeholder)
+                            }
+                        )
+                    },
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        disabledContainerColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        cursorColor = MaterialTheme.colorScheme.primary,
+                    ),
+                    contentPadding = PaddingValues(0.dp)
+                )
             )
 
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))

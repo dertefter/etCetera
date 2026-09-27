@@ -13,6 +13,8 @@ sealed interface Event {
 
     data class OnSpanToggled(val type: String, val start: Int, val end: Int) : Event
 
+    data class OnLinkAdded(val url: String, val start: Int, val end: Int) : Event
+
     data object OnAddPoll : Event
 
     data object OnRemovePoll : Event

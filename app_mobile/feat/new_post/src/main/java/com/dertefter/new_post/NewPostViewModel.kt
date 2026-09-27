@@ -45,7 +45,7 @@ class NewPostViewModel @Inject constructor(
 
             val request = NewPostRequestDto(
                 content = _content.value,
-                spans = _spans.value.map { SpanDto(it.type, it.length, it.offset, it.username, it.tag) },
+                spans = _spans.value.map { SpanDto(it.type, it.length, it.offset, it.username, it.tag, it.url) },
                 poll = pollDto,
                 attachmentIds = attachmentIds,
                 wallRecipientId = wallRecipientId

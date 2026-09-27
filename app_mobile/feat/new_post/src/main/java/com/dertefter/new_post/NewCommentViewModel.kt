@@ -62,7 +62,7 @@ class NewCommentViewModel @Inject constructor(
 
             val request = NewCommentRequestDto(
                 content = _content.value,
-                spans = _spans.value.map { SpanDto(it.type, it.length, it.offset, it.username, it.tag) },
+                spans = _spans.value.map { SpanDto(it.type, it.length, it.offset, it.username, it.tag, it.url) },
                 attachmentIds = attachmentIds
             )
 
@@ -84,7 +84,7 @@ class NewCommentViewModel @Inject constructor(
 
             val request = NewCommentRequestDto(
                 content = _content.value,
-                spans = _spans.value.map { SpanDto(it.type, it.length, it.offset, it.username, it.tag) },
+                spans = _spans.value.map { SpanDto(it.type, it.length, it.offset, it.username, it.tag, it.url) },
                 attachmentIds = attachmentIds,
                 replyToUserId = replyToUserId
             )

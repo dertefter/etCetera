@@ -29,7 +29,7 @@ class EditPostViewModel @Inject constructor(
             postRepository.getPost(postId).collectLatest { post ->
                 if (post != null) {
                     _content.value = post.content
-                    _spans.value = post.spans.map { SpanUiModel(it.type, it.length, it.offset) }
+                    _spans.value = post.spans.map { SpanUiModel(it.type, it.length, it.offset, it.username, it.tag, it.url) }
                 }
             }
         }
@@ -44,7 +44,7 @@ class EditPostViewModel @Inject constructor(
             _isUploadingPost.value = true
             val request = EditPostRequestDto(
                 content = _content.value,
-                spans = _spans.value.map { SpanDto(it.type, it.length, it.offset) }
+                spans = _spans.value.map { SpanDto(it.type, it.length, it.offset, it.username, it.tag, it.url) }
             )
 
             val result = postRepository.editPost(postId, request)

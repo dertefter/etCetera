@@ -75,6 +75,7 @@ abstract class BaseNewPostViewModel(
                 }
             }
             is Event.OnSpanToggled -> toggleSpan(event.type, event.start, event.end)
+            is Event.OnLinkAdded -> addLinkSpan(event.url, event.start, event.end)
             Event.OnAddPoll -> addPoll()
             Event.OnRemovePoll -> _poll.value = null
             is Event.OnPollTitleChanged -> _poll.update { it?.copy(title = event.title) }
@@ -91,6 +92,40 @@ abstract class BaseNewPostViewModel(
         _spans.update { spans ->
             val existing = spans.find { it.type == type && it.offset == start && it.length == length }
             if (existing != null) spans - existing else spans + SpanUiModel(type, length, start)
+        }
+    }
+
+    private fun addLinkSpan(rawUrl: String, start: Int, end: Int) {
+        val trimmed = rawUrl.trim()
+        if (trimmed.isBlank()) return
+        val url = if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+            trimmed
+        } else {
+            "https://$trimmed"
+        }
+
+        var effectiveStart = start
+        var effectiveEnd = end
+
+        if (effectiveStart == effectiveEnd) {
+            val currentContent = _content.value
+            val safeOffset = effectiveStart.coerceIn(0, currentContent.length)
+            val newContent = StringBuilder(currentContent).insert(safeOffset, url).toString()
+            _content.value = newContent
+            effectiveStart = safeOffset
+            effectiveEnd = safeOffset + url.length
+        }
+
+        val length = effectiveEnd - effectiveStart
+        if (length <= 0) return
+
+        _spans.update { spans ->
+            val existing = spans.find { it.type == "link" && it.offset == effectiveStart && it.length == length }
+            if (existing != null) {
+                spans - existing + SpanUiModel(type = "link", length = length, offset = effectiveStart, url = url)
+            } else {
+                spans + SpanUiModel(type = "link", length = length, offset = effectiveStart, url = url)
+            }
         }
     }
 

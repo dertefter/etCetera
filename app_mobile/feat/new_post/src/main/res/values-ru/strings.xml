@@ -11,6 +11,11 @@
     <string name="span_strike">Зачеркнутый</string>
     <string name="span_monospace">Моноширинный</string>
     <string name="span_spoiler">Спойлер</string>
+    <string name="span_link">Ссылка</string>
+    <string name="dialog_add_link_title">Вставить ссылку</string>
+    <string name="dialog_link_placeholder">https://example.com</string>
+    <string name="action_ok">ОК</string>
+    <string name="action_cancel">Отмена</string>
     <string name="action_add_poll">Добавить опрос</string>
     <string name="action_add_media">Добавить медиа</string>
     <string name="action_save">Сохранить</string>
