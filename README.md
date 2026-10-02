@@ -1,7 +1,5 @@
 
-<img src="art/app_icon.svg" alt="App Icon" width="180" />
-
-[![Get it on Google Play](art/gp_ru.svg)](https://play.google.com/store/apps/details?id=com.dertefter.etcetera)
+<img src="art/app_icon.svg" alt="App Icon" width="120" /><a href="https://play.google.com/store/apps/details?id=com.dertefter.etcetera"><img src="art/gp_ru.svg" alt="App Icon" width="120" /></a>
 
 # etCetera
 
