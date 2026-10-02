@@ -1,6 +1,8 @@
 
 <img src="art/app_icon.svg" alt="App Icon" width="180" />
 
+[![Get it on Google Play](art/gp_ru.svg)](https://play.google.com/store/apps/details?id=com.dertefter.etcetera)
+
 # etCetera
 
 Привет, мой дорогой друг! etCetera – это альтернативный Android-клиент для социальной сети [итд](https://итд.com/) в стиле Material 3 Expressive.
