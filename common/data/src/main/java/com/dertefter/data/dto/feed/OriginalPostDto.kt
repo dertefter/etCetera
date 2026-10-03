@@ -14,6 +14,8 @@ data class OriginalPostDto(
     @SerialName("commentsCount") val commentsCount: Int,
     @SerialName("repostsCount") val repostsCount: Int,
     @SerialName("viewsCount") val viewsCount: Int,
+    @SerialName("isLiked") val isLiked: Boolean = false,
+    @SerialName("isReposted") val isReposted: Boolean = false,
     @SerialName("createdAt") val createdAt: String,
     @SerialName("dominantEmoji") val dominantEmoji: String? = null,
     @SerialName("poll") val poll: PollDto? = null,
