@@ -55,7 +55,7 @@ fun AppNavHost(
 
                 val transformationSpec = rememberTransformationSpec()
 
-                ScreenScaffold() { contentPadding ->
+                ScreenScaffold { contentPadding ->
 
                     TransformingLazyColumn(
                         modifier = Modifier.fillMaxSize(),

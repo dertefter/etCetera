@@ -1,18 +1,18 @@
 package com.dertefter.design.components.post
 
 import android.content.ClipData
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,9 +27,9 @@ import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material3.AppScaffold
@@ -41,8 +41,8 @@ import androidx.wear.compose.material3.IconButton
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
 import com.dertefter.design.R
-import com.dertefter.design.components.avatar.DisplayName
 import com.dertefter.design.components.avatar.Avatar
+import com.dertefter.design.components.avatar.DisplayName
 import com.dertefter.design.components.poll.PollCard
 import com.dertefter.design.components.poll.PollUiModel
 import com.dertefter.design.icons.Icons
@@ -149,14 +149,17 @@ fun PostHeader(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
-            modifier = Modifier.clickable(onClick = { onUserClick(post.author.id) })
+            modifier = Modifier
+                .weight(1f)
+                .clickable(onClick = { onUserClick(post.author.id) })
         ) {
             Avatar(
                 emoji = post.author.avatar,
-                modifier = Modifier.size(32.dp),
-                fontSize = 14.sp
+                modifier = Modifier.size(32.dp)
             )
-            Column {
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
                 DisplayName(
                     name = post.author.displayName,
                     verified = post.author.verified,
@@ -166,19 +169,11 @@ fun PostHeader(
                 Text(
                     text = "@${post.author.username}",
                     style = MaterialTheme.typography.bodyExtraSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
-        }
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        AnimatedVisibility(visible = post.isPinned) {
-            Icon(
-                imageVector = Icons.Keep,
-                contentDescription = null,
-                modifier = Modifier.size(12.dp)
-            )
         }
 
         var showMenu by remember { mutableStateOf(false) }
@@ -339,7 +334,7 @@ fun PostContent(
                     }
                 },
             text = annotatedString,
-            style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurface),
+            style = MaterialTheme.typography.bodyMedium,
             onTextLayout = { layoutResult = it }
         )
     }
@@ -354,7 +349,7 @@ fun PostAttachments(
     if (attachments.isNotEmpty()) {
         AttachmentsCarousel(
             attachments = attachments,
-            itemShape = MaterialTheme.shapes.large,
+            itemShape = RoundedCornerShape(14.dp),
             itemHeight = 100.dp,
             onItemClick = { position ->
                 onAttachmentClick(attachments, position)
@@ -419,30 +414,27 @@ fun PostFooter(
     onCommentsClick: () -> Unit,
     onRepostClick: () -> Unit
 ) {
-    Row(
+    FlowRow(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
+        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
     ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraSmall)
-        ) {
-            LikeButton(
-                likes = post.likesCount,
-                isLiked = post.isLiked,
-                onClick = if (post.isLiked) onUnlike else onLike
-            )
-            if (showCommentsButton) {
-                CommentsButton(
-                    comments = post.commentsCount,
-                    onClick = onCommentsClick
-                )
-            }
-            RepostButton(
-                reposts = post.repostsCount,
-                isReposted = post.isReposted,
-                onClick = onRepostClick
+        LikeButton(
+            likes = post.likesCount,
+            isLiked = post.isLiked,
+            onClick = if (post.isLiked) onUnlike else onLike
+        )
+        if (showCommentsButton) {
+            CommentsButton(
+                comments = post.commentsCount,
+                onClick = onCommentsClick,
             )
         }
+        RepostButton(
+            reposts = post.repostsCount,
+            isReposted = post.isReposted,
+            onClick = onRepostClick,
+        )
     }
 }
 
@@ -459,8 +451,8 @@ fun PostCardPreview() {
                     spans = emptyList(),
                     author = AuthorUiModel(
                         id = "author1",
-                        username = "johndoe",
-                        displayName = "John Doe",
+                        username = "johndffffffffffoe",
+                        displayName = "Johnffffffffffffffffffff Doe",
                         avatar = "😐",
                         hasNuksta = true,
                         verified = true,

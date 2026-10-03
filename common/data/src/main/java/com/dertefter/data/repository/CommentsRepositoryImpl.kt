@@ -39,8 +39,7 @@ class CommentsRepositoryImpl @Inject constructor(
     }
 
     private fun CommentDto.containsComment(targetId: String): Boolean {
-        if (this.id == targetId) return true
-        return (replies?: emptyList()).any { it.containsComment(targetId) }
+        return this.id == targetId || (replies?: emptyList()).any { it.containsComment(targetId) }
     }
 
     private fun CommentDto.recursiveTransform(targetId: String, transform: (CommentDto) -> CommentDto): CommentDto {

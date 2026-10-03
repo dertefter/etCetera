@@ -32,12 +32,23 @@ abstract class BaseNewPostViewModel(
     protected val navigator: Navigator
 ) : ViewModel() {
 
-    protected val _poll = MutableStateFlow<NewPollUiModel?>(null)
-    protected val _spans = MutableStateFlow<List<SpanUiModel>>(emptyList())
-    protected val _uploads = MutableStateFlow<List<Upload>>(emptyList())
-    protected val _content = MutableStateFlow("")
-    protected val _isUploadingPost = MutableStateFlow(false)
-    protected val _originalPost = MutableStateFlow<PostDto?>(null)
+    private val _poll = MutableStateFlow<NewPollUiModel?>(null)
+    protected val poll: MutableStateFlow<NewPollUiModel?> = _poll
+
+    private val _spans = MutableStateFlow<List<SpanUiModel>>(emptyList())
+    protected val spans: MutableStateFlow<List<SpanUiModel>> = _spans
+
+    private val _uploads = MutableStateFlow<List<Upload>>(emptyList())
+    protected val uploads: MutableStateFlow<List<Upload>> = _uploads
+
+    private val _content = MutableStateFlow("")
+    protected val content: MutableStateFlow<String> = _content
+
+    private val _isUploadingPost = MutableStateFlow(false)
+    protected val isUploadingPost: MutableStateFlow<Boolean> = _isUploadingPost
+
+    private val _originalPost = MutableStateFlow<PostDto?>(null)
+    protected val originalPost: MutableStateFlow<PostDto?> = _originalPost
 
     val uiState: StateFlow<UiState> = combine(
         _content,
@@ -69,9 +80,11 @@ abstract class BaseNewPostViewModel(
             is Event.OnRemoveUpload -> _uploads.update { it.filter { upload -> upload.uri != event.uri } }
             is Event.OnRetryUpload -> retryUpload(event.uri)
             is Event.OnContentChanged -> {
-                _content.value = event.content
+                val oldText = _content.value
+                val newText = event.content
+                _content.value = newText
                 _spans.update { spans ->
-                    spans.filter { it.offset + it.length <= event.content.length }
+                    adjustSpans(spans, oldText, newText)
                 }
             }
             is Event.OnSpanToggled -> toggleSpan(event.type, event.start, event.end)
@@ -89,9 +102,80 @@ abstract class BaseNewPostViewModel(
 
     private fun toggleSpan(type: String, start: Int, end: Int) {
         val length = end - start
+        if (length <= 0) return
         _spans.update { spans ->
             val existing = spans.find { it.type == type && it.offset == start && it.length == length }
             if (existing != null) spans - existing else spans + SpanUiModel(type, length, start)
+        }
+    }
+
+    protected fun adjustSpans(spans: List<SpanUiModel>, oldText: String, newText: String): List<SpanUiModel> {
+        if (newText.isEmpty()) return emptyList()
+        if (oldText == newText) return spans
+        if (oldText.isEmpty()) return spans
+
+        var prefixLen = 0
+        val maxPrefix = minOf(oldText.length, newText.length)
+        while (prefixLen < maxPrefix && oldText[prefixLen] == newText[prefixLen]) {
+            prefixLen++
+        }
+
+        var suffixLen = 0
+        val maxSuffix = minOf(oldText.length - prefixLen, newText.length - prefixLen)
+        while (suffixLen < maxSuffix && oldText[oldText.length - 1 - suffixLen] == newText[newText.length - 1 - suffixLen]) {
+            suffixLen++
+        }
+
+        val editStart = prefixLen
+        val editEndOld = oldText.length - suffixLen
+        val editEndNew = newText.length - suffixLen
+        val delta = editEndNew - editEndOld
+
+        return spans.mapNotNull { span ->
+            val oldStart = span.offset
+            val oldEnd = span.offset + span.length
+
+            val newStart: Int
+            val newEnd: Int
+
+            if (editStart == editEndOld) {
+                // Pure insertion
+                if (oldStart < editStart && oldEnd > editStart) {
+                    // Insertion inside span -> span expands
+                    newStart = oldStart
+                    newEnd = oldEnd + delta
+                } else if (oldStart >= editStart) {
+                    // Insertion before or at span start -> shift span right
+                    newStart = oldStart + delta
+                    newEnd = oldEnd + delta
+                } else {
+                    // Insertion after span -> no change
+                    newStart = oldStart
+                    newEnd = oldEnd
+                }
+            } else {
+                // Deletion or replacement
+                if (oldEnd <= editStart) {
+                    // Edit is completely after span
+                    newStart = oldStart
+                    newEnd = oldEnd
+                } else if (oldStart >= editEndOld) {
+                    // Edit is completely before span
+                    newStart = oldStart + delta
+                    newEnd = oldEnd + delta
+                } else {
+                    // Overlap with edit region
+                    newStart = if (oldStart < editStart) oldStart else editStart
+                    newEnd = if (oldEnd > editEndOld) oldEnd + delta else editStart
+                }
+            }
+
+            val newLength = newEnd - newStart
+            if (newLength > 0 && newStart >= 0 && newStart + newLength <= newText.length) {
+                span.copy(offset = newStart, length = newLength)
+            } else {
+                null
+            }
         }
     }
 

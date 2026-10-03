@@ -70,6 +70,14 @@ class PostViewModel @Inject constructor(
     fun onEvent(event: Event) {
         when (event) {
 
+            is Event.OnNavigateToComments -> {
+                navigator.openAsBottomSheet(
+                    Routes.Comments(
+                        postId = event.postId
+                    )
+                )
+            }
+
             is Event.OnOpenAttachmentsViewer -> {
                 navigator.navigate(
                     Routes.AttachmentsViewer(
@@ -135,8 +143,7 @@ class PostViewModel @Inject constructor(
 
             is Event.OnLike -> {
                 viewModelScope.launch {
-                    val id = _postId.value ?: return@launch
-                    postRepository.likePost(id)
+                    postRepository.likePost(event.postId)
                 }
             }
 
@@ -146,15 +153,13 @@ class PostViewModel @Inject constructor(
 
             is Event.OnUnlike -> {
                 viewModelScope.launch {
-                    val id = _postId.value ?: return@launch
-                    postRepository.unlikePost(id)
+                    postRepository.unlikePost(event.postId)
                 }
             }
 
             is Event.OnVote -> {
                 viewModelScope.launch {
-                    val id = _postId.value ?: return@launch
-                    postRepository.votePoll(id, event.optionIds)
+                    postRepository.votePoll(event.postId, event.optionIds)
                 }
             }
 

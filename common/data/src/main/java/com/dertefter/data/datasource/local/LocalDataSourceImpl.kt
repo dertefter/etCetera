@@ -47,20 +47,20 @@ class LocalDataSourceImpl @Inject constructor(
     @param:ApplicationContext private val context: Context
 ) : LocalDataSource {
 
-    private val CURRENT_LOGIN_KEY = stringPreferencesKey("current_login")
-    private val NOTIFICATION_COUNT_KEY = intPreferencesKey("notification_count")
-    private val LOGIN_HISTORY_KEY = stringSetPreferencesKey("login_history")
-    private val EMOJI_AVATAR_HARMONIZATION_COLOR_KEY = stringPreferencesKey("emoji_avatar_harmonization_color")
-    private val DARK_THEME_KEY = booleanPreferencesKey("dark_theme")
-    private val POST_HORIZONTAL_EXTRA_SPACE_KEY = booleanPreferencesKey("post_horizontal_extra_space")
-    private val POST_CONTAINED_KEY = booleanPreferencesKey("post_contained")
-    private val POST_SHOW_USERNAME_KEY = booleanPreferencesKey("post_show_username")
-    private val POST_SWAP_DATE_AND_USERNAME_KEY = booleanPreferencesKey("post_swap_date_and_username")
-    private val NAV_FLOATING_KEY = booleanPreferencesKey("nav_floating")
-    private val NAV_LABELED_KEY = booleanPreferencesKey("nav_labeled")
-    private val NAV_BLURRED_KEY = booleanPreferencesKey("nav_blurred")
-    private val APP_BAR_BLURRED_KEY = booleanPreferencesKey("app_bar_blurred")
-    private val APP_BAR_FADED_KEY = booleanPreferencesKey("app_bar_faded")
+    private val currentLoginKey = stringPreferencesKey("current_login")
+    private val notificationCountKey = intPreferencesKey("notification_count")
+    private val loginHistoryKey = stringSetPreferencesKey("login_history")
+    private val emojiAvatarHarmonizationColorKey = stringPreferencesKey("emoji_avatar_harmonization_color")
+    private val darkThemeKey = booleanPreferencesKey("dark_theme")
+    private val postHorizontalExtraSpaceKey = booleanPreferencesKey("post_horizontal_extra_space")
+    private val postContainedKey = booleanPreferencesKey("post_contained")
+    private val postShowUsernameKey = booleanPreferencesKey("post_show_username")
+    private val postSwapDateAndUsernameKey = booleanPreferencesKey("post_swap_date_and_username")
+    private val navFloatingKey = booleanPreferencesKey("nav_floating")
+    private val navLabeledKey = booleanPreferencesKey("nav_labeled")
+    private val navBlurredKey = booleanPreferencesKey("nav_blurred")
+    private val appBarBlurredKey = booleanPreferencesKey("app_bar_blurred")
+    private val appBarFadedKey = booleanPreferencesKey("app_bar_faded")
     private val dbCache = mutableMapOf<String?, AppDatabase>()
 
     private fun getDatabase(login: String?): AppDatabase {
@@ -75,29 +75,29 @@ class LocalDataSourceImpl @Inject constructor(
     private suspend fun db() = getDatabase(currentLogin.first())
 
     override val currentLogin: Flow<String?> = authDataStore.data.map { preferences ->
-        preferences[CURRENT_LOGIN_KEY]
+        preferences[currentLoginKey]
     }
 
     override suspend fun switchToLogin(login: String?) {
         authDataStore.edit { preferences ->
             if (login == null) {
-                preferences.remove(CURRENT_LOGIN_KEY)
+                preferences.remove(currentLoginKey)
             } else {
-                preferences[CURRENT_LOGIN_KEY] = login
-                val currentHistory = preferences[LOGIN_HISTORY_KEY] ?: emptySet()
-                preferences[LOGIN_HISTORY_KEY] = currentHistory + login
+                preferences[currentLoginKey] = login
+                val currentHistory = preferences[loginHistoryKey] ?: emptySet()
+                preferences[loginHistoryKey] = currentHistory + login
             }
         }
     }
 
     override val loginHistory: Flow<List<String>> = authDataStore.data.map { preferences ->
-        preferences[LOGIN_HISTORY_KEY]?.toList() ?: emptyList()
+        preferences[loginHistoryKey]?.toList() ?: emptyList()
     }
 
     override suspend fun removeLoginFromHistory(login: String) {
         authDataStore.edit { preferences ->
-            val currentHistory = preferences[LOGIN_HISTORY_KEY] ?: emptySet()
-            preferences[LOGIN_HISTORY_KEY] = currentHistory - login
+            val currentHistory = preferences[loginHistoryKey] ?: emptySet()
+            preferences[loginHistoryKey] = currentHistory - login
         }
     }
 
@@ -143,12 +143,12 @@ class LocalDataSourceImpl @Inject constructor(
     }
 
     override val notificationCount: Flow<Int?> = authDataStore.data.map { preferences ->
-        preferences[NOTIFICATION_COUNT_KEY]
+        preferences[notificationCountKey]
     }
 
     override suspend fun saveNotificationCount(count: Int) {
         authDataStore.edit { preferences ->
-            preferences[NOTIFICATION_COUNT_KEY] = count
+            preferences[notificationCountKey] = count
         }
     }
 
@@ -288,123 +288,123 @@ class LocalDataSourceImpl @Inject constructor(
     }
 
     override val emojiAvatarHarmonizationColor: Flow<String?> = settingsDataStore.data.map { preferences ->
-        preferences[EMOJI_AVATAR_HARMONIZATION_COLOR_KEY]
+        preferences[emojiAvatarHarmonizationColorKey]
     }
 
     override suspend fun updateEmojiAvatarHarmonizationColor(color: String?) {
         settingsDataStore.edit { preferences ->
             if (color == null) {
-                preferences.remove(EMOJI_AVATAR_HARMONIZATION_COLOR_KEY)
+                preferences.remove(emojiAvatarHarmonizationColorKey)
             } else {
-                preferences[EMOJI_AVATAR_HARMONIZATION_COLOR_KEY] = color
+                preferences[emojiAvatarHarmonizationColorKey] = color
             }
         }
     }
 
     override val darkTheme: Flow<Boolean?> = settingsDataStore.data.map { preferences ->
-        preferences[DARK_THEME_KEY]
+        preferences[darkThemeKey]
     }
 
     override suspend fun updateDarkTheme(darkTheme: Boolean?) {
         settingsDataStore.edit { preferences ->
             if (darkTheme == null) {
-                preferences.remove(DARK_THEME_KEY)
+                preferences.remove(darkThemeKey)
             } else {
-                preferences[DARK_THEME_KEY] = darkTheme
+                preferences[darkThemeKey] = darkTheme
             }
         }
     }
 
     override val postHorizontalExtraSpace: Flow<Boolean> = settingsDataStore.data.map { preferences ->
-        preferences[POST_HORIZONTAL_EXTRA_SPACE_KEY] ?: true
+        preferences[postHorizontalExtraSpaceKey] ?: true
     }
 
     override suspend fun updatePostHorizontalExtraSpace(value: Boolean) {
         settingsDataStore.edit { preferences ->
-            preferences[POST_HORIZONTAL_EXTRA_SPACE_KEY] = value
+            preferences[postHorizontalExtraSpaceKey] = value
         }
     }
 
     override val postContained: Flow<Boolean> = settingsDataStore.data.map { preferences ->
-        preferences[POST_CONTAINED_KEY] ?: true
+        preferences[postContainedKey] ?: true
     }
 
     override suspend fun updatePostContained(value: Boolean) {
         settingsDataStore.edit { preferences ->
-            preferences[POST_CONTAINED_KEY] = value
+            preferences[postContainedKey] = value
         }
     }
 
     override val postShowUsername: Flow<Boolean> = settingsDataStore.data.map { preferences ->
-        preferences[POST_SHOW_USERNAME_KEY] ?: true
+        preferences[postShowUsernameKey] ?: true
     }
 
     override suspend fun updatePostShowUsername(value: Boolean) {
         settingsDataStore.edit { preferences ->
-            preferences[POST_SHOW_USERNAME_KEY] = value
+            preferences[postShowUsernameKey] = value
         }
     }
 
     override val postSwapDateAndUsername: Flow<Boolean> = settingsDataStore.data.map { preferences ->
-        preferences[POST_SWAP_DATE_AND_USERNAME_KEY] ?: false
+        preferences[postSwapDateAndUsernameKey] ?: false
     }
 
     override suspend fun updatePostSwapDateAndUsername(value: Boolean) {
         settingsDataStore.edit { preferences ->
-            preferences[POST_SWAP_DATE_AND_USERNAME_KEY] = value
+            preferences[postSwapDateAndUsernameKey] = value
         }
     }
 
     override val navFloating: Flow<Boolean> = settingsDataStore.data.map { preferences ->
-        preferences[NAV_FLOATING_KEY] ?: true
+        preferences[navFloatingKey] ?: true
     }
 
     override suspend fun updateNavFloating(value: Boolean) {
         settingsDataStore.edit { preferences ->
-            preferences[NAV_FLOATING_KEY] = value
+            preferences[navFloatingKey] = value
         }
     }
 
     override val navLabeled: Flow<Boolean> = settingsDataStore.data.map { preferences ->
-        preferences[NAV_LABELED_KEY] ?: false
+        preferences[navLabeledKey] ?: false
     }
 
     override suspend fun updateNavLabeled(value: Boolean) {
         settingsDataStore.edit { preferences ->
-            preferences[NAV_LABELED_KEY] = value
+            preferences[navLabeledKey] = value
         }
     }
 
     override val navBlurred: Flow<Boolean> = settingsDataStore.data.map { preferences ->
-        preferences[NAV_BLURRED_KEY] ?: true
+        preferences[navBlurredKey] ?: true
     }
 
     override suspend fun updateNavBlurred(value: Boolean) {
         settingsDataStore.edit { preferences ->
-            preferences[NAV_BLURRED_KEY] = value
+            preferences[navBlurredKey] = value
         }
     }
 
     override val appBarBlurred: Flow<Boolean> = settingsDataStore.data.map { preferences ->
-        preferences[APP_BAR_BLURRED_KEY] ?: true
+        preferences[appBarBlurredKey] ?: true
     }
 
     override suspend fun updateAppBarBlurred(value: Boolean) {
         settingsDataStore.edit { preferences ->
-            preferences[APP_BAR_BLURRED_KEY] = value
+            preferences[appBarBlurredKey] = value
         }
     }
 
     override val appBarFaded: Flow<Boolean?> = settingsDataStore.data.map { preferences ->
-        preferences[APP_BAR_FADED_KEY]
+        preferences[appBarFadedKey]
     }
 
     override suspend fun updateAppBarFaded(value: Boolean?) {
         settingsDataStore.edit { preferences ->
             if (value == null) {
-                preferences.remove(APP_BAR_FADED_KEY)
+                preferences.remove(appBarFadedKey)
             } else {
-                preferences[APP_BAR_FADED_KEY] = value
+                preferences[appBarFadedKey] = value
             }
         }
     }

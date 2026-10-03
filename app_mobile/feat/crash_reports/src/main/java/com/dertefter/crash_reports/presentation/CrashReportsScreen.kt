@@ -10,8 +10,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
@@ -29,7 +27,6 @@ import com.dertefter.design.icons.Icons
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun CrashReportsScreen(
     onEvent: (Event) -> Unit,
@@ -94,9 +91,6 @@ fun CrashReportsScreen(
                     items(uiState.reports) { report ->
                         ListItem(
                             modifier = Modifier.clickable { onEvent(Event.OnClickReport(report.path)) },
-                            headlineContent = {
-                                Text(text = report.name)
-                            },
                             supportingContent = {
                                 Text(text = report.path)
                             },
@@ -110,7 +104,9 @@ fun CrashReportsScreen(
                                     }
                                 }
                             }
-                        )
+                        ) {
+                            Text(text = report.name)
+                        }
                     }
                 }
             }

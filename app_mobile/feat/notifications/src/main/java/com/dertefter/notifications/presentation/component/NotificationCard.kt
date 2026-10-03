@@ -70,8 +70,8 @@ fun NotificationCard(
                 )
 
                 Avatar(
-                    data = notification.actor.avatar,
-                    onClick = onUserClick,
+                    data = notification.actor?.avatar ?: "🔔",
+                    onClick = { if (notification.actor != null) onUserClick() },
                     modifier = Modifier
                         .padding(
                             bottom = MaterialTheme.spacing.medium,
@@ -99,17 +99,23 @@ fun NotificationCard(
                 modifier = Modifier.weight(1f),
             )
             {
-                Text(
-                    text = notification.actor.displayName,
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .clickable(onClick = onUserClick)
-                )
-                Text(
-                    text = getNotificationText(notification),
-                    style = MaterialTheme.typography.bodyMedium
-                )
+                val titleText = notification.actor?.displayName ?: notification.title
+                if (!titleText.isNullOrEmpty()) {
+                    Text(
+                        text = titleText,
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .clickable(enabled = notification.actor != null, onClick = onUserClick)
+                    )
+                }
+                val bodyText = getNotificationText(notification)
+                if (bodyText.isNotEmpty()) {
+                    Text(
+                        text = bodyText,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
                 if (!notification.preview.isNullOrEmpty()){
                     Text(
                         text = notification.preview!!,
@@ -164,7 +170,7 @@ private fun getNotificationText(notification: NotificationDto): String {
         "post_mention" -> stringResource(R.string.notification_post_mention)
         "comment_mention" -> stringResource(R.string.notification_comment_mention)
         "wall_post" -> stringResource(R.string.notification_wall_post)
-        else -> stringResource(R.string.notification_type_unknown)
+        else -> if (notification.actor != null) stringResource(R.string.notification_type_unknown) else ""
     }
 }
 

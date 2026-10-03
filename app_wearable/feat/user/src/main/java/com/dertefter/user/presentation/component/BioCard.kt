@@ -34,7 +34,7 @@ fun BioCard(
 @Preview
 @Composable
 private fun BioCardPreview() {
-    WearableTheme() {
+    WearableTheme {
         BioCard(
             bio = "This is a sample bio text for the BioCard component.",
         )

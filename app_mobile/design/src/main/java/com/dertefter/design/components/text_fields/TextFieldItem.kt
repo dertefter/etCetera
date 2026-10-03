@@ -16,32 +16,28 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.foundation.text.input.InputTransformation
+import androidx.compose.foundation.text.input.TextFieldLineLimits
+import androidx.compose.foundation.text.input.maxLengthTrim
+import androidx.compose.foundation.text.input.rememberTextFieldState
+import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.TextRange
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun TextFieldItem(
     modifier: Modifier = Modifier,
@@ -51,39 +47,40 @@ fun TextFieldItem(
     icon: ImageVector? = null,
     onValueChange: (String) -> Unit = {},
     isError: Boolean = false,
-    visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     maxSymbols: Int = Int.MAX_VALUE,
     singleLine: Boolean = true,
     trailingIcon: ImageVector? = null,
-    onTrailingIconClick: (() -> Unit)? = null
+    onTrailingIconClick: (() -> Unit)? = null,
 ) {
-    var textFieldValueState by remember {
-        mutableStateOf(TextFieldValue(text = value, selection = TextRange(value.length)))
-    }
+    val textFieldState = rememberTextFieldState(initialText = value)
 
     val containerColor = if (isError) {
         MaterialTheme.colorScheme.errorContainer
     } else if (!enabled) {
         MaterialTheme.colorScheme.surfaceVariant
-    }else {
+    } else {
         MaterialTheme.colorScheme.surfaceContainer
     }
 
     val contentColor = if (isError) {
         MaterialTheme.colorScheme.error
-    } else if (!enabled){
+    } else if (!enabled) {
         MaterialTheme.colorScheme.onSurfaceVariant
     } else {
         MaterialTheme.colorScheme.primary
     }
 
     LaunchedEffect(value) {
-        if (value != textFieldValueState.text) {
-            textFieldValueState = textFieldValueState.copy(
-                text = value,
-                selection = TextRange(value.length)
-            )
+        if (value != textFieldState.text.toString()) {
+            textFieldState.setTextAndPlaceCursorAtEnd(value)
+        }
+    }
+
+    LaunchedEffect(textFieldState.text) {
+        val newText = textFieldState.text.toString()
+        if (newText != value) {
+            onValueChange(newText)
         }
     }
 
@@ -115,9 +112,8 @@ fun TextFieldItem(
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
-        )
-        {
-            icon?.let{
+        ) {
+            icon?.let {
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
@@ -139,22 +135,21 @@ fun TextFieldItem(
                         )
                     )
                 }
+                
+                val inputTransformation = if (maxSymbols < Int.MAX_VALUE) {
+                    InputTransformation.maxLengthTrim(maxSymbols)
+                } else null
+
                 BasicTextField(
                     modifier = Modifier.fillMaxWidth(),
-                    singleLine = singleLine,
+                    state = textFieldState,
                     enabled = enabled,
-                    value = textFieldValueState,
-                    onValueChange = { newValue ->
-                        if (newValue.text.length <= maxSymbols){
-                            textFieldValueState = newValue
-                            onValueChange(newValue.text)
-                        }
-                    },
+                    lineLimits = if (singleLine) TextFieldLineLimits.SingleLine else TextFieldLineLimits.Default,
+                    inputTransformation = inputTransformation,
                     textStyle = MaterialTheme.typography.titleMedium.copy(
                         color = MaterialTheme.colorScheme.onSurface
                     ),
                     cursorBrush = SolidColor(contentColor),
-                    visualTransformation = visualTransformation,
                     keyboardOptions = keyboardOptions
                 )
             }

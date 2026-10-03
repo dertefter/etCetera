@@ -42,7 +42,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.dertefter.design.R
-import com.dertefter.design.common.PrettifyInt
+import com.dertefter.design.common.prettifyInt
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.WearableTheme
 import com.dertefter.design.theme.customColors
@@ -80,7 +80,7 @@ fun LikeButton(
     val scale = remember { Animatable(1f) }
     var isFirstRun by remember { mutableStateOf(true) }
 
-    val prettifiedLikes = remember(likes) { likes.PrettifyInt() }
+    val prettifiedLikes = remember(likes) { likes.prettifyInt() }
     val animatedLikes = remember(prettifiedLikes) { likes }
 
     LaunchedEffect(isLiked) {
@@ -104,8 +104,8 @@ fun LikeButton(
             }
             .background(containerColor)
             .padding(
-                vertical = MaterialTheme.spacing.small,
-                horizontal = MaterialTheme.spacing.small + 2.dp
+                vertical = 4.dp,
+                horizontal = 6.dp
             ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
@@ -123,7 +123,7 @@ fun LikeButton(
                 imageVector = if (liked) Icons.FavFilled else Icons.Fav,
                 contentDescription = null,
                 modifier = Modifier
-                    .size(12.dp)
+                    .size(18.dp)
                     .scale(scale.value),
                 tint = contentColor
             )
@@ -144,9 +144,9 @@ fun LikeButton(
                 label = "likes"
             ) { count ->
                 Text(
-                    text = count.PrettifyInt(),
+                    text = count.prettifyInt(),
                     color = contentColor,
-                    style = MaterialTheme.typography.bodyExtraSmall
+                    style = MaterialTheme.typography.labelSmall
                 )
             }
         }

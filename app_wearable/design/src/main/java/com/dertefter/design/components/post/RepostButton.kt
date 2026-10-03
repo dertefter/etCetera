@@ -37,7 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.dertefter.design.R
-import com.dertefter.design.common.PrettifyInt
+import com.dertefter.design.common.prettifyInt
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.WearableTheme
 import com.dertefter.design.theme.spacing
@@ -85,7 +85,7 @@ fun RepostButton(
 
     val icon = Icons.Cached
 
-    val prettifiedReposts = remember(reposts) { reposts.PrettifyInt() }
+    val prettifiedReposts = remember(reposts) { reposts.prettifyInt() }
     val animatedReposts = remember(prettifiedReposts) { reposts }
 
     Row(
@@ -97,8 +97,8 @@ fun RepostButton(
             }
             .background(containerColor)
             .padding(
-                vertical = MaterialTheme.spacing.small,
-                horizontal = MaterialTheme.spacing.small + 2.dp
+                vertical = 4.dp,
+                horizontal = 6.dp
             ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
@@ -107,7 +107,7 @@ fun RepostButton(
             imageVector = icon,
             contentDescription = null,
             modifier = Modifier
-                .size(12.dp)
+                .size(18.dp)
                 .scale(scale.value),
             tint = contentColor
         )
@@ -126,9 +126,9 @@ fun RepostButton(
                 label = "reposts"
             ) { count ->
                 Text(
-                    text = count.PrettifyInt(),
+                    text = count.prettifyInt(),
                     color = contentColor,
-                    style = MaterialTheme.typography.bodyExtraSmall
+                    style = MaterialTheme.typography.labelSmall
                 )
             }
         }

@@ -3,7 +3,6 @@ package com.dertefter.user.presentation
 import android.content.Intent
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.Arrangement
@@ -24,8 +23,6 @@ import androidx.compose.material3.ButtonGroup
 import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -89,11 +86,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
-@OptIn(
-    ExperimentalMaterial3Api::class,
-    ExperimentalMaterial3ExpressiveApi::class,
-    ExperimentalFoundationApi::class
-)
 @Composable
 fun UserScreen(
     onEvent: (Event) -> Unit,
@@ -123,12 +115,8 @@ fun UserScreen(
     val isStickyHeaderStuck by remember(lazyListState) {
         derivedStateOf {
             val headerItem = lazyListState.layoutInfo.visibleItemsInfo.find { it.key == "tabs" }
-            if (headerItem != null) {
-                lazyListState.firstVisibleItemIndex > headerItem.index ||
-                        (lazyListState.firstVisibleItemIndex == headerItem.index && lazyListState.firstVisibleItemScrollOffset > 0)
-            } else {
-                false
-            }
+            headerItem != null && (lazyListState.firstVisibleItemIndex > headerItem.index ||
+                    (lazyListState.firstVisibleItemIndex == headerItem.index && lazyListState.firstVisibleItemScrollOffset > 0))
         }
     }
 
@@ -136,16 +124,12 @@ fun UserScreen(
     val isNewPostButtonShow by remember(userUiState) {
         derivedStateOf {
             val user = userUiState.userDto
-            if (user != null) {
-                userUiState.isMe || when (user.wallAccess) {
-                    VisibilityDto.EVERYONE -> true
-                    VisibilityDto.FOLLOWERS -> user.isFollowedBy
-                    VisibilityDto.MUTUAL -> user.isFollowedBy && user.isFollowing
-                    VisibilityDto.NOBODY -> false
-                }
-            } else {
-                false
-            }
+            user != null && (userUiState.isMe || when (user.wallAccess) {
+                VisibilityDto.EVERYONE -> true
+                VisibilityDto.FOLLOWERS -> user.isFollowedBy
+                VisibilityDto.MUTUAL -> user.isFollowedBy && user.isFollowing
+                VisibilityDto.NOBODY -> false
+            })
         }
     }
 
@@ -180,8 +164,8 @@ fun UserScreen(
         delay(Constants.STATS_UPDATE_DELAY_MS.milliseconds)
         while (true) {
             val visibleItems = lazyListState.layoutInfo.visibleItemsInfo
-            val visibleIds = visibleItems.mapNotNull {
-                it.key.toString().takeIf { it.startsWith("post_") }?.removePrefix("post_")
+            val visibleIds = visibleItems.mapNotNull { item ->
+                item.key.toString().takeIf { it.startsWith("post_") }?.removePrefix("post_")
             }
             if (visibleIds.isNotEmpty()) {
                 onEvent(Event.OnUpdateStats(visibleIds))

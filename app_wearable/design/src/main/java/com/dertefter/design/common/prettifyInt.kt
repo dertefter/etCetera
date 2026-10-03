@@ -2,7 +2,7 @@ package com.dertefter.design.common
 
 import java.util.Locale
 
-fun Int.PrettifyInt(): String {
+fun Int.prettifyInt(): String {
     if (this in -999..999) return this.toString()
     val value = this.toDouble()
     val suffix: String

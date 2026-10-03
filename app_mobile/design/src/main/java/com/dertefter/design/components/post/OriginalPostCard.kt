@@ -1,6 +1,7 @@
 package com.dertefter.design.components.post
 
 import android.content.ClipData
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -19,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -38,8 +41,12 @@ import androidx.compose.ui.unit.dp
 import com.dertefter.design.R
 import com.dertefter.design.components.avatar.Avatar
 import com.dertefter.design.components.avatar.DisplayName
+import com.dertefter.design.components.poll.PollCard
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
+import com.dertefter.design.theme.postShowUsername
+import com.dertefter.design.theme.postSwapDateAndUsername
+import com.dertefter.design.theme.rounding
 import com.dertefter.design.theme.spacing
 import kotlinx.coroutines.launch
 
@@ -47,182 +54,266 @@ import kotlinx.coroutines.launch
 fun OriginalPostCard(
     originalPost: OriginalPostUiModel,
     modifier: Modifier = Modifier,
-    onOpenPost: (String) -> Unit = {},
-    onHashtagClick: (String) -> Unit = {},
-    onUserClick: (String) -> Unit = {},
-    onLinkClick: ((String) -> Unit)? = null,
-    onAttachmentClick: (attachments: List<AttachmentUiModel>, position: Int) -> Unit
+    onLike: () -> Unit,
+    onUnlike: () -> Unit,
+    onCommentsClick: () -> Unit,
+    onRepostClick: () -> Unit,
+    onUserClick: (userId: String) -> Unit,
+    onVote: (postId: String, optionIds: List<String>) -> Unit,
+    onOpenPost: (String) -> Unit,
+    onHashtagClick: (hashtagId: String) -> Unit,
+    onLinkClick: ((url: String) -> Unit)? = null,
+    onAttachmentClick: (attachments: List<AttachmentUiModel>, position: Int) -> Unit,
 ) {
     val uriHandler = LocalUriHandler.current
     val finalOnLinkClick = onLinkClick ?: { url -> uriHandler.openUri(url) }
     val clipboard = LocalClipboard.current
     val scope = rememberCoroutineScope()
+
+    val containerPadding = MaterialTheme.spacing.medium
+
+    val cardColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.4f)
+
+    val cornerRadius = MaterialTheme.rounding.large
+
+    var likesCount by remember(originalPost.id, originalPost.likesCount) { mutableIntStateOf(originalPost.likesCount) }
+    var isLiked by remember(originalPost.id, originalPost.isLiked) { mutableStateOf(originalPost.isLiked) }
+
     Box(
         modifier = modifier
-            .fillMaxWidth()
-            .clip(MaterialTheme.shapes.largeIncreased)
-            .clickable(onClick = {onOpenPost(originalPost.id)})
-            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
             .border(
                 width = 1.dp,
-                color = MaterialTheme.colorScheme.outlineVariant,
-                shape = MaterialTheme.shapes.largeIncreased
+                shape = RoundedCornerShape(cornerRadius),
+                color = MaterialTheme.colorScheme.outlineVariant
             )
-            .padding(all = MaterialTheme.spacing.large),
+            .clip(RoundedCornerShape(cornerRadius))
+            .clickable(onClick = { onOpenPost(originalPost.id) })
+            .background(cardColor)
+            .padding(containerPadding)
+            .fillMaxWidth()
     ) {
-        if (originalPost.isDeleted) {
-            Text(
-                text = stringResource(R.string.design_post_deleted),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+        ) {
+            Row(
                 modifier = Modifier
-                    .align(Alignment.Center)
-            )
-        } else {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
             ) {
-                Row(
+                Avatar(
+                    data = originalPost.author.avatar,
+                    onClick = { onUserClick(originalPost.author.id) },
+                    containerSize = 48.dp
+                )
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+                        .weight(1f)
+                        .clip(MaterialTheme.shapes.medium)
+                        .clickable(
+                            onClick = { onUserClick(originalPost.author.id) })
                 ) {
-                    Avatar(
-                        data = originalPost.author.avatar,
-                        onClick = { onUserClick(originalPost.author.id) },
-                        containerSize = 48.dp
+                    DisplayName(
+                        name = originalPost.author.displayName,
+                        verified = originalPost.author.verified,
+                        hasNuksta = originalPost.author.hasNuksta,
+                        pin = originalPost.author.pin,
+                        modifier = Modifier.fillMaxWidth()
                     )
-                    Column(
-                        modifier = Modifier
-                            .weight(1f)
-                            .clip(MaterialTheme.shapes.medium)
-                            .clickable(
-                                onClick = { onUserClick(originalPost.author.id) })
-                    ) {
-                        DisplayName(
-                            name = originalPost.author.displayName,
-                            verified = originalPost.author.verified,
-                            hasNuksta = originalPost.author.hasNuksta,
-                            pin = originalPost.author.pin,
-                            modifier = Modifier.fillMaxWidth()
-                        )
+                    Crossfade(
+                        targetState = MaterialTheme.postSwapDateAndUsername to MaterialTheme.postShowUsername
+                    ) { (swap, show) ->
+                        if (!swap && show) {
+                            Text(
+                                text = "@${originalPost.author.username}",
+                                style = MaterialTheme.typography.labelLargeEmphasized,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        } else if (swap) {
+                            PrettyDate(
+                                createdDate = originalPost.getCreatedAtDate(),
+                                editedDate = originalPost.getEditedAtDate(),
+                                textStyle = MaterialTheme.typography.labelLargeEmphasized,
+                            )
+                        }
+                    }
+
+                }
+
+                Crossfade(
+                    targetState = MaterialTheme.postSwapDateAndUsername to MaterialTheme.postShowUsername
+                ) { (swap, show) ->
+                    if (swap && show) {
                         Text(
                             text = "@${originalPost.author.username}",
-                            style = MaterialTheme.typography.bodySmall,
+                            style = MaterialTheme.typography.labelLargeEmphasized,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
+                    } else if (!swap) {
+                        PrettyDate(
+                            createdDate = originalPost.getCreatedAtDate(),
+                            editedDate = originalPost.getEditedAtDate(),
+                            textStyle = MaterialTheme.typography.labelMediumEmphasized,
+                        )
                     }
+                }
 
-                    PrettyDate(
-                        createdDate = originalPost.getCreatedAtDate(),
-                        editedDate = originalPost.getEditedAtDate(),
-                        modifier = Modifier
-                    )
-
-                    var showMenu by remember { mutableStateOf(false) }
-                    Box {
-                        IconButton(
-                            onClick = { showMenu = true }) {
-                            Icon(
-                                imageVector = Icons.MoreHoriz, contentDescription = ""
-                            )
-                        }
-                        DropdownMenu(
-                            expanded = showMenu,
-                            shape = MaterialTheme.shapes.largeIncreased,
-                            onDismissRequest = { showMenu = false }) {
-                            DropdownMenuItem(
-                                text = { Text(stringResource(R.string.design_post_copy_link)) },
-                                onClick = {
-                                    val link =
-                                        "https://итд.com/@${originalPost.author.username}/post/${originalPost.id}"
-                                    scope.launch {
-                                        clipboard.setClipEntry(
-                                            ClipEntry(
-                                                ClipData.newPlainText(
-                                                    null, link
-                                                )
+                var showMenu by remember { mutableStateOf(false) }
+                Box {
+                    IconButton(
+                        onClick = { showMenu = true }) {
+                        Icon(
+                            imageVector = Icons.MoreHoriz, contentDescription = ""
+                        )
+                    }
+                    DropdownMenu(
+                        expanded = showMenu,
+                        shape = MaterialTheme.shapes.largeIncreased,
+                        onDismissRequest = { showMenu = false }) {
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.design_post_copy_link)) },
+                            onClick = {
+                                val link =
+                                    "https://итд.com/@${originalPost.author.username}/post/${originalPost.id}"
+                                scope.launch {
+                                    clipboard.setClipEntry(
+                                        ClipEntry(
+                                            ClipData.newPlainText(
+                                                null, link
                                             )
                                         )
-                                    }
-                                    showMenu = false
-                                },
-                                leadingIcon = {
-                                    Icon(Icons.ContentCopy, contentDescription = null)
-                                })
-                        }
+                                    )
+                                }
+                                showMenu = false
+                            },
+                            leadingIcon = {
+                                Icon(Icons.ContentCopy, contentDescription = null)
+                            })
                     }
                 }
-                if (originalPost.content.isNotEmpty()) {
-                    var revealedSpoilers by remember { mutableStateOf(setOf<Int>()) }
-                    val annotatedString = buildPostAnnotatedString(originalPost.content, originalPost.spans, revealedSpoilers)
-                    var layoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
-                    Text(
-                        modifier = Modifier
-                            .pointerInput(originalPost.id, revealedSpoilers) {
-                                detectTapGestures { offset ->
-                                    layoutResult?.let { lr ->
-                                        val tapOffset = lr.getOffsetForPosition(offset)
-                                        val hashtagAnnotations = annotatedString.getStringAnnotations(
-                                            tag = "HASHTAG",
-                                            start = tapOffset,
-                                            end = tapOffset
-                                        )
-                                        val mentionAnnotations = annotatedString.getStringAnnotations(
-                                            tag = "MENTION",
-                                            start = tapOffset,
-                                            end = tapOffset
-                                        )
-                                        val spoilerAnnotations = annotatedString.getStringAnnotations(
-                                            tag = "SPOILER",
-                                            start = tapOffset,
-                                            end = tapOffset
-                                        )
-                                        val linkAnnotations = annotatedString.getStringAnnotations(
-                                            tag = "LINK",
-                                            start = tapOffset,
-                                            end = tapOffset
-                                        )
-                                        if (hashtagAnnotations.isNotEmpty()) {
-                                            onHashtagClick(hashtagAnnotations.first().item)
-                                        } else if (mentionAnnotations.isNotEmpty()) {
-                                            onUserClick(mentionAnnotations.first().item)
-                                        } else if (linkAnnotations.isNotEmpty()) {
-                                            finalOnLinkClick(linkAnnotations.first().item)
-                                        } else if (spoilerAnnotations.isNotEmpty()) {
-                                            spoilerAnnotations.firstOrNull()?.let { annotation ->
-                                                revealedSpoilers = revealedSpoilers + annotation.item.toInt()
-                                            }
-                                        } else {
-                                            onOpenPost(originalPost.id)
+            }
+            if (originalPost.content.isNotEmpty()) {
+                var revealedSpoilers by remember { mutableStateOf(setOf<Int>()) }
+                val annotatedString = buildPostAnnotatedString(originalPost.content, originalPost.spans, revealedSpoilers)
+                var layoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
+                Text(
+                    modifier = Modifier
+                        .pointerInput(originalPost.id, revealedSpoilers) {
+                            detectTapGestures { offset ->
+                                layoutResult?.let { lr ->
+                                    val tapOffset = lr.getOffsetForPosition(offset)
+                                    val hashtagAnnotations = annotatedString.getStringAnnotations(
+                                        tag = "HASHTAG",
+                                        start = tapOffset,
+                                        end = tapOffset
+                                    )
+                                    val mentionAnnotations = annotatedString.getStringAnnotations(
+                                        tag = "MENTION",
+                                        start = tapOffset,
+                                        end = tapOffset
+                                    )
+                                    val spoilerAnnotations = annotatedString.getStringAnnotations(
+                                        tag = "SPOILER",
+                                        start = tapOffset,
+                                        end = tapOffset
+                                    )
+                                    val linkAnnotations = annotatedString.getStringAnnotations(
+                                        tag = "LINK",
+                                        start = tapOffset,
+                                        end = tapOffset
+                                    )
+                                    if (hashtagAnnotations.isNotEmpty()) {
+                                        onHashtagClick(hashtagAnnotations.first().item)
+                                    } else if (mentionAnnotations.isNotEmpty()) {
+                                        onUserClick(mentionAnnotations.first().item)
+                                    } else if (linkAnnotations.isNotEmpty()) {
+                                        finalOnLinkClick(linkAnnotations.first().item)
+                                    } else if (spoilerAnnotations.isNotEmpty()) {
+                                        spoilerAnnotations.firstOrNull()?.let { annotation ->
+                                            revealedSpoilers = revealedSpoilers + annotation.item.toInt()
                                         }
+                                    } else {
+                                        onOpenPost(originalPost.id)
                                     }
                                 }
-                            },
-                        text = annotatedString,
-                        style = MaterialTheme.typography.bodyMedium,
-                        maxLines = 3,
-                        overflow = TextOverflow.Ellipsis,
-                        onTextLayout = { layoutResult = it }
+                            }
+                        },
+                    text = annotatedString,
+                    onTextLayout = { layoutResult = it }
+                )
+            }
+            if (originalPost.attachments.isNotEmpty()) {
+                AttachmentsCarousel(
+                    attachments = originalPost.attachments,
+                    onItemClick = { position ->
+                        onAttachmentClick(
+                            originalPost.attachments, position
+                        )
+                    })
+            }
+            originalPost.poll?.let { poll ->
+                PollCard(
+                    title = poll.title,
+                    options = poll.options,
+                    isMultipleChoice = poll.isMultipleChoice,
+                    totalCount = poll.totalCount,
+                    onVote = { optionIds ->
+                        onVote(originalPost.id, optionIds)
+                    })
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+                ) {
+
+                    LikeButton(
+                        likes = likesCount,
+                        isLiked = isLiked,
+                        onClick = {
+                            if (isLiked) {
+                                isLiked = false
+                                likesCount -= 1
+                                onUnlike()
+                            } else {
+                                isLiked = true
+                                likesCount += 1
+                                onLike()
+                            }
+                        }
+                    )
+                    CommentsButton(
+                        comments = originalPost.commentsCount, onClick = onCommentsClick
+                    )
+                    RepostButton(
+                        reposts = originalPost.repostsCount,
+                        isReposted = originalPost.isReposted,
+                        onClick = onRepostClick
                     )
                 }
-                if (originalPost.attachments.isNotEmpty()) {
-                    AttachmentsCarousel(
-                        attachments = originalPost.attachments,
-                        modifier = Modifier.fillMaxWidth(),
-                        itemShape = MaterialTheme.shapes.medium,
-                        itemHeight = 180.dp,
-                        onItemClick = { position ->
-                            onAttachmentClick(
-                                originalPost.attachments, position
-                            )
-                        }
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    originalPost.dominantEmoji?.let { dominantEmoji ->
+                        DominantEmoji(dominantEmoji = dominantEmoji)
+                    }
+
+                    Views(
+                        views = originalPost.viewsCount
                     )
                 }
             }
+
         }
     }
 }
@@ -258,9 +349,26 @@ fun OriginalPostCardPreview() {
                         poll = null,
                         createdAt = "2024-08-05T12:00:00Z",
                         editedAt = null,
-                        isDeleted = false
+                        isDeleted = false,
+                        likesCount = 2,
+                        isLiked = false,
+                        commentsCount = 3,
+                        repostsCount = 3,
+                        isReposted = true,
+                        dominantEmoji = "💙",
+                        viewsCount = 1
                     ),
-                    onAttachmentClick = {_,_ -> }
+                    onAttachmentClick = { _, _ -> },
+                    modifier = Modifier,
+                    onLike = {},
+                    onUnlike = {},
+                    onCommentsClick = {},
+                    onRepostClick = { },
+                    onUserClick = {  },
+                    onVote = { _,_ ->  },
+                    onOpenPost = {  },
+                    onHashtagClick = {},
+                    onLinkClick = {}
                 )
             }
         },

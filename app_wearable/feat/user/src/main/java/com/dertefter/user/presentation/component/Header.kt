@@ -16,12 +16,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
 import coil.compose.AsyncImage
-import com.dertefter.design.components.avatar.DisplayName
 import com.dertefter.design.components.avatar.Avatar
+import com.dertefter.design.components.avatar.DisplayName
 import com.dertefter.design.components.post.AuthorUiModel
 import com.dertefter.design.theme.WearableTheme
 import com.dertefter.design.theme.spacing
@@ -31,10 +30,8 @@ fun Header(
     modifier: Modifier = Modifier,
     bannerUrl: String?,
     author: AuthorUiModel,
-    isMe: Boolean = false,
     avatarSize: Dp = 56.dp,
-    onBannerClick: () -> Unit = {},
-    onEditClick: () -> Unit = {}
+    onBannerClick: () -> Unit = {}
 ){
 
    Column(
@@ -102,8 +99,7 @@ fun HeaderPreview() {
                 hasNuksta = true,
                 verified = true,
                 pin = null,
-            ),
-            isMe = true,
+            )
         )
     }
 }

@@ -1,6 +1,5 @@
 package com.dertefter.hashtag_feed
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dertefter.data.dto.feed.PostDto

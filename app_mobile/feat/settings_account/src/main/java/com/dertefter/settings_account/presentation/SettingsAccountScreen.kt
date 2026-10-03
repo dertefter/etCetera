@@ -19,8 +19,6 @@ import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -60,7 +58,6 @@ import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SettingsAccountScreen(
     uiState: UiState,
@@ -131,6 +128,8 @@ fun SettingsAccountScreen(
                     exit = scaleOut()
                 ) {
                     FloatingActionButton(
+                        modifier = Modifier
+                            .padding(bottom = MaterialTheme.bottomNavHeight),
                         onClick = { onEvent(Event.OnSave) }
                     ) {
                         Icon(

@@ -5,7 +5,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -15,8 +14,6 @@ import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -49,7 +46,6 @@ import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun HashtagFeedScreen(
     onEvent: (Event) -> Unit,
@@ -67,8 +63,8 @@ fun HashtagFeedScreen(
         delay(2000.milliseconds)
         while (true) {
             val visibleItems = lazyListState.layoutInfo.visibleItemsInfo
-            val visibleIds = visibleItems.mapNotNull {
-                it.key.toString().takeIf { it.startsWith("post_") }?.removePrefix("post_")
+            val visibleIds = visibleItems.mapNotNull { item ->
+                item.key.toString().takeIf { it.startsWith("post_") }?.removePrefix("post_")
             }
             if (visibleIds.isNotEmpty()) {
                 onEvent(Event.OnUpdateStats(visibleIds))
@@ -128,7 +124,6 @@ fun HashtagFeedScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HashtagFeedContent(
     modifier: Modifier = Modifier,

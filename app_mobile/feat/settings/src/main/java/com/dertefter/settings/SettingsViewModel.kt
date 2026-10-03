@@ -1,6 +1,5 @@
 package com.dertefter.settings
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.dertefter.navigation.Navigator
 import com.dertefter.settings.presentation.Event

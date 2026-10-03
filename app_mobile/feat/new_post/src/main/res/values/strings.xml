@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <string name="new_post_title">New post</string>
     <string name="new_repost_title">Repost</string>
@@ -20,7 +20,7 @@
     <string name="action_add_media">Add media</string>
     <string name="action_save">Save</string>
     <string name="post_placeholder">What\'s new?</string>
-    <string name="repost_placeholder">Comment for post...</string>
-    <string name="comment_placeholder">Write a comment...</string>
+    <string name="repost_placeholder" tools:ignore="TypographyEllipsis">Comment for post...</string>
+    <string name="comment_placeholder" tools:ignore="TypographyEllipsis">Write a comment...</string>
 
 </resources>

@@ -25,7 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.dertefter.design.common.PrettifyInt
+import com.dertefter.design.common.prettifyInt
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
@@ -45,7 +45,7 @@ fun Views(
 
     val icon = Icons.Visibility
 
-    val prettifiedViews = remember(views) { views.PrettifyInt() }
+    val prettifiedViews = remember(views) { views.prettifyInt() }
     val animatedViews = remember(prettifiedViews) { views }
 
     Row(
@@ -80,7 +80,7 @@ fun Views(
                 label = "views"
             ) { count ->
                 Text(
-                    text = count.PrettifyInt(),
+                    text = count.prettifyInt(),
                     color = contentColor,
                     style = MaterialTheme.typography.bodyMedium
                 )

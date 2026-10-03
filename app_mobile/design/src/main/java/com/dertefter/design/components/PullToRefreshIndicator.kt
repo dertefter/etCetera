@@ -2,7 +2,6 @@ package com.dertefter.design.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.IndicatorBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshState
@@ -16,7 +15,6 @@ import androidx.compose.ui.unit.dp
 import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.theme.AppTheme
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun PullToRefreshIndicator(
     state: PullToRefreshState,
@@ -48,7 +46,6 @@ fun PullToRefreshIndicator(
     }
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Preview(showBackground = true)
 @Composable
 private fun PullToRefreshIndicatorPreview() {

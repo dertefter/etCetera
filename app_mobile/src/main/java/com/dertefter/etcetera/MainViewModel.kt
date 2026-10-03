@@ -1,7 +1,5 @@
 package com.dertefter.etcetera
 
-import android.content.Context
-import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dertefter.data.datasource.local.TokenManager
@@ -13,9 +11,7 @@ import com.dertefter.data.repository.NotificationsRepository
 import com.dertefter.data.repository.SettingsRepository
 import com.dertefter.etcetera.presentation.MainUiState
 import com.dertefter.etcetera.presentation.ThemeState
-import com.dertefter.etcetera.service.TokenRequestService
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -38,8 +34,7 @@ class MainViewModel @Inject constructor(
     notificationsRepository: NotificationsRepository,
     crashlyticsRepository: CrashlyticsRepository,
     settingsRepository: SettingsRepository,
-    private val tokenManager: TokenManager,
-    @param:ApplicationContext private val context: Context
+    private val tokenManager: TokenManager
 ) : ViewModel() {
 
     val uiState: StateFlow<MainUiState> = combine(
@@ -136,7 +131,7 @@ class MainViewModel @Inject constructor(
 
     init {
         combine(currentLogin, accessToken, refreshToken) { _, _, _ -> }.onEach {
-            context.startService(Intent(context, TokenRequestService::class.java))
+            //context.startService(Intent(context, TokenRequestService::class.java))
             meRepository.updateMe()
             notificationsRepository.updateNotificationCount()
         }.launchIn(viewModelScope)    }

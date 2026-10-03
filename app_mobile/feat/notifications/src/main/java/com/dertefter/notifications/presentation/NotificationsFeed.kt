@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarScrollBehavior
@@ -36,7 +35,6 @@ import com.jamal_aliev.paginator.core.extension.isProgressState
 import com.jamal_aliev.paginator.core.page.PaginatorUiState
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NotificationsFeed(
     modifier: Modifier = Modifier,
@@ -131,7 +129,7 @@ private fun LazyListScope.notificationItems(
             modifier = Modifier.padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
             onClick = {
                 if (notification.type == "follow") {
-                    onEvent(Event.OnOpenUser(notification.actor.id))
+                    notification.actor?.let { onEvent(Event.OnOpenUser(it.id)) }
                 } else {
                     notification.targetId?.let { targetId ->
                         notification.targetType?.let { targetType ->
@@ -143,7 +141,7 @@ private fun LazyListScope.notificationItems(
                 }
             },
             onUserClick = {
-                onEvent(Event.OnOpenUser(notification.actor.id))
+                notification.actor?.let { onEvent(Event.OnOpenUser(it.id)) }
             })
     }
 }

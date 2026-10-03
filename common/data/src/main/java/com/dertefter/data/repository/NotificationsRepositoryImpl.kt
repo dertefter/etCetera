@@ -26,7 +26,7 @@ class NotificationsRepositoryImpl @Inject constructor(
     private val activePaginators = CopyOnWriteArrayList<WeakReference<MutableCursorPaginator<String, NotificationDto>>>()
 
     override fun getNotificationsPaginator(type: String?): MutableCursorPaginator<String, NotificationDto> {
-        return mutableCursorPaginator<String, NotificationDto>(capacity = 20) {
+        return mutableCursorPaginator(capacity = 20) {
             cache = CursorMostRecentPagingCache(maxSize = 50)
             persistentCache = NotificationPagingCache(type ?: "all", localDataSource)
             load { cursor ->
@@ -77,7 +77,7 @@ class NotificationsRepositoryImpl @Inject constructor(
     override suspend fun updateNotificationCount(): Result<Unit> {
         return remoteDataSource.getNotificationCount().onFailureLog(crashlyticsRepository).onSuccess {
             localDataSource.saveNotificationCount(it)
-        }.map { Unit }
+        }.map{}
     }
 
     override suspend fun readAll(): Result<Unit> {

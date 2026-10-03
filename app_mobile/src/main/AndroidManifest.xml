@@ -17,6 +17,7 @@
         android:theme="@style/Theme.EtCetera"
         tools:targetApi="37">
 
+        <!--suppress AndroidDomInspection, AndroidDomInspection -->
         <service android:name="com.google.android.gms.metadata.ModuleDependencies"
             android:enabled="false"
             android:exported="false"

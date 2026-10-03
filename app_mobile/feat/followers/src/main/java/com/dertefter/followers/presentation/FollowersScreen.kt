@@ -1,7 +1,6 @@
 package com.dertefter.followers.presentation
 
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,8 +12,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ButtonGroup
 import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -51,7 +48,6 @@ import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun FollowersScreen(
     onEvent: (Event) -> Unit,
@@ -104,6 +100,13 @@ fun FollowersScreen(
 
     val scrollBehavior = scrollBehaviors[tabs[pagerState.currentPage]]!!
     val scope = rememberCoroutineScope()
+
+    LaunchedEffect(selectedTab) {
+        val targetPage = tabs.indexOf(selectedTab).coerceAtLeast(0)
+        if (pagerState.currentPage != targetPage) {
+            pagerState.scrollToPage(targetPage)
+        }
+    }
 
     LaunchedEffect(pagerState.currentPage) {
         onEvent(Event.OnTabSelected(tabs[pagerState.currentPage]))

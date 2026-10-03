@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.plus
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -48,7 +46,6 @@ import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import com.dertefter.comments.presentation.Event as CommentsEvent
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun PostScreen(
     uiState: UiState,
@@ -77,7 +74,6 @@ fun PostScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun PostScreenContent(
     uiState: UiState,
@@ -152,10 +148,13 @@ fun PostScreenContent(
                                 item(key = "post_card_${post.id}") {
                                     PostCard(
                                         post = post,
-                                        onLike = { onEvent(Event.OnLike) },
-                                        onUnlike = { onEvent(Event.OnUnlike) },
+
+                                        onRepostClick = { postId -> onEvent(Event.OnRepost(postId)) },
+                                        onLike = { postId -> onEvent(Event.OnLike(postId)) },
+                                        onUnlike = { postId -> onEvent(Event.OnUnlike(postId)) },
+                                        onCommentsClick = { postId -> onEvent(Event.OnNavigateToComments(postId)) },
                                         onUserClick = { userId -> onEvent(Event.OnOpenUser(userId)) },
-                                        onVote = { optionIds -> onEvent(Event.OnVote(optionIds)) },
+                                        onVote = { postId, optionIds -> onEvent(Event.OnVote(postId, optionIds)) },
                                         onOpenPost = { postId -> onEvent(Event.OnOpenPost(postId)) },
                                         onAttachmentClick = { attachments, position ->
                                             onEvent(
@@ -171,10 +170,8 @@ fun PostScreenContent(
                                         showCommentsButton = false,
                                         onDelete = { onEvent(Event.OnDeletePost(post.id)) },
                                         onEdit = { onEvent(Event.OnEditPost(it)) },
-                                        onCommentsClick = {},
                                         onPin = { onEvent(Event.OnPin(post.id)) },
                                         onUnpin = { onEvent(Event.OnUnpin(post.id)) },
-                                        onRepostClick = { onEvent(Event.OnRepost(post.id)) },
                                         onReport = { onEvent(Event.OnReport("post", post.id)) }
                                     )
                                 }

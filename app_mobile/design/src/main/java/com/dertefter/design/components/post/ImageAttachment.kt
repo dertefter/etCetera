@@ -35,12 +35,18 @@ fun ImageAttachment(
     containerColor: Color = MaterialTheme.colorScheme.surfaceVariant,
     onClick: () -> Unit = {},
     isFullscreen: Boolean = false,
+    contentScale: AttachmentContentScale? = null,
 ) {
+
+    val contentScale = when (contentScale) {
+        AttachmentContentScale.FIT -> ContentScale.Fit
+        AttachmentContentScale.CROP -> ContentScale.Crop
+        null -> null
+    }
+
     var retryHash by remember { mutableIntStateOf(0) }
 
     val zoomState = rememberZoomState()
-
-    val contentScale: ContentScale = if (isFullscreen) ContentScale.Fit else ContentScale.Crop
 
     SubcomposeAsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
@@ -58,7 +64,7 @@ fun ImageAttachment(
                     .clickable(onClick = onClick)
             )
             .background(containerColor),
-        contentScale = contentScale,
+        contentScale = contentScale ?:  if (isFullscreen) ContentScale.Fit else ContentScale.Crop,
         error = {
             Box(
                 modifier = Modifier

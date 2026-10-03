@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarScrollBehavior
@@ -43,7 +42,6 @@ import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Feed(
     paginator: MutableCursorPaginator<String, PostDto>,
@@ -59,8 +57,8 @@ fun Feed(
         while (true) {
             delay(Constants.STATS_UPDATE_DELAY_MS.milliseconds)
             val visibleItems = gridState.layoutInfo.visibleItemsInfo
-            val visibleIds = visibleItems.mapNotNull {
-                it.key.toString().takeIf { it.startsWith("post_") }?.removePrefix("post_")
+            val visibleIds = visibleItems.mapNotNull { item ->
+                item.key.toString().takeIf { it.startsWith("post_") }?.removePrefix("post_")
             }
             if (visibleIds.isNotEmpty()) {
                 onEvent(Event.OnUpdateStats(visibleIds))
@@ -130,11 +128,13 @@ private fun PaginatedLazyStaggeredGridScope.postItems(
             modifier = Modifier
                 .animateItem()
                 .fillMaxWidth(),
-            onLike = { onEvent(Event.OnLike(post.id)) },
-            onUnlike = { onEvent(Event.OnUnlike(post.id)) },
-            onCommentsClick = { onEvent(Event.OnNavigateToComments(post.id)) },
+
+            onRepostClick = { postId -> onEvent(Event.OnRepost(postId)) },
+            onLike = { postId -> onEvent(Event.OnLike(postId)) },
+            onUnlike = { postId -> onEvent(Event.OnUnlike(postId)) },
+            onCommentsClick = { postId -> onEvent(Event.OnNavigateToComments(postId)) },
             onUserClick = { userId -> onEvent(Event.OnOpenUser(userId)) },
-            onVote = { optionIds -> onEvent(Event.OnVote(post.id, optionIds)) },
+            onVote = { postId, optionIds -> onEvent(Event.OnVote(postId, optionIds)) },
             onOpenPost = { postId -> onEvent(Event.OnOpenPost(postId)) },
             onAttachmentClick = { attachments, position ->
                 onEvent(Event.OnOpenAttachmentsViewer(attachments, position))
@@ -148,7 +148,6 @@ private fun PaginatedLazyStaggeredGridScope.postItems(
             onPin = { onEvent(Event.OnPin(post.id)) },
             onUnpin = { onEvent(Event.OnUnpin(post.id)) },
             onEdit = { onEvent(Event.OnEditPost(it)) },
-            onRepostClick = { onEvent(Event.OnRepost(post.id)) },
             onReport = {onEvent(Event.OnReport("post",post.id))}
         )
     }

@@ -56,9 +56,9 @@ class FollowersViewModel @Inject constructor(
     }
 
     fun init(userId: String, startTabIsFollowing: Boolean) {
+        _selectedTab.value = if (startTabIsFollowing) Tab.FOLLOWING else Tab.FOLLOWERS
         if (_userId.value == userId) return
         _userId.value = userId
-        _selectedTab.value = if (startTabIsFollowing) Tab.FOLLOWING else Tab.FOLLOWERS
 
         _paginators.value.values.forEach { it.release() }
         val map = mapOf(

@@ -98,17 +98,17 @@ fun NewPollCard(
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraSmall)
         ) {
-            for (q in questions){
-                key(q.id) {
+            for ((text, id) in questions){
+                key(id) {
                     AnimatedVisibility(
                         visible = true,
                         enter = fadeIn() + expandVertically(),
                         exit = fadeOut() + shrinkVertically()
                     ) {
                         NewPollQuestion(
-                            text = q.text,
-                            onRemove = { onRemoveQuestion(q.id) },
-                            onTextChanged = { onChangeQuestion(q.id, it) }
+                            text = text,
+                            onRemove = { onRemoveQuestion(id) },
+                            onTextChanged = { onChangeQuestion(id, it) }
                         )
                     }
                 }

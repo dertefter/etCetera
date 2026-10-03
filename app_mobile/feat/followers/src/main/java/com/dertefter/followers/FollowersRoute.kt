@@ -1,11 +1,10 @@
 package com.dertefter.followers
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.dertefter.followers.presentation.Event
 import com.dertefter.followers.presentation.FollowersScreen
 import com.dertefter.followers.presentation.Tab
 
@@ -15,15 +14,12 @@ fun FollowersRoute(
     startTabIsFollowing: Boolean,
     viewModel: FollowersViewModel = hiltViewModel(),
 ) {
+    remember(userId, startTabIsFollowing) {
+        viewModel.init(userId, startTabIsFollowing)
+        true
+    }
 
     val selectedTab by viewModel.selectedTab.collectAsStateWithLifecycle()
-
-    LaunchedEffect(userId, startTabIsFollowing) {
-        viewModel.init(userId, startTabIsFollowing)
-    }
-    LaunchedEffect(Unit) {
-        viewModel.onEvent(Event.OnRefresh(selectedTab))
-    }
 
     val followersUiState by viewModel.uiStates[Tab.FOLLOWERS]!!.collectAsStateWithLifecycle()
     val followingUiState by viewModel.uiStates[Tab.FOLLOWING]!!.collectAsStateWithLifecycle()

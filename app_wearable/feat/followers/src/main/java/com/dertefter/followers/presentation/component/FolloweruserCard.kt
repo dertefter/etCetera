@@ -30,9 +30,7 @@ import com.dertefter.design.theme.spacing
 fun FollowerUserCard(
     followerUser: FollowerUserDto,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = {},
-    onFollow: (userId: String) -> Unit = {},
-    onUnfollow: (userId: String) -> Unit = {}
+    onClick: () -> Unit = {}
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -46,8 +44,7 @@ fun FollowerUserCard(
     ) {
         Avatar(
             emoji = followerUser.avatar,
-            containerSize = 32.dp,
-            fontSize = 14.sp
+            containerSize = 32.dp
         )
         Column(
             modifier = Modifier.weight(1f)

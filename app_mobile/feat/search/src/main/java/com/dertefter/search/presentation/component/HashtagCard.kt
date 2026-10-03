@@ -17,7 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.dertefter.data.dto.search.SearchHashtagDto
-import com.dertefter.design.common.PrettifyInt
+import com.dertefter.design.common.prettifyInt
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
@@ -55,7 +55,7 @@ fun SearchHashtagCard(
             Text(
                 text = stringResource(
                     id = R.string.posts_count,
-                    hashtag.postsCount.PrettifyInt()
+                    hashtag.postsCount.prettifyInt()
                 ),
                 style = MaterialTheme.typography.labelLarge
             )

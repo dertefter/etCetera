@@ -127,13 +127,13 @@ class RoomConverters {
     }
 
     @TypeConverter
-    fun fromActorDto(actor: ActorDto): String {
-        return json.encodeToString(actor)
+    fun fromActorDto(actor: ActorDto?): String? {
+        return actor?.let { json.encodeToString(it) }
     }
 
     @TypeConverter
-    fun toActorDto(actorString: String): ActorDto {
-        return json.decodeFromString(actorString)
+    fun toActorDto(actorString: String?): ActorDto? {
+        return actorString?.let { json.decodeFromString(it) }
     }
 
 }

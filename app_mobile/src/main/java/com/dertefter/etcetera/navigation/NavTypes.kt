@@ -4,7 +4,6 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.navigation.NavType
 import com.dertefter.navigation.AttachmentNavigationModel
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 val AttachmentListType = object : NavType<List<AttachmentNavigationModel>>(isNullableAllowed = false) {

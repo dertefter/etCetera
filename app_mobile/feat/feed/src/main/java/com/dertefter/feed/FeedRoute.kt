@@ -1,11 +1,9 @@
 package com.dertefter.feed
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.dertefter.feed.presentation.Event
 import com.dertefter.feed.presentation.FeedScreen
 import com.dertefter.feed.presentation.FeedTab
 

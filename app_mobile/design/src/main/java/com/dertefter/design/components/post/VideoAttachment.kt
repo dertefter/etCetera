@@ -1,5 +1,6 @@
 package com.dertefter.design.components.post
 
+import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -12,8 +13,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.rememberSliderState
@@ -28,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.util.UnstableApi
 import com.dertefter.design.components.buttons.AppNavigationIcon
 import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.icons.Icons
@@ -38,7 +38,7 @@ import io.github.kdroidfilter.composemediaplayer.CacheConfig
 import io.github.kdroidfilter.composemediaplayer.VideoPlayerSurface
 import io.github.kdroidfilter.composemediaplayer.rememberVideoPlayerState
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
+@OptIn(UnstableApi::class)
 @Composable
 fun VideoAttachment(
     modifier: Modifier = Modifier,
@@ -46,7 +46,15 @@ fun VideoAttachment(
     contentPadding: PaddingValues = PaddingValues(),
     onClick: () -> Unit = {},
     isFullscreen: Boolean = false,
+    contentScale: AttachmentContentScale? = null,
+    containerColor: Color? = null,
 ) {
+
+    val contentScale = when (contentScale) {
+        AttachmentContentScale.FIT -> ContentScale.Fit
+        AttachmentContentScale.CROP -> ContentScale.Crop
+        null -> null
+    }
 
     val hazeState = rememberHazeState()
 
@@ -82,10 +90,10 @@ fun VideoAttachment(
     ) {
         VideoPlayerSurface(
             playerState = playerState,
-            contentScale = if (isFullscreen) ContentScale.Fit else ContentScale.Crop,
+            contentScale = contentScale ?: if (isFullscreen) ContentScale.Fit else ContentScale.Crop,
             modifier = Modifier
                 .hazeSource(state = hazeState)
-                .background(if (isFullscreen) Color.Black else MaterialTheme.colorScheme.surfaceVariant)
+                .background(containerColor ?: if (isFullscreen) Color.Black else MaterialTheme.colorScheme.surfaceVariant)
                 .fillMaxWidth()
         )
 

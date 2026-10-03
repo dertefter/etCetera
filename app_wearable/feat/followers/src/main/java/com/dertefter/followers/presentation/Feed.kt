@@ -158,9 +158,7 @@ private fun TransformingLazyColumnScope.followerItems(
         TransformingListItem(transformationSpec = transformationSpec) {
             FollowerUserCard(
                 followerUser = followerUser,
-                onClick = { onEvent(Event.OnOpenUser(followerUser.id)) },
-                onFollow = { onEvent(Event.OnFollow(followerUser.id)) },
-                onUnfollow = { onEvent(Event.OnUnfollow(followerUser.id)) }
+                onClick = { onEvent(Event.OnOpenUser(followerUser.id)) }
             )
         }
     }

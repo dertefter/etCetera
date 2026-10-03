@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
@@ -37,7 +35,6 @@ import com.dertefter.settings_theme.presentation.UiState
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun PostsThemeScreen(
     uiState: UiState,
@@ -107,7 +104,7 @@ fun PostsThemeScreen(
                     onCommentsClick = {},
                     onPin = {},
                     onUnpin = {},
-                    onVote = {},
+                    onVote = {_,_ ->},
                     onLike = {},
                     onUnlike = {},
                     onUserClick = {},
@@ -211,7 +208,7 @@ private fun PostsThemeScreenPreview() {
                 postContained = true,
                 postShowUsername = true,
                 postSwapDateAndUsername = true,
-                false,false,false
+                navFloating = false, navLabeled = false, navBlurred = false
             ),
             onEvent = {}
         )

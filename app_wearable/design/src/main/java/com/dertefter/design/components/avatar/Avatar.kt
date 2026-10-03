@@ -38,7 +38,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.createBitmap
@@ -71,7 +70,6 @@ fun Avatar(
     emoji: String = data,
     containerSize: Dp = 52.dp,
     rotation: Float = 0f,
-    fontSize: TextUnit? = null,
     onClick: () -> Unit = {},
 ) {
     val avatarData = data.ifEmpty { emoji }
@@ -89,7 +87,6 @@ fun Avatar(
             emoji = avatarData,
             containerSize = containerSize,
             rotation = rotation,
-            fontSize = fontSize,
             onClick = onClick
         )
     }
@@ -151,7 +148,6 @@ fun EmojiAvatar(
     emoji: String,
     containerSize: Dp = 52.dp,
     rotation: Float = 0f,
-    fontSize: TextUnit? = null,
     onClick: () -> Unit = {},
 ) {
     val fallbackColor = MaterialTheme.colorScheme.surfaceContainer
@@ -199,7 +195,7 @@ fun EmojiAvatar(
 
     val isInspection = LocalInspectionMode.current
 
-    val dynamicFontSize = fontSize ?: (containerSize.value * 0.4f).sp
+    val dynamicFontSize = (containerSize.value * 0.4f).sp
 
     val textStyle = remember(harmonizedEmojiColor, isInspection, dynamicFontSize) {
         TextStyle(

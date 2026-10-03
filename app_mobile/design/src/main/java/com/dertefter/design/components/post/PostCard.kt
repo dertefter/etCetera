@@ -11,6 +11,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -59,12 +60,12 @@ import kotlinx.coroutines.launch
 fun PostCard(
     post: PostUiModel,
     modifier: Modifier = Modifier,
-    onLike: () -> Unit,
-    onUnlike: () -> Unit,
-    onCommentsClick: () -> Unit,
-    onRepostClick: () -> Unit,
+    onLike: (postId: String) -> Unit = {},
+    onUnlike: (postId: String) -> Unit = {},
+    onCommentsClick: (postId: String) -> Unit = {},
+    onRepostClick: (postId: String) -> Unit = {},
     onUserClick: (userId: String) -> Unit,
-    onVote: (optionIds: List<String>) -> Unit,
+    onVote: (postId: String, optionIds: List<String>) -> Unit,
     onEdit: (postId: String) -> Unit = {},
     onPin: () -> Unit,
     onUnpin: () -> Unit,
@@ -116,7 +117,6 @@ fun PostCard(
             .clip(RoundedCornerShape(cornerRadius))
             .clickable(onClick = { onOpenPost(post.id) })
             .background(cardColor)
-            .padding(containerPadding)
             .fillMaxWidth()
     ) {
         Column(
@@ -125,6 +125,11 @@ fun PostCard(
         ) {
             Row(
                 modifier = Modifier
+                    .padding(
+                        top = containerPadding,
+                        start = containerPadding,
+                        end = containerPadding
+                    )
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
@@ -297,6 +302,7 @@ fun PostCard(
                 var layoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
                 Text(
                     modifier = Modifier
+                        .padding(horizontal = containerPadding)
                         .pointerInput(post.id, revealedSpoilers) {
                             detectTapGestures { offset ->
                                 layoutResult?.let { lr ->
@@ -343,6 +349,7 @@ fun PostCard(
             }
             if (post.attachments.isNotEmpty()) {
                 AttachmentsCarousel(
+                    contentPadding = PaddingValues(horizontal = containerPadding),
                     attachments = post.attachments,
                     onItemClick = { position ->
                         onAttachmentClick(
@@ -352,27 +359,49 @@ fun PostCard(
             }
             post.poll?.let { poll ->
                 PollCard(
+                    modifier = Modifier
+                        .padding(horizontal = containerPadding),
                     title = poll.title,
                     options = poll.options,
                     isMultipleChoice = poll.isMultipleChoice,
                     totalCount = poll.totalCount,
                     onVote = { optionIds ->
-                        onVote(optionIds)
+                        onVote(post.id, optionIds)
                     })
             }
             post.originalPost?.let { originalPost ->
                 OriginalPostCard(
+                    modifier = Modifier
+                        .padding(horizontal = containerPadding),
                     originalPost = originalPost,
                     onOpenPost = { origId -> onOpenPost(origId) },
                     onHashtagClick = onHashtagClick,
                     onUserClick = onUserClick,
+                    onLike = { onLike(originalPost.id) },
+                    onUnlike = { onUnlike(originalPost.id) },
                     onLinkClick = finalOnLinkClick,
                     onAttachmentClick = { attachments, position ->
                         onAttachmentClick(attachments, position)
-                    })
+                    },
+                    onCommentsClick = {
+                        onCommentsClick(originalPost.id)
+                    },
+                    onRepostClick = {
+                        onRepostClick(originalPost.id)
+                    },
+                    onVote = { postId, optionIds ->
+                        onVote(postId, optionIds)
+                    }
+                )
+
             }
             Row(
                 modifier = Modifier
+                    .padding(
+                        end = containerPadding,
+                        start = containerPadding,
+                        bottom = containerPadding
+                    )
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -383,21 +412,27 @@ fun PostCard(
                     LikeButton(
                         likes = post.likesCount,
                         isLiked = post.isLiked,
-                        onClick = if (post.isLiked) {
-                            onUnlike
-                        } else {
-                            onLike
+                        onClick = {
+                            if (post.isLiked) {
+                                onUnlike(post.id)
+                            } else {
+                                onLike(post.id)
+                            }
                         }
                     )
                     if (showCommentsButton){
                         CommentsButton(
-                            comments = post.commentsCount, onClick = onCommentsClick
+                            comments = post.commentsCount, onClick = {
+                                onCommentsClick(post.id)
+                            }
                         )
                     }
                     RepostButton(
                         reposts = post.repostsCount,
                         isReposted = post.isReposted,
-                        onClick = onRepostClick
+                        onClick = {
+                            onRepostClick(post.id)
+                        }
                     )
                 }
 
@@ -430,7 +465,7 @@ fun PostCard(
 @Composable
 fun PostCardPreview() {
     AppTheme(
-        postContained = false
+        postContained = true
     ) {
         PostCard(
             post = PostUiModel(
@@ -465,7 +500,7 @@ fun PostCardPreview() {
             onCommentsClick = {},
             onPin = {},
             onUnpin = {},
-            onVote = {},
+            onVote = {_,_ ->},
             onLike = {},
             onUnlike = {},
             onUserClick = {},

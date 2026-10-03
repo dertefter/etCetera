@@ -18,7 +18,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
-import com.dertefter.design.common.PrettifyInt
+import com.dertefter.design.common.prettifyInt
 import com.dertefter.design.theme.WearableTheme
 import com.dertefter.design.theme.spacing
 
@@ -51,7 +51,7 @@ fun TitleValueCard(
             label = "value"
         ) { count ->
             Text(
-                text = count.PrettifyInt(),
+                text = count.prettifyInt(),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.primary
             )

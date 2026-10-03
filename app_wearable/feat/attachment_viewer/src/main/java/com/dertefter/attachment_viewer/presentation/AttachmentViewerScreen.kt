@@ -21,7 +21,6 @@ import com.dertefter.design.components.post.AttachmentUiModel
 
 @Composable
 fun AttachmentViewerScreen(
-    onEvent: (Event) -> Unit,
     attachments: List<AttachmentUiModel>,
     viewPosition: Int = 0,
 ) {

@@ -64,10 +64,13 @@ private fun LazyListScope.postItems(
         Column(Modifier.animateItem()) {
             PostCard(
                 post = post.toUiModel(),
-                onLike = { onEvent(Event.OnLike(post.id)) },
-                onUnlike = { onEvent(Event.OnUnlike(post.id)) },
-                onCommentsClick = { onEvent(Event.OnNavigateToComments(post.id)) },
-                onUserClick = { onEvent(Event.OnOpenUser(it)) },
+
+                onRepostClick = { postId -> onEvent(Event.OnRepost(postId)) },
+                onLike = { postId -> onEvent(Event.OnLike(postId)) },
+                onUnlike = { postId -> onEvent(Event.OnUnlike(postId)) },
+                onCommentsClick = { postId -> onEvent(Event.OnNavigateToComments(postId)) },
+                onUserClick = { userId -> onEvent(Event.OnOpenUser(userId)) },
+                onVote = { postId, optionIds -> onEvent(Event.OnVote(postId, optionIds)) },
                 onOpenPost = { onEvent(Event.OnOpenPost(it)) },
                 onAttachmentClick = { attachments, position ->
                     onEvent(Event.OnOpenAttachmentsViewer(attachments, position))
@@ -79,8 +82,6 @@ private fun LazyListScope.postItems(
                 onPin = { onEvent(Event.OnPin(post.id)) },
                 onUnpin = { onEvent(Event.OnUnpin(post.id)) },
                 onEdit = { onEvent(Event.OnEditPost(it)) },
-                onVote = { optionIds -> onEvent(Event.OnVote(post.id, optionIds)) },
-                onRepostClick = { onEvent(Event.OnRepost(post.id)) },
                 onReport = { onEvent(Event.OnReport("post", post.id)) }
             )
         }

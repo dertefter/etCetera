@@ -22,7 +22,6 @@ import com.jamal_aliev.paginator.cursor.extension.refreshAll
 import com.jamal_aliev.paginator.cursor.extension.uiState
 import com.jamal_aliev.paginator.cursor.extension.warmUpFromPersistent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -71,7 +70,6 @@ class FeedViewModel @Inject constructor(
         initialValue = TopBarUiState()
     )
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     val uiStates: Map<FeedTab, StateFlow<PaginatorUiState<PostDto>>> =
         paginators.mapValues { (_, paginator) ->
             paginator.uiState.stateIn(

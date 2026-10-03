@@ -21,7 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
-import com.dertefter.design.common.PrettifyInt
+import com.dertefter.design.common.prettifyInt
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
 
@@ -35,7 +35,7 @@ fun WideTitleValueCard(
     val floatSpec = MaterialTheme.motionScheme.slowEffectsSpec<Float>()
     val intOffsetSpec = MaterialTheme.motionScheme.slowEffectsSpec<IntOffset>()
 
-    val prettifiedValue = remember(value) { value.PrettifyInt() }
+    val prettifiedValue = remember(value) { value.prettifyInt() }
     val animatedValue = remember(prettifiedValue) { value }
 
     Row(
@@ -64,7 +64,7 @@ fun WideTitleValueCard(
             label = "value"
         ) { count ->
             Text(
-                text = count.PrettifyInt(),
+                text = count.prettifyInt(),
                 style = MaterialTheme.typography.bodyLargeEmphasized,
                 color = MaterialTheme.colorScheme.secondary
             )

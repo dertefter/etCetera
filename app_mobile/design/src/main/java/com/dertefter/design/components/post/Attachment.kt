@@ -8,6 +8,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.media3.common.util.UnstableApi
 
+
+enum class AttachmentContentScale{
+    FIT, CROP
+}
+
 @Composable
 @OptIn(UnstableApi::class)
 fun Attachment(
@@ -16,6 +21,7 @@ fun Attachment(
     onClick: () -> Unit = {},
     isFullscreen: Boolean = false,
     contentPadding: PaddingValues = PaddingValues(),
+    contentScale: AttachmentContentScale? = null,
     containerColor: Color = MaterialTheme.colorScheme.surfaceVariant
 ) {
 
@@ -26,7 +32,8 @@ fun Attachment(
                 attachment = attachment,
                 isFullscreen = isFullscreen,
                 onClick = onClick,
-                contentPadding = contentPadding
+                contentPadding = contentPadding,
+                contentScale = contentScale,
             )
         }
 
@@ -37,6 +44,7 @@ fun Attachment(
                 containerColor = containerColor,
                 isFullscreen = isFullscreen,
                 onClick = onClick,
+                contentScale = contentScale,
             )
         }
 

@@ -10,5 +10,6 @@ data class ActorDto(
     @SerialName("username") val username: String,
     @SerialName("avatar") val avatar: String,
     @SerialName("isFollowing") val isFollowing: Boolean,
-    @SerialName("isFollowedBy") val isFollowedBy: Boolean
+    @SerialName("isFollowedBy") val isFollowedBy: Boolean,
+    @SerialName("activeNickname") val activeNickname: String? = null
 )

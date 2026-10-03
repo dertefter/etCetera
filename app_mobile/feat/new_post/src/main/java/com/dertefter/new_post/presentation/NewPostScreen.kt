@@ -30,8 +30,6 @@ import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
@@ -71,7 +69,6 @@ import com.dertefter.new_post.R
 import com.dertefter.new_post.presentation.component.UploadCard
 import com.dertefter.new_post.presentation.mapper.toOriginalPostUiModel
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun NewPostScreen(
     uiState: UiState,
@@ -272,7 +269,13 @@ fun NewPostScreen(
                     onOpenPost = {},
                     onHashtagClick = {},
                     onUserClick = {},
-                    onAttachmentClick = {_,_ -> }
+                    onAttachmentClick = { _, _ -> },
+                    onLike = {},
+                    onUnlike = {},
+                    onCommentsClick = {},
+                    onRepostClick = {},
+                    onVote = { _, _ -> },
+                    onLinkClick = { }
                 )
             }
 
@@ -281,8 +284,13 @@ fun NewPostScreen(
             val annotatedString = buildPostAnnotatedString(currentText, uiState.spans)
             val outputTransformation = remember(annotatedString) {
                 OutputTransformation {
+                    val bufferLength = length
                     annotatedString.spanStyles.forEach { range ->
-                        addStyle(range.item, range.start, range.end)
+                        val safeStart = range.start.coerceIn(0, bufferLength)
+                        val safeEnd = range.end.coerceIn(0, bufferLength)
+                        if (safeStart < safeEnd) {
+                            addStyle(range.item, safeStart, safeEnd)
+                        }
                     }
                 }
             }

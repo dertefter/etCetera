@@ -2,7 +2,6 @@ package com.dertefter.design.components.lists
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ListItemColors
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.ListItemShapes
@@ -14,7 +13,6 @@ import androidx.compose.ui.Modifier
 import com.dertefter.design.theme.rounding
 import com.dertefter.design.theme.spacing
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SegmentedContentItem(
     modifier: Modifier = Modifier,

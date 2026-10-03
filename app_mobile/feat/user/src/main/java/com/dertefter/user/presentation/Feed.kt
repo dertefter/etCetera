@@ -74,12 +74,14 @@ private fun LazyListScope.postItems(
                 .animateItem()
                 .padding(bottom = MaterialTheme.spacing.medium),
             post = post.toUiModel(),
-            onLike = { onEvent(Event.OnLike(post.id)) },
-            onUnlike = { onEvent(Event.OnUnlike(post.id)) },
-            onCommentsClick = { onEvent(Event.OnNavigateToComments(post.id)) },
-            isOnMyWall = isMe,
+
+            onRepostClick = { postId -> onEvent(Event.OnRepost(postId)) },
+            onLike = { postId -> onEvent(Event.OnLike(postId)) },
+            onUnlike = { postId -> onEvent(Event.OnUnlike(postId)) },
+            onCommentsClick = { postId -> onEvent(Event.OnNavigateToComments(postId)) },
             onUserClick = { userId -> onEvent(Event.OnOpenUser(userId)) },
-            onVote = { optionIds -> onEvent(Event.OnVote(post.id, optionIds)) },
+            onVote = { postId, optionIds -> onEvent(Event.OnVote(postId, optionIds)) },
+            isOnMyWall = isMe,
             onOpenPost = { postId -> onEvent(Event.OnOpenPost(postId)) },
             onAttachmentClick = { attachments, position ->
                 onEvent(Event.OnOpenAttachmentsViewer(attachments, position))
@@ -91,7 +93,6 @@ private fun LazyListScope.postItems(
             onUnpin = { onEvent(Event.OnUnpin(post.id)) },
             onEdit = { onEvent(Event.OnEditPost(it)) },
             onDelete = { onEvent(Event.OnDeletePost(post.id)) },
-            onRepostClick = { onEvent(Event.OnRepost(post.id)) },
             onReport = { onEvent(Event.OnReport("post", post.id)) }
         )
     }

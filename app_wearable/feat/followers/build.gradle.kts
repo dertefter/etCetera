@@ -60,7 +60,6 @@ dependencies {
     debugImplementation(libs.compose.ui.tooling)
     debugImplementation(libs.compose.ui.test.manifest)
 
-    implementation(platform(libs.jamal.wia.paginator.bom))
     implementation(libs.paginator.compose.cursor)
 
     testImplementation(libs.junit)

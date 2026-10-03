@@ -1,7 +1,5 @@
 package com.dertefter.data.dto.comments
 
-import com.dertefter.data.dto.feed.PaginationPostsDto
-import com.dertefter.data.dto.feed.PostDto
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

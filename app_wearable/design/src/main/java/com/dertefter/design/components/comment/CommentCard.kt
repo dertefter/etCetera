@@ -29,12 +29,11 @@ import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
 import com.dertefter.design.R
-import com.dertefter.design.components.avatar.DisplayName
 import com.dertefter.design.components.avatar.Avatar
+import com.dertefter.design.components.avatar.DisplayName
 import com.dertefter.design.components.post.AttachmentUiModel
 import com.dertefter.design.components.post.AttachmentsCarousel
 import com.dertefter.design.components.post.AuthorUiModel
@@ -50,7 +49,6 @@ fun CommentCard(
     onUnlike: (commentId: String) -> Unit = {},
     onLoadMoreReplies: (commentId: String) -> Unit = {},
     onUserClick: (userId: String) -> Unit = {},
-    onEdit: (commentId: String) -> Unit = {},
     onDelete: (commentId: String) -> Unit = {},
     onReplyClick: ((commentId: String, userId: String) -> Unit)? = null,
     meUserId: String? = null,
@@ -84,7 +82,6 @@ fun CommentCard(
                     Avatar(
                         emoji = comment.author.avatar,
                         modifier = Modifier.size(32.dp),
-                        fontSize = 14.sp
                     )
                     Column()
                     {

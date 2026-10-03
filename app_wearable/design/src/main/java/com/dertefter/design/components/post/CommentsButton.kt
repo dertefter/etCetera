@@ -28,7 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.dertefter.design.R
-import com.dertefter.design.common.PrettifyInt
+import com.dertefter.design.common.prettifyInt
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.WearableTheme
 import com.dertefter.design.theme.spacing
@@ -49,7 +49,7 @@ fun CommentsButton(
 
     val desc = stringResource(R.string.design_comments)
 
-    val prettifiedComments = remember(comments) { comments.PrettifyInt() }
+    val prettifiedComments = remember(comments) { comments.prettifyInt() }
     val animatedComments = remember(prettifiedComments) { comments }
 
     Row(
@@ -61,8 +61,8 @@ fun CommentsButton(
             }
             .background(containerColor)
             .padding(
-                vertical = MaterialTheme.spacing.small,
-                horizontal = MaterialTheme.spacing.small + 2.dp
+                vertical = 4.dp,
+                horizontal = 6.dp
             ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
@@ -70,7 +70,7 @@ fun CommentsButton(
         Icon(
             imageVector = Icons.Comment,
             contentDescription = null,
-            Modifier.size(12.dp),
+            Modifier.size(18.dp),
             tint = contentColor
         )
         if (comments > 0){
@@ -88,9 +88,9 @@ fun CommentsButton(
                 label = "comments"
             ) { count ->
                 Text(
-                    text = count.PrettifyInt(),
+                    text = count.prettifyInt(),
                     color = contentColor,
-                    style = MaterialTheme.typography.bodyExtraSmall
+                    style = MaterialTheme.typography.labelSmall
                 )
             }
         }

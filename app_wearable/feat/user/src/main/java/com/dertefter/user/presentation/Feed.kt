@@ -9,6 +9,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -24,8 +25,8 @@ import androidx.wear.compose.material3.lazy.TransformationSpec
 import androidx.wear.compose.material3.lazy.rememberTransformationSpec
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.design.components.common.TransformingListItem
+import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.components.post.PostAttachments
-import com.dertefter.design.components.post.PostCardShimmer
 import com.dertefter.design.components.post.PostContent
 import com.dertefter.design.components.post.PostFooter
 import com.dertefter.design.components.post.PostHeader
@@ -55,7 +56,7 @@ fun Feed(
 
     LaunchedEffect(listState) {
         while (true) {
-            delay(2000.milliseconds)
+            delay(6000.milliseconds)
             val visibleItems = listState.layoutInfo.visibleItems
             val visibleIds = visibleItems.map { it.key.toString() }
             onEvent(Event.OnUpdateStats(visibleIds))
@@ -100,7 +101,8 @@ fun Feed(
             Modifier.fillMaxSize(),
             state = listState,
             contentPadding = contentPadding,
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
         ) {
             header?.invoke(this, transformationSpec)
             postItems(items, onEvent, transformationSpec, isMe)
@@ -123,7 +125,6 @@ private fun TransformingLazyColumnScope.postItems(
         item {
             TransformingListItem(transformationSpec = transformationSpec) {
                 PostHeader(
-                    modifier = Modifier.padding(top = MaterialTheme.spacing.medium),
                     post = postUiModel,
                     onUserClick = { userId -> onEvent(Event.OnOpenUser(userId)) },
                     onEdit = {},
@@ -192,6 +193,7 @@ private fun TransformingLazyColumnScope.postItems(
         item {
             TransformingListItem(transformationSpec = transformationSpec) {
                 PostFooter(
+                    modifier = Modifier.padding(bottom = MaterialTheme.spacing.medium),
                     post = postUiModel,
                     onLike = { onEvent(Event.OnLike(post.id)) },
                     onUnlike = { onEvent(Event.OnUnlike(post.id)) },
@@ -212,13 +214,7 @@ private fun TransformingLazyColumnItemScope.FeedAppendIndicator(
     when (state) {
         is PaginatorUiState.Loading -> {
             TransformingListItem(transformationSpec = transformationSpec) {
-                PostCardShimmer()
-            }
-            TransformingListItem(transformationSpec = transformationSpec) {
-                PostCardShimmer()
-            }
-            TransformingListItem(transformationSpec = transformationSpec) {
-                PostCardShimmer()
+                AppLoadingIndicator()
             }
 
         }
@@ -234,13 +230,7 @@ private fun TransformingLazyColumnItemScope.FeedAppendIndicator(
                 if (appendState.isProgressState()) {
 
                     TransformingListItem(transformationSpec = transformationSpec) {
-                        PostCardShimmer()
-                    }
-                    TransformingListItem(transformationSpec = transformationSpec) {
-                        PostCardShimmer()
-                    }
-                    TransformingListItem(transformationSpec = transformationSpec) {
-                        PostCardShimmer()
+                        AppLoadingIndicator()
                     }
 
                 } else if (appendState.isErrorState()) {
@@ -254,13 +244,7 @@ private fun TransformingLazyColumnItemScope.FeedAppendIndicator(
 
         is PaginatorUiState.Idle -> {
             TransformingListItem(transformationSpec = transformationSpec) {
-                PostCardShimmer()
-            }
-            TransformingListItem(transformationSpec = transformationSpec) {
-                PostCardShimmer()
-            }
-            TransformingListItem(transformationSpec = transformationSpec) {
-                PostCardShimmer()
+                AppLoadingIndicator()
             }
         }
 

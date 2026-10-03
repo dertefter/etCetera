@@ -50,7 +50,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.dertefter.design.R
-import com.dertefter.design.common.PrettifyInt
+import com.dertefter.design.common.prettifyInt
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.customColors
@@ -97,7 +97,7 @@ fun LikeButton(
     val scale = remember { Animatable(1f) }
     var isFirstRun by remember { mutableStateOf(true) }
 
-    val prettifiedLikes = remember(likes) { likes.PrettifyInt() }
+    val prettifiedLikes = remember(likes) { likes.prettifyInt() }
     val animatedLikes = remember(prettifiedLikes) { likes }
 
     LaunchedEffect(isLiked) {
@@ -173,7 +173,7 @@ fun LikeButton(
             ) { count ->
                 val fontWeight = if (isLiked) FontWeight.Bold else FontWeight.Medium
                 Text(
-                    text = count.PrettifyInt(),
+                    text = count.prettifyInt(),
                     color = contentColor,
                     style = MaterialTheme.typography.bodyMedium.copy(fontWeight = fontWeight)
                 )

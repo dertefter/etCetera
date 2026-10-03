@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="report_title">Пожаловаться</string>
     <string name="report_subtitle">Выберите причину жалобы</string>
     <string name="report_reason_spam">Спам или нежелательный контент</string>
@@ -8,10 +8,10 @@
     <string name="report_reason_adult">Контент для взрослых (18+)</string>
     <string name="report_reason_misinfo">Дезинформация или обман</string>
     <string name="report_reason_other">Другое</string>
-    <string name="report_description_hint">Опишите подробнее (необязательно)...</string>
+    <string name="report_description_hint" tools:ignore="TypographyEllipsis">Опишите подробнее (необязательно)...</string>
     <string name="report_action_cancel">Отмена</string>
     <string name="report_action_send">Отправить</string>
-    <string name="report_action_sending">Отправка...</string>
+    <string name="report_action_sending" tools:ignore="TypographyEllipsis">Отправка...</string>
     <string name="report_success_title">Спасибо за жалобу!</string>
     <string name="report_success_subtitle">Мы рассмотрим вашу жалобу и примем необходимые меры. Вы помогаете сделать сообщество лучше.</string>
     <string name="report_action_ok">Понятно</string>

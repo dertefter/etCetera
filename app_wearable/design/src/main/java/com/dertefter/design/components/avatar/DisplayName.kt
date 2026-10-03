@@ -81,8 +81,8 @@ fun DisplayName(
 @Preview(device = "id:wearos_small_round")
 @Composable
 fun DisplayNamePrev(){
-    WearableTheme() {
-        ScreenScaffold() {
+    WearableTheme {
+        ScreenScaffold {
             DisplayName(
                 name = "Пользователь",
                 verified = true,

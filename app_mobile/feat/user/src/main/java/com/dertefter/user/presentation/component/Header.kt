@@ -3,6 +3,7 @@ package com.dertefter.user.presentation.component
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,7 +12,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarScrollBehavior
@@ -43,7 +43,6 @@ import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import kotlin.math.absoluteValue
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun Header(
     modifier: Modifier = Modifier,
@@ -106,6 +105,7 @@ fun Header(
                         .hazeSource(state = hazeState)
                         .padding(bottom = avatarSize / 2)
                         .clip(MaterialTheme.shapes.extraLarge)
+                        .clickable(onClick = onBannerClick)
                         .background(MaterialTheme.colorScheme.surfaceContainerLow)
                         .fillMaxWidth()
                         .height(172.dp),

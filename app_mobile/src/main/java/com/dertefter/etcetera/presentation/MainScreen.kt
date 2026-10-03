@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetValue
@@ -123,7 +122,7 @@ fun getErrorMessage(e: AppError?): String? {
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     navigator: Navigator,
@@ -255,6 +254,24 @@ fun MainScreen(
         }
     }
 
+    val onNavItemClick: (MainTab) -> Unit = { tab ->
+        if (tab != selectedTab) {
+            selectedTab = tab
+        } else {
+            val targetBackStack = when (tab) {
+                MainTab.Feed -> feedBackStack
+                MainTab.Search -> searchBackStack
+                MainTab.Notifications -> notificationsBackStack
+                MainTab.Profile -> profileBackStack
+            }
+            if (targetBackStack.size > 1) {
+                val root = targetBackStack.first()
+                targetBackStack.clear()
+                targetBackStack.add(root)
+            }
+        }
+    }
+
     if (MaterialTheme.isFold) {
         TabUI(
             activeBackStack = activeBackStack,
@@ -269,9 +286,7 @@ fun MainScreen(
                     selectedTab = MainTab.Feed
                 }
             },
-            onNavItemClick = { tab ->
-                selectedTab = tab
-            }
+            onNavItemClick = onNavItemClick
         )
     }
     else {
@@ -288,9 +303,7 @@ fun MainScreen(
                     selectedTab = MainTab.Feed
                 }
             },
-            onNavItemClick = { tab ->
-                selectedTab = tab
-            }
+            onNavItemClick = onNavItemClick
         )
     }
 
@@ -307,18 +320,18 @@ fun MainScreen(
             ) {
                 bottomSheetBackStack.removeAt(bottomSheetBackStack.lastIndex)
             }
-            when (val route = bottomSheetRoute) {
-                is Routes.Report -> ReportRoute(route.targetType, route.targetId)
+            when (bottomSheetRoute) {
+                is Routes.Report -> ReportRoute(bottomSheetRoute.targetType, bottomSheetRoute.targetId)
                 is Routes.SwitchAccount -> SwitchAccountRoute()
-                is Routes.Comments -> CommentsRoute(route.postId)
-                is Routes.NewPost -> NewPostRoute(route.wallRecipientId)
-                is Routes.Repost -> RepostRoute(route.postIdForRepost, route.wallRecipientId)
-                is Routes.EditPost -> EditPostRoute(route.postId)
-                is Routes.NewComment -> NewCommentRoute(route.postId)
+                is Routes.Comments -> CommentsRoute(bottomSheetRoute.postId)
+                is Routes.NewPost -> NewPostRoute(bottomSheetRoute.wallRecipientId)
+                is Routes.Repost -> RepostRoute(bottomSheetRoute.postIdForRepost, bottomSheetRoute.wallRecipientId)
+                is Routes.EditPost -> EditPostRoute(bottomSheetRoute.postId)
+                is Routes.NewComment -> NewCommentRoute(bottomSheetRoute.postId)
                 is Routes.NewCommentReply -> NewCommentReplyRoute(
-                    route.postId,
-                    route.commentId,
-                    route.userId
+                    bottomSheetRoute.postId,
+                    bottomSheetRoute.commentId,
+                    bottomSheetRoute.userId
                 )
 
                 else -> {

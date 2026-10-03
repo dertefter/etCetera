@@ -73,5 +73,12 @@ fun OriginalPostDto.toUiModel() = OriginalPostUiModel(
     poll = poll?.toUiModel(),
     createdAt = createdAt,
     editedAt = null,
-    isDeleted = isDeleted
+    isDeleted = isDeleted,
+    likesCount = likesCount,
+    isLiked = isLiked,
+    commentsCount = commentsCount,
+    repostsCount = repostsCount,
+    isReposted = isReposted,
+    dominantEmoji = dominantEmoji,
+    viewsCount = viewsCount
 )

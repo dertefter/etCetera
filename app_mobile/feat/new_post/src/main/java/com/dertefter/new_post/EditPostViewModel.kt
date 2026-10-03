@@ -28,8 +28,8 @@ class EditPostViewModel @Inject constructor(
         viewModelScope.launch {
             postRepository.getPost(postId).collectLatest { post ->
                 if (post != null) {
-                    _content.value = post.content
-                    _spans.value = post.spans.map { SpanUiModel(it.type, it.length, it.offset, it.username, it.tag, it.url) }
+                    content.value = post.content
+                    spans.value = post.spans.map { SpanUiModel(it.type, it.length, it.offset, it.username, it.tag, it.url) }
                 }
             }
         }
@@ -41,10 +41,10 @@ class EditPostViewModel @Inject constructor(
     override fun savePost() {
         val postId = postId ?: return
         viewModelScope.launch {
-            _isUploadingPost.value = true
+            isUploadingPost.value = true
             val request = EditPostRequestDto(
-                content = _content.value,
-                spans = _spans.value.map { SpanDto(it.type, it.length, it.offset, it.username, it.tag, it.url) }
+                content = content.value,
+                spans = spans.value.map { SpanDto(it.type, it.length, it.offset, it.username, it.tag, it.url) }
             )
 
             val result = postRepository.editPost(postId, request)
@@ -53,7 +53,7 @@ class EditPostViewModel @Inject constructor(
                 clearAll()
                 navigator.hideBottomSheet()
             }
-            _isUploadingPost.value = false
+            isUploadingPost.value = false
         }
     }
 }

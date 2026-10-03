@@ -64,8 +64,7 @@ fun UserScreen(
                                 if (userUiState.isMe) {
                                     onEvent(Event.OnBannerEdit)
                                 }
-                            },
-                            modifier = Modifier.padding(bottom = MaterialTheme.spacing.small)
+                            }
                         )
                     }
                 }
@@ -73,7 +72,6 @@ fun UserScreen(
                 item(key = "user_stats") {
                     TransformingListItem(transformationSpec = transformationSpec) {
                         Row(
-                            modifier = Modifier.padding(bottom = MaterialTheme.spacing.small),
                             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
                         ) {
                             TitleValueCard(
@@ -101,7 +99,6 @@ fun UserScreen(
                     item(key = "user_bio") {
                         TransformingListItem(transformationSpec = transformationSpec) {
                             BioCard(
-                                modifier = Modifier.padding(bottom = MaterialTheme.spacing.small),
                                 bio = userUiState.userDto.bio ?: "",
                             )
                         }
@@ -117,7 +114,6 @@ fun UserScreen(
                                         onEvent(Event.OnUnfollow(userUiState.userDto.id))
                                     },
                                     modifier = Modifier
-                                        .padding(bottom = MaterialTheme.spacing.small)
                                         .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
                                         .fillMaxWidth()
                                 ) {
@@ -138,7 +134,6 @@ fun UserScreen(
                                     Text(
                                         stringResource(R.string.user_follow),
                                         modifier = Modifier
-                                            .padding(bottom = MaterialTheme.spacing.small)
                                             .fillMaxWidth(),
                                         textAlign = TextAlign.Center
                                     )

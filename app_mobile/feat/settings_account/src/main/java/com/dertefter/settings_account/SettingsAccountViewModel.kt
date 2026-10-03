@@ -22,7 +22,7 @@ import javax.inject.Inject
 class SettingsAccountViewModel @Inject constructor(
     private val navigator: Navigator,
     private val meRepository: MeRepository,
-    private val authRepository: AuthRepository
+    authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _me = meRepository.me

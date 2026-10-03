@@ -25,7 +25,14 @@ fun PostDto.toOriginalPostUiModel(): OriginalPostUiModel {
         poll = poll?.toUiModel(),
         createdAt = createdAt,
         editedAt = null,
-        isDeleted = false
+        isDeleted = false,
+        likesCount = likesCount,
+        isLiked = isLiked,
+        commentsCount = commentsCount,
+        repostsCount = repostsCount,
+        isReposted = isReposted,
+        dominantEmoji = dominantEmoji,
+        viewsCount = viewsCount
     )
 }
 

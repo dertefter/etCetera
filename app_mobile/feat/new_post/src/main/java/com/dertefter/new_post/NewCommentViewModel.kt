@@ -55,14 +55,14 @@ class NewCommentViewModel @Inject constructor(
 
     private fun saveComment(postId: String) {
         viewModelScope.launch {
-            _isUploadingPost.value = true
-            val attachmentIds = _uploads.value
+            isUploadingPost.value = true
+            val attachmentIds = uploads.value
                 .filter { it.uploadStatus == UploadStatus.SUCCESS }
                 .mapNotNull { it.attachment?.id }
 
             val request = NewCommentRequestDto(
-                content = _content.value,
-                spans = _spans.value.map { SpanDto(it.type, it.length, it.offset, it.username, it.tag, it.url) },
+                content = content.value,
+                spans = spans.value.map { SpanDto(it.type, it.length, it.offset, it.username, it.tag, it.url) },
                 attachmentIds = attachmentIds
             )
 
@@ -71,20 +71,20 @@ class NewCommentViewModel @Inject constructor(
                 clearAll()
                 navigator.openAsBottomSheet(Routes.Comments(postId))
             }
-            _isUploadingPost.value = false
+            isUploadingPost.value = false
         }
     }
 
     private fun saveCommentReply(postId: String, commentId: String, replyToUserId: String) {
         viewModelScope.launch {
-            _isUploadingPost.value = true
-            val attachmentIds = _uploads.value
+            isUploadingPost.value = true
+            val attachmentIds = uploads.value
                 .filter { it.uploadStatus == UploadStatus.SUCCESS }
                 .mapNotNull { it.attachment?.id }
 
             val request = NewCommentRequestDto(
-                content = _content.value,
-                spans = _spans.value.map { SpanDto(it.type, it.length, it.offset, it.username, it.tag, it.url) },
+                content = content.value,
+                spans = spans.value.map { SpanDto(it.type, it.length, it.offset, it.username, it.tag, it.url) },
                 attachmentIds = attachmentIds,
                 replyToUserId = replyToUserId
             )
@@ -94,7 +94,7 @@ class NewCommentViewModel @Inject constructor(
                 clearAll()
                 navigator.openAsBottomSheet(Routes.Comments(postId))
             }
-            _isUploadingPost.value = false
+            isUploadingPost.value = false
         }
     }
 }

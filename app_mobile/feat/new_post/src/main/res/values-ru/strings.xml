@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <string name="new_post_title">Новый пост</string>
     <string name="new_repost_title">Репост</string>
@@ -20,7 +20,7 @@
     <string name="action_add_media">Добавить медиа</string>
     <string name="action_save">Сохранить</string>
     <string name="post_placeholder">Что нового?</string>
-    <string name="repost_placeholder">Комментарий к посту...</string>
-    <string name="comment_placeholder">Напишите комментарий...</string>
+    <string name="repost_placeholder" tools:ignore="TypographyEllipsis">Комментарий к посту...</string>
+    <string name="comment_placeholder" tools:ignore="TypographyEllipsis">Напишите комментарий...</string>
 
 </resources>

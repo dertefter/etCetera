@@ -31,7 +31,7 @@ class RepostViewModel @Inject constructor(
         this.wallRecipientId = wallRecipientId
         viewModelScope.launch {
             postRepository.getPost(postIdForRepost).collectLatest {
-                _originalPost.value = it
+                originalPost.value = it
             }
         }
         viewModelScope.launch {
@@ -43,21 +43,21 @@ class RepostViewModel @Inject constructor(
     override fun savePost() {
         val postId = postIdForRepost ?: return
         viewModelScope.launch {
-            _isUploadingPost.value = true
-            val pollDto = _poll.value?.let { poll ->
+            isUploadingPost.value = true
+            val pollDto = poll.value?.let { poll ->
                 NewPollDto(
                     question = poll.title,
                     options = poll.questions.map { NewPollOptionDto(it.text) },
                     multipleChoice = poll.isMultipleChoice
                 )
             }
-            val attachmentIds = _uploads.value
+            val attachmentIds = uploads.value
                 .filter { it.uploadStatus == UploadStatus.SUCCESS }
                 .mapNotNull { it.attachment?.id }
 
             val request = NewPostRequestDto(
-                content = _content.value,
-                spans = _spans.value.map { SpanDto(it.type, it.length, it.offset, it.username, it.tag, it.url) },
+                content = content.value,
+                spans = spans.value.map { SpanDto(it.type, it.length, it.offset, it.username, it.tag, it.url) },
                 poll = pollDto,
                 attachmentIds = attachmentIds,
                 wallRecipientId = wallRecipientId
@@ -69,7 +69,7 @@ class RepostViewModel @Inject constructor(
                 clearAll()
                 navigator.hideBottomSheet()
             }
-            _isUploadingPost.value = false
+            isUploadingPost.value = false
         }
     }
 }

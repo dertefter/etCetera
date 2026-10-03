@@ -1,6 +1,7 @@
 package com.dertefter.etcetera.presentation
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dertefter.data.datasource.local.TokenManager
@@ -13,12 +14,13 @@ import com.google.android.gms.wearable.DataMapItem
 import com.google.android.gms.wearable.Wearable
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -48,22 +50,15 @@ class MainViewModel @Inject constructor(
     private fun requestTokensFromPhone() {
         viewModelScope.launch {
             try {
-                val nodes = Tasks.await(Wearable.getNodeClient(context).connectedNodes)
+                val nodes = withContext(Dispatchers.IO) {
+                    Tasks.await(Wearable.getNodeClient(context).connectedNodes)
+                }
                 val messageClient = Wearable.getMessageClient(context)
                 for (node in nodes) {
                     messageClient.sendMessage(node.id, "/request_token_refresh", byteArrayOf())
                 }
             } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
-
-    fun spoilAccessToken() {
-        viewModelScope.launch {
-            val login = authRepository.currentLogin.first()
-            if (login != null) {
-                tokenManager.saveAccessTokenForLogin(login, "spoiled_token")
+                Log.e("requestTokensFromPhone", e.stackTraceToString())
             }
         }
     }

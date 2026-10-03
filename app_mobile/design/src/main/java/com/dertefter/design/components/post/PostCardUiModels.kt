@@ -88,7 +88,14 @@ data class OriginalPostUiModel(
     val poll: PollUiModel?,
     val createdAt: String,
     val editedAt: String?,
-    val isDeleted: Boolean
+    val isDeleted: Boolean,
+    val likesCount: Int,
+    val isLiked: Boolean,
+    val commentsCount: Int,
+    val repostsCount: Int,
+    val isReposted: Boolean,
+    val dominantEmoji: String?,
+    val viewsCount: Int,
 ) {
     fun getCreatedAtDate(): LocalDateTime? {
         return DateParser.parseToInstant(createdAt)

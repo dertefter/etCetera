@@ -34,7 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.dertefter.design.R
-import com.dertefter.design.common.PrettifyInt
+import com.dertefter.design.common.prettifyInt
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
@@ -55,7 +55,7 @@ fun CommentsButton(
 
     val desc = stringResource(R.string.design_comments)
 
-    val prettifiedComments = remember(comments) { comments.PrettifyInt() }
+    val prettifiedComments = remember(comments) { comments.prettifyInt() }
     val animatedComments = remember(prettifiedComments) { comments }
 
     val interactionSource = remember { MutableInteractionSource() }
@@ -109,7 +109,7 @@ fun CommentsButton(
                 label = "comments"
             ) { count ->
                 Text(
-                    text = count.PrettifyInt(),
+                    text = count.prettifyInt(),
                     color = contentColor,
                     style = MaterialTheme.typography.bodyMedium
                 )

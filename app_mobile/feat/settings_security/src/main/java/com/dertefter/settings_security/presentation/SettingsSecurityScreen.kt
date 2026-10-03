@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.MaterialTheme
@@ -46,7 +44,6 @@ import com.dertefter.settings_security.presentation.component.SessionItemContent
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SettingsSecurityScreen(
     uiState: UiState,
@@ -95,6 +92,8 @@ fun SettingsSecurityScreen(
                     visible = uiState.sessions != null && uiState.sessions.count() > 1
                 ) {
                     ExtendedFloatingActionButton(
+                        modifier = Modifier
+                            .padding(bottom = MaterialTheme.bottomNavHeight),
                         containerColor = MaterialTheme.colorScheme.errorContainer,
                         contentColor = MaterialTheme.colorScheme.onErrorContainer,
                         onClick = {

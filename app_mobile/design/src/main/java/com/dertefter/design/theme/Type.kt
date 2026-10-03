@@ -1,6 +1,5 @@
 package com.dertefter.design.theme
 
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -15,7 +14,6 @@ val GoogleSans = FontFamily(
     )
 )
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 val Typography = Typography(
     displayLarge = Typography().displayLarge.copy(fontFamily = GoogleSans),
     displayMedium = Typography().displayMedium.copy(fontFamily = GoogleSans),

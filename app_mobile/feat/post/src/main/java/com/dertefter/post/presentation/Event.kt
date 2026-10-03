@@ -9,7 +9,9 @@ sealed interface Event {
     data class OnRepost(val postId: String) : Event
     data class OnEditPost(val postId: String) : Event
     data class OnOpenUser(val userId: String) : Event
-    data object OnLike : Event
+    data class OnLike(val postId: String) : Event
+
+    data class OnUnlike(val postId: String) : Event
 
     data class OnPin(val postId: String) : Event
 
@@ -21,10 +23,10 @@ sealed interface Event {
 
     data object OnNavigateBack : Event
 
-    data object OnUnlike : Event
+    data class OnNavigateToComments(val postId: String) : Event
 
     data class OnOpenPost(val postId: String) : Event
-    data class OnVote(val optionIds: List<String>) : Event
+    data class OnVote(val postId: String, val optionIds: List<String>) : Event
 
     data class OnReport(val targetType: String, val targetId: String) : Event
 

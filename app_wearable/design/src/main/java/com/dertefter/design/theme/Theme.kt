@@ -1,7 +1,8 @@
+@file:Suppress("UnusedReceiverParameter")
+
 package com.dertefter.design.theme
 
 import android.os.Build
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
@@ -69,7 +70,6 @@ val MaterialTheme.specVersion: ColorSpec.SpecVersion
 
 @Composable
 fun WearableTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = true,
     paletteStyle: PaletteStyle? = null,
     specVersion: ColorSpec.SpecVersion? = null,

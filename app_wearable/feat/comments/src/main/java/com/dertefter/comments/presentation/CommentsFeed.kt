@@ -30,12 +30,11 @@ import androidx.wear.compose.material3.lazy.TransformationSpec
 import androidx.wear.compose.material3.lazy.rememberTransformationSpec
 import com.dertefter.comments.R
 import com.dertefter.design.components.comment.CommentCard
-import com.dertefter.design.components.comment.CommentCardShimmer
-import com.dertefter.design.components.comment.CommentsLoadingShimmer
 import com.dertefter.comments.presentation.mapper.toUiModel
 import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.data.dto.feed.AuthorDto
 import com.dertefter.design.components.common.TransformingListItem
+import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.theme.WearableTheme
 import com.dertefter.design.theme.spacing
 import com.jamal_aliev.paginator.core.extension.isErrorState
@@ -99,45 +98,52 @@ fun CommentsFeed(
             Modifier.fillMaxSize(),
             state = listState,
             contentPadding = contentPadding,
+            horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
         ) {
             header?.invoke(this, transformationSpec)
 
-            if (uiState is PaginatorUiState.Idle) {
-                item {
-                    TransformingListItem(transformationSpec = transformationSpec) {
-                        CommentsLoadingShimmer()
-                    }
-                }
-            } else if (uiState is PaginatorUiState.Empty) {
-                item {
-                    TransformingListItem(transformationSpec = transformationSpec) {
-                        Box(
-                            Modifier
-                                .padding(MaterialTheme.spacing.large)
-                                .fillMaxSize(), contentAlignment = Alignment.Center
-                        ) {
-                            Text(stringResource(R.string.comments_empty))
+            when (uiState) {
+                is PaginatorUiState.Idle -> {
+                    item {
+                        TransformingListItem(transformationSpec = transformationSpec) {
+                            AppLoadingIndicator()
                         }
                     }
                 }
-            } else {
-                itemsIndexed(items, key = { _, comment -> comment.id }) { _, comment ->
-                    TransformingListItem(transformationSpec = transformationSpec) {
-                        CommentCard(
-                            meUserId = meUserId,
-                            comment = comment.toUiModel(meUserId),
-                            onLike = { onEvent(Event.OnLike(it)) },
-                            onUnlike = { onEvent(Event.OnUnlike(it)) },
-                            onLoadMoreReplies = { onEvent(Event.OnLoadMoreReplies(it)) },
-                            onUserClick = { onEvent(Event.OnOpenUser(it)) },
-                            onDelete = { onEvent(Event.OnDeleteComment(it)) }
-                        )
+
+                is PaginatorUiState.Empty -> {
+                    item {
+                        TransformingListItem(transformationSpec = transformationSpec) {
+                            Box(
+                                Modifier
+                                    .padding(MaterialTheme.spacing.large)
+                                    .fillMaxSize(), contentAlignment = Alignment.Center
+                            ) {
+                                Text(stringResource(R.string.comments_empty))
+                            }
+                        }
                     }
                 }
 
-                item(key = "append_indicator") {
-                    CommentAppendIndicator(uiState, transformationSpec)
+                else -> {
+                    itemsIndexed(items, key = { _, comment -> comment.id }) { _, comment ->
+                        TransformingListItem(transformationSpec = transformationSpec) {
+                            CommentCard(
+                                meUserId = meUserId,
+                                comment = comment.toUiModel(meUserId),
+                                onLike = { onEvent(Event.OnLike(it)) },
+                                onUnlike = { onEvent(Event.OnUnlike(it)) },
+                                onLoadMoreReplies = { onEvent(Event.OnLoadMoreReplies(it)) },
+                                onUserClick = { onEvent(Event.OnOpenUser(it)) },
+                                onDelete = { onEvent(Event.OnDeleteComment(it)) }
+                            )
+                        }
+                    }
+
+                    item(key = "append_indicator") {
+                        CommentAppendIndicator(uiState, transformationSpec)
+                    }
                 }
             }
         }
@@ -157,18 +163,22 @@ private fun TransformingLazyColumnItemScope.CommentAppendIndicator(
         contentAlignment = Alignment.Center
     ) {
         when (state) {
-            is PaginatorUiState.Loading -> CommentCardShimmer()
+            is PaginatorUiState.Loading -> {
+                AppLoadingIndicator()
+            }
             is PaginatorUiState.Error -> Text(stringResource(R.string.comments_failed_to_load))
             is PaginatorUiState.Content -> {
                 state.appendState?.let { appendState ->
                     if (appendState.isProgressState()) {
-                        CommentCardShimmer()
+                        AppLoadingIndicator()
                     } else if (appendState.isErrorState()) {
                         Text(stringResource(R.string.comments_failed_to_load))
                     }
                 }
             }
-            is PaginatorUiState.Idle -> CommentCardShimmer()
+            is PaginatorUiState.Idle -> {
+                AppLoadingIndicator()
+            }
             else -> {}
         }
     }

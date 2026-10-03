@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="search_title">Поиск</string>
     <string name="navigate_back">Назад</string>
     <string name="posts_count">%s постов</string>
-    <string name="search_hint">Введите что-нибудь...</string>
+    <string name="search_hint" tools:ignore="TypographyEllipsis">Введите что-нибудь...</string>
 </resources>
