@@ -109,14 +109,20 @@ fun PhoneUI(
     )
 
     val navSpacingHorizontal by animateDpAsState(
-        if (MaterialTheme.navFloating) MaterialTheme.spacing.extraLarge else 0.dp,
-        animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec()
+        if (MaterialTheme.navFloating) MaterialTheme.spacing.extraLarge + MaterialTheme.spacing.large else 0.dp,
+        animationSpec = MaterialTheme.motionScheme.fastSpatialSpec()
     )
+
+    val navSpacingHorizontalInternal by animateDpAsState(
+        if (MaterialTheme.navFloating) MaterialTheme.spacing.large else 0.dp,
+        animationSpec = MaterialTheme.motionScheme.slowSpatialSpec()
+    )
+
 
     val navSpacingBottom by animateDpAsState(
         if (MaterialTheme.navFloating) MaterialTheme.spacing.small + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
         else 0.dp,
-        animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec()
+        animationSpec = MaterialTheme.motionScheme.fastSpatialSpec()
     )
 
     val navSpacingBottomInternal by animateDpAsState(
@@ -186,6 +192,7 @@ fun PhoneUI(
                                 )
                             } else Modifier
                         )
+                        .padding(horizontal = navSpacingHorizontalInternal.coerceAtLeast(0.dp))
                         .padding(bottom = navSpacingBottomInternal.coerceAtLeast(0.dp))
                         .fillMaxWidth()
                     )
