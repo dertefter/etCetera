@@ -100,7 +100,7 @@ fun Feed(
             Modifier.fillMaxSize(),
             state = listState,
             contentPadding = contentPadding,
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large)
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
         ) {
             header?.invoke(this, transformationSpec)
             postItems(items, onEvent, transformationSpec, isMe)
@@ -115,7 +115,7 @@ private fun TransformingLazyColumnScope.postItems(
     items: List<PostDto>,
     onEvent: (Event) -> Unit,
     transformationSpec: TransformationSpec,
-    isMe: Boolean,
+    isMe: Boolean
 ) {
 
     items.forEachIndexed { _, post ->
@@ -123,69 +123,75 @@ private fun TransformingLazyColumnScope.postItems(
         item {
             TransformingListItem(transformationSpec = transformationSpec) {
                 PostHeader(
-                    isOnMyWall = isMe,
+                    modifier = Modifier.padding(top = MaterialTheme.spacing.medium),
                     post = postUiModel,
                     onUserClick = { userId -> onEvent(Event.OnOpenUser(userId)) },
                     onEdit = {},
                     onPin = { onEvent(Event.OnPin(post.id)) },
                     onUnpin = { onEvent(Event.OnUnpin(post.id)) },
-                    onDelete = { onEvent(Event.OnDeletePost(post.id)) }
+                    onDelete = { onEvent(Event.OnDeletePost(post.id)) },
+                    isOnMyWall = isMe
                 )
             }
         }
 
-        item {
-            TransformingListItem(transformationSpec = transformationSpec) {
-                PostContent(
-                    post = postUiModel,
-                    onOpenPost = { postId -> onEvent(Event.OnOpenPost(postId)) },
-                    onHashtagClick = { onEvent(Event.OnOpenHashtag(it)) },
-                    onUserClick = { userId -> onEvent(Event.OnOpenUser(userId)) }
-                )
+        if (postUiModel.content.isNotEmpty()){
+            item {
+                TransformingListItem(transformationSpec = transformationSpec) {
+                    PostContent(
+                        post = postUiModel,
+                        onOpenPost = { postId -> onEvent(Event.OnOpenPost(postId)) },
+                        onHashtagClick = { onEvent(Event.OnOpenHashtag(it)) },
+                        onUserClick = { userId -> onEvent(Event.OnOpenUser(userId)) }
+                    )
+                }
             }
         }
 
-        item {
-            TransformingListItem(transformationSpec = transformationSpec) {
-                PostAttachments(
-                    attachments = postUiModel.attachments,
-                    onAttachmentClick = { attachments, position ->
-                        onEvent(Event.OnOpenAttachmentsViewer(attachments, position))
-                    }
-                )
+        if (postUiModel.attachments.isNotEmpty()){
+            item {
+                TransformingListItem(transformationSpec = transformationSpec) {
+                    PostAttachments(
+                        attachments = postUiModel.attachments,
+                        onAttachmentClick = { attachments, position ->
+                            onEvent(Event.OnOpenAttachmentsViewer(attachments, position))
+                        }
+                    )
+                }
             }
         }
 
-        item {
+        if (postUiModel.poll != null) {
+            item {
 
-            TransformingListItem(transformationSpec = transformationSpec) {
-                PostPoll(
-                    poll = postUiModel.poll,
-                    onVote = { optionIds -> onEvent(Event.OnVote(post.id, optionIds)) }
-                )
+                TransformingListItem(transformationSpec = transformationSpec) {
+                    PostPoll(
+                        poll = postUiModel.poll,
+                        onVote = { optionIds -> onEvent(Event.OnVote(post.id, optionIds)) }
+                    )
+                }
             }
         }
 
-        item {
-            TransformingListItem(transformationSpec = transformationSpec) {
-                PostOriginalPost(
-                    originalPost = postUiModel.originalPost,
-                    onOpenPost = { postId -> onEvent(Event.OnOpenPost(postId)) },
-                    onHashtagClick = { onEvent(Event.OnOpenHashtag(it)) },
-                    onUserClick = { userId -> onEvent(Event.OnOpenUser(userId)) },
-                    onAttachmentClick = { attachments, position ->
-                        onEvent(Event.OnOpenAttachmentsViewer(attachments, position))
-                    }
-                )
+        if (postUiModel.originalPost != null) {
+            item {
+                TransformingListItem(transformationSpec = transformationSpec) {
+                    PostOriginalPost(
+                        originalPost = postUiModel.originalPost,
+                        onOpenPost = { postId -> onEvent(Event.OnOpenPost(postId)) },
+                        onHashtagClick = { onEvent(Event.OnOpenHashtag(it)) },
+                        onUserClick = { userId -> onEvent(Event.OnOpenUser(userId)) },
+                        onAttachmentClick = { attachments, position ->
+                            onEvent(Event.OnOpenAttachmentsViewer(attachments, position))
+                        }
+                    )
+                }
             }
         }
 
         item {
             TransformingListItem(transformationSpec = transformationSpec) {
                 PostFooter(
-                    modifier = Modifier
-                        .padding(horizontal = MaterialTheme.spacing.medium)
-                        .padding(bottom = MaterialTheme.spacing.medium),
                     post = postUiModel,
                     onLike = { onEvent(Event.OnLike(post.id)) },
                     onUnlike = { onEvent(Event.OnUnlike(post.id)) },

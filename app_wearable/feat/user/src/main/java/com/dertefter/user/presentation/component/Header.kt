@@ -32,7 +32,7 @@ fun Header(
     bannerUrl: String?,
     author: AuthorUiModel,
     isMe: Boolean = false,
-    avatarSize: Dp = 40.dp,
+    avatarSize: Dp = 56.dp,
     onBannerClick: () -> Unit = {},
     onEditClick: () -> Unit = {}
 ){
@@ -64,8 +64,7 @@ fun Header(
 
             Avatar(
                 emoji = author.avatar,
-                containerSize = avatarSize,
-                fontSize = 14.sp
+                containerSize = avatarSize
             )
         }
 
