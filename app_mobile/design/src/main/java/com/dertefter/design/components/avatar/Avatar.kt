@@ -1,5 +1,6 @@
 package com.dertefter.design.components.avatar
 
+import android.content.res.Configuration
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.LruCache
@@ -13,12 +14,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
-import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -94,7 +92,6 @@ fun Avatar(
 }
 
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun ImageAvatar(
     modifier: Modifier = Modifier,
@@ -114,40 +111,42 @@ fun ImageAvatar(
         )
     }
 
+    val clip = remember(polygon) {
+        RoundedPolygonShape(polygon = polygon)
+    }
+
     val interactionSource = remember { MutableInteractionSource() }
 
     Box(
         modifier = modifier
-    ) {
-        Box(
-            modifier = Modifier
-                .size(containerSize)
-                .clip(polygon.toShape(startAngle = rotation.toInt()))
-                .clickable(
-                    onClick = onClick,
-                    indication = ripple(
-                        color = MaterialTheme.colorScheme.outline
-                    ),
-                    interactionSource = interactionSource
-                )
-                .background(MaterialTheme.colorScheme.surfaceContainerHigh),
-            contentAlignment = Alignment.Center
-        ) {
-            SubcomposeAsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(url)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = null,
-                contentScale = ContentScale.Crop
+            .graphicsLayer { rotationZ = rotation }
+            .clip(clip)
+            .size(containerSize)
+            .clickable(
+                onClick = onClick,
+                indication = ripple(
+                    color = MaterialTheme.colorScheme.outline
+                ),
+                interactionSource = interactionSource
             )
-        }
+            .background(MaterialTheme.colorScheme.surfaceContainerHigh),
+        contentAlignment = Alignment.Center
+    ) {
+        SubcomposeAsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(url)
+                .crossfade(true)
+                .build(),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .graphicsLayer { rotationZ = -rotation }
+        )
     }
 
 
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun EmojiAvatar(
     modifier: Modifier = Modifier,
@@ -173,19 +172,19 @@ fun EmojiAvatar(
 
     val targetEmojiColor by animateColorAsState(
         when (MaterialTheme.emojiAvatarHarmonizeColor) {
-            EmojiAvatarHarmonizationColor.PRIMARY -> MaterialTheme.colorScheme.onPrimary
-            EmojiAvatarHarmonizationColor.SECONDARY -> MaterialTheme.colorScheme.onSecondary
-            EmojiAvatarHarmonizationColor.TERTIARY -> MaterialTheme.colorScheme.onTertiary
-            EmojiAvatarHarmonizationColor.SURFACE_CONTAINER -> MaterialTheme.colorScheme.onSurfaceVariant
-            EmojiAvatarHarmonizationColor.PRIMARY_CONTAINER -> MaterialTheme.colorScheme.onPrimaryContainer
-            EmojiAvatarHarmonizationColor.SECONDARY_CONTAINER -> MaterialTheme.colorScheme.onSecondaryContainer
-            EmojiAvatarHarmonizationColor.TERTIARY_CONTAINER -> MaterialTheme.colorScheme.onTertiaryContainer
+            EmojiAvatarHarmonizationColor.PRIMARY -> MaterialTheme.colorScheme.onPrimaryFixed
+            EmojiAvatarHarmonizationColor.SECONDARY -> MaterialTheme.colorScheme.onSecondaryFixed
+            EmojiAvatarHarmonizationColor.TERTIARY -> MaterialTheme.colorScheme.onTertiaryFixed
+            EmojiAvatarHarmonizationColor.SURFACE_CONTAINER -> MaterialTheme.colorScheme.onSecondaryFixed
+            EmojiAvatarHarmonizationColor.PRIMARY_CONTAINER -> MaterialTheme.colorScheme.onPrimaryFixedVariant
+            EmojiAvatarHarmonizationColor.SECONDARY_CONTAINER -> MaterialTheme.colorScheme.onSecondaryFixedVariant
+            EmojiAvatarHarmonizationColor.TERTIARY_CONTAINER -> MaterialTheme.colorScheme.onTertiaryFixedVariant
             else -> Color.Transparent
         }
     )
 
     val fallbackColor = MaterialTheme.colorScheme.surfaceContainer
-    val fallbackEmojiColor = MaterialTheme.colorScheme.onSurfaceVariant
+    val fallbackEmojiColor = MaterialTheme.colorScheme.outline
 
     var baseEmojiColor by remember(emoji) { mutableStateOf<Color?>(null) }
 
@@ -293,9 +292,9 @@ private fun getEmojiPolygonParameters(
     val random = Random(str.hashCode().toLong())
 
     val numVertices = if (onlyEvenNumVertices) {
-        random.nextInt(from = 2, until = 7) * 2 // 4..12
+        random.nextInt(from = 2, until = 7) * 2
     } else {
-        random.nextInt(from = 3, until = 13) // 3..12
+        random.nextInt(from = 3, until = 13)
     }
 
     val innerRadius = 0.3f + random.nextFloat() * 0.3f
@@ -310,7 +309,7 @@ private suspend fun extractEmojiColor(
 ): Color = withContext(Dispatchers.Default) {
     EmojiColorCache.get(emoji)?.let { return@withContext it }
     val colorInt = runCatching {
-        val size = 64
+        val size = 128
         val bitmap = createBitmap(size, size)
         val canvas = Canvas(bitmap)
 
@@ -341,21 +340,10 @@ private suspend fun extractEmojiColor(
     result
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun ImageAvatarPreview() {
-    AppTheme {
-        ImageAvatar(
-            containerSize = 56.dp,
-            rotation = 0f,
-            url = "https://cdn.xn--d1ah4a.com/images/avatars/44f5f3ed-1d7e-4441-ade1-5ff241c0baab.jpg"
-        )
-    }
-}
-
 @Preview(
     showBackground = true,
-    wallpaper = Wallpapers.BLUE_DOMINATED_EXAMPLE
+    wallpaper = Wallpapers.GREEN_DOMINATED_EXAMPLE,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
 )
 @Composable
 private fun EmojiAvatarPreview() {
@@ -400,7 +388,8 @@ private fun EmojiAvatarPreview() {
             "💨", "💧", "💦", "☔", "☂️", "🌊", "🌫️", "🌵", "🎄", "🌲", "🌳",
         )
         LazyVerticalGrid(
-            columns = GridCells.Fixed(5)
+            columns = GridCells.Fixed(5),
+            modifier = Modifier.background(MaterialTheme.colorScheme.background)
         ) {
             items(emojiList) { emoji ->
                 Box(
@@ -409,10 +398,7 @@ private fun EmojiAvatarPreview() {
                     EmojiAvatar(
                         containerSize = 56.dp,
                         rotation = 0f,
-                        emoji = emoji,
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.surfaceContainer)
+                        emoji = emoji
                     )
                 }
 

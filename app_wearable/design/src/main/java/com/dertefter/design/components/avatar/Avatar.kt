@@ -122,29 +122,26 @@ fun ImageAvatar(
 
     Box(
         modifier = modifier
-    ) {
-        Box(
-            modifier = Modifier
-                .size(containerSize)
-                .graphicsLayer { rotationZ = rotation }
-                .clip(clip)
-                .clickable(
-                    onClick = onClick,
-                    interactionSource = interactionSource,
-                    indication = null
-                )
-                .background(MaterialTheme.colorScheme.surfaceContainerHigh),
-            contentAlignment = Alignment.Center
-        ) {
-            SubcomposeAsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(url)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = null,
-                contentScale = ContentScale.Crop
+            .graphicsLayer { rotationZ = rotation }
+            .clip(clip)
+            .size(containerSize)
+            .clickable(
+                onClick = onClick,
+                interactionSource = interactionSource
             )
-        }
+            .background(MaterialTheme.colorScheme.surfaceContainer),
+        contentAlignment = Alignment.Center
+    ) {
+        SubcomposeAsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(url)
+                .crossfade(true)
+                .build(),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .graphicsLayer { rotationZ = -rotation }
+        )
     }
 }
 
