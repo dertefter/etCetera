@@ -9,9 +9,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.ChipShapes
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -36,7 +37,6 @@ import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun NotificationsScreen(
     onEvent: (Event) -> Unit,
@@ -111,7 +111,6 @@ fun NotificationsScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NotificationFilters(
     selectedFilter: String?,
@@ -135,10 +134,25 @@ fun NotificationFilters(
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
     ) {
         filters.forEach { (type, labelRes) ->
+
+            val isSelected = selectedFilter == type
+
+
             FilterChip(
-                selected = selectedFilter == type,
+                selected = isSelected,
                 onClick = { onFilterClick(type) },
-                label = { Text(stringResource(labelRes)) }
+                label = { Text(stringResource(labelRes)) },
+                shapes = ChipShapes(
+                    shape = MaterialTheme.shapes.small,
+                    selectedShape = CircleShape,
+                    pressedShape = CircleShape,
+                ),
+                colors = FilterChipDefaults.filterChipColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    selectedContainerColor = MaterialTheme.colorScheme.primary,
+                    labelColor = MaterialTheme.colorScheme.onSurface,
+                    selectedLabelColor = MaterialTheme.colorScheme.onPrimary
+                )
             )
         }
     }
