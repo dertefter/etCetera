@@ -6,6 +6,7 @@ import com.dertefter.data.datasource.local.TokenManager
 import com.dertefter.data.dto.app.EmojiAvatarHarmonizationColor
 import com.dertefter.data.repository.AuthRepository
 import com.dertefter.data.repository.CrashlyticsRepository
+import com.dertefter.data.repository.EventsRepository
 import com.dertefter.data.repository.MeRepository
 import com.dertefter.data.repository.NotificationsRepository
 import com.dertefter.data.repository.SettingsRepository
@@ -34,6 +35,7 @@ class MainViewModel @Inject constructor(
     notificationsRepository: NotificationsRepository,
     crashlyticsRepository: CrashlyticsRepository,
     settingsRepository: SettingsRepository,
+    eventsRepository: EventsRepository,
     private val tokenManager: TokenManager
 ) : ViewModel() {
 
@@ -41,19 +43,21 @@ class MainViewModel @Inject constructor(
         authRepository.currentLogin,
         meRepository.me.map { it?.id },
         notificationsRepository.getNotificationCount(),
+        eventsRepository.currentEvent,
         crashlyticsRepository.currentError
-    ) { login, meId, notificationCount, error ->
+    ) { login, meId, notificationCount, currentEvent, error ->
         MainUiState(
             isReady = true,
             currentLogin = login,
             notificationCount = notificationCount,
             meUserId = meId,
+            currentEvent = currentEvent,
             currentError = error
         )
     }.stateIn(
         viewModelScope,
         SharingStarted.Eagerly,
-        initialValue = MainUiState(isReady = false)
+        initialValue = MainUiState()
     )
 
     val themeState: StateFlow<ThemeState?> = combine(
@@ -131,8 +135,8 @@ class MainViewModel @Inject constructor(
 
     init {
         combine(currentLogin, accessToken, refreshToken) { _, _, _ -> }.onEach {
-            //context.startService(Intent(context, TokenRequestService::class.java))
             meRepository.updateMe()
+            eventsRepository.updateCurrentEvent()
             notificationsRepository.updateNotificationCount()
         }.launchIn(viewModelScope)    }
 

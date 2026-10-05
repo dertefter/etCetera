@@ -40,6 +40,8 @@ dependencies {
 
     implementation(project(":app_mobile:design"))
 
+    implementation(libs.coil.compose)
+    implementation(libs.coil.gif)
     implementation(platform(libs.compose.bom.alpha))
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.graphics)

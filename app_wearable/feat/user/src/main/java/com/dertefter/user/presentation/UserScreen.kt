@@ -59,12 +59,6 @@ fun UserScreen(
                         Header(
                             bannerUrl = userUiState.userDto.banner,
                             author = userUiState.userDto.toUiModel(),
-                            isMe = userUiState.isMe,
-                            onEditClick = {
-                                if (userUiState.isMe) {
-                                    onEvent(Event.OnBannerEdit)
-                                }
-                            }
                         )
                     }
                 }

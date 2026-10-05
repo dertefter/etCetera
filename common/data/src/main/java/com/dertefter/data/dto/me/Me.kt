@@ -1,12 +1,12 @@
 package com.dertefter.data.dto.me
 
-import com.dertefter.data.dto.feed.PinDto
+import com.dertefter.data.dto.feed.Pin
 import com.dertefter.data.dto.user.SubscriptionDto
 import com.dertefter.data.dto.user.VisibilityDto
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class MeDto(
+data class Me(
     val clanAvatar: String,
     val avatar: String,
     val banner: String?,
@@ -19,7 +19,7 @@ data class MeDto(
     val isPhoneVerified: Boolean,
     val isPrivate: Boolean,
     val likesVisibility: VisibilityDto,
-    val pin: PinDto?,
+    val pin: Pin?,
     val postsCount: Int,
     val subscription: SubscriptionDto?,
     val username: String,

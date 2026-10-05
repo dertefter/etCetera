@@ -44,6 +44,7 @@ import com.dertefter.settings_theme.SettingsThemeRoute
 import com.dertefter.switch_account.SwitchAccountRoute
 import com.dertefter.user.UserByUsernameRoute
 import com.dertefter.user.UserRoute
+import com.dertefter.event_viewer.EventViewerRoute
 import kotlin.math.roundToInt
 
 
@@ -133,6 +134,7 @@ fun RouteContent(route: Routes) {
         is Routes.SettingsPrivacy -> SettingsPrivacyRoute()
         is Routes.SettingsAbout -> SettingsAboutRoute()
         is Routes.Report -> ReportRoute(route.targetType, route.targetId)
+        is Routes.EventViewer -> EventViewerRoute(route.targetUrl)
 
     }
 }

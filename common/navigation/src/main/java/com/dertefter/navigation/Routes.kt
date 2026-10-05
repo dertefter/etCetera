@@ -112,4 +112,9 @@ sealed interface Routes : NavKey {
     @Serializable
     data class Report(val targetType: String, val targetId: String) : Routes
 
+    @Serializable
+    data class EventViewer(
+        val targetUrl: String
+    ) : Routes
+
 }

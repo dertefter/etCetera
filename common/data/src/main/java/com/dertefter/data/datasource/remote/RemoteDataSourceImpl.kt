@@ -7,6 +7,7 @@ import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.data.dto.comments.CommentsDataDto
 import com.dertefter.data.dto.comments.NewCommentRequestDto
 import com.dertefter.data.dto.comments.RepliesDataDto
+import com.dertefter.data.dto.event.CurrentEvent
 import com.dertefter.data.dto.feed.PollDto
 import com.dertefter.data.dto.feed.PostDataDto
 import com.dertefter.data.dto.feed.PostDto
@@ -14,10 +15,12 @@ import com.dertefter.data.dto.feed.like.LikeResponseDto
 import com.dertefter.data.dto.feed.stats.PostStatsDto
 import com.dertefter.data.dto.feed.stats.PostStatsRequest
 import com.dertefter.data.dto.followers.FollowersResponseDataDto
-import com.dertefter.data.dto.me.MeDto
-import com.dertefter.data.dto.me.PrivacyDto
+import com.dertefter.data.dto.me.Me
+import com.dertefter.data.dto.me.PinsDataDto
+import com.dertefter.data.dto.me.Privacy
+import com.dertefter.data.dto.me.SavePinRequestDto
 import com.dertefter.data.dto.me.UpdateMeRequestDto
-import com.dertefter.data.dto.me.UpdateMeResponseDto
+import com.dertefter.data.dto.me.UpdateMeResponse
 import com.dertefter.data.dto.me.UpdatePrivacyRequestDto
 import com.dertefter.data.dto.new_post.EditPostRequestDto
 import com.dertefter.data.dto.new_post.EditPostResponseDto
@@ -75,9 +78,15 @@ class RemoteDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun getMe(): Result<MeDto> {
+    override suspend fun getMe(): Result<Me> {
         return runCatching {
             apiService.me().handleResponse { it }.getOrThrow()
+        }
+    }
+
+    override suspend fun getPortal(): Result<CurrentEvent> {
+        return runCatching {
+            apiService.portal().handleResponse { it }.getOrThrow()
         }
     }
 
@@ -286,7 +295,7 @@ class RemoteDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateMe(updateMeRequestDto: UpdateMeRequestDto): Result<UpdateMeResponseDto> {
+    override suspend fun updateMe(updateMeRequestDto: UpdateMeRequestDto): Result<UpdateMeResponse> {
         return runCatching {
             apiService.updateMe(updateMeRequestDto).handleResponse { it }.getOrThrow()
         }
@@ -346,13 +355,13 @@ class RemoteDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun getPrivacy(): Result<PrivacyDto> {
+    override suspend fun getPrivacy(): Result<Privacy> {
         return runCatching {
             apiService.privacy().handleResponse { it }.getOrThrow()
         }
     }
 
-    override suspend fun updatePrivacy(updatePrivacyRequestDto: UpdatePrivacyRequestDto): Result<PrivacyDto> {
+    override suspend fun updatePrivacy(updatePrivacyRequestDto: UpdatePrivacyRequestDto): Result<Privacy> {
         return runCatching {
             apiService.updatePrivacy(updatePrivacyRequestDto).handleResponse { it }.getOrThrow()
         }
@@ -361,6 +370,24 @@ class RemoteDataSourceImpl @Inject constructor(
     override suspend fun createReport(reportRequestDto: ReportRequestDto): Result<ReportDataDto> {
         return runCatching {
             apiService.createReport(reportRequestDto).handleResponse { it.data }.getOrThrow()
+        }
+    }
+
+    override suspend fun getPins(): Result<PinsDataDto> {
+        return runCatching {
+            apiService.pins().handleResponse { it.data }.getOrThrow()
+        }
+    }
+
+    override suspend fun savePin(savePinRequestDto: SavePinRequestDto): Result<Unit> {
+        return runCatching {
+            apiService.savePin(savePinRequestDto).handleUnitResponse().getOrThrow()
+        }
+    }
+
+    override suspend fun deletePin(): Result<Unit> {
+        return runCatching {
+            apiService.deletePin().handleUnitResponse().getOrThrow()
         }
     }
 }

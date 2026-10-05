@@ -2,7 +2,7 @@ package com.dertefter.user.usecase
 
 import android.content.Context
 import com.dertefter.data.dto.me.UpdateMeRequestDto
-import com.dertefter.data.dto.me.UpdateMeResponseDto
+import com.dertefter.data.dto.me.UpdateMeResponse
 import com.dertefter.data.repository.AttachmentsRepository
 import com.dertefter.data.repository.MeRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -17,7 +17,7 @@ class StoleBannerUseCase @Inject constructor(
     private val meRepository: MeRepository,
     private val attachmentsRepository: AttachmentsRepository
 ) {
-    suspend operator fun invoke(bannerUrl: String): Result<UpdateMeResponseDto> {
+    suspend operator fun invoke(bannerUrl: String): Result<UpdateMeResponse> {
         return withContext(Dispatchers.IO) {
             try {
                 val url = URL(bannerUrl)

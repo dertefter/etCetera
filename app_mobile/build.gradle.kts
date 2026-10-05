@@ -102,7 +102,10 @@ dependencies {
     implementation(project(":app_mobile:feat:settings_privacy"))
     implementation(project(":app_mobile:feat:settings_about"))
     implementation(project(":app_mobile:feat:report"))
+    implementation(project(":app_mobile:feat:event_viewer"))
 
+    implementation(libs.coil.compose)
+    implementation(libs.coil.gif)
     implementation(libs.core.splashscreen)
     implementation(libs.activity.compose)
     implementation(libs.appcompat)

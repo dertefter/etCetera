@@ -2,6 +2,8 @@
 # Build and Plugins
 agp = "9.4.1"
 annotationExperimental = "1.6.0"
+coilGif = "3.6.3"
+composeWebview = "1.9.1"
 hazeBlurMaterial3 = "2.0.1"
 kotlin = "2.4.20"
 ksp = "2.3.12"
@@ -23,7 +25,7 @@ navigationCompose = "2.10.2"
 navigation3 = "1.2.0"
 
 # UI Libraries
-coilCompose = "2.7.0"
+coilCompose = "3.6.3"
 composefadingedges = "1.0.4"
 composemediaplayer = "0.11.4"
 composeQrCode = "1.0.1"
@@ -79,6 +81,9 @@ androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lif
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-palette = { module = "androidx.palette:palette", version.ref = "palette" }
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
+coil-gif = { module = "io.coil-kt.coil3:coil-gif", version.ref = "coilGif" }
+coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilGif" }
+compose-webview = { module = "io.github.parkwoocheol:compose-webview", version.ref = "composeWebview" }
 core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
 core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
@@ -98,8 +103,7 @@ navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", ver
 navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "navigation3" }
 
 # UI Components
-coil = { module = "io.coil-kt:coil", version.ref = "coilCompose" }
-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 composefadingedges = { module = "com.github.GIGAMOLE:ComposeFadingEdges", version.ref = "composefadingedges" }
 drawbox-enhanced = { module = "uk.codecymru.drawbox:DrawBox-Enhanced", version.ref = "drawboxEnhanced" }
 haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }

@@ -55,9 +55,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.ImageLoader
-import coil.request.ImageRequest
-import coil.request.SuccessResult
+import coil3.ImageLoader
+import coil3.request.ImageRequest
+import coil3.request.SuccessResult
+import coil3.request.allowHardware
 import com.dertefter.banner_edit.R
 import com.dertefter.design.components.appbar.AppTopBar
 import com.dertefter.design.components.buttons.AppNavigationIcon
@@ -98,7 +99,7 @@ fun BannerEditScreen(
                 .build()
             val result = imageLoader.execute(request)
             if (result is SuccessResult) {
-                val originalBitmap = (result.drawable as BitmapDrawable).bitmap
+                val originalBitmap = (result.image as BitmapDrawable).bitmap
                 val targetRatio = 16f / 9f
                 val width = originalBitmap.width
                 val height = originalBitmap.height

@@ -7,16 +7,19 @@ import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.data.dto.comments.CommentsDataDto
 import com.dertefter.data.dto.comments.NewCommentRequestDto
 import com.dertefter.data.dto.comments.RepliesDataDto
+import com.dertefter.data.dto.event.CurrentEvent
 import com.dertefter.data.dto.feed.PollDto
 import com.dertefter.data.dto.feed.PostDataDto
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.dto.feed.like.LikeResponseDto
-import com.dertefter.data.dto.me.MeDto
-import com.dertefter.data.dto.me.PrivacyDto
+import com.dertefter.data.dto.me.Me
+import com.dertefter.data.dto.me.PinsDataDto
+import com.dertefter.data.dto.me.Privacy
+import com.dertefter.data.dto.me.SavePinRequestDto
 import com.dertefter.data.dto.feed.stats.PostStatsDto
 import com.dertefter.data.dto.followers.FollowersResponseDataDto
 import com.dertefter.data.dto.me.UpdateMeRequestDto
-import com.dertefter.data.dto.me.UpdateMeResponseDto
+import com.dertefter.data.dto.me.UpdateMeResponse
 import com.dertefter.data.dto.me.UpdatePrivacyRequestDto
 import com.dertefter.data.dto.new_post.EditPostRequestDto
 import com.dertefter.data.dto.new_post.EditPostResponseDto
@@ -40,7 +43,8 @@ interface RemoteDataSource {
     suspend fun getAuthSessions(): Result<AuthSessionsResponseDto>
     suspend fun deleteAuthSession(sessionId: String): Result<Unit>
     suspend fun deleteAllAuthSessions(): Result<Unit>
-    suspend fun getMe(): Result<MeDto>
+    suspend fun getMe(): Result<Me>
+    suspend fun getPortal(): Result<CurrentEvent>
 
     suspend fun unpinPost(postId: String): Result<Unit>
 
@@ -100,7 +104,7 @@ interface RemoteDataSource {
 
     suspend fun unblock(userId: String): Result<BlockResponseDto>
 
-    suspend fun updateMe(updateMeRequestDto: UpdateMeRequestDto): Result<UpdateMeResponseDto>
+    suspend fun updateMe(updateMeRequestDto: UpdateMeRequestDto): Result<UpdateMeResponse>
 
     suspend fun getFollowers(userId: String, page: Int?): Result<FollowersResponseDataDto>
 
@@ -118,9 +122,15 @@ interface RemoteDataSource {
 
     suspend fun getSearchResults(q: String): Result<SearchDataDto>
 
-    suspend fun getPrivacy(): Result<PrivacyDto>
+    suspend fun getPrivacy(): Result<Privacy>
 
-    suspend fun updatePrivacy(updatePrivacyRequestDto: UpdatePrivacyRequestDto): Result<PrivacyDto>
+    suspend fun updatePrivacy(updatePrivacyRequestDto: UpdatePrivacyRequestDto): Result<Privacy>
+
+    suspend fun getPins(): Result<PinsDataDto>
+
+    suspend fun savePin(savePinRequestDto: SavePinRequestDto): Result<Unit>
+
+    suspend fun deletePin(): Result<Unit>
 
     suspend fun createReport(reportRequestDto: ReportRequestDto): Result<ReportDataDto>
 

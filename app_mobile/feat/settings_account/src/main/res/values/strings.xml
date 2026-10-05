@@ -12,4 +12,6 @@
     <string name="settings_account_logged_in_as">You are logged in as:</string>
     <string name="settings_account_switch_account">Switch account</string>
     <string name="settings_account_logout">Logout</string>
+    <string name="settings_account_pins_title">Pins</string>
+    <string name="settings_account_without_pin">Without pin</string>
 </resources>
