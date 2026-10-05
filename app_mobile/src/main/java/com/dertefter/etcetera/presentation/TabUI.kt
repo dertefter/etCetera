@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -51,6 +52,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
+import coil3.compose.AsyncImage
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.isTab
 import com.dertefter.design.theme.navBlurred
@@ -75,6 +77,7 @@ fun TabUI(
     entries: List<NavEntry<NavKey>>,
     selectedTab: MainTab,
     notificationCount: Int?,
+    isPortalVisible: Boolean = false,
     appNavHost: @Composable (
         entries: List<NavEntry<NavKey>>,
         onBack: () -> Unit,
@@ -97,6 +100,7 @@ fun TabUI(
         hideNav = hideNav,
         selectedTab = selectedTab,
         notificationCount = notificationCount,
+        isPortalVisible = isPortalVisible,
         onNavItemClick = onNavItemClick,
         content = {
             appNavHost(
@@ -115,6 +119,7 @@ fun TabUIStateless(
     hideNav: Boolean,
     selectedTab: MainTab,
     notificationCount: Int?,
+    isPortalVisible: Boolean = false,
     onNavItemClick: (tab: MainTab) -> Unit,
     content: @Composable () -> Unit
 ) {
@@ -322,30 +327,62 @@ fun TabUIStateless(
 
                         val selected = selectedTab == tab
 
-                        WideNavigationRailItem(
-                            selected = selected,
-                            onClick = { onNavItemClick(tab) },
-                            icon = {
-                                BadgedBox(
-                                    badge = {
-                                        if (tab == MainTab.Notifications && notificationCount != null && notificationCount > 0) {
-                                            Badge {
-                                                Text(notificationCount.toString())
+                        if (tab == MainTab.EventViewer) {
+                            if (isPortalVisible) {
+                                WideNavigationRailItem(
+                                    selected = selected,
+                                    onClick = { onNavItemClick(tab) },
+                                    icon = {
+                                        BadgedBox(
+                                            badge = {
+                                                if (tab == MainTab.Notifications && notificationCount != null && notificationCount > 0) {
+                                                    Badge {
+                                                        Text(notificationCount.toString())
+                                                    }
+                                                }
+                                            }
+                                        ) {
+                                            AsyncImage(
+                                                model = "https://xn--d1ah4a.com/assets/portal/portal-active.gif",
+                                                contentDescription = null,
+                                                modifier = Modifier
+                                                    .size(28.dp)
+                                            )
+                                        }
+                                    },
+                                    label =  labeled(
+                                        label = stringResource(tab.label)
+                                    ),
+                                    railExpanded = railState.currentValue == WideNavigationRailValue.Expanded,
+                                )
+                            }
+                        } else {
+                            WideNavigationRailItem(
+                                selected = selected,
+                                onClick = { onNavItemClick(tab) },
+                                icon = {
+                                    BadgedBox(
+                                        badge = {
+                                            if (tab == MainTab.Notifications && notificationCount != null && notificationCount > 0) {
+                                                Badge {
+                                                    Text(notificationCount.toString())
+                                                }
                                             }
                                         }
+                                    ) {
+                                        Icon(
+                                            imageVector = if (selected) tab.selectedIcon() else tab.icon(),
+                                            contentDescription = stringResource(tab.label)
+                                        )
                                     }
-                                ) {
-                                    Icon(
-                                        imageVector = if (selected) tab.selectedIcon() else tab.icon(),
-                                        contentDescription = stringResource(tab.label)
-                                    )
-                                }
-                            },
-                            label =  labeled(
-                                label = stringResource(tab.label)
-                            ),
-                            railExpanded = railState.currentValue == WideNavigationRailValue.Expanded,
-                        )
+                                },
+                                label =  labeled(
+                                    label = stringResource(tab.label)
+                                ),
+                                railExpanded = railState.currentValue == WideNavigationRailValue.Expanded,
+                            )
+                        }
+
                     }
                 }
             }

@@ -5,7 +5,7 @@ import com.dertefter.data.dto.comments.ReplyToDto
 import com.dertefter.data.dto.feed.AttachmentDto
 import com.dertefter.data.dto.feed.AuthorDto
 import com.dertefter.data.dto.feed.OriginalPostDto
-import com.dertefter.data.dto.feed.PinDto
+import com.dertefter.data.dto.feed.Pin
 import com.dertefter.data.dto.feed.PollDto
 import com.dertefter.data.dto.feed.SpanDto
 import com.dertefter.data.dto.notifications.ActorDto
@@ -31,12 +31,12 @@ class RoomConverters {
     }
 
     @TypeConverter
-    fun fromPinDto(pinDto: PinDto?): String? {
-        return pinDto?.let { json.encodeToString(it) }
+    fun fromPinDto(pin: Pin?): String? {
+        return pin?.let { json.encodeToString(it) }
     }
 
     @TypeConverter
-    fun toPinDto(pinDtoString: String?): PinDto? {
+    fun toPinDto(pinDtoString: String?): Pin? {
         return pinDtoString?.let { json.decodeFromString(it) }
     }
 

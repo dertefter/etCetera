@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.dertefter.data.dto.me.PrivacyDto
+import com.dertefter.data.dto.me.Privacy
 import com.dertefter.data.dto.user.VisibilityDto
 import com.dertefter.design.components.PullToRefreshIndicator
 import com.dertefter.design.components.appbar.AppTopBar
@@ -162,7 +162,7 @@ private fun SettingsPrivacyScreenPreview() {
         SettingsPrivacyScreen(
             uiState = UiState(
                 isLoading = false,
-                privacy = PrivacyDto(
+                privacy = Privacy(
                     isPrivate = false,
                     wallAccess = VisibilityDto.EVERYONE,
                     likesVisibility = VisibilityDto.FOLLOWERS,

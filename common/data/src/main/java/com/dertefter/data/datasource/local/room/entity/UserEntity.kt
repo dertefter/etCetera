@@ -2,10 +2,10 @@ package com.dertefter.data.datasource.local.room.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.dertefter.data.dto.feed.PinDto
+import com.dertefter.data.dto.feed.Pin
 import com.dertefter.data.dto.followers.FollowerUserDto
-import com.dertefter.data.dto.me.MeDto
-import com.dertefter.data.dto.me.PrivacyDto
+import com.dertefter.data.dto.me.Me
+import com.dertefter.data.dto.me.Privacy
 import com.dertefter.data.dto.user.LastSeenDto
 import com.dertefter.data.dto.user.SubscriptionDto
 import com.dertefter.data.dto.user.UserDto
@@ -28,7 +28,7 @@ data class UserEntity(
     val lastSeen: LastSeenDto?,
     val likesVisibility: VisibilityDto,
     val online: Boolean,
-    val pin: PinDto?,
+    val pin: Pin?,
     val pinnedPostId: String?,
     val postsCount: Int,
     val username: String,
@@ -109,7 +109,7 @@ fun FollowerUserDto.asEntity() = UserEntity(
     isMe = false
 )
 
-fun UserEntity.asPrivacyDto() = PrivacyDto(
+fun UserEntity.asPrivacyDto() = Privacy(
     isPrivate = isPrivate,
     wallAccess = wallAccess,
     likesVisibility = likesVisibility,
@@ -117,7 +117,7 @@ fun UserEntity.asPrivacyDto() = PrivacyDto(
     showLastSeen = showLastSeen
 )
 
-fun UserEntity.asMeExternalModel() = MeDto(
+fun UserEntity.asMeExternalModel() = Me(
     clanAvatar = clanAvatar,
     avatar = avatar,
     banner = banner,
@@ -166,7 +166,7 @@ fun UserDto.asEntity() = UserEntity(
     canMessage = canMessage
 )
 
-fun MeDto.asEntity() = UserEntity(
+fun Me.asEntity() = UserEntity(
     clanAvatar = clanAvatar,
     avatar = avatar,
     banner = banner,

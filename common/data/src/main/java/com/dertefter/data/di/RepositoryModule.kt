@@ -8,6 +8,8 @@ import com.dertefter.data.repository.CommentsRepository
 import com.dertefter.data.repository.CommentsRepositoryImpl
 import com.dertefter.data.repository.CrashlyticsRepository
 import com.dertefter.data.repository.CrashlyticsRepositoryImpl
+import com.dertefter.data.repository.EventsRepository
+import com.dertefter.data.repository.EventsRepositoryImpl
 import com.dertefter.data.repository.FeedRepository
 import com.dertefter.data.repository.FeedRepositoryImpl
 import com.dertefter.data.repository.FollowersRepository
@@ -113,4 +115,10 @@ abstract class RepositoryModule {
     abstract fun bindReportsRepository(
         reportsRepositoryImpl: ReportsRepositoryImpl
     ): ReportsRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindEventsRepository(
+        eventsRepositoryImpl: EventsRepositoryImpl
+    ): EventsRepository
 }

@@ -12,4 +12,6 @@ sealed interface Event {
     data class OnUsernameChange(val value: String) : Event
     data class OnBioChange(val value: String) : Event
 
+    data class OnPinChange(val slug: String?) : Event
+
 }

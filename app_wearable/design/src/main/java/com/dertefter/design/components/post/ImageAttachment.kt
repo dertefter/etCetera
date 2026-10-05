@@ -18,8 +18,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
-import coil.compose.SubcomposeAsyncImage
-import coil.request.ImageRequest
+import coil3.compose.SubcomposeAsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.dertefter.design.R
 import net.engawapg.lib.zoomable.rememberZoomState
 import net.engawapg.lib.zoomable.zoomable
@@ -42,7 +43,6 @@ fun ImageAttachment(
         model = ImageRequest.Builder(LocalContext.current)
             .data(attachment.url)
             .crossfade(true)
-            .setParameter("retry_hash", retryHash)
             .build(),
         contentDescription = null,
         modifier = modifier

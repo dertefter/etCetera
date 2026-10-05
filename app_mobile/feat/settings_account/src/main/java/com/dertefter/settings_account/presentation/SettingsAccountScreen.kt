@@ -40,7 +40,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.dertefter.data.dto.me.MeDto
+import com.dertefter.data.dto.me.Me
 import com.dertefter.data.dto.user.VisibilityDto
 import com.dertefter.design.components.PullToRefreshIndicator
 import com.dertefter.design.components.appbar.AppTopBar
@@ -54,6 +54,7 @@ import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.bottomNavHeight
 import com.dertefter.design.theme.spacing
 import com.dertefter.settings_account.R
+import com.dertefter.settings_account.presentation.components.PinItem
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.launch
@@ -287,6 +288,38 @@ fun SettingsAccountScreen(
 
                         }
                     }
+
+                    item {
+                        SegmentedColumn(
+                            title = stringResource(R.string.settings_account_pins_title)
+                        ){
+                            item(
+                                itemInnerPadding = PaddingValues(),
+                                onClick = {
+                                    onEvent(Event.OnPinChange(null))
+                                }
+                            ) {
+                                PinItem(
+                                    selected = uiState.me.pin == null
+                                )
+                            }
+
+                            uiState.pins.forEach { pin ->
+                                item(
+                                    itemInnerPadding = PaddingValues(),
+                                    onClick = {
+                                        onEvent(Event.OnPinChange(pin.slug))
+                                    }
+                                ) {
+                                    PinItem(
+                                        pin = pin,
+                                        selected = uiState.me.pin?.slug == pin.slug
+                                    )
+                                }
+                            }
+                        }
+                    }
+
                 }
 
 
@@ -303,7 +336,7 @@ fun SettingsAccountScreenPreview() {
     AppTheme {
         SettingsAccountScreen(
             uiState = UiState(
-                me = MeDto(
+                me = Me(
                     clanAvatar = "🦐",
                     avatar = "🦐",
                     banner = null,

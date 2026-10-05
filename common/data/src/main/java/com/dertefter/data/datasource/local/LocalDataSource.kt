@@ -4,10 +4,12 @@ import com.dertefter.data.datasource.local.room.entity.PageEntity
 import com.dertefter.data.datasource.local.room.entity.PageType
 import com.dertefter.data.dto.auth.AuthSessionDto
 import com.dertefter.data.dto.comments.CommentDto
+import com.dertefter.data.dto.event.CurrentEvent
+import com.dertefter.data.dto.feed.Pin
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.dto.followers.FollowerUserDto
-import com.dertefter.data.dto.me.MeDto
-import com.dertefter.data.dto.me.PrivacyDto
+import com.dertefter.data.dto.me.Me
+import com.dertefter.data.dto.me.Privacy
 import com.dertefter.data.dto.notifications.NotificationDto
 import com.dertefter.data.dto.search.SearchHashtagDto
 import com.dertefter.data.dto.search.TopClanDto
@@ -28,13 +30,17 @@ interface LocalDataSource {
     suspend fun saveAuthSessions(sessions: List<AuthSessionDto>)
     suspend fun deleteAuthSession(id: String)
 
-    val meDto: Flow<MeDto?>
+    val me: Flow<Me?>
 
-    suspend fun saveMe(meDto: MeDto)
+    suspend fun saveMe(me: Me)
 
-    val privacy: Flow<PrivacyDto?>
+    val privacy: Flow<Privacy?>
 
-    suspend fun savePrivacy(privacyDto: PrivacyDto)
+    suspend fun savePrivacy(privacy: Privacy)
+
+    val pins: Flow<List<Pin>?>
+
+    suspend fun savePins(pins: List<Pin>?)
 
     val notificationCount: Flow<Int?>
 
@@ -110,4 +116,7 @@ interface LocalDataSource {
 
     val appBarFaded: Flow<Boolean?>
     suspend fun updateAppBarFaded(value: Boolean?)
+
+    val currentEvent: Flow<CurrentEvent?>
+    suspend fun saveCurrentEvent(currentEvent: CurrentEvent?)
 }

@@ -34,14 +34,17 @@ class SettingsAccountViewModel @Inject constructor(
     private val _username = MutableStateFlow("")
     private val _bio = MutableStateFlow("")
 
+    private val _pins = meRepository.pins
+
     val uiState = combine(
         _currentLogin,
         _me,
+        _pins,
         _isLoading,
         combine(_displayName, _username, _bio) { displayName, username, bio ->
             Triple(displayName, username, bio)
         }
-    ) { currentLogin, me, isLoading, inputs ->
+    ) { currentLogin, me, pins,  isLoading, inputs ->
         val (displayName, username, bio) = inputs
         val canSave = !isLoading && me != null && (
                 displayName != me.displayName ||
@@ -55,7 +58,8 @@ class SettingsAccountViewModel @Inject constructor(
             canSave = canSave,
             displayNameInput = displayName,
             usernameInput = username,
-            bioInput = bio
+            bioInput = bio,
+            pins = pins ?: emptyList()
         )
     }.stateIn(
         scope = viewModelScope,
@@ -65,6 +69,7 @@ class SettingsAccountViewModel @Inject constructor(
 
     init {
         fetchMe()
+        fetchPins()
         viewModelScope.launch {
             _me.collectLatest { me ->
                 me?.let {
@@ -109,6 +114,17 @@ class SettingsAccountViewModel @Inject constructor(
             is Event.OnSave -> {
                 saveChanges()
             }
+
+            is Event.OnPinChange -> {
+                viewModelScope.launch {
+                    event.slug?.let {
+                        meRepository.savePin(event.slug)
+                    } ?: meRepository.deletePin()
+
+                    fetchPins()
+                }
+            }
+
         }
     }
 
@@ -132,4 +148,11 @@ class SettingsAccountViewModel @Inject constructor(
             _isLoading.value = false
         }
     }
+
+    private fun fetchPins() {
+        viewModelScope.launch {
+            meRepository.updatePins()
+        }
+    }
+
 }

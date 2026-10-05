@@ -12,4 +12,6 @@
     <string name="settings_account_logged_in_as">Вы вошли как:</string>
     <string name="settings_account_switch_account">Войти в другой аккаунт</string>
     <string name="settings_account_logout">Выйти</string>
+    <string name="settings_account_pins_title">Пины</string>
+    <string name="settings_account_without_pin">Без пина</string>
 </resources>

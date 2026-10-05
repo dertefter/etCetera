@@ -47,8 +47,9 @@ import androidx.graphics.shapes.star
 import androidx.palette.graphics.Palette
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
-import coil.compose.SubcomposeAsyncImage
-import coil.request.ImageRequest
+import coil3.compose.SubcomposeAsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.dertefter.design.components.common.RoundedPolygonShape
 import com.dertefter.design.theme.WearableTheme
 import com.materialkolor.PaletteStyle

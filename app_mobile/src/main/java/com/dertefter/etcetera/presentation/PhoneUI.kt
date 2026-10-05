@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
@@ -25,6 +26,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -50,6 +52,7 @@ import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
+import coil3.compose.AsyncImage
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.LocalBottomNavHeight
 import com.dertefter.design.theme.bottomNavHeight
@@ -60,6 +63,7 @@ import com.dertefter.design.theme.spacing
 import com.dertefter.navigation.Routes
 import com.gigamole.composefadingedges.FadingEdgesGravity
 import com.gigamole.composefadingedges.verticalFadingEdges
+import com.materialkolor.ktx.harmonize
 import dev.chrisbanes.haze.HazeInput
 import dev.chrisbanes.haze.blur.hazeBlur
 import dev.chrisbanes.haze.blur.materials.HazeMaterials
@@ -73,6 +77,7 @@ fun PhoneUI(
     entries: List<NavEntry<NavKey>>,
     selectedTab: MainTab,
     notificationCount: Int?,
+    isPortalVisible: Boolean = false,
     appNavHost: @Composable (
         entries: List<NavEntry<NavKey>>,
         onBack: () -> Unit,
@@ -109,7 +114,7 @@ fun PhoneUI(
     )
 
     val navSpacingHorizontal by animateDpAsState(
-        if (MaterialTheme.navFloating) MaterialTheme.spacing.extraLarge + MaterialTheme.spacing.large else 0.dp,
+        if (MaterialTheme.navFloating) MaterialTheme.spacing.large + MaterialTheme.spacing.large else 0.dp,
         animationSpec = MaterialTheme.motionScheme.fastSpatialSpec()
     )
 
@@ -198,30 +203,71 @@ fun PhoneUI(
                     )
                 {
                     MainTab.entries.forEach { tab ->
+
                         val selected = selectedTab == tab
-                        NavigationBarItem(
-                            selected = selected,
-                            onClick = { onNavItemClick(tab) },
-                            icon = {
-                                BadgedBox(
-                                    badge = {
-                                        if (tab == MainTab.Notifications && notificationCount != null && notificationCount > 0) {
-                                            Badge {
-                                                Text(notificationCount.toString())
+
+                        if (tab == MainTab.EventViewer) {
+                            if (isPortalVisible){
+                                NavigationBarItem(
+                                    colors = NavigationBarItemDefaults.colors().copy(
+                                        selectedIndicatorColor = Color(0xFF35F5BF).harmonize(
+                                            MaterialTheme.colorScheme.secondaryContainer,
+                                            matchSaturation = true
+                                        )
+                                    ),
+                                    selected = selected,
+                                    onClick = { onNavItemClick(tab) },
+                                    icon = {
+                                        BadgedBox(
+                                            badge = {
+                                                if (tab == MainTab.Notifications && notificationCount != null && notificationCount > 0) {
+                                                    Badge {
+                                                        Text(notificationCount.toString())
+                                                    }
+                                                }
+                                            }
+                                        ) {
+                                            AsyncImage(
+                                                model = "https://xn--d1ah4a.com/assets/portal/portal-active.gif",
+                                                contentDescription = null,
+                                                modifier = Modifier
+                                                    .size(22.dp)
+                                            )
+                                        }
+                                    },
+                                    label =  labeled(
+                                        label = stringResource(tab.label)
+                                    )
+                                )
+                            }
+                        } else {
+                            NavigationBarItem(
+                                selected = selected,
+                                onClick = { onNavItemClick(tab) },
+                                icon = {
+                                    BadgedBox(
+                                        badge = {
+                                            if (tab == MainTab.Notifications && notificationCount != null && notificationCount > 0) {
+                                                Badge {
+                                                    Text(notificationCount.toString())
+                                                }
                                             }
                                         }
+                                    ) {
+                                        Icon(
+                                            imageVector = if (selected) tab.selectedIcon() else tab.icon(),
+                                            contentDescription = stringResource(tab.label)
+                                        )
                                     }
-                                ) {
-                                    Icon(
-                                        imageVector = if (selected) tab.selectedIcon() else tab.icon(),
-                                        contentDescription = stringResource(tab.label)
-                                    )
-                                }
-                            },
-                            label =  labeled(
-                                label = stringResource(tab.label)
+                                },
+                                label =  labeled(
+                                    label = stringResource(tab.label)
+                                )
                             )
-                        )
+                        }
+
+
+
                     }
                 }
             }

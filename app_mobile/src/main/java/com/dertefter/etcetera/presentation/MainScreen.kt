@@ -59,6 +59,8 @@ enum class MainTab(
     Feed(R.string.app_main_tab_feed, { Icons.Home }, { Icons.HomeFilled }),
 
     Search(R.string.app_main_tab_search, { Icons.Search }, { Icons.Search }),
+
+    EventViewer(R.string.app_main_tab_web, { Icons.EventAvailable }, { Icons.EventAvailable }),
     Notifications(R.string.app_main_tab_notifications, { Icons.Notifications }, { Icons.NotificationsFilled }),
     Profile(R.string.app_main_tab_profile, { Icons.User }, { Icons.UserFilled })
 }
@@ -136,6 +138,7 @@ fun MainScreen(
     val authBackStack = rememberNavBackStack(Routes.Auth)
     val feedBackStack = rememberNavBackStack(Routes.Feed)
     val searchBackStack = rememberNavBackStack(Routes.Search)
+    val eventViewerBackStack = rememberNavBackStack(Routes.EventViewer(uiState.currentEvent?.url ?: ""))
     val notificationsBackStack = rememberNavBackStack(Routes.Notifications(showBackButton = false))
     val profileBackStack = rememberNavBackStack(
         if (uiState.meUserId != null) Routes.User(uiState.meUserId, showBackButton = false) else Routes.Auth
@@ -154,6 +157,7 @@ fun MainScreen(
     val notificationsEntries = rememberDecoratedNavEntries(notificationsBackStack, decorators, appEntryProvider)
     val profileEntries = rememberDecoratedNavEntries(profileBackStack, decorators, appEntryProvider)
     val authEntries = rememberDecoratedNavEntries(authBackStack, decorators, appEntryProvider)
+    val eventEntries = rememberDecoratedNavEntries(eventViewerBackStack, decorators, appEntryProvider)
 
     val activeEntries: List<NavEntry<NavKey>> = when {
         uiState.currentLogin == null -> authEntries
@@ -161,6 +165,7 @@ fun MainScreen(
         selectedTab == MainTab.Search -> searchEntries
         selectedTab == MainTab.Notifications -> notificationsEntries
         selectedTab == MainTab.Profile -> profileEntries
+        selectedTab == MainTab.EventViewer -> eventEntries
         else -> feedEntries
     }
 
@@ -173,6 +178,7 @@ fun MainScreen(
         selectedTab == MainTab.Search -> searchBackStack
         selectedTab == MainTab.Notifications -> notificationsBackStack
         selectedTab == MainTab.Profile -> profileBackStack
+        selectedTab == MainTab.EventViewer -> eventViewerBackStack
         else -> feedBackStack
     }
 
@@ -254,12 +260,15 @@ fun MainScreen(
         }
     }
 
+    val isPortalVisible = uiState.currentEvent?.active == true
+
     val onNavItemClick: (MainTab) -> Unit = { tab ->
         if (tab != selectedTab) {
             selectedTab = tab
         } else {
             val targetBackStack = when (tab) {
                 MainTab.Feed -> feedBackStack
+                MainTab.EventViewer -> eventViewerBackStack
                 MainTab.Search -> searchBackStack
                 MainTab.Notifications -> notificationsBackStack
                 MainTab.Profile -> profileBackStack
@@ -279,6 +288,7 @@ fun MainScreen(
             selectedTab = selectedTab,
             notificationCount = uiState.notificationCount,
             appNavHost = appNavHost,
+            isPortalVisible = isPortalVisible,
             onBack = {
                 if (activeBackStack.size > 1) {
                     activeBackStack.removeAt(activeBackStack.lastIndex)
@@ -295,6 +305,7 @@ fun MainScreen(
             entries = activeEntries,
             selectedTab = selectedTab,
             notificationCount = uiState.notificationCount,
+            isPortalVisible = isPortalVisible,
             appNavHost = appNavHost,
             onBack = {
                 if (activeBackStack.size > 1) {

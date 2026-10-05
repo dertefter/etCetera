@@ -3,7 +3,7 @@ package com.dertefter.user.presentation.mapper
 import com.dertefter.data.dto.feed.AttachmentDto
 import com.dertefter.data.dto.feed.AuthorDto
 import com.dertefter.data.dto.feed.OriginalPostDto
-import com.dertefter.data.dto.feed.PinDto
+import com.dertefter.data.dto.feed.Pin
 import com.dertefter.data.dto.feed.PollDto
 import com.dertefter.data.dto.feed.PollOptionDto
 import com.dertefter.data.dto.feed.PostDto
@@ -63,7 +63,7 @@ fun AttachmentUiModel.toNavigationModel() = AttachmentNavigationModel(id, type, 
 fun UserDto.toUiModel() = AuthorUiModel(id, username, displayName, avatar, hasNuksta, verified, pin?.toUiModel())
 fun AuthorDto.toUiModel() = AuthorUiModel(id, username, displayName, avatar, hasNuksta, verified, pin?.toUiModel())
 fun ShortAuthorDto.toUiModel() = AuthorUiModel(id, username, displayName, avatar, hasNuksta, verified, pin?.toUiModel())
-fun PinDto.toUiModel() = PinUiModel(description, name, slug, url)
+fun Pin.toUiModel() = PinUiModel(description, name, slug, url)
 fun AttachmentDto.toUiModel() = AttachmentUiModel(id, type, url, mimeType)
 
 fun SpanDto.toUiModel() = SpanUiModel(type, length, offset, username, tag, url)

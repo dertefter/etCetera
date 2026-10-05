@@ -22,10 +22,13 @@ import com.dertefter.data.di.AuthDataStore
 import com.dertefter.data.di.SettingsDataStore
 import com.dertefter.data.dto.auth.AuthSessionDto
 import com.dertefter.data.dto.comments.CommentDto
+import com.dertefter.data.dto.event.CurrentEvent
+import com.dertefter.data.dto.feed.Pin
+import kotlinx.serialization.json.Json
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.dto.followers.FollowerUserDto
-import com.dertefter.data.dto.me.MeDto
-import com.dertefter.data.dto.me.PrivacyDto
+import com.dertefter.data.dto.me.Me
+import com.dertefter.data.dto.me.Privacy
 import com.dertefter.data.dto.notifications.NotificationDto
 import com.dertefter.data.dto.search.SearchHashtagDto
 import com.dertefter.data.dto.search.TopClanDto
@@ -61,6 +64,9 @@ class LocalDataSourceImpl @Inject constructor(
     private val navBlurredKey = booleanPreferencesKey("nav_blurred")
     private val appBarBlurredKey = booleanPreferencesKey("app_bar_blurred")
     private val appBarFadedKey = booleanPreferencesKey("app_bar_faded")
+    private val currentEventKey = stringPreferencesKey("current_event")
+    private val pinsKey = stringPreferencesKey("pins")
+    private val json = Json { ignoreUnknownKeys = true }
     private val dbCache = mutableMapOf<String?, AppDatabase>()
 
     private fun getDatabase(login: String?): AppDatabase {
@@ -115,30 +121,50 @@ class LocalDataSourceImpl @Inject constructor(
         db().authSessionDao().deleteAuthSession(id)
     }
 
-    override val meDto: Flow<MeDto?> = currentLogin.flatMapLatest { login ->
+    override val me: Flow<Me?> = currentLogin.flatMapLatest { login ->
         getDatabase(login).userDao().getMe()
     }.map { it?.asMeExternalModel() }
 
-    override suspend fun saveMe(meDto: MeDto) {
-        db().userDao().insertUser(meDto.asEntity())
+    override suspend fun saveMe(me: Me) {
+        db().userDao().insertUser(me.asEntity())
     }
 
-    override val privacy: Flow<PrivacyDto?> = currentLogin.flatMapLatest { login ->
+    override val privacy: Flow<Privacy?> = currentLogin.flatMapLatest { login ->
         getDatabase(login).userDao().getMe()
     }.map { it?.asPrivacyDto() }
 
-    override suspend fun savePrivacy(privacyDto: PrivacyDto) {
+    override suspend fun savePrivacy(privacy: Privacy) {
         val database = db()
         database.userDao().getMeSync()?.let { me ->
             database.userDao().insertUser(
                 me.copy(
-                    isPrivate = privacyDto.isPrivate,
-                    wallAccess = privacyDto.wallAccess,
-                    likesVisibility = privacyDto.likesVisibility,
-                    messageAccess = privacyDto.messageAccess,
-                    showLastSeen = privacyDto.showLastSeen
+                    isPrivate = privacy.isPrivate,
+                    wallAccess = privacy.wallAccess,
+                    likesVisibility = privacy.likesVisibility,
+                    messageAccess = privacy.messageAccess,
+                    showLastSeen = privacy.showLastSeen
                 )
             )
+        }
+    }
+
+    override val pins: Flow<List<Pin>?> = authDataStore.data.map { preferences ->
+        preferences[pinsKey]?.let {
+            try {
+                json.decodeFromString<List<Pin>>(it)
+            } catch (_: Exception) {
+                null
+            }
+        }
+    }
+
+    override suspend fun savePins(pins: List<Pin>?) {
+        authDataStore.edit { preferences ->
+            if (pins == null) {
+                preferences.remove(pinsKey)
+            } else {
+                preferences[pinsKey] = json.encodeToString(pins)
+            }
         }
     }
 
@@ -405,6 +431,26 @@ class LocalDataSourceImpl @Inject constructor(
                 preferences.remove(appBarFadedKey)
             } else {
                 preferences[appBarFadedKey] = value
+            }
+        }
+    }
+
+    override val currentEvent: Flow<CurrentEvent?> = settingsDataStore.data.map { preferences ->
+        preferences[currentEventKey]?.let {
+            try {
+                json.decodeFromString<CurrentEvent>(it)
+            } catch (_: Exception) {
+                null
+            }
+        }
+    }
+
+    override suspend fun saveCurrentEvent(currentEvent: CurrentEvent?) {
+        settingsDataStore.edit { preferences ->
+            if (currentEvent == null) {
+                preferences.remove(currentEventKey)
+            } else {
+                preferences[currentEventKey] = json.encodeToString(currentEvent)
             }
         }
     }

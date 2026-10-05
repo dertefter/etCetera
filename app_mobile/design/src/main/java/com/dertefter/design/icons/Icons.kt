@@ -8,12 +8,13 @@ import com.dertefter.design.R
 @Suppress("unused")
 object Icons {
 
-
+    val Block: ImageVector
+        @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_block)
     val List: ImageVector
-        @Composable get() = ImageVector.vectorResource(id = R.drawable.list)
+        @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_list)
 
     val GridView: ImageVector
-        @Composable get() = ImageVector.vectorResource(id = R.drawable.grid_view)
+        @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_grid_view)
 
     val AppIcon: ImageVector
         @Composable get() = ImageVector.vectorResource(id = R.drawable.app_icon)

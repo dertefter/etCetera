@@ -21,8 +21,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.SubcomposeAsyncImage
-import coil.request.ImageRequest
+import coil3.compose.SubcomposeAsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.dertefter.design.R
 import com.dertefter.design.theme.AppTheme
 import net.engawapg.lib.zoomable.rememberZoomState
@@ -52,7 +53,6 @@ fun ImageAttachment(
         model = ImageRequest.Builder(LocalContext.current)
             .data(attachment.url)
             .crossfade(true)
-            .setParameter("retry_hash", retryHash)
             .build(),
         contentDescription = null,
         modifier = modifier
@@ -65,6 +65,13 @@ fun ImageAttachment(
             )
             .background(containerColor),
         contentScale = contentScale ?:  if (isFullscreen) ContentScale.Fit else ContentScale.Crop,
+        loading = {
+            Box(
+                modifier = Modifier
+                    .background(containerColor)
+                    .fillMaxSize()
+                    )
+        },
         error = {
             Box(
                 modifier = Modifier

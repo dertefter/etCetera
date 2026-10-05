@@ -14,7 +14,7 @@ import androidx.wear.compose.material3.Icon
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.ScreenScaffold
 import androidx.wear.compose.material3.Text
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import com.dertefter.design.components.post.PinUiModel
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.WearableTheme

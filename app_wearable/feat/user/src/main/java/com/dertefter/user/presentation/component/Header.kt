@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import com.dertefter.design.components.avatar.Avatar
 import com.dertefter.design.components.avatar.DisplayName
 import com.dertefter.design.components.post.AuthorUiModel

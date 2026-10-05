@@ -7,6 +7,7 @@ import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.data.dto.comments.CommentsResponseDto
 import com.dertefter.data.dto.comments.NewCommentRequestDto
 import com.dertefter.data.dto.comments.RepliesResponseDto
+import com.dertefter.data.dto.event.CurrentEvent
 import com.dertefter.data.dto.feed.FeedResponseDto
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.dto.feed.PostResponseDto
@@ -14,10 +15,12 @@ import com.dertefter.data.dto.feed.like.LikeResponseDto
 import com.dertefter.data.dto.feed.stats.PostStatsRequest
 import com.dertefter.data.dto.feed.stats.PostStatsResponse
 import com.dertefter.data.dto.followers.FollowersResponseDto
-import com.dertefter.data.dto.me.MeDto
-import com.dertefter.data.dto.me.PrivacyDto
+import com.dertefter.data.dto.me.Me
+import com.dertefter.data.dto.me.PinsResponseDto
+import com.dertefter.data.dto.me.Privacy
+import com.dertefter.data.dto.me.SavePinRequestDto
 import com.dertefter.data.dto.me.UpdateMeRequestDto
-import com.dertefter.data.dto.me.UpdateMeResponseDto
+import com.dertefter.data.dto.me.UpdateMeResponse
 import com.dertefter.data.dto.me.UpdatePrivacyRequestDto
 import com.dertefter.data.dto.new_post.EditPostRequestDto
 import com.dertefter.data.dto.new_post.EditPostResponseDto
@@ -67,8 +70,11 @@ interface ApiService {
     @DELETE("api/v1/auth/sessions")
     suspend fun deleteAllSessions(): Response<Unit>
 
+    @GET("api/v1/portal")
+    suspend fun portal(): Response<CurrentEvent>
+
     @GET("api/users/me")
-    suspend fun me(): Response<MeDto>
+    suspend fun me(): Response<Me>
 
     @GET("api/posts/{postId}")
     suspend fun post(
@@ -278,19 +284,30 @@ interface ApiService {
     @PUT("api/users/me")
     suspend fun updateMe(
         @Body body: UpdateMeRequestDto
-    ): Response<UpdateMeResponseDto>
+    ): Response<UpdateMeResponse>
 
     @GET("api/users/me/privacy")
-    suspend fun privacy(): Response<PrivacyDto>
+    suspend fun privacy(): Response<Privacy>
 
     @PUT("api/users/me/privacy")
     suspend fun updatePrivacy(
         @Body body: UpdatePrivacyRequestDto
-    ): Response<PrivacyDto>
+    ): Response<Privacy>
 
     @POST("api/reports")
     suspend fun createReport(
         @Body body: ReportRequestDto
     ): Response<ReportResponseDto>
+
+    @GET("api/users/me/pins")
+    suspend fun pins(): Response<PinsResponseDto>
+
+    @DELETE("api/users/me/pin")
+    suspend fun deletePin(): Response<Unit>
+
+    @PUT("api/users/me/pin")
+    suspend fun savePin(
+        @Body body: SavePinRequestDto
+    ): Response<Unit>
 
 }

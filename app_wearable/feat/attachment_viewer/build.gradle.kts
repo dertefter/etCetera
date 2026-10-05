@@ -55,7 +55,6 @@ dependencies {
     debugImplementation(libs.compose.ui.tooling)
     debugImplementation(libs.compose.ui.test.manifest)
     implementation(libs.coil.compose)
-    implementation(libs.coil)
     implementation(libs.material.kolor)
     implementation(libs.lightspark.compose.qr.code)
     implementation(libs.zoomable)

@@ -10,6 +10,6 @@ data class ShortAuthorDto(
     @SerialName("displayName") val displayName: String,
     @SerialName("avatar") val avatar: String,
     @SerialName("verified") val verified: Boolean,
-    @SerialName("pin") val pin: PinDto? = null,
+    @SerialName("pin") val pin: Pin? = null,
     @SerialName("hasNuksta") val hasNuksta: Boolean
 )

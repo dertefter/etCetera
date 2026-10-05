@@ -4,7 +4,7 @@ import com.dertefter.data.dto.user.VisibilityDto
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class PrivacyDto(
+data class Privacy(
     val isPrivate: Boolean,
     val wallAccess: VisibilityDto,
     val likesVisibility: VisibilityDto,
