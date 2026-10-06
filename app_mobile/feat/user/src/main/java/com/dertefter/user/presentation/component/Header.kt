@@ -1,5 +1,6 @@
 package com.dertefter.user.presentation.component
 
+import android.util.Log
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.foundation.background
@@ -138,8 +139,11 @@ fun Header(
             )
         }
 
+       Log.e("activeNick", author.activeNickname?.label.toString())
+
        DisplayName(
            name = author.displayName,
+           activeNickname = author.activeNickname,
            verified = author.verified,
            hasNuksta = author.hasNuksta,
            pin = author.pin,

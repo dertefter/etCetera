@@ -177,7 +177,7 @@ class RemoteDataSourceImpl @Inject constructor(
 
     override suspend fun getStats(ids: List<String>): Result<List<PostStatsDto>> {
         return runCatching {
-            apiService.stats(PostStatsRequest(ids)).handleResponse { it.postStats }.getOrThrow()
+            apiService.stats(PostStatsRequest(ids)).handleResponse { it.posts }.getOrThrow()
         }
     }
 

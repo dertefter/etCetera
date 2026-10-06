@@ -8,8 +8,8 @@ import kotlinx.coroutines.CancellationException
  * Logs the error to CrashlyticsRepository if the result is a failure.
  */
 fun <T> Result<T>.onFailureLog(repository: CrashlyticsRepository): Result<T> = onFailure {
+    Log.e("onFailureLog", it.stackTraceToString())
     if (it !is CancellationException) {
-        Log.e("onFailureLog", it.stackTraceToString())
         repository.showError(it)
     }
 }

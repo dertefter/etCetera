@@ -9,10 +9,10 @@ enum class VisibilityDto {
     EVERYONE,
 
     @SerialName("followers")
-    FOLLOWERS, // подписчики
+    FOLLOWERS,
 
     @SerialName("mutual")
-    MUTUAL, // взаимные подписчики
+    MUTUAL,
 
     @SerialName("nobody")
     NOBODY

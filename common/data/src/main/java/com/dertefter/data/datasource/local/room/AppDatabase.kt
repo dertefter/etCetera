@@ -39,7 +39,7 @@ import com.dertefter.data.datasource.local.room.entity.UserEntity
         TopClanEntity::class,
         AuthSessionEntity::class
     ],
-    version = 61,
+    version = 63,
     exportSchema = false
 )
 

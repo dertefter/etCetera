@@ -24,9 +24,9 @@ class FeedRepositoryImpl @Inject constructor(
     override fun getFeedPaginator(tab: String): MutableCursorPaginator<String, PostDto> {
         return mutableCursorPaginator(capacity = 20) {
             cache = CursorMostRecentPagingCache(maxSize = 20)
-            persistentCache = PostPagingCache(tab, localDataSource)
+            //persistentCache = PostPagingCache(tab, localDataSource)
+            // persistentCache для Feed пока идёт нахуй
             initialCursor = CursorBookmark(prev = null, self = "initial", next = null)
-
 
             load { cursor ->
                 val result = remoteDataSource.getPosts(

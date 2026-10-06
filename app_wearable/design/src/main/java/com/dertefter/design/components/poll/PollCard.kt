@@ -62,24 +62,24 @@ fun PollCard(
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraSmall)
         ) {
-            for (option in options){
+            for ((text, id, votesCount) in options){
                 val percent = if (isEditMode || !isVoted) null else {
-                    if (totalCount > 0) option.votesCount.toFloat() / totalCount else 0f
+                    if (totalCount > 0) votesCount.toFloat() / totalCount else 0f
                 }
                 PollOption(
-                    text = option.text,
+                    text = text,
                     percent = percent,
-                    isChecked = selectedOptionIds.contains(option.id),
+                    isChecked = selectedOptionIds.contains(id),
                     onClick = {
                         if (isEditMode) {
                             selectedOptionIds = if (isMultipleChoice) {
-                                if (selectedOptionIds.contains(option.id)) {
-                                    selectedOptionIds - option.id
+                                if (selectedOptionIds.contains(id)) {
+                                    selectedOptionIds - id
                                 } else {
-                                    selectedOptionIds + option.id
+                                    selectedOptionIds + id
                                 }
                             } else {
-                                setOf(option.id)
+                                setOf(id)
                             }
                         }
                     }

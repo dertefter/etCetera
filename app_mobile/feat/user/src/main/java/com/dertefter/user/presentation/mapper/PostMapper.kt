@@ -1,5 +1,6 @@
 package com.dertefter.user.presentation.mapper
 
+import com.dertefter.data.dto.event.ActiveNicknameDto
 import com.dertefter.data.dto.feed.AttachmentDto
 import com.dertefter.data.dto.feed.AuthorDto
 import com.dertefter.data.dto.feed.OriginalPostDto
@@ -12,6 +13,7 @@ import com.dertefter.data.dto.feed.SpanDto
 import com.dertefter.data.dto.user.UserDto
 import com.dertefter.design.components.poll.PollOptionUiModel
 import com.dertefter.design.components.poll.PollUiModel
+import com.dertefter.design.components.post.ActiveNicknameUiModel
 import com.dertefter.design.components.post.AttachmentUiModel
 import com.dertefter.design.components.post.AuthorUiModel
 import com.dertefter.design.components.post.OriginalPostUiModel
@@ -60,9 +62,46 @@ fun PollOptionDto.toUiModel(isChecked: Boolean) = PollOptionUiModel(
 
 fun AttachmentUiModel.toNavigationModel() = AttachmentNavigationModel(id, type, url, mimeType)
 
-fun UserDto.toUiModel() = AuthorUiModel(id, username, displayName, avatar, hasNuksta, verified, pin?.toUiModel())
-fun AuthorDto.toUiModel() = AuthorUiModel(id, username, displayName, avatar, hasNuksta, verified, pin?.toUiModel())
-fun ShortAuthorDto.toUiModel() = AuthorUiModel(id, username, displayName, avatar, hasNuksta, verified, pin?.toUiModel())
+
+fun ActiveNicknameDto.toUiModel() = ActiveNicknameUiModel(
+    id = id,
+    label = label,
+    styleKey = styleKey,
+    eventId = eventId,
+    expiresAt = expiresAt,
+    stateVersion = stateVersion
+)
+
+fun UserDto.toUiModel() = AuthorUiModel(
+    id = id,
+    username = username,
+    displayName = displayName,
+    activeNickname = activeNickname?.toUiModel(),
+    avatar = avatar,
+    hasNuksta = hasNuksta,
+    verified = verified,
+    pin = pin?.toUiModel()
+)
+fun AuthorDto.toUiModel() = AuthorUiModel(
+    id = id,
+    username = username,
+    displayName = displayName,
+    activeNickname = activeNickname?.toUiModel(),
+    avatar = avatar,
+    hasNuksta = hasNuksta,
+    verified = verified,
+    pin = pin?.toUiModel()
+)
+fun ShortAuthorDto.toUiModel() = AuthorUiModel(
+    id = id,
+    username = username,
+    displayName = displayName,
+    activeNickname = activeNickname?.toUiModel(),
+    avatar = avatar,
+    hasNuksta = hasNuksta,
+    verified = verified,
+    pin = pin?.toUiModel()
+)
 fun Pin.toUiModel() = PinUiModel(description, name, slug, url)
 fun AttachmentDto.toUiModel() = AttachmentUiModel(id, type, url, mimeType)
 

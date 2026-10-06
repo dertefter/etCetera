@@ -2,6 +2,7 @@ package com.dertefter.data.datasource.local.room.converters
 
 import androidx.room.TypeConverter
 import com.dertefter.data.dto.comments.ReplyToDto
+import com.dertefter.data.dto.event.ActiveNicknameDto
 import com.dertefter.data.dto.feed.AttachmentDto
 import com.dertefter.data.dto.feed.AuthorDto
 import com.dertefter.data.dto.feed.OriginalPostDto
@@ -134,6 +135,16 @@ class RoomConverters {
     @TypeConverter
     fun toActorDto(actorString: String?): ActorDto? {
         return actorString?.let { json.decodeFromString(it) }
+    }
+
+    @TypeConverter
+    fun fromActiveNicknameDto(activeNicknameDto: ActiveNicknameDto?): String? {
+        return activeNicknameDto?.let { json.encodeToString(it) }
+    }
+
+    @TypeConverter
+    fun toActiveNicknameDto(activeNicknameString: String?): ActiveNicknameDto? {
+        return activeNicknameString?.let { json.decodeFromString(it) }
     }
 
 }

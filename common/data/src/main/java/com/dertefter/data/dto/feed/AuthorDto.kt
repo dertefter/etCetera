@@ -1,6 +1,6 @@
 package com.dertefter.data.dto.feed
 
-import com.dertefter.data.dto.common.ActiveNicknameDto
+import com.dertefter.data.dto.event.ActiveNicknameDto
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

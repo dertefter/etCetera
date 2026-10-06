@@ -140,12 +140,12 @@ fun SettingsAboutScreen(
                 SegmentedColumn(
                     title = stringResource(R.string.settings_about_itd_title)
                 ) {
-                    for (i in itdItems){
+                    for ((title, action) in itdItems){
                         item(
-                            onClick = i.action
+                            onClick = action
                         ) {
                             Text(
-                                i.title
+                                title
                             )
                         }
                     }
@@ -156,12 +156,12 @@ fun SettingsAboutScreen(
                 SegmentedColumn(
                     title = stringResource(R.string.settings_about_etcetera_title)
                 ) {
-                    for (i in etCeteraItems){
+                    for ((title, action) in etCeteraItems){
                         item(
-                            onClick = i.action
+                            onClick = action
                         ) {
                             Text(
-                                i.title
+                                title
                             )
                         }
                     }

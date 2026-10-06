@@ -1,18 +1,17 @@
 package com.dertefter.data.dto.feed
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class PollDto(
-    @SerialName("id") val id: String,
-    @SerialName("postId") val postId: String,
-    @SerialName("question") val question: String,
-    @SerialName("multipleChoice") val multipleChoice: Boolean,
-    @SerialName("options") val options: List<PollOptionDto>,
-    @SerialName("totalVotes") val totalVotes: Int,
-    @SerialName("hasVoted") val hasVoted: Boolean,
-    @SerialName("votedOptionIds") val votedOptionIds: List<String> = emptyList(),
-    @SerialName("createdAt") val createdAt: String
+    val id: String,
+    val postId: String,
+    val question: String,
+    val multipleChoice: Boolean,
+    val options: List<PollOptionDto>,
+    val totalVotes: Int,
+    val hasVoted: Boolean,
+    val votedOptionIds: List<String> = emptyList(),
+    val createdAt: String
 )
 

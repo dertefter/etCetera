@@ -1,17 +1,16 @@
 package com.dertefter.data.dto.search
 
-import com.dertefter.data.dto.common.ActiveNicknameDto
-import kotlinx.serialization.SerialName
+import com.dertefter.data.dto.event.ActiveNicknameDto
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class SearchUserDto(
-    @SerialName("id") val id: String,
-    @SerialName("username") val username: String,
-    @SerialName("displayName") val displayName: String,
-    @SerialName("avatar") val avatar: String,
-    @SerialName("verified") val verified: Boolean,
-    @SerialName("hasNuksta") val hasNuksta: Boolean,
-    @SerialName("followersCount") val followersCount: Int,
+    val id: String,
+    val username: String,
+    val displayName: String,
+    val avatar: String,
+    val verified: Boolean,
+    val hasNuksta: Boolean,
+    val followersCount: Int,
     val activeNickname: ActiveNicknameDto? = null
 )

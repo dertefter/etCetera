@@ -62,7 +62,17 @@ data class AuthorUiModel(
     val avatar: String,
     val hasNuksta: Boolean,
     val verified: Boolean,
-    val pin: PinUiModel?
+    val pin: PinUiModel?,
+    val activeNickname: ActiveNicknameUiModel? = null
+)
+
+data class ActiveNicknameUiModel(
+    val id: String? = null,
+    val label: String? = null,
+    val styleKey: String? = null,
+    val eventId: String? = null,
+    val expiresAt: String? = null,
+    val stateVersion: Int? = null
 )
 
 data class AttachmentUiModel(

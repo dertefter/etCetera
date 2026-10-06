@@ -2,6 +2,7 @@ package com.dertefter.data.datasource.local.room.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.dertefter.data.dto.event.ActiveNicknameDto
 import com.dertefter.data.dto.feed.Pin
 import com.dertefter.data.dto.followers.FollowerUserDto
 import com.dertefter.data.dto.me.Me
@@ -43,7 +44,8 @@ data class UserEntity(
     val messageAccess: VisibilityDto = VisibilityDto.EVERYONE,
     val showLastSeen: Boolean = true,
     val subscription: SubscriptionDto? = null,
-    val isMe: Boolean = false
+    val isMe: Boolean = false,
+    val activeNickname: ActiveNicknameDto? = null
 )
 
 fun UserEntity.asExternalModel() = UserDto(
@@ -70,7 +72,8 @@ fun UserEntity.asExternalModel() = UserDto(
     wallAccess = wallAccess,
     isBlockedByMe = isBlockedByMe,
     isPrivate = isPrivate,
-    canMessage = canMessage
+    canMessage = canMessage,
+    activeNickname = activeNickname
 )
 
 fun UserEntity.asFollowerExternalModel() = FollowerUserDto(
@@ -135,7 +138,8 @@ fun UserEntity.asMeExternalModel() = Me(
     subscription = subscription,
     username = username,
     verified = verified,
-    wallAccess = wallAccess
+    wallAccess = wallAccess,
+    activeNickname = activeNickname
 )
 
 fun UserDto.asEntity() = UserEntity(
@@ -163,7 +167,8 @@ fun UserDto.asEntity() = UserEntity(
     isBlockedByMe = isBlockedByMe,
     isMe = false,
     isPrivate = isPrivate,
-    canMessage = canMessage
+    canMessage = canMessage,
+    activeNickname = activeNickname
 )
 
 fun Me.asEntity() = UserEntity(
@@ -193,5 +198,6 @@ fun Me.asEntity() = UserEntity(
     isFollowing = false,
     lastSeen = null,
     online = true,
-    pinnedPostId = null
+    pinnedPostId = null,
+    activeNickname = activeNickname
 )

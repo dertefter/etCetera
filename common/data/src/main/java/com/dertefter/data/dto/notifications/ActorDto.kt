@@ -1,16 +1,15 @@
 package com.dertefter.data.dto.notifications
 
-import com.dertefter.data.dto.common.ActiveNicknameDto
-import kotlinx.serialization.SerialName
+import com.dertefter.data.dto.event.ActiveNicknameDto
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class ActorDto(
-    @SerialName("id") val id: String,
-    @SerialName("displayName") val displayName: String,
-    @SerialName("username") val username: String,
-    @SerialName("avatar") val avatar: String,
-    @SerialName("isFollowing") val isFollowing: Boolean,
-    @SerialName("isFollowedBy") val isFollowedBy: Boolean,
+    val id: String,
+    val displayName: String,
+    val username: String,
+    val avatar: String,
+    val isFollowing: Boolean,
+    val isFollowedBy: Boolean,
     val activeNickname: ActiveNicknameDto? = null
 )

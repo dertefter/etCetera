@@ -1,13 +1,12 @@
 package com.dertefter.data.dto.feed
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class Pin(
-    @SerialName("slug") val slug: String,
-    @SerialName("name") val name: String,
-    @SerialName("description") val description: String,
-    @SerialName("url") val url: String,
-    @SerialName("grantedAt") val grantedAt: String? = null
+    val slug: String,
+    val name: String,
+    val description: String,
+    val url: String,
+    val grantedAt: String? = null
 )

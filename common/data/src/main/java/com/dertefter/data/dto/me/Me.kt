@@ -1,6 +1,6 @@
 package com.dertefter.data.dto.me
 
-import com.dertefter.data.dto.common.ActiveNicknameDto
+import com.dertefter.data.dto.event.ActiveNicknameDto
 import com.dertefter.data.dto.feed.Pin
 import com.dertefter.data.dto.user.SubscriptionDto
 import com.dertefter.data.dto.user.VisibilityDto
