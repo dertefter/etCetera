@@ -1,5 +1,6 @@
 package com.dertefter.data.dto.followers
 
+import com.dertefter.data.dto.common.ActiveNicknameDto
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -21,7 +22,8 @@ data class FollowerUserDto(
     @SerialName("displayName") val displayName: String,
     @SerialName("avatar") val avatar: String,
     @SerialName("verified") val verified: Boolean,
-    @SerialName("isFollowing") val isFollowing: Boolean
+    @SerialName("isFollowing") val isFollowing: Boolean,
+    val activeNickname: ActiveNicknameDto? = null
 )
 
 @Serializable

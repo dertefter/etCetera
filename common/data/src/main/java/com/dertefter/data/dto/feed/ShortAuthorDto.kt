@@ -1,5 +1,6 @@
 package com.dertefter.data.dto.feed
 
+import com.dertefter.data.dto.common.ActiveNicknameDto
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -11,5 +12,6 @@ data class ShortAuthorDto(
     @SerialName("avatar") val avatar: String,
     @SerialName("verified") val verified: Boolean,
     @SerialName("pin") val pin: Pin? = null,
-    @SerialName("hasNuksta") val hasNuksta: Boolean
+    @SerialName("hasNuksta") val hasNuksta: Boolean,
+    val activeNickname: ActiveNicknameDto? = null
 )

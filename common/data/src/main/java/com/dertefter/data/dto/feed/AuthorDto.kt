@@ -1,5 +1,6 @@
 package com.dertefter.data.dto.feed
 
+import com.dertefter.data.dto.common.ActiveNicknameDto
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -11,5 +12,6 @@ data class AuthorDto(
     @SerialName("username") val username: String,
     @SerialName("verified") val verified: Boolean,
     @SerialName("hasNuksta") val hasNuksta: Boolean,
-    @SerialName("displayName") val displayName: String
+    @SerialName("displayName") val displayName: String,
+    val activeNickname: ActiveNicknameDto? = null
 )

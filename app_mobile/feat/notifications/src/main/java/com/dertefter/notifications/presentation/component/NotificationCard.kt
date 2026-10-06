@@ -23,11 +23,14 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.dertefter.data.dto.notifications.ActorDto
 import com.dertefter.data.dto.notifications.NotificationDto
 import com.dertefter.design.components.avatar.Avatar
 import com.dertefter.design.components.lists.SegmentedContentItem
 import com.dertefter.design.icons.Icons
+import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
 import com.dertefter.notifications.R
 import com.materialkolor.ktx.harmonize
@@ -196,5 +199,30 @@ private fun getNotificationIcon(type: String): ImageVector {
         "post_mention", "comment_mention" -> Icons.UserFilled
         "wall_post" -> Icons.EditFilled
         else -> Icons.UserFilled
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun NotificationCardPreview() {
+    AppTheme {
+        NotificationCard(
+            notification = NotificationDto(
+                id = "1",
+                type = "like",
+                preview = "This is a preview of the post that was liked.",
+                createdAt = "2023-10-27T12:00:00Z",
+                read = false,
+                count = 1,
+                actor = ActorDto(
+                    id = "actor1",
+                    displayName = "John Doe",
+                    username = "johndoe",
+                    avatar = "😊",
+                    isFollowing = true,
+                    isFollowedBy = false
+                )
+            )
+        )
     }
 }

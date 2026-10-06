@@ -1,5 +1,6 @@
 package com.dertefter.data.dto.user
 
+import com.dertefter.data.dto.common.ActiveNicknameDto
 import com.dertefter.data.dto.feed.Pin
 import kotlinx.serialization.Serializable
 
@@ -28,6 +29,6 @@ data class UserDto(
     val verified: Boolean = false,
     val wallAccess: VisibilityDto = VisibilityDto.EVERYONE,
     val isPrivate: Boolean = false,
-    val canMessage: Boolean = true
+    val canMessage: Boolean = true,
+    val activeNickname: ActiveNicknameDto? = null
 )
-

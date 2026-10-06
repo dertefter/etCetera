@@ -1,5 +1,6 @@
 package com.dertefter.data.dto.me
 
+import com.dertefter.data.dto.common.ActiveNicknameDto
 import com.dertefter.data.dto.feed.Pin
 import com.dertefter.data.dto.user.SubscriptionDto
 import com.dertefter.data.dto.user.VisibilityDto
@@ -24,6 +25,6 @@ data class Me(
     val subscription: SubscriptionDto?,
     val username: String,
     val verified: Boolean,
-    val wallAccess: VisibilityDto
+    val wallAccess: VisibilityDto,
+    val activeNickname: ActiveNicknameDto? = null
 )
-
