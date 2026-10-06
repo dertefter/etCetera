@@ -257,6 +257,7 @@ fun FeedScreen(
                         icon = Icons.ArrowWarmUp,
                         contentDescription = stringResource(R.string.feed_scroll_to_top),
                         onClick = {
+                            onEvent(Event.OnRefresh(currentTab))
                             scope.launch {
                                 currentListState.animateScrollToItem(0)
                             }

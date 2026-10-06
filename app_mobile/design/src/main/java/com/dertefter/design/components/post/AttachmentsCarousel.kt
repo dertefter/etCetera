@@ -21,7 +21,7 @@ fun AttachmentsCarousel(
     attachments: List<AttachmentUiModel>,
     modifier: Modifier = Modifier,
     itemHeight: Dp = 320.dp,
-    itemWidth: Dp = 260.dp,
+    itemWidth: Dp = 300.dp,
     itemShape: CornerBasedShape = MaterialTheme.shapes.largeIncreased,
     contentPadding: PaddingValues = PaddingValues(),
     onItemClick: (position: Int) -> Unit = {},
@@ -58,8 +58,8 @@ fun AttachmentsCarousel(
                     .fillMaxWidth(),
                 itemSpacing = MaterialTheme.spacing.small,
                 preferredItemWidth = itemWidth,
-                maxSmallItemWidth = itemWidth/12,
-                minSmallItemWidth = itemWidth/16
+                maxSmallItemWidth = itemWidth/16,
+                minSmallItemWidth = itemWidth/18
             ) { index ->
                 Attachment(
                     attachment = attachments[index],

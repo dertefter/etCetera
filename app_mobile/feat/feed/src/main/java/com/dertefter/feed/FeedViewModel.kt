@@ -6,7 +6,6 @@ import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.repository.FeedRepository
 import com.dertefter.data.repository.MeRepository
 import com.dertefter.data.repository.PostRepository
-import com.dertefter.data.repository.SearchRepository
 import com.dertefter.feed.presentation.Event
 import com.dertefter.feed.presentation.FeedTab
 import com.dertefter.feed.presentation.mapper.toNavigationModel
@@ -15,9 +14,7 @@ import com.dertefter.navigation.Routes
 import com.jamal_aliev.paginator.core.page.PaginatorUiState
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
 import com.jamal_aliev.paginator.cursor.bookmark.CursorBookmark
-import com.jamal_aliev.paginator.cursor.extension.distinctBy
 import com.jamal_aliev.paginator.cursor.extension.prefetchController
-import com.jamal_aliev.paginator.cursor.extension.refreshAll
 import com.jamal_aliev.paginator.cursor.extension.uiState
 import com.jamal_aliev.paginator.cursor.extension.warmUpFromPersistent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,7 +29,6 @@ import javax.inject.Inject
 @HiltViewModel
 class FeedViewModel @Inject constructor(
     private val feedRepository: FeedRepository,
-    private val searchRepository: SearchRepository,
     private val postRepository: PostRepository,
     private val meRepository: MeRepository,
     private val navigator: Navigator
@@ -60,16 +56,9 @@ class FeedViewModel @Inject constructor(
         }
 
     init {
-        updateTrendingHashtags()
         updateMe()
         paginators.values.forEach {
             setupPaginator(it)
-        }
-    }
-
-    private fun updateTrendingHashtags() {
-        viewModelScope.launch {
-            searchRepository.updateTrendingHashtags()
         }
     }
 
@@ -81,16 +70,18 @@ class FeedViewModel @Inject constructor(
 
     private fun setupPaginator(paginator: MutableCursorPaginator<String, PostDto>) {
         viewModelScope.launch {
-            paginator.distinctBy { it.id }
             paginator.prefetchController(
-                scope = viewModelScope, prefetchDistance = 3
+                scope = viewModelScope, prefetchDistance = 2
             )
             val inserted = paginator.warmUpFromPersistent()
-            if (inserted > 0) {
-                paginator.jump(CursorBookmark(prev = null, self = "initial", next = null))
-                paginator.refreshAll(loadingSilently = true, finalSilently = true)
+            if (inserted == 0) {
+                paginator.restart()
             } else {
-                paginator.restart(silentlyLoading = true)
+                paginator.jump(
+                    CursorBookmark(
+                        prev = null, self = "initial", next = null
+                    )
+                )
             }
 
         }
@@ -98,9 +89,9 @@ class FeedViewModel @Inject constructor(
 
     fun onEvent(event: Event) {
         when (event) {
-            
+
             is Event.OnOpenSearch -> {
-               navigator.navigate(Routes.Search)
+                navigator.navigate(Routes.Search)
             }
 
             is Event.OnReport -> {
@@ -181,8 +172,6 @@ class FeedViewModel @Inject constructor(
             }
 
             is Event.OnRefresh -> {
-                updateTrendingHashtags()
-                updateMe()
                 viewModelScope.launch {
                     val paginator = getPaginator(event.tab)
                     paginator.restart()

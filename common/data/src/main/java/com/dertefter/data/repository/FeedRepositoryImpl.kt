@@ -1,10 +1,14 @@
 package com.dertefter.data.repository
 
+import android.util.Log
 import com.dertefter.data.common.onFailureLog
 import com.dertefter.data.datasource.local.LocalDataSource
 import com.dertefter.data.datasource.local.room.PostPagingCache
 import com.dertefter.data.datasource.remote.RemoteDataSource
 import com.dertefter.data.dto.feed.PostDto
+import com.jamal_aliev.paginator.core.logger.LogLevel
+import com.jamal_aliev.paginator.core.logger.PrintPaginatorLogger
+import com.jamal_aliev.paginator.cursor.CursorPagingCore.Companion.UNLIMITED_CAPACITY
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
 import com.jamal_aliev.paginator.cursor.bookmark.CursorBookmark
 import com.jamal_aliev.paginator.cursor.cache.eviction.CursorMostRecentPagingCache
@@ -22,19 +26,20 @@ class FeedRepositoryImpl @Inject constructor(
 ) : FeedRepository {
 
     override fun getFeedPaginator(tab: String): MutableCursorPaginator<String, PostDto> {
-        return mutableCursorPaginator(capacity = 20) {
+        return mutableCursorPaginator(capacity = UNLIMITED_CAPACITY) {
             cache = CursorMostRecentPagingCache(maxSize = 20)
-            //persistentCache = PostPagingCache(tab, localDataSource)
-            // persistentCache для Feed пока идёт нахуй
+            persistentCache = PostPagingCache(tab, localDataSource)
             initialCursor = CursorBookmark(prev = null, self = "initial", next = null)
-
+            logger = PrintPaginatorLogger(minLevel = LogLevel.DEBUG)
             load { cursor ->
+
                 val result = remoteDataSource.getPosts(
                     tab,
                     cursor?.self?.takeIf { it != "initial" }
                 ).onFailureLog(crashlyticsRepository)
 
                 val data = result.getOrThrow()
+                Log.e("paginator", "loaded for $cursor || next is ${data.pagination.nextCursor}")
 
                 CursorLoadResult(
                     data = data.posts,

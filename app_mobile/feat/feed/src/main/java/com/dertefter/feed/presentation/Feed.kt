@@ -1,10 +1,5 @@
 package com.dertefter.feed.presentation
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -66,56 +61,36 @@ fun Feed(
         }
     }
 
-    AnimatedContent(
-        targetState = uiState,
-        contentKey = {
-            when (it) {
-                PaginatorUiState.Idle -> 0
-                is PaginatorUiState.Empty -> 1
-                else -> 2
-            }
-        },
-        transitionSpec = {
-            fadeIn(animationSpec = tween(300)) togetherWith fadeOut(animationSpec = tween(300))
-        },
-        label = "feed_state",
-        modifier = Modifier.fillMaxSize()
-    ) { state ->
-        when (state) {
+    val items = when (uiState) {
+        is PaginatorUiState.Loading -> uiState.state.data
+        is PaginatorUiState.Idle -> emptyList()
+        is PaginatorUiState.Empty -> emptyList()
+        is PaginatorUiState.Error -> uiState.state.data
+        is PaginatorUiState.Content -> uiState.items
+    }
 
-            else -> {
-                val items = when (state) {
-                    is PaginatorUiState.Loading -> state.state.data
-                    is PaginatorUiState.Idle -> emptyList()
-                    is PaginatorUiState.Empty -> emptyList()
-                    is PaginatorUiState.Error -> state.state.data
-                    is PaginatorUiState.Content -> state.items
-                }
+    LazyVerticalStaggeredGrid (
+        modifier = Modifier
+            .fillMaxSize()
+            .then(
+                if (scrollBehavior != null) Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                else Modifier
+            ),
+        state = gridState,
+        contentPadding = contentPadding,
+        columns = StaggeredGridCells.Adaptive(minSize = 500.dp),
+        verticalItemSpacing = MaterialTheme.spacing.medium,
+    ) {
+        paginated(paged) {
 
-                LazyVerticalStaggeredGrid (
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .then(
-                            if (scrollBehavior != null) Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                            else Modifier
-                        ),
-                    state = gridState,
-                    contentPadding = contentPadding,
-                    columns = StaggeredGridCells.Adaptive(minSize = 500.dp),
-                    verticalItemSpacing = MaterialTheme.spacing.medium,
-                ) {
-                    paginated(paged) {
+            postItems(items, onEvent)
 
-                        postItems(items, onEvent)
-
-                        appendIndicator {
-                            FeedAppendIndicator(state)
-                        }
-                    }
-                }
+            appendIndicator {
+                FeedAppendIndicator(uiState)
             }
         }
     }
+
 }
 
 private fun PaginatedLazyStaggeredGridScope.postItems(
