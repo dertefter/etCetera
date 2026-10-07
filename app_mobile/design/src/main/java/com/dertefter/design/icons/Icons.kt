@@ -8,6 +8,12 @@ import com.dertefter.design.R
 @Suppress("unused")
 object Icons {
 
+    val PenSize1: ImageVector
+        @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_pen_size_1)
+
+    val PenSize5: ImageVector
+        @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_pen_size_5)
+
     val Block: ImageVector
         @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_block)
     val List: ImageVector
