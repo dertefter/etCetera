@@ -225,25 +225,26 @@ fun BannerEditScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Surface(
-                tonalElevation = 1.dp,
-                shape = RoundedCornerShape(16.dp),
+                tonalElevation = 4.dp,
+                shape = MaterialTheme.shapes.large,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(
-                    modifier = Modifier.padding(vertical = 12.dp),
+                    modifier = Modifier.padding(vertical = MaterialTheme.spacing.extraLarge),
+                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large)
                 ) {
                     BannerColorPicker(
                         selectedColor = color,
                         onColorSelected = { drawController.color.value = it }
                     )
-                    Spacer(modifier = Modifier.height(12.dp))
                     Row(
-                        modifier = Modifier.padding(horizontal = 12.dp),
-                        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large),
+                        modifier = Modifier.padding(horizontal = MaterialTheme.spacing.large),
+                        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
                         verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             imageVector = Icons.PenSize1,
                             contentDescription = null,
+                            modifier = Modifier.size(38.dp),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         val sliderState = rememberSliderState(
@@ -259,6 +260,7 @@ fun BannerEditScreen(
                         Icon(
                             imageVector = Icons.PenSize5,
                             contentDescription = null,
+                            modifier = Modifier.size(38.dp),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
