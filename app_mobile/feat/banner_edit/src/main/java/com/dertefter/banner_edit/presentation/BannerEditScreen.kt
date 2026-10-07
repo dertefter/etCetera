@@ -1,7 +1,6 @@
 package com.dertefter.banner_edit.presentation
 
 import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -23,11 +22,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -55,6 +52,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil3.BitmapImage
 import coil3.ImageLoader
 import coil3.request.ImageRequest
 import coil3.request.SuccessResult
@@ -66,6 +64,7 @@ import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.components.loading.Shimmer
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
+import com.dertefter.design.theme.spacing
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import uk.codecymru.drawbox.box.DrawBox
@@ -99,7 +98,7 @@ fun BannerEditScreen(
                 .build()
             val result = imageLoader.execute(request)
             if (result is SuccessResult) {
-                val originalBitmap = (result.image as BitmapDrawable).bitmap
+                val originalBitmap = (result.image as BitmapImage).bitmap
                 val targetRatio = 16f / 9f
                 val width = originalBitmap.width
                 val height = originalBitmap.height
@@ -240,14 +239,13 @@ fun BannerEditScreen(
                     Spacer(modifier = Modifier.height(12.dp))
                     Row(
                         modifier = Modifier.padding(horizontal = 12.dp),
+                        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large),
                         verticalAlignment = Alignment.CenterVertically) {
                         Icon(
-                            imageVector = Icons.Edit,
+                            imageVector = Icons.PenSize1,
                             contentDescription = null,
-                            modifier = Modifier.size(20.dp),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
-                        Spacer(modifier = Modifier.width(8.dp))
                         val sliderState = rememberSliderState(
                             value = strokeWidth,
                             trackRange = 1f..100f
@@ -257,6 +255,11 @@ fun BannerEditScreen(
                             state = sliderState,
                             onValueChange = { drawController.strokeWidth.value = it },
                             modifier = Modifier.weight(1f)
+                        )
+                        Icon(
+                            imageVector = Icons.PenSize5,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
@@ -293,17 +296,11 @@ fun BannerColorPicker(
         contentPadding = PaddingValues(horizontal = 12.dp)
     ) {
         items(colors) { color ->
-            Box(
-                modifier = Modifier
-                    .size(36.dp)
-                    .clip(CircleShape)
-                    .background(color)
-                    .border(
-                        width = if (selectedColor == color) 3.dp else 1.dp,
-                        color = if (selectedColor == color) MaterialTheme.colorScheme.primary else Color.LightGray,
-                        shape = CircleShape
-                    )
-                    .clickable { onColorSelected(color) }
+
+            ColorItem(
+                color = color,
+                onClick = { onColorSelected(color) },
+                isSelected = selectedColor == color
             )
         }
     }
