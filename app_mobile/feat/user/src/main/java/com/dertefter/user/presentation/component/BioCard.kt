@@ -10,12 +10,15 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.input.rememberTextFieldState
+import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.material3.Button
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,10 +40,18 @@ fun BioCard(
     bio: String,
     canEdit: Boolean,
     onSaveClick: (String) -> Unit = {}
-){
-    var editedBio by remember(bio) { mutableStateOf(bio) }
+) {
+    val textFieldState = rememberTextFieldState(initialText = bio)
+
+    LaunchedEffect(bio) {
+        if (bio != textFieldState.text.toString()) {
+            textFieldState.setTextAndPlaceCursorAtEnd(bio)
+        }
+    }
+
     var isFocused by remember { mutableStateOf(false) }
-    val isChanged = editedBio != bio && canEdit
+    val currentBio = textFieldState.text.toString()
+    val isChanged = currentBio != bio && canEdit
 
     val isEditing = isFocused
 
@@ -63,19 +74,17 @@ fun BioCard(
                 .fillMaxWidth(),
         ) {
             BasicTextField(
+                state = textFieldState,
                 modifier = Modifier
                     .onFocusChanged { isFocused = it.isFocused }
                     .padding(top = MaterialTheme.spacing.extraLarge)
                     .padding(horizontal = MaterialTheme.spacing.extraLarge)
                     .padding(bottom = if (isChanged) 0.dp else MaterialTheme.spacing.extraLarge)
                     .fillMaxWidth(),
-                value = if (canEdit) editedBio else bio,
-                onValueChange = { if (canEdit) editedBio = it },
                 textStyle = MaterialTheme.typography.bodyLarge.copy(
                     color = MaterialTheme.colorScheme.onSurface
                 ),
                 cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
-                singleLine = false,
                 readOnly = !canEdit
             )
 
@@ -89,16 +98,16 @@ fun BioCard(
                         .padding(horizontal = 4.dp)
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
-                ){
+                ) {
 
                     FilledTonalButton(
-                        onClick = { editedBio = bio }
+                        onClick = { textFieldState.setTextAndPlaceCursorAtEnd(bio) }
                     ) {
                         Text(stringResource(R.string.user_cancel_bio))
                     }
 
                     Button(
-                        onClick = { onSaveClick(editedBio) }
+                        onClick = { onSaveClick(currentBio) }
                     ) {
                         Text(stringResource(R.string.user_save_bio))
                     }
