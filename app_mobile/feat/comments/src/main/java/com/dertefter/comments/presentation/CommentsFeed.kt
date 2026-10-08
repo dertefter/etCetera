@@ -142,6 +142,9 @@ fun CommentsFeed(
                                     modifier = Modifier.padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
                                     index = index,
                                     count = items.count(),
+                                    onAttachmentClick = {attachments, position ->
+                                        onEvent(Event.OnOpenAttachmentsViewer(attachments, position))
+                                    },
                                     meUserId = meUserId,
                                     comment = comment.toUiModel(meUserId),
                                     onLike = { onEvent(Event.OnLike(it)) },

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dertefter.comments.presentation.CommentSort
 import com.dertefter.comments.presentation.Event
+import com.dertefter.comments.presentation.mapper.toNavigationModel
 import com.dertefter.comments.usecase.DeleteCommentUseCase
 import com.dertefter.comments.usecase.GetCommentsPaginatorUseCase
 import com.dertefter.comments.usecase.GetMeUseCase
@@ -103,6 +104,14 @@ class CommentsViewModel @Inject constructor(
 
     fun onEvent(event: Event) {
         when (event) {
+
+            is Event.OnOpenAttachmentsViewer -> {
+                navigateToScreenUseCase(
+                    Routes.AttachmentsViewer(
+                        event.attachments.map { it.toNavigationModel() }, event.position
+                    )
+                )
+            }
 
             is Event.OnDeleteComment -> {
                 viewModelScope.launch {

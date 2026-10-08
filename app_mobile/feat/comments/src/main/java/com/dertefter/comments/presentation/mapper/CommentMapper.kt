@@ -10,6 +10,7 @@ import com.dertefter.design.components.comment.ReplyToUiModel
 import com.dertefter.design.components.post.AttachmentUiModel
 import com.dertefter.design.components.post.AuthorUiModel
 import com.dertefter.design.components.post.PinUiModel
+import com.dertefter.navigation.AttachmentNavigationModel
 
 fun Pin.toUiModel() = PinUiModel(description, name, slug, url)
 fun AttachmentDto.toUiModel() = AttachmentUiModel(id, type, url, mimeType)
@@ -31,3 +32,5 @@ fun CommentDto.toUiModel(meUserId: String? = null): CommentUiModel {
         isOwner = author.id == meUserId
     )
 }
+
+fun AttachmentUiModel.toNavigationModel() = AttachmentNavigationModel(id, type, url, mimeType)

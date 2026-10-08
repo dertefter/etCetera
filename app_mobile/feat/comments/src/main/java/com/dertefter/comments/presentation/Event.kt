@@ -1,5 +1,7 @@
 package com.dertefter.comments.presentation
 
+import com.dertefter.design.components.post.AttachmentUiModel
+
 sealed interface Event {
     data class OnTabSelected(val tab: CommentSort) : Event
     data object OnLoadMore : Event
@@ -9,6 +11,8 @@ sealed interface Event {
     data class OnLike(val commentId: String) : Event
 
     data class OnUnlike(val commentId: String) : Event
+
+    data class OnOpenAttachmentsViewer(val attachments: List<AttachmentUiModel>, val position: Int = 0) : Event
 
     data object OnNewComment : Event
 

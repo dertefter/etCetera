@@ -72,7 +72,8 @@ fun CommentCard(
     index: Int,
     count: Int,
     isReply: Boolean = false,
-    onReport: (commentId: String) -> Unit = {}
+    onReport: (commentId: String) -> Unit = {},
+    onAttachmentClick: (attachments: List<AttachmentUiModel>, position: Int) -> Unit,
 ) {
     var isExpanded by remember { mutableStateOf(false) }
 
@@ -276,7 +277,10 @@ fun CommentCard(
                     AttachmentsCarousel(
                         attachments = comment.attachments,
                         itemShape = MaterialTheme.shapes.medium,
-                        itemHeight = 180.dp
+                        itemHeight = 200.dp,
+                        onItemClick = { position ->
+                            onAttachmentClick(comment.attachments, position)
+                        }
                     )
                 }
 
@@ -359,7 +363,10 @@ fun CommentCard(
                         index = index,
                         count = comment.replies.count(),
                         isReply = true,
-                        modifier = Modifier.padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
+                        modifier = Modifier.padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
+                        onAttachmentClick = { attachments, position ->
+                            onAttachmentClick(attachments, position)
+                        }
                     )
                 }
                 if ((comment.repliesCount ?: 0) > (comment.replies?.size ?: 0)) {
@@ -385,6 +392,7 @@ fun CommentCardPreview() {
             CommentCard(
                 index = 0,
                 count = 0,
+                onAttachmentClick = {_,_ ->},
                 comment = CommentUiModel(
                     id = "1",
                     content = "This is a sample comment content. It can be long enough to span multiple lines and test the layout of the CommentCard.",
