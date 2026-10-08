@@ -20,7 +20,7 @@ palette = "1.0.0"
 
 # Jetpack Compose
 activityCompose = "1.13.0"
-composeBomAlpha = "2026.09.01"
+composeBomAlpha = "2026.10.00"
 navigationCompose = "2.10.2"
 navigation3 = "1.2.0"
 
@@ -36,7 +36,7 @@ materialKolor = "5.0.1"
 zoomable = "2.15.0"
 
 # Wear OS
-composeWear = "1.7.0"
+composeWear = "1.7.1"
 playServicesWearable = "20.0.1"
 wearToolingPreview = "1.0.0"
 
