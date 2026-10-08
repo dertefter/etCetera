@@ -9,4 +9,6 @@
     <string name="settings_appearance">Appearance</string>
     <string name="settings_section_account">Account</string>
     <string name="settings_section_app">Application</string>
+    <string name="settings_open_by_default">Open by default</string>
+    <string name="settings_open_by_default_error">Failed to open settings</string>
 </resources>
