@@ -54,7 +54,7 @@ class BannerEditViewModel @Inject constructor(
     fun onEvent(event: Event) {
         when (event) {
             is Event.OnPhotoSelected -> {
-                _uri.value = event.uri
+                // Handled in UI placement flow
             }
             is Event.OnSaveDrawing -> {
                 uploadBitmap(event.bitmap)

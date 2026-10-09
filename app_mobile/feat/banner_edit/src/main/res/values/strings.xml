@@ -6,6 +6,9 @@
     <string name="banner_edit_redo">Redo</string>
     <string name="banner_edit_select_file">Select file</string>
     <string name="banner_edit_save">Save</string>
+    <string name="banner_edit_confirm_placement">Confirm placement</string>
+    <string name="banner_edit_cancel_placement">Cancel</string>
+    <string name="banner_edit_clear_canvas">Clear canvas</string>
 
 
 </resources>

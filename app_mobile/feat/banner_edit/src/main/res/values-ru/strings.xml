@@ -6,5 +6,8 @@
     <string name="banner_edit_redo">Вернуть</string>
     <string name="banner_edit_select_file">Выбрать файл</string>
     <string name="banner_edit_save">Сохранить</string>
+    <string name="banner_edit_confirm_placement">Подтвердить</string>
+    <string name="banner_edit_cancel_placement">Отмена</string>
+    <string name="banner_edit_clear_canvas">Очистить холст</string>
 
 </resources>
