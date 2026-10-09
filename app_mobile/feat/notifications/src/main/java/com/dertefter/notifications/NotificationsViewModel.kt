@@ -42,6 +42,12 @@ class NotificationsViewModel @Inject constructor(
             setupPaginator(it)
         }
 
+    init {
+        viewModelScope.launch {
+            notificationsRepository.readAll()
+        }
+    }
+
     @OptIn(ExperimentalCoroutinesApi::class)
     val uiState: StateFlow<PaginatorUiState<NotificationDto>> = _selectedFilter.flatMapLatest { filter ->
         _paginator?.release()
