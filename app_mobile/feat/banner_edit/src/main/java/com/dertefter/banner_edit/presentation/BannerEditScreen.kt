@@ -367,7 +367,7 @@ fun BannerEditScreen(
                             }
                             .pointerInput(currentBitmap) {
                                 detectTransformGestures { _, pan, zoom, rot ->
-                                    scale = (scale * zoom).coerceIn(0.2f, 5.0f)
+                                    scale = (scale * zoom).coerceIn(0.1f, 15.0f)
                                     rawRotation += rot
                                     offsetX += pan.x
                                     offsetY += pan.y
