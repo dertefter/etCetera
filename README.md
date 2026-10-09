@@ -1,3 +1,10 @@
+<a href="https://t.me/etcetera_app">
+  <img src="https://img.shields.io/badge/Telegram?style=for-the-badge&logo=telegram&logoColor=%23ffffff&color=%2327b0f6" alt="Telegram" height="60">
+</a><a href="https://play.google.com/store/apps/details?id=com.dertefter.etcetera">
+  <img src="https://img.shields.io/badge/Google_Play?style=for-the-badge&logo=googleplay&logoColor=%23ffffff&color=%23414141" alt="Google Play" height="60">
+</a><a href="README_EN.md">
+  <img src="https://img.shields.io/badge/English-blue?style=for-the-badge" alt="English" height="60">
+</a>
 
 <img src="art/app_icon.svg" alt="App Icon" width="180" />  
 <a href="https://play.google.com/store/apps/details?id=com.dertefter.etcetera"><img src="art/gp_ru.svg" alt="Google Play" width="180" /></a>
