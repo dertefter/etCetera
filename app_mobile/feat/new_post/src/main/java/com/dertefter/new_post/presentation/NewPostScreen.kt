@@ -47,6 +47,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -54,14 +55,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.components.poll.NewPollCard
 import com.dertefter.design.components.post.OriginalPostCard
-import com.dertefter.design.components.post.buildPostAnnotatedString
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
@@ -80,18 +85,26 @@ fun NewPostScreen(
 
     val textFieldState = rememberTextFieldState(initialText = uiState.content)
 
-    LaunchedEffect(uiState.content) {
-        if (textFieldState.text.toString() != uiState.content) {
-            textFieldState.edit {
-                replace(0, length, uiState.content)
+    var lastSyncedText by remember { mutableStateOf(uiState.content) }
+
+    LaunchedEffect(textFieldState) {
+        snapshotFlow { textFieldState.text.toString() }
+            .collect { currentText ->
+                if (currentText != lastSyncedText) {
+                    lastSyncedText = currentText
+                    onEvent(Event.OnContentChanged(currentText))
+                }
             }
-        }
     }
 
-    LaunchedEffect(textFieldState.text) {
-        val currentText = textFieldState.text.toString()
-        if (currentText != uiState.content) {
-            onEvent(Event.OnContentChanged(currentText))
+    LaunchedEffect(uiState.content) {
+        if (uiState.content != lastSyncedText) {
+            lastSyncedText = uiState.content
+            if (textFieldState.text.toString() != uiState.content) {
+                textFieldState.edit {
+                    replace(0, length, uiState.content)
+                }
+            }
         }
     }
 
@@ -121,7 +134,6 @@ fun NewPostScreen(
             showLinkDialog = true
         })
     }
-
 
     val alpha by animateFloatAsState(
         targetValue = if (scrollBehavior.state.contentOffset < 0f) 0f else 1f
@@ -280,16 +292,38 @@ fun NewPostScreen(
             }
 
             val interactionSource = remember { MutableInteractionSource() }
-            val currentText = textFieldState.text.toString()
-            val annotatedString = buildPostAnnotatedString(currentText, uiState.spans)
-            val outputTransformation = remember(annotatedString) {
+            val primaryColor = MaterialTheme.colorScheme.primary
+            val onSurfaceVariant = MaterialTheme.colorScheme.onSurfaceVariant
+
+            val outputTransformation = remember(uiState.spans, primaryColor, onSurfaceVariant) {
                 OutputTransformation {
                     val bufferLength = length
-                    annotatedString.spanStyles.forEach { range ->
-                        val safeStart = range.start.coerceIn(0, bufferLength)
-                        val safeEnd = range.end.coerceIn(0, bufferLength)
+                    uiState.spans.forEach { span ->
+                        val safeStart = span.offset.coerceIn(0, bufferLength)
+                        val safeEnd = (span.offset + span.length).coerceIn(0, bufferLength)
                         if (safeStart < safeEnd) {
-                            addStyle(range.item, safeStart, safeEnd)
+                            when (span.type) {
+                                "bold" -> addStyle(SpanStyle(fontWeight = FontWeight.Bold), safeStart, safeEnd)
+                                "italic" -> addStyle(SpanStyle(fontStyle = FontStyle.Italic), safeStart, safeEnd)
+                                "monospace" -> addStyle(SpanStyle(fontFamily = FontFamily.Monospace), safeStart, safeEnd)
+                                "strike" -> addStyle(SpanStyle(textDecoration = TextDecoration.LineThrough), safeStart, safeEnd)
+                                "underline" -> addStyle(SpanStyle(textDecoration = TextDecoration.Underline), safeStart, safeEnd)
+                                "spoiler" -> addStyle(
+                                    SpanStyle(
+                                        background = onSurfaceVariant,
+                                        color = Color.Transparent
+                                    ),
+                                    safeStart, safeEnd
+                                )
+                                "mention", "hashtag" -> addStyle(
+                                    SpanStyle(color = primaryColor, fontWeight = FontWeight.Bold),
+                                    safeStart, safeEnd
+                                )
+                                "link" -> addStyle(
+                                    SpanStyle(color = primaryColor, textDecoration = TextDecoration.Underline),
+                                    safeStart, safeEnd
+                                )
+                            }
                         }
                     }
                 }
