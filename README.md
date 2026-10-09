@@ -1,7 +1,7 @@
+# etCetera
+
 <img src="art/app_icon.svg" alt="App Icon" width="180" />  
 <a href="https://play.google.com/store/apps/details?id=com.dertefter.etcetera"><img src="art/gp_ru.svg" alt="Google Play" width="180" /></a>
-
-# etCetera
 
 <a href="README-EN.md">
   <img src="https://img.shields.io/badge/English-blue?style=for-the-badge" alt="English" height="60">
