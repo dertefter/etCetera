@@ -20,8 +20,8 @@ import com.dertefter.design.theme.spacing
 fun AttachmentsCarousel(
     attachments: List<AttachmentUiModel>,
     modifier: Modifier = Modifier,
-    itemHeight: Dp = 320.dp,
-    itemWidth: Dp = 300.dp,
+    itemHeight: Dp = 296.dp,
+    itemWidth: Dp = 264.dp,
     itemShape: CornerBasedShape = MaterialTheme.shapes.largeIncreased,
     contentPadding: PaddingValues = PaddingValues(),
     onItemClick: (position: Int) -> Unit = {},
