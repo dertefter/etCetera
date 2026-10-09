@@ -5,7 +5,7 @@ annotationExperimental = "1.6.0"
 coilGif = "3.6.3"
 composeWebview = "1.9.1"
 hazeBlurMaterial3 = "2.0.1"
-kotlin = "2.4.20"
+kotlin = "2.4.21"
 ksp = "2.3.12"
 ossLicensesPlugin = "0.13.0"
 
@@ -33,7 +33,7 @@ drawboxEnhanced = "2.1.2"
 haze = "2.0.1"
 material = "1.14.0"
 materialKolor = "5.0.1"
-zoomable = "2.15.0"
+zoomable = "2.16.0"
 
 # Wear OS
 composeWear = "1.7.1"
@@ -57,7 +57,7 @@ room = "2.8.5"
 media3 = "1.11.1"
 
 # Paging
-paginatorBom = "10.2.4"
+paginatorBom = "10.2.5"
 
 # Widgets
 glance = "1.2.0"
