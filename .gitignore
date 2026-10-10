@@ -6,7 +6,6 @@
 /captures
 .externalNativeBuild
 .cxx
-.idea/
 *.log
 .DS_Store
 *.jks
