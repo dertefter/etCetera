@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleMigrationSettings" migrationVersion="1" />
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <option name="testRunner" value="CHOOSE_PER_TEST" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/app_mobile" />
+            <option value="$PROJECT_DIR$/app_mobile/design" />
+            <option value="$PROJECT_DIR$/app_mobile/feat" />
+            <option value="$PROJECT_DIR$/app_mobile/feat/attachment_viewer" />
+            <option value="$PROJECT_DIR$/app_mobile/feat/auth" />
+            <option value="$PROJECT_DIR$/app_mobile/feat/banner_edit" />
+            <option value="$PROJECT_DIR$/app_mobile/feat/comments" />
+            <option value="$PROJECT_DIR$/app_mobile/feat/crash_reports" />
+            <option value="$PROJECT_DIR$/app_mobile/feat/event_viewer" />
+            <option value="$PROJECT_DIR$/app_mobile/feat/feed" />
+            <option value="$PROJECT_DIR$/app_mobile/feat/followers" />
+            <option value="$PROJECT_DIR$/app_mobile/feat/hashtag_feed" />
+            <option value="$PROJECT_DIR$/app_mobile/feat/new_post" />
+            <option value="$PROJECT_DIR$/app_mobile/feat/notifications" />
+            <option value="$PROJECT_DIR$/app_mobile/feat/post" />
+            <option value="$PROJECT_DIR$/app_mobile/feat/report" />
+            <option value="$PROJECT_DIR$/app_mobile/feat/search" />
+            <option value="$PROJECT_DIR$/app_mobile/feat/settings" />
+            <option value="$PROJECT_DIR$/app_mobile/feat/settings_about" />
+            <option value="$PROJECT_DIR$/app_mobile/feat/settings_account" />
+            <option value="$PROJECT_DIR$/app_mobile/feat/settings_privacy" />
+            <option value="$PROJECT_DIR$/app_mobile/feat/settings_security" />
+            <option value="$PROJECT_DIR$/app_mobile/feat/settings_theme" />
+            <option value="$PROJECT_DIR$/app_mobile/feat/switch_account" />
+            <option value="$PROJECT_DIR$/app_mobile/feat/user" />
+            <option value="$PROJECT_DIR$/app_wearable" />
+            <option value="$PROJECT_DIR$/app_wearable/design" />
+            <option value="$PROJECT_DIR$/app_wearable/feat" />
+            <option value="$PROJECT_DIR$/app_wearable/feat/attachment_viewer" />
+            <option value="$PROJECT_DIR$/app_wearable/feat/comments" />
+            <option value="$PROJECT_DIR$/app_wearable/feat/feed" />
+            <option value="$PROJECT_DIR$/app_wearable/feat/followers" />
+            <option value="$PROJECT_DIR$/app_wearable/feat/hashtag_feed" />
+            <option value="$PROJECT_DIR$/app_wearable/feat/post" />
+            <option value="$PROJECT_DIR$/app_wearable/feat/user" />
+            <option value="$PROJECT_DIR$/common" />
+            <option value="$PROJECT_DIR$/common/data" />
+            <option value="$PROJECT_DIR$/common/navigation" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>
