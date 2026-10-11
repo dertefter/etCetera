@@ -1,13 +1,13 @@
 # etCetera
 
 <a href="https://t.me/etcetera_app">
-  <img src="art/badges/badge_tg.svg" alt="Telegram" height="60">
+  <img src="art/badges/badge_tg.svg" alt="Telegram" height="32">
 </a>
 <a href="https://play.google.com/store/apps/details?id=com.dertefter.etcetera">
-  <img src="art/badges/badge_gp.svg" alt="Google Play" height="60">
+  <img src="art/badges/badge_gp.svg" alt="Google Play" height="32">
 </a>
 <a href="README.md">
-  <img src="art/badges/badge_ru.svg" alt="Читать на русском" height="60">
+  <img src="art/badges/badge_ru.svg" alt="Читать на русском" height="32">
 </a>
 
 <img src="art/app_icon.svg" alt="App Icon" width="180" />  
