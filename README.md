@@ -1,14 +1,8 @@
 # etCetera
 
-<a href="https://t.me/etcetera_app">
-  <img src="art/badges/badge_tg.svg" alt="Telegram" height="32">
-</a>
-<a href="https://play.google.com/store/apps/details?id=com.dertefter.etcetera">
-  <img src="art/badges/badge_gp.svg" alt="Google Play" height="32">
-</a>
-<a href="README-EN.md">
-  <img src="art/badges/badge_en.svg" alt="Read in English" height="32">
-</a>
+[![Telegram](art/badges/badge_tg.svg)](https://t.me/etcetera_app)
+[![Google Play](art/badges/badge_gp.svg)](https://play.google.com/store/apps/details?id=com.dertefter.etcetera)
+[![Read in English](art/badges/badge_en.svg)](README-EN.md)
 
 <img src="art/app_icon.svg" alt="App Icon" width="180" />  
 
