@@ -102,7 +102,7 @@ fun SettingsScreen(
                             )
                         } else {
                             Intent(
-                                Settings.ACTION_APPLICATION_SETTINGS,
+                                Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                                 "package:${context.packageName}".toUri()
                             )
                         }
