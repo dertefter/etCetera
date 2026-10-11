@@ -202,7 +202,11 @@ fun SettingsAccountScreen(
 
                                         TextButton(
                                             contentPadding = PaddingValues(MaterialTheme.spacing.extraLarge),
-                                            onClick = {},
+                                            onClick = {
+                                                onEvent(
+                                                    Event.OnLogout
+                                                )
+                                            },
                                             colors = ButtonDefaults.textButtonColors(
                                                 contentColor = MaterialTheme.colorScheme.error
                                             )

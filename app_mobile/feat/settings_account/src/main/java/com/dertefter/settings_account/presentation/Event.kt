@@ -6,6 +6,8 @@ sealed interface Event {
     data object OnRefresh : Event
     data object OnSave : Event
 
+    data object OnLogout : Event
+
     data object OnOpenSwitchAccount : Event
 
     data class OnDisplayNameChange(val value: String) : Event

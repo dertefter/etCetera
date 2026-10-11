@@ -22,7 +22,7 @@ import javax.inject.Inject
 class SettingsAccountViewModel @Inject constructor(
     private val navigator: Navigator,
     private val meRepository: MeRepository,
-    authRepository: AuthRepository
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _me = meRepository.me
@@ -88,6 +88,12 @@ class SettingsAccountViewModel @Inject constructor(
                 navigator.openAsBottomSheet(
                     Routes.SwitchAccount
                 )
+            }
+
+            is Event.OnLogout -> {
+                viewModelScope.launch {
+                    authRepository.switchToLogin(null)
+                }
             }
 
 
