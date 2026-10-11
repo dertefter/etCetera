@@ -55,14 +55,11 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import coil3.compose.AsyncImage
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.LocalBottomNavHeight
-import com.dertefter.design.theme.bottomNavHeight
 import com.dertefter.design.theme.navBlurred
 import com.dertefter.design.theme.navFloating
 import com.dertefter.design.theme.navLabeled
 import com.dertefter.design.theme.spacing
 import com.dertefter.navigation.Routes
-import com.gigamole.composefadingedges.FadingEdgesGravity
-import com.gigamole.composefadingedges.verticalFadingEdges
 import com.materialkolor.ktx.harmonize
 import dev.chrisbanes.haze.HazeInput
 import dev.chrisbanes.haze.blur.hazeBlur
@@ -148,9 +145,7 @@ fun PhoneUI(
                 onBack,
                 Modifier
                     .hazeSource(hazeState)
-                    .verticalFadingEdges(
-                        gravity = FadingEdgesGravity.End, length = MaterialTheme.bottomNavHeight
-                    ).then(
+                    .then(
                         if (!hideNav){
                             Modifier.consumeWindowInsets(
                                 WindowInsets.navigationBars

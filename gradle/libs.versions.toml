@@ -26,7 +26,6 @@ navigation3 = "1.2.0"
 
 # UI Libraries
 coilCompose = "3.6.3"
-composefadingedges = "1.0.4"
 composemediaplayer = "0.11.4"
 composeQrCode = "1.0.1"
 drawboxEnhanced = "2.1.2"
@@ -104,7 +103,6 @@ navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref =
 
 # UI Components
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
-composefadingedges = { module = "com.github.GIGAMOLE:ComposeFadingEdges", version.ref = "composefadingedges" }
 drawbox-enhanced = { module = "uk.codecymru.drawbox:DrawBox-Enhanced", version.ref = "drawboxEnhanced" }
 haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
 haze-blur = { module = "dev.chrisbanes.haze:haze-blur", version.ref = "haze" }

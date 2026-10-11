@@ -58,7 +58,6 @@ dependencies {
     androidTestImplementation(libs.compose.ui.test.junit4)
     debugImplementation(libs.compose.ui.tooling)
     debugImplementation(libs.compose.ui.test.manifest)
-    implementation(libs.composefadingedges)
     implementation(libs.material.kolor)
     implementation(libs.coil.compose)
     implementation(libs.androidx.media3.exoplayer)

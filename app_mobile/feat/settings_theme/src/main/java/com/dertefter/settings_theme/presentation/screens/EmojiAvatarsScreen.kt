@@ -45,7 +45,6 @@ import com.dertefter.design.theme.spacing
 import com.dertefter.settings_theme.R
 import com.dertefter.settings_theme.presentation.Event
 import com.dertefter.settings_theme.presentation.UiState
-import com.gigamole.composefadingedges.horizontalFadingEdges
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 
@@ -95,7 +94,6 @@ fun EmojiAvatarsScreen(
             item {
                 Row(
                     modifier = Modifier
-                        .horizontalFadingEdges(length = MaterialTheme.spacing.large)
                         .horizontalScroll(rememberScrollState())
                         .padding(
                             all = MaterialTheme.spacing.large

@@ -128,7 +128,6 @@ dependencies {
     implementation(libs.androidx.glance.appwidget.preview)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.material.kolor)
-    implementation(libs.composefadingedges)
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)

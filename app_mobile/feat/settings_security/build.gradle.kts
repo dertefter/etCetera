@@ -47,7 +47,6 @@ dependencies {
     implementation(libs.compose.material3)
     implementation(libs.material.kolor)
     implementation(libs.hilt.android)
-    implementation(libs.composefadingedges)
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.lifecycle.viewmodel.compose)
     implementation(platform(libs.jamal.wia.paginator.bom))
