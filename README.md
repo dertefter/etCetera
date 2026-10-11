@@ -1,7 +1,14 @@
 # etCetera
 
-![Static Badge](https://img.shields.io/badge/Beta-eaeef4?style=for-the-badge&logo=google-play&logoColor=41657e&label=Google%20Play&labelColor=eaeef4&color=%2341657e)
-
+<a href="https://t.me/etcetera_app">
+  <img src="art/badges/badge_tg.svg" alt="Telegram" height="60">
+</a>
+<a href="https://play.google.com/store/apps/details?id=com.dertefter.etcetera">
+  <img src="art/badges/badge_gp.svg" alt="Google Play" height="60">
+</a>
+<a href="README-EN.md">
+  <img src="art/badges/badge_en.svg" alt="Read in English" height="60">
+</a>
 
 <img src="art/app_icon.svg" alt="App Icon" width="180" />  
 

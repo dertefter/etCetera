@@ -1,14 +1,16 @@
 # etCetera
 
-<img src="art/app_icon.svg" alt="App Icon" width="180" />  
-<a href="https://play.google.com/store/apps/details?id=com.dertefter.etcetera"><img src="art/gp_en.svg" alt="Google Play" width="180" /></a>
-
-<a href="README.md">
-  <img src="https://img.shields.io/badge/Russian-blue?style=for-the-badge" alt="Russian" height="60">
-</a>
 <a href="https://t.me/etcetera_app">
-  <img src="https://img.shields.io/badge/Telegram-26A6E1?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram" height="60">
+  <img src="art/badges/badge_tg.svg" alt="Telegram" height="60">
 </a>
+<a href="https://play.google.com/store/apps/details?id=com.dertefter.etcetera">
+  <img src="art/badges/badge_gp.svg" alt="Google Play" height="60">
+</a>
+<a href="README.md">
+  <img src="art/badges/badge_ru.svg" alt="Читать на русском" height="60">
+</a>
+
+<img src="art/app_icon.svg" alt="App Icon" width="180" />  
 
 Hello, my dear friend! etCetera is an alternative Android client for the [itd](https://итд.com/) social network designed in the Material 3 Expressive style.
 
