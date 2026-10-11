@@ -3,6 +3,7 @@
 [![Google Play](art/badges/badge_gp.svg)](https://play.google.com/store/apps/details?id=com.dertefter.etcetera)
 [![Telegram](art/badges/badge_tg.svg)](https://t.me/etcetera_app)
 [![Читать на русском](art/badges/badge_ru.svg)](README.md)
+[![Dontate](art/badges/badge_dontate_en.svg)](https://www.donationalerts.com/r/dertefter)
 
 <img src="art/app_icon.svg" alt="App Icon" width="180" />  
 
@@ -103,6 +104,13 @@ You will need:
     Built APK files can be found in the following directories:
     `app_mobile/build/outputs/apk/` and `app_wearable/build/outputs/apk/`.
 
-
 ## License
 [Apache License 2.0](LICENSE).
+
+## Thanks
+- [itd-frontend](https://github.com/itd-sdk/itd-frontend) [(fi-res)](https://github.com/fi-res)
+- To all alpha/beta testers and members of the [Telegram channel](https://t.me/etcetera_app) for their feedback and bug reports
+- [Cola Bochkari](https://bochkari.ru/brand-portfolio/beverages/cola_bochkari/) (for being so delicious!)
+
+## Support me
+[https://www.donationalerts.com/r/dertefter](https://www.donationalerts.com/r/dertefter)

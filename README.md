@@ -3,6 +3,7 @@
 [![Google Play](art/badges/badge_gp.svg)](https://play.google.com/store/apps/details?id=com.dertefter.etcetera)
 [![Telegram](art/badges/badge_tg.svg)](https://t.me/etcetera_app)
 [![Read in English](art/badges/badge_en.svg)](README-EN.md)
+[![Задонатить](art/badges/badge_dontate_ru.svg)](https://www.donationalerts.com/r/dertefter)
 
 <img src="art/app_icon.svg" alt="App Icon" width="180" />  
 
@@ -105,4 +106,12 @@
 
 
 ## Лицензия
-[Apache License 2.0](LICENSE).
+[Apache License 2.0](LICENSE)
+
+## 🙏 Благодарности 🙏
+- [itd-frontend](https://github.com/itd-sdk/itd-frontend) [(fi-res)](https://github.com/fi-res)
+- Всем тестировщикам альфа/бета версий, а также участникам [Telegram-канала](https://t.me/etcetera_app) за отзывы и отчёты об ошибках
+- [Cola Bochkari](https://bochkari.ru/brand-portfolio/beverages/cola_bochkari/) (за то, что она очень вкусная!)
+
+## Поддержать меня
+[https://www.donationalerts.com/r/dertefter](https://www.donationalerts.com/r/dertefter)
