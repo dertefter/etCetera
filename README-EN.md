@@ -1,7 +1,7 @@
 # etCetera
 
-[![Telegram](art/badges/badge_tg.svg)](https://t.me/etcetera_app)
 [![Google Play](art/badges/badge_gp.svg)](https://play.google.com/store/apps/details?id=com.dertefter.etcetera)
+[![Telegram](art/badges/badge_tg.svg)](https://t.me/etcetera_app)
 [![Читать на русском](art/badges/badge_ru.svg)](README.md)
 
 <img src="art/app_icon.svg" alt="App Icon" width="180" />  
