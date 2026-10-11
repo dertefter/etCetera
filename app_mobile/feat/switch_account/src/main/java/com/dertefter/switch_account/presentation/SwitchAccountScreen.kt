@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.dertefter.design.components.lists.SegmentedContentItem
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
+import com.dertefter.design.theme.bottomNavHeight
 import com.dertefter.design.theme.spacing
 import com.dertefter.switch_account.R
 
@@ -39,12 +40,14 @@ fun SwitchAccountScreen(
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(bottom = MaterialTheme.bottomNavHeight)
             .padding(MaterialTheme.spacing.large),
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
     ) {
         Text(
             text = stringResource(R.string.switch_acount_select_account),
-            style = MaterialTheme.typography.titleLarge,
+            style = MaterialTheme.typography.headlineMedium,
+            color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.padding(bottom = MaterialTheme.spacing.small)
         )
         uiState.loginHistory.forEachIndexed { index, login ->
