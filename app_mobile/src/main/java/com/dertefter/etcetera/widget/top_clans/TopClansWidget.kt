@@ -236,7 +236,7 @@ class TopClansWidget : GlanceAppWidget() {
 
             GlanceText(
                 modifier = GlanceModifier.padding(horizontal = 6.dp),
-                text = formatCount(clan.postsCount),
+                text = formatCount(clan.memberCount),
                 color = contentColor,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Medium
@@ -368,16 +368,16 @@ fun TopClansWidgetPreview() {
     GlanceTheme {
         TopClansWidget().ClansWidgetContent(
             clans = listOf(
-                TopClanDto(avatar = "\uD83E\uDD8E", postsCount = 50695),
-                TopClanDto(avatar = "\uD83E\uDD21", postsCount = 24019),
-                TopClanDto(avatar = "\uD83C\uDF45", postsCount = 19736),
-                TopClanDto(avatar = "\uD83C\uDF4C", postsCount = 16535),
-                TopClanDto(avatar = "\uD83D\uDC7E", postsCount = 15730),
-                TopClanDto(avatar = "\uD83D\uDC80", postsCount = 14394),
-                TopClanDto(avatar = "\uD83D\uDE0E", postsCount = 12855),
-                TopClanDto(avatar = "⚙️", postsCount = 12500),
-                TopClanDto(avatar = "🍃", postsCount = 12500),
-                TopClanDto(avatar = "⚔️", postsCount = 12500),
+                TopClanDto(avatar = "\uD83E\uDD8E", memberCount = 50695),
+                TopClanDto(avatar = "\uD83E\uDD21", memberCount = 24019),
+                TopClanDto(avatar = "\uD83C\uDF45", memberCount = 19736),
+                TopClanDto(avatar = "\uD83C\uDF4C", memberCount = 16535),
+                TopClanDto(avatar = "\uD83D\uDC7E", memberCount = 15730),
+                TopClanDto(avatar = "\uD83D\uDC80", memberCount = 14394),
+                TopClanDto(avatar = "\uD83D\uDE0E", memberCount = 12855),
+                TopClanDto(avatar = "⚙️", memberCount = 12500),
+                TopClanDto(avatar = "🍃", memberCount = 12500),
+                TopClanDto(avatar = "⚔️", memberCount = 12500),
             )
         )
     }

@@ -5,5 +5,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class TopClanDto(
     val avatar: String,
-    val postsCount: Int
+    val memberCount: Int
 )

@@ -8,15 +8,15 @@ import com.dertefter.data.dto.search.TopClanDto
 data class TopClanEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val avatar: String,
-    val postsCount: Int
+    val memberCount: Int
 )
 
 fun TopClanEntity.asExternalModel() = TopClanDto(
     avatar = avatar,
-    postsCount = postsCount
+    memberCount = memberCount
 )
 
 fun TopClanDto.asEntity() = TopClanEntity(
     avatar = avatar,
-    postsCount = postsCount
+    memberCount = memberCount
 )
