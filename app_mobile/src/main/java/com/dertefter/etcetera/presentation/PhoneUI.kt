@@ -64,6 +64,7 @@ import com.dertefter.design.theme.spacing
 import com.dertefter.navigation.Routes
 import com.materialkolor.ktx.harmonize
 import dev.chrisbanes.haze.HazeInput
+import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.blur.hazeBlur
 import dev.chrisbanes.haze.blur.materials.HazeMaterials
 import dev.chrisbanes.haze.hazeSource
@@ -83,13 +84,14 @@ fun PhoneUI(
         modifier: Modifier
     ) -> Unit,
     onBack: () -> Unit,
-    onNavItemClick: (tab: MainTab) -> Unit
+    onNavItemClick: (tab: MainTab) -> Unit,
+    hazeState: HazeState = rememberHazeState()
 ) {
 
     val hideNav =
         activeBackStack.lastOrNull() is Routes.AttachmentsViewer || activeBackStack.lastOrNull() is Routes.Auth
 
-    val hazeState = rememberHazeState()
+
 
     var navBarHeightPx by remember { mutableIntStateOf(0) }
     val density = LocalDensity.current
@@ -329,7 +331,7 @@ private fun PhoneUIPreview() {
 
                 },
                 onBack = {},
-                onNavItemClick = {}
+                onNavItemClick = {},
             )
         },
     )

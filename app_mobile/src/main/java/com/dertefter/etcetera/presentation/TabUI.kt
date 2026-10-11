@@ -65,6 +65,7 @@ import com.dertefter.design.theme.rounding
 import com.dertefter.design.theme.spacing
 import com.dertefter.navigation.Routes
 import dev.chrisbanes.haze.HazeInput
+import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.blur.hazeBlur
 import dev.chrisbanes.haze.blur.materials.HazeMaterials
 import dev.chrisbanes.haze.hazeSource
@@ -84,7 +85,8 @@ fun TabUI(
         modifier: Modifier
     ) -> Unit,
     onBack: () -> Unit,
-    onNavItemClick: (tab: MainTab) -> Unit
+    onNavItemClick: (tab: MainTab) -> Unit,
+    hazeState: HazeState = rememberHazeState()
 ) {
 
 
@@ -96,6 +98,7 @@ fun TabUI(
 
 
     TabUIStateless(
+        hazeState = hazeState,
         modifier = modifier,
         hideNav = hideNav,
         selectedTab = selectedTab,
@@ -116,6 +119,7 @@ fun TabUI(
 @Composable
 fun TabUIStateless(
     modifier: Modifier = Modifier,
+    hazeState: HazeState = rememberHazeState(),
     hideNav: Boolean,
     selectedTab: MainTab,
     notificationCount: Int?,
@@ -139,8 +143,6 @@ fun TabUIStateless(
             railState.collapse()
         }
     }
-
-    val hazeState = rememberHazeState()
 
     val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 

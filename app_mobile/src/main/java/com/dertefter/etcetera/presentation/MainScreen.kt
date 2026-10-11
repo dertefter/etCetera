@@ -3,9 +3,15 @@ package com.dertefter.etcetera.presentation
 import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -14,6 +20,7 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.rememberBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -23,7 +30,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -36,6 +45,7 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import com.dertefter.comments.CommentsRoute
 import com.dertefter.data.common.AppError
 import com.dertefter.design.icons.Icons
+import com.dertefter.design.theme.LocalBottomNavHeight
 import com.dertefter.design.theme.isFold
 import com.dertefter.etcetera.R
 import com.dertefter.etcetera.navigation.getAppEntryProvider
@@ -49,6 +59,10 @@ import com.dertefter.new_post.NewPostRoute
 import com.dertefter.new_post.RepostRoute
 import com.dertefter.report.ReportRoute
 import com.dertefter.switch_account.SwitchAccountRoute
+import dev.chrisbanes.haze.HazeInput
+import dev.chrisbanes.haze.blur.hazeBlur
+import dev.chrisbanes.haze.blur.materials.HazeMaterials
+import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.launch
 
 enum class MainTab(
@@ -135,6 +149,9 @@ fun MainScreen(
         modifier: Modifier
     ) -> Unit
 ) {
+
+    val hazeState = rememberHazeState()
+
     val authBackStack = rememberNavBackStack(Routes.Auth)
     val feedBackStack = rememberNavBackStack(Routes.Feed)
     val searchBackStack = rememberNavBackStack(Routes.Search)
@@ -226,6 +243,10 @@ fun MainScreen(
 
     val errorMessage = getErrorMessage(uiState.currentError)
 
+    val bottomSheetBlurStyle = HazeMaterials.thick( // I L0VE TH1CK G1RLSSSSSS!!!!11!!!
+        containerColor = MaterialTheme.colorScheme.surfaceContainer
+    )
+
     LaunchedEffect(errorMessage) {
         scope.launch {
             errorMessage?.let { errorMessage ->
@@ -283,6 +304,7 @@ fun MainScreen(
 
     if (MaterialTheme.isFold) {
         TabUI(
+            hazeState = hazeState,
             activeBackStack = activeBackStack,
             entries = activeEntries,
             selectedTab = selectedTab,
@@ -301,6 +323,7 @@ fun MainScreen(
     }
     else {
         PhoneUI(
+            hazeState = hazeState,
             activeBackStack = activeBackStack,
             entries = activeEntries,
             selectedTab = selectedTab,
@@ -321,34 +344,65 @@ fun MainScreen(
     if (bottomSheetRoute != null || sheetState.isVisible) {
         ModalBottomSheet(
             modifier = Modifier.imePadding(),
+            contentWindowInsets = {
+                WindowInsets(0,0,0,0)
+            },
             onDismissRequest = {
                 bottomSheetBackStack.clear()
             },
             sheetState = sheetState,
+            dragHandle = {
+                Box(
+                    modifier = Modifier
+                        .hazeBlur(
+                            input = HazeInput.Sources(hazeState),
+                            style = bottomSheetBlurStyle
+                        )
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ){
+                    BottomSheetDefaults.DragHandle()
+                }
+               },
+            containerColor = Color.Transparent,
+            contentColor = MaterialTheme.colorScheme.onBackground
         ) {
             BackHandler(
                 enabled = bottomSheetBackStack.size > 1
             ) {
                 bottomSheetBackStack.removeAt(bottomSheetBackStack.lastIndex)
             }
-            when (bottomSheetRoute) {
-                is Routes.Report -> ReportRoute(bottomSheetRoute.targetType, bottomSheetRoute.targetId)
-                is Routes.SwitchAccount -> SwitchAccountRoute()
-                is Routes.Comments -> CommentsRoute(bottomSheetRoute.postId)
-                is Routes.NewPost -> NewPostRoute(bottomSheetRoute.wallRecipientId)
-                is Routes.Repost -> RepostRoute(bottomSheetRoute.postIdForRepost, bottomSheetRoute.wallRecipientId)
-                is Routes.EditPost -> EditPostRoute(bottomSheetRoute.postId)
-                is Routes.NewComment -> NewCommentRoute(bottomSheetRoute.postId)
-                is Routes.NewCommentReply -> NewCommentReplyRoute(
-                    bottomSheetRoute.postId,
-                    bottomSheetRoute.commentId,
-                    bottomSheetRoute.userId
-                )
+            CompositionLocalProvider(
+                LocalBottomNavHeight provides WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+            ) {
+                Box(
+                    modifier = Modifier
+                        .hazeBlur(
+                            input = HazeInput.Sources(hazeState),
+                            style = bottomSheetBlurStyle
+                        )
+                ) {
+                    when (bottomSheetRoute) {
+                        is Routes.Report -> ReportRoute(bottomSheetRoute.targetType, bottomSheetRoute.targetId)
+                        is Routes.SwitchAccount -> SwitchAccountRoute()
+                        is Routes.Comments -> CommentsRoute(bottomSheetRoute.postId)
+                        is Routes.NewPost -> NewPostRoute(bottomSheetRoute.wallRecipientId)
+                        is Routes.Repost -> RepostRoute(bottomSheetRoute.postIdForRepost, bottomSheetRoute.wallRecipientId)
+                        is Routes.EditPost -> EditPostRoute(bottomSheetRoute.postId)
+                        is Routes.NewComment -> NewCommentRoute(bottomSheetRoute.postId)
+                        is Routes.NewCommentReply -> NewCommentReplyRoute(
+                            bottomSheetRoute.postId,
+                            bottomSheetRoute.commentId,
+                            bottomSheetRoute.userId
+                        )
 
-                else -> {
-                    Spacer(Modifier.height(1.dp))
+                        else -> {
+                            Spacer(Modifier.height(1.dp))
+                        }
+                    }
                 }
             }
+
         }
     }
 
