@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
@@ -41,6 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
@@ -61,9 +64,6 @@ import com.dertefter.design.theme.navLabeled
 import com.dertefter.design.theme.rounding
 import com.dertefter.design.theme.spacing
 import com.dertefter.navigation.Routes
-import com.gigamole.composefadingedges.FadingEdgesGravity
-import com.gigamole.composefadingedges.fill.FadingEdgesFillType
-import com.gigamole.composefadingedges.verticalFadingEdges
 import dev.chrisbanes.haze.HazeInput
 import dev.chrisbanes.haze.blur.hazeBlur
 import dev.chrisbanes.haze.blur.materials.HazeMaterials
@@ -227,7 +227,6 @@ fun TabUIStateless(
         .fillMaxSize()
     ){
 
-
         Box(
             modifier = Modifier
                 .then(
@@ -241,21 +240,13 @@ fun TabUIStateless(
                     } else Modifier
                 )
                 .fillMaxSize()
-        ){
-
-        }
+        )
 
         Box(Modifier
             .hazeSource(hazeState)
             .then(
                 if (!hideNav) {
-                    Modifier.verticalFadingEdges(
-                        fillType = FadingEdgesFillType.FadeColor(
-                            color = MaterialTheme.colorScheme.background
-                        ),
-                        gravity = FadingEdgesGravity.End,
-                        length = navigationBarHeight + 12.dp
-                    ).padding(start = measuredBottomNavWidth)
+                    Modifier.padding(start = measuredBottomNavWidth)
                 } else Modifier
             )
             .consumeWindowInsets(consumedPaddingValues)
@@ -270,6 +261,23 @@ fun TabUIStateless(
             .fillMaxSize()
             ) {
             content()
+        }
+
+        if (!hideNav){
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .background(
+                        brush = Brush.verticalGradient(
+                            listOf(
+                                MaterialTheme.colorScheme.background.copy(alpha = 0f),
+                                MaterialTheme.colorScheme.background
+                            )
+                        )
+                    )
+                    .fillMaxWidth()
+                    .height(navigationBarHeight)
+            )
         }
 
         if (!hideNav) {
@@ -297,7 +305,7 @@ fun TabUIStateless(
                                     input = HazeInput.Backdrop(hazeState),
                                     style = HazeMaterials.ultraThin(
                                         containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                                    ).then { blurRadius(88.dp) },
+                                    ).then { blurRadius(110.dp) },
                                 )
                             } else Modifier
                         )
