@@ -22,14 +22,18 @@ class EditPostViewModel @Inject constructor(
 ) : BaseNewPostViewModel(application, attachmentsRepository, navigator) {
 
     private var postId: String? = null
+    private var isInitialized = false
 
     fun initWith(postId: String) {
+        if (this.postId == postId && isInitialized) return
         this.postId = postId
+        isInitialized = false
         viewModelScope.launch {
             postRepository.getPost(postId).collectLatest { post ->
-                if (post != null) {
+                if (post != null && !isInitialized) {
                     content.value = post.content
                     spans.value = post.spans.map { SpanUiModel(it.type, it.length, it.offset, it.username, it.tag, it.url) }
+                    isInitialized = true
                 }
             }
         }
