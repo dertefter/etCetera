@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -69,6 +70,7 @@ import com.dertefter.design.components.poll.NewPollCard
 import com.dertefter.design.components.post.OriginalPostCard
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
+import com.dertefter.design.theme.bottomNavHeight
 import com.dertefter.design.theme.spacing
 import com.dertefter.new_post.R
 import com.dertefter.new_post.presentation.component.UploadCard
@@ -203,7 +205,7 @@ fun NewPostScreen(
                     modifier = Modifier
                         .alpha(alpha)
                         .weight(1f),
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.onSurface,
                     text = when (screenMode){
                         ScreenMode.NEW_POST -> stringResource(R.string.new_post_title)
@@ -265,7 +267,7 @@ fun NewPostScreen(
     ) { contentPadding ->
         Column(
             modifier = Modifier
-                .padding(contentPadding)
+                .padding(contentPadding + PaddingValues(bottom = MaterialTheme.bottomNavHeight))
                 .fillMaxSize()
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
                 .verticalScroll(scrollState),
@@ -329,6 +331,15 @@ fun NewPostScreen(
                 }
             }
 
+            val animatedFontSize by animateFloatAsState(
+                targetValue = when {
+                    textFieldState.text.length < 120 -> 32f
+                    textFieldState.text.length < 400 -> 20f
+                    else -> 16f
+                },
+                label = "fontSize"
+            )
+
             BasicTextField(
                 state = textFieldState,
                 modifier = Modifier
@@ -339,7 +350,8 @@ fun NewPostScreen(
                     .fillMaxWidth(),
                 textStyle = MaterialTheme.typography.bodyLarge.copy(
                     color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 18.sp
+                    fontSize = animatedFontSize.sp,
+                    lineHeight = androidx.compose.ui.unit.TextUnit.Unspecified
                 ),
                 cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                 lineLimits = TextFieldLineLimits.MultiLine(),
@@ -352,6 +364,7 @@ fun NewPostScreen(
                     interactionSource = interactionSource,
                     placeholder = {
                         Text(
+                            fontSize = animatedFontSize.sp,
                             text = when (screenMode){
                                 ScreenMode.NEW_POST -> stringResource(R.string.post_placeholder)
                                 ScreenMode.REPOST -> stringResource(R.string.repost_placeholder)
@@ -371,6 +384,25 @@ fun NewPostScreen(
                     contentPadding = PaddingValues(0.dp)
                 )
             )
+
+            AnimatedVisibility(
+                modifier = Modifier
+                    .align(
+                        Alignment.End
+                    ),
+                visible = textFieldState.text.length > 1000
+            ) {
+                Text(
+                    text = (1000 - textFieldState.text.length).toString(),
+                    modifier = Modifier
+                        .padding(
+                        horizontal = MaterialTheme.spacing.extraLarge
+                    ),
+                    style = MaterialTheme.typography.labelLargeEmphasized,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
+
 
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
 
@@ -421,7 +453,7 @@ private fun NewPostScreenPreview() {
         content = {
             NewPostScreen(
                 uiState = UiState(
-                    content = "Hello",
+                    content = "",
                     spans = emptyList(),
                     uploads = emptyList(),
                     isUploadingPost = true
