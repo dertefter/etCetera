@@ -1,14 +1,9 @@
 # etCetera
 
-<img src="art/app_icon.svg" alt="App Icon" width="180" />  
-<a href="https://play.google.com/store/apps/details?id=com.dertefter.etcetera"><img src="art/gp_ru.svg" alt="Google Play" width="180" /></a>
+![Static Badge](https://img.shields.io/badge/Beta-eaeef4?style=for-the-badge&logo=google-play&logoColor=41657e&label=Google%20Play&labelColor=eaeef4&color=%2341657e)
 
-<a href="README-EN.md">
-  <img src="https://img.shields.io/badge/English-blue?style=for-the-badge" alt="English" height="60">
-</a>
-<a href="https://t.me/etcetera_app">
-  <img src="https://img.shields.io/badge/Telegram-26A6E1?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram" height="60">
-</a>
+
+<img src="art/app_icon.svg" alt="App Icon" width="180" />  
 
 Привет, мой дорогой друг! etCetera – это альтернативный Android-клиент для социальной сети [итд](https://итд.com/) в стиле Material 3 Expressive.
 
