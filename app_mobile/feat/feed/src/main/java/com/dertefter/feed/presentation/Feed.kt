@@ -19,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.dertefter.data.common.Constants
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.components.post.PostCard
@@ -49,8 +48,9 @@ fun Feed(
     val paged = paginator.rememberPaginated(state = gridState)
 
     LaunchedEffect(gridState) {
+        delay(6000.milliseconds)
         while (true) {
-            delay(Constants.STATS_UPDATE_DELAY_MS.milliseconds)
+            delay(6000.milliseconds)
             val visibleItems = gridState.layoutInfo.visibleItemsInfo
             val visibleIds = visibleItems.mapNotNull { item ->
                 item.key.toString().takeIf { it.startsWith("post_") }?.removePrefix("post_")

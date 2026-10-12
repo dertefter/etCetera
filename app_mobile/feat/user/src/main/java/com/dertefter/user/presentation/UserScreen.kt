@@ -53,7 +53,6 @@ import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.dertefter.data.common.Constants
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.dto.user.UserDto
 import com.dertefter.data.dto.user.VisibilityDto
@@ -161,7 +160,7 @@ fun UserScreen(
     }
 
     LaunchedEffect(lazyListState) {
-        delay(Constants.STATS_UPDATE_DELAY_MS.milliseconds)
+        delay(6000.milliseconds)
         while (true) {
             val visibleItems = lazyListState.layoutInfo.visibleItemsInfo
             val visibleIds = visibleItems.mapNotNull { item ->
@@ -170,7 +169,7 @@ fun UserScreen(
             if (visibleIds.isNotEmpty()) {
                 onEvent(Event.OnUpdateStats(visibleIds))
             }
-            delay(Constants.STATS_UPDATE_DELAY_MS.milliseconds)
+            delay(6000.milliseconds)
         }
     }
 
