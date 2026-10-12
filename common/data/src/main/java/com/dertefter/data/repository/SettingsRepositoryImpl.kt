@@ -12,6 +12,12 @@ class SettingsRepositoryImpl @Inject constructor(
     private val localDataSource: LocalDataSource
 ) : SettingsRepository {
 
+    override val skipOnBoarding: Flow<Boolean> = localDataSource.skipOnBoarding
+
+    override suspend fun updateSkipOnBoarding(value: Boolean) {
+        localDataSource.updateSkipOnBoarding(value)
+    }
+
     override val emojiAvatarHarmonizationColor: Flow<EmojiAvatarHarmonizationColor> =
         localDataSource.emojiAvatarHarmonizationColor.map { colorName ->
             colorName?.let {

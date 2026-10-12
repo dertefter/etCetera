@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="onboarding_privacy_policy">Privacy Policy</string>
+    <string name="onboarding_terms_of_use">Terms of Use</string>
+    <string name="onboarding_oss_licenses">Open source licenses</string>
+    <string name="onboarding_github_repo">GitHub repository</string>
+    <string name="onboarding_itd_title">itd</string>
+    <string name="onboarding_etcetera_title">etCetera</string>
+    <string name="onboarding_welcome_title">Welcome!</string>
+    <string name="onboarding_page1_description">etCetera is an alternative Android client for the itd social network.</string>
+    <string name="onboarding_page1_warning">The etCetera project is not affiliated with the creators of itd and is developed by the community. The application is under active development and may be unstable. Do not use this application if you do not trust it or its creators. The authors of the project are not responsible for any potential issues caused by the etCetera application.</string>
+    <string name="onboarding_next">Next</string>
+    <string name="onboarding_page2_title">Before using…</string>
+    <string name="onboarding_page2_subtitle">Please review the list below:</string>
+</resources>

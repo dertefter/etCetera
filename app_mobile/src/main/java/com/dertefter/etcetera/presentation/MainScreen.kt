@@ -143,6 +143,7 @@ fun getErrorMessage(e: AppError?): String? {
 fun MainScreen(
     navigator: Navigator,
     uiState: MainUiState,
+    themeState: ThemeState?,
     appNavHost: @Composable (
         entries: List<NavEntry<NavKey>>,
         onBack: () -> Unit,
@@ -152,6 +153,7 @@ fun MainScreen(
 
     val hazeState = rememberHazeState()
 
+    val onBoardingBackStack = rememberNavBackStack(Routes.OnBoarding)
     val authBackStack = rememberNavBackStack(Routes.Auth)
     val feedBackStack = rememberNavBackStack(Routes.Feed)
     val searchBackStack = rememberNavBackStack(Routes.Search)
@@ -169,6 +171,7 @@ fun MainScreen(
     )
     val appEntryProvider = getAppEntryProvider()
 
+    val onBoardingEntries = rememberDecoratedNavEntries(onBoardingBackStack, decorators, appEntryProvider)
     val feedEntries = rememberDecoratedNavEntries(feedBackStack, decorators, appEntryProvider)
     val searchEntries = rememberDecoratedNavEntries(searchBackStack, decorators, appEntryProvider)
     val notificationsEntries = rememberDecoratedNavEntries(notificationsBackStack, decorators, appEntryProvider)
@@ -176,7 +179,10 @@ fun MainScreen(
     val authEntries = rememberDecoratedNavEntries(authBackStack, decorators, appEntryProvider)
     val eventEntries = rememberDecoratedNavEntries(eventViewerBackStack, decorators, appEntryProvider)
 
+    val isOnBoarding = themeState?.skipOnBoarding == false
+
     val activeEntries: List<NavEntry<NavKey>> = when {
+        isOnBoarding -> onBoardingEntries
         uiState.currentLogin == null -> authEntries
         selectedTab == MainTab.Feed -> feedEntries
         selectedTab == MainTab.Search -> searchEntries
@@ -190,6 +196,7 @@ fun MainScreen(
     var lastSeenMeUserId by rememberSaveable { mutableStateOf<String?>(null) }
 
     val activeBackStack = when {
+        isOnBoarding -> onBoardingBackStack
         uiState.currentLogin == null -> authBackStack
         selectedTab == MainTab.Feed -> feedBackStack
         selectedTab == MainTab.Search -> searchBackStack
@@ -246,6 +253,11 @@ fun MainScreen(
     val bottomSheetBlurStyle = HazeMaterials.thick( // I L0VE TH1CK G1RLSSSSSS!!!!11!!!
         containerColor = MaterialTheme.colorScheme.surfaceContainer
     )
+
+    val hideNav =
+        activeBackStack.lastOrNull() is Routes.AttachmentsViewer
+                || activeBackStack.lastOrNull() is Routes.Auth
+                || activeBackStack == onBoardingBackStack
 
     LaunchedEffect(errorMessage) {
         scope.launch {
@@ -305,7 +317,7 @@ fun MainScreen(
     if (MaterialTheme.isFold) {
         TabUI(
             hazeState = hazeState,
-            activeBackStack = activeBackStack,
+            hideNav = hideNav,
             entries = activeEntries,
             selectedTab = selectedTab,
             notificationCount = uiState.notificationCount,
@@ -324,7 +336,7 @@ fun MainScreen(
     else {
         PhoneUI(
             hazeState = hazeState,
-            activeBackStack = activeBackStack,
+            hideNav = hideNav,
             entries = activeEntries,
             selectedTab = selectedTab,
             notificationCount = uiState.notificationCount,

@@ -33,6 +33,7 @@ haze = "2.0.1"
 material = "1.14.0"
 materialKolor = "5.0.1"
 zoomable = "2.16.0"
+animationGraphics = "1.12.1"
 
 # Wear OS
 composeWear = "1.7.1"
@@ -70,7 +71,6 @@ mockk = "1.14.11"
 
 # Licenses
 droibitOssLicenses = "0.10.0"
-animationGraphics = "1.12.1"
 
 [libraries]
 # AndroidX Core

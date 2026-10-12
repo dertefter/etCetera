@@ -5,6 +5,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface SettingsRepository {
 
+    val skipOnBoarding: Flow<Boolean> // default false
+    suspend fun updateSkipOnBoarding(value: Boolean)
+
     val emojiAvatarHarmonizationColor: Flow<EmojiAvatarHarmonizationColor>
 
     suspend fun updateEmojiAvatarHarmonizationColor(color: EmojiAvatarHarmonizationColor)

@@ -74,6 +74,7 @@ class MainActivity : ComponentActivity() {
                         MainScreen(
                             navigator,
                             uiState = uiState,
+                            themeState = themeState,
                             appNavHost = { entries, onBack, modifier ->
                                 AppNavHost(
                                     entries = entries,

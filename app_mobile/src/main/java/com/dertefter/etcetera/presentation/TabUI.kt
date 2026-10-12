@@ -74,7 +74,7 @@ import dev.chrisbanes.haze.rememberHazeState
 @Composable
 fun TabUI(
     modifier: Modifier = Modifier,
-    activeBackStack: NavBackStack<NavKey>,
+    hideNav: Boolean, 
     entries: List<NavEntry<NavKey>>,
     selectedTab: MainTab,
     notificationCount: Int?,
@@ -88,15 +88,6 @@ fun TabUI(
     onNavItemClick: (tab: MainTab) -> Unit,
     hazeState: HazeState = rememberHazeState()
 ) {
-
-
-
-
-    val hideNav = activeBackStack.lastOrNull() is Routes.AttachmentsViewer || activeBackStack.lastOrNull() is Routes.Auth
-
-
-
-
     TabUIStateless(
         hazeState = hazeState,
         modifier = modifier,

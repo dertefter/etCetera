@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="onboarding_privacy_policy">Политика конфиденциальности</string>
+    <string name="onboarding_terms_of_use">Условия использования</string>
+    <string name="onboarding_oss_licenses">Лицензии открытого ПО</string>
+    <string name="onboarding_github_repo">GitHub репозиторий</string>
+    <string name="onboarding_itd_title">итд</string>
+    <string name="onboarding_etcetera_title">etCetera</string>
+    <string name="onboarding_welcome_title">Добро пожаловать!</string>
+    <string name="onboarding_page1_description">etCetera – это альтернативный Android-клиент для социальной сети итд.</string>
+    <string name="onboarding_page1_warning">Проект etCetera никак не связан с создателями итд и развивается сообществом. Приложение находится в активной разработке и может работать нестабильно. Не используйте это приложение, если не доверяете ему или его создателям. Авторы проекта не несут ответственности за возможные проблемы, вызванные приложением etCetera.</string>
+    <string name="onboarding_next">Далее</string>
+    <string name="onboarding_page2_title">Перед использованием…</string>
+    <string name="onboarding_page2_subtitle">Ознакомьтесь с перечнем ниже:</string>
+</resources>

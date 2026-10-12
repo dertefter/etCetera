@@ -76,6 +76,7 @@
             </intent-filter>
         </activity>
 
+
         <receiver
             android:label="@string/app_widget_top_clans_label"
             android:name=".widget.top_clans.TopClansWidgetReceiver"
@@ -88,6 +89,7 @@
                 android:resource="@xml/top_clans_widget_info" />
         </receiver>
 
+
         <receiver
             android:label="@string/app_widget_trending_hashtags_label"
             android:name=".widget.tranding_hashtags.TrendingHashtagsWidgetReceiver"
@@ -99,6 +101,8 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/trending_hashtags_widget_info" />
         </receiver>
+
+
     </application>
 
 </manifest>

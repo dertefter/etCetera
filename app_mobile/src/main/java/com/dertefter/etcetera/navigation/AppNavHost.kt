@@ -45,6 +45,7 @@ import com.dertefter.switch_account.SwitchAccountRoute
 import com.dertefter.user.UserByUsernameRoute
 import com.dertefter.user.UserRoute
 import com.dertefter.event_viewer.EventViewerRoute
+import com.dertefter.onboarding.OnBoardingRoute
 import kotlin.math.roundToInt
 
 
@@ -104,6 +105,7 @@ fun AppNavHost(
 @Composable
 fun RouteContent(route: Routes) {
     when (route) {
+        is Routes.OnBoarding -> OnBoardingRoute()
         is Routes.Auth -> AuthRoute()
         is Routes.Feed -> FeedRoute()
         is Routes.Comments -> CommentsRoute(route.postId)

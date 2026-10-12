@@ -34,7 +34,7 @@ class MainViewModel @Inject constructor(
     meRepository: MeRepository,
     notificationsRepository: NotificationsRepository,
     crashlyticsRepository: CrashlyticsRepository,
-    settingsRepository: SettingsRepository,
+    private val settingsRepository: SettingsRepository,
     eventsRepository: EventsRepository,
     private val tokenManager: TokenManager
 ) : ViewModel() {
@@ -71,7 +71,8 @@ class MainViewModel @Inject constructor(
         settingsRepository.navLabeled,
         settingsRepository.navBlurred,
         settingsRepository.appBarBlurred,
-        settingsRepository.appBarFaded
+        settingsRepository.appBarFaded,
+        settingsRepository.skipOnBoarding
     ) { params: Array<Any?> ->
         val emojiAvatarHarmonizationColor = params[0] as EmojiAvatarHarmonizationColor
         val darkTheme = params[1] as Boolean?
@@ -84,6 +85,7 @@ class MainViewModel @Inject constructor(
         val navBlurred = params[8] as Boolean
         val appBarBlurred = params[9] as Boolean
         val appBarFaded = params[10] as Boolean?
+        val skipOnBoarding = params[11] as Boolean
         ThemeState(
             emojiAvatarHarmonizationColor,
             darkTheme,
@@ -95,7 +97,8 @@ class MainViewModel @Inject constructor(
             navLabeled,
             navBlurred,
             appBarBlurred,
-            appBarFaded
+            appBarFaded,
+            skipOnBoarding
         )
     }.stateIn(
         viewModelScope,
@@ -138,6 +141,13 @@ class MainViewModel @Inject constructor(
             meRepository.updateMe()
             eventsRepository.updateCurrentEvent()
             notificationsRepository.updateNotificationCount()
-        }.launchIn(viewModelScope)    }
+        }.launchIn(viewModelScope)
+
+        combine(currentLogin, settingsRepository.skipOnBoarding) { login, skip ->
+            if (login != null && !skip) {
+                settingsRepository.updateSkipOnBoarding(true)
+            }
+        }.launchIn(viewModelScope)
+    }
 
 }

@@ -50,10 +50,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
-import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
-import androidx.navigation3.runtime.rememberNavBackStack
 import coil3.compose.AsyncImage
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.LocalBottomNavHeight
@@ -73,7 +71,7 @@ import dev.chrisbanes.haze.rememberHazeState
 @Composable
 fun PhoneUI(
     modifier: Modifier = Modifier,
-    activeBackStack: NavBackStack<NavKey>,
+    hideNav: Boolean,
     entries: List<NavEntry<NavKey>>,
     selectedTab: MainTab,
     notificationCount: Int?,
@@ -88,8 +86,7 @@ fun PhoneUI(
     hazeState: HazeState = rememberHazeState()
 ) {
 
-    val hideNav =
-        activeBackStack.lastOrNull() is Routes.AttachmentsViewer || activeBackStack.lastOrNull() is Routes.Auth
+
 
 
 
@@ -97,6 +94,12 @@ fun PhoneUI(
     val density = LocalDensity.current
     val measuredBottomNavHeight = remember(navBarHeightPx, density) {
         with(density) { navBarHeightPx.toDp() }
+    }
+
+    val bottomNavHeight = if (!hideNav){
+        measuredBottomNavHeight
+    } else {
+        WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     }
 
     @Composable
@@ -142,7 +145,7 @@ fun PhoneUI(
         CompositionLocalProvider(
             LocalBottomNavHeight provides
                     if (hideNav) 0.dp
-                    else max(measuredBottomNavHeight, WindowInsets.ime.asPaddingValues().calculateBottomPadding())
+                    else max(bottomNavHeight, WindowInsets.ime.asPaddingValues().calculateBottomPadding())
         ) {
             appNavHost(
                 entries,
@@ -179,7 +182,7 @@ fun PhoneUI(
                         )
                     )
                     .fillMaxWidth()
-                    .height(measuredBottomNavHeight)
+                    .height(bottomNavHeight)
             )
 
             Surface(
@@ -298,14 +301,14 @@ fun PhoneUI(
 private fun PhoneUIPreview() {
     AppTheme(
         content = {
-            val backStack: NavBackStack<NavKey> = rememberNavBackStack(Routes.Feed)
+
             val entries: List<NavEntry<NavKey>> = listOf(
                 NavEntry(Routes.Feed) {
                     Box(modifier = Modifier.fillMaxSize())
                 }
             )
             PhoneUI(
-                activeBackStack = backStack,
+                hideNav =false,
                 entries = entries,
                 selectedTab = MainTab.Feed,
                 notificationCount = 3,

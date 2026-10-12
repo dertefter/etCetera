@@ -13,5 +13,6 @@ data class ThemeState(
     val navLabeled: Boolean,
     val navBlurred: Boolean,
     val appBarBlurred: Boolean,
-    val appBarFaded: Boolean?
+    val appBarFaded: Boolean?,
+    val skipOnBoarding: Boolean
 )

@@ -53,6 +53,7 @@ class LocalDataSourceImpl @Inject constructor(
     private val currentLoginKey = stringPreferencesKey("current_login")
     private val notificationCountKey = intPreferencesKey("notification_count")
     private val loginHistoryKey = stringSetPreferencesKey("login_history")
+    private val skipOnBoardingKey = booleanPreferencesKey("skip_on_boarding")
     private val emojiAvatarHarmonizationColorKey = stringPreferencesKey("emoji_avatar_harmonization_color")
     private val darkThemeKey = booleanPreferencesKey("dark_theme")
     private val postHorizontalExtraSpaceKey = booleanPreferencesKey("post_horizontal_extra_space")
@@ -324,6 +325,16 @@ class LocalDataSourceImpl @Inject constructor(
             } else {
                 preferences[emojiAvatarHarmonizationColorKey] = color
             }
+        }
+    }
+
+    override val skipOnBoarding: Flow<Boolean> = settingsDataStore.data.map { preferences ->
+        preferences[skipOnBoardingKey] ?: false
+    }
+
+    override suspend fun updateSkipOnBoarding(value: Boolean) {
+        settingsDataStore.edit { preferences ->
+            preferences[skipOnBoardingKey] = value
         }
     }
 

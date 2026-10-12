@@ -34,7 +34,7 @@ plugins {
     // Ensure shared classloader for analysis plugin
     id("com.android.application") version "9.4.1" apply false
     id("com.android.library") version "9.4.1" apply false
-    id("org.jetbrains.kotlin.android") version "2.4.20" apply false
+    id("org.jetbrains.kotlin.android") version "2.4.21" apply false
 }
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
@@ -81,6 +81,7 @@ include(":app_mobile:feat:settings_privacy")
 include(":app_mobile:feat:settings_about")
 include(":app_mobile:feat:report")
 include(":app_mobile:feat:event_viewer")
+include(":app_mobile:feat:onboarding")
 
 //wearable
 include(":app_wearable")

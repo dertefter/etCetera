@@ -103,6 +103,7 @@ dependencies {
     implementation(project(":app_mobile:feat:settings_about"))
     implementation(project(":app_mobile:feat:report"))
     implementation(project(":app_mobile:feat:event_viewer"))
+    implementation(project(":app_mobile:feat:onboarding"))
 
     implementation(libs.coil.compose)
     implementation(libs.coil.gif)

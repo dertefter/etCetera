@@ -6,6 +6,7 @@ import androidx.navigation3.runtime.entryProvider
 import com.dertefter.navigation.Routes
 
 fun getAppEntryProvider(): (NavKey) -> NavEntry<NavKey> = entryProvider {
+    entry<Routes.OnBoarding> { RouteContent(it) }
     entry<Routes.CrashReports> { RouteContent(it) }
     entry<Routes.Auth> { RouteContent(it) }
     entry<Routes.Feed> { RouteContent(it) }
