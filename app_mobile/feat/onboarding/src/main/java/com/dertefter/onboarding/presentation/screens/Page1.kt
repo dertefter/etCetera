@@ -85,7 +85,8 @@ fun Page1(onEvent: (Event) -> Unit) {
                 .verticalScroll(rememberScrollState())
                 .padding(
                     contentPadding
-                            + PaddingValues(all = MaterialTheme.spacing.defaultScreenPadding)
+                            + PaddingValues(top = MaterialTheme.spacing.small)
+                            + PaddingValues(horizontal = MaterialTheme.spacing.extraLarge)
                             + PaddingValues(bottom = MaterialTheme.bottomNavHeight)
                 )
         ) {

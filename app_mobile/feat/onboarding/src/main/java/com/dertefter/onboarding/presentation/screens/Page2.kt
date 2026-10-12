@@ -27,7 +27,6 @@ import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.bottomNavHeight
 import com.dertefter.design.theme.spacing
 import com.dertefter.onboarding.R
-import com.dertefter.onboarding.presentation.Event
 import com.github.droibit.oss_licenses.ui.compose.material3.OssLicensesActivity
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
@@ -38,7 +37,7 @@ private data class Item(
 )
 
 @Composable
-fun Page2(onEvent: (Event) -> Unit) {
+fun Page2() {
 
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
@@ -109,7 +108,8 @@ fun Page2(onEvent: (Event) -> Unit) {
                 .verticalScroll(rememberScrollState())
                 .padding(
                     contentPadding
-                            + PaddingValues(all = MaterialTheme.spacing.defaultScreenPadding)
+                            + PaddingValues(top = MaterialTheme.spacing.small)
+                            + PaddingValues(horizontal = MaterialTheme.spacing.extraLarge)
                             + PaddingValues(bottom = MaterialTheme.bottomNavHeight)
                 )
         ) {
@@ -150,8 +150,6 @@ fun Page2(onEvent: (Event) -> Unit) {
 @Composable
 private fun Page2Preview() {
     AppTheme {
-        Page2(
-            onEvent = {}
-        )
+        Page2()
     }
 }
