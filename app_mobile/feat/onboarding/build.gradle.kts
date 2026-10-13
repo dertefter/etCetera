@@ -41,16 +41,8 @@ dependencies {
 
     implementation(libs.oss.licenses.droibit)
     implementation(libs.activity.compose)
-    implementation(platform(libs.compose.bom.alpha))
-    implementation(libs.compose.ui)
-    implementation(libs.compose.ui.graphics)
-    implementation(libs.compose.ui.tooling.preview)
-    implementation(libs.compose.material3)
-    implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.metro.runtime)
     implementation(libs.metrox.viewmodel)
     implementation(libs.metrox.viewmodel.compose)
-    debugImplementation(libs.compose.ui.tooling)
-    debugRuntimeOnly(libs.compose.ui.test.manifest)
 
 }

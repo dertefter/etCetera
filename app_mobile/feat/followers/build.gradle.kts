@@ -36,22 +36,10 @@ dependencies {
 
     implementation(project(":common:data"))
     implementation(project(":common:navigation"))
-
     implementation(project(":app_mobile:design"))
 
-    implementation(platform(libs.compose.bom.alpha))
-    implementation(libs.compose.ui)
-    implementation(libs.compose.ui.graphics)
-    implementation(libs.compose.ui.tooling.preview)
-    implementation(libs.compose.material3)
     implementation(libs.metro.runtime)
     implementation(libs.metrox.viewmodel)
     implementation(libs.metrox.viewmodel.compose)
-    debugImplementation(libs.compose.ui.tooling)
-    debugRuntimeOnly(libs.compose.ui.test.manifest)
-    implementation(platform(libs.jamal.wia.paginator.bom))
-    implementation(libs.paginator.compose.cursor)
-    testImplementation(libs.mockk)
-    testImplementation(libs.kotlinx.coroutines.test)
 
 }

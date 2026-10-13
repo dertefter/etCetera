@@ -36,23 +36,12 @@ dependencies {
 
     implementation(project(":common:data"))
     implementation(project(":common:navigation"))
-
     implementation(project(":app_mobile:design"))
 
-    implementation(libs.coil.network.okhttp)
-    implementation(platform(libs.compose.bom.alpha))
-    implementation(libs.compose.ui)
-    implementation(libs.compose.ui.graphics)
-    implementation(libs.compose.ui.tooling.preview)
-    implementation(libs.compose.material3)
-    implementation(libs.androidx.lifecycle.runtime.compose)
-    runtimeOnly(libs.androidx.media3.exoplayer)
     implementation(libs.activity.compose)
+    implementation(libs.drawbox.enhanced)
     implementation(libs.metro.runtime)
     implementation(libs.metrox.viewmodel)
     implementation(libs.metrox.viewmodel.compose)
-    implementation(libs.drawbox.enhanced)
-    debugImplementation(libs.compose.ui.tooling)
-    debugRuntimeOnly(libs.compose.ui.test.manifest)
 
 }

@@ -4,9 +4,9 @@ agp = "9.4.1"
 annotationExperimental = "1.6.0"
 coilGif = "3.6.3"
 composeWebview = "1.9.1"
-hazeBlurMaterial3 = "2.0.1"
 kotlin = "2.4.21"
 ksp = "2.3.12"
+navigationCommon = "2.10.2"
 ossLicensesPlugin = "0.13.0"
 
 # AndroidX Core
@@ -76,6 +76,7 @@ androidx-annotation-experimental = { module = "androidx.annotation:annotation-ex
 androidx-datastore-core = { group = "androidx.datastore", name = "datastore-core", version.ref = "datastoreCore" }
 androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleRuntimeKtx" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-navigation-common = { module = "androidx.navigation:navigation-common", version.ref = "navigationCommon" }
 androidx-palette = { module = "androidx.palette:palette", version.ref = "palette" }
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 coil-gif = { module = "io.coil-kt.coil3:coil-gif", version.ref = "coilGif" }
@@ -93,7 +94,6 @@ compose-ui = { group = "androidx.compose.ui", name = "ui" }
 compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-haze-blur-material3 = { module = "dev.chrisbanes.haze:haze-blur-material3", version.ref = "hazeBlurMaterial3" }
 lifecycle-viewmodel-navigation3 = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "lifecycleRuntimeKtx" }
 navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "navigation3" }

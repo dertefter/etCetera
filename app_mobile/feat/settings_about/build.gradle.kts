@@ -34,27 +34,14 @@ android {
 
 dependencies {
 
-
     implementation(project(":common:data"))
     implementation(project(":common:navigation"))
-
     implementation(project(":app_mobile:design"))
 
     implementation(libs.oss.licenses.droibit)
-    implementation(platform(libs.compose.bom.alpha))
     implementation(libs.androidx.animation.graphics)
-    implementation(libs.compose.ui)
-    implementation(libs.compose.ui.graphics)
-    implementation(libs.compose.ui.tooling.preview)
-    implementation(libs.compose.material3)
-    implementation(libs.material.kolor)
     implementation(libs.metro.runtime)
     implementation(libs.metrox.viewmodel)
     implementation(libs.metrox.viewmodel.compose)
-    implementation(platform(libs.jamal.wia.paginator.bom))
-    debugImplementation(libs.compose.ui.tooling)
-    debugRuntimeOnly(libs.compose.ui.test.manifest)
-    testImplementation(libs.mockk)
-    testImplementation(libs.kotlinx.coroutines.test)
 
 }
