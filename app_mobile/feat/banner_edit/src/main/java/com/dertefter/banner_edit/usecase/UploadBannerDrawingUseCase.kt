@@ -4,12 +4,11 @@ import android.content.Context
 import android.graphics.Bitmap
 import com.dertefter.data.dto.upload.AttachmentUploadResponseDto
 import com.dertefter.data.repository.AttachmentsRepository
-import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
-import javax.inject.Inject
+import dev.zacsweers.metro.Inject
 
 class UploadBannerDrawingUseCase @Inject constructor(
-    @ApplicationContext private val context: Context,
+    private val context: Context,
     private val attachmentsRepository: AttachmentsRepository
 ) {
     suspend operator fun invoke(bitmap: Bitmap): Result<AttachmentUploadResponseDto> {

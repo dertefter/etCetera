@@ -24,7 +24,6 @@ import com.dertefter.data.dto.auth.AuthSessionDto
 import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.data.dto.event.CurrentEvent
 import com.dertefter.data.dto.feed.Pin
-import kotlinx.serialization.json.Json
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.dto.followers.FollowerUserDto
 import com.dertefter.data.dto.me.Me
@@ -33,21 +32,22 @@ import com.dertefter.data.dto.notifications.NotificationDto
 import com.dertefter.data.dto.search.SearchHashtagDto
 import com.dertefter.data.dto.search.TopClanDto
 import com.dertefter.data.dto.user.UserDto
-import dagger.hilt.android.qualifiers.ApplicationContext
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
-import javax.inject.Singleton
+import kotlinx.serialization.json.Json
 
 @OptIn(ExperimentalCoroutinesApi::class)
-@Singleton
+@SingleIn(AppScope::class)
 class LocalDataSourceImpl @Inject constructor(
     @AuthDataStore private val authDataStore: DataStore<Preferences>,
     @SettingsDataStore private val settingsDataStore: DataStore<Preferences>,
-    @param:ApplicationContext private val context: Context
+    private val context: Context
 ) : LocalDataSource {
 
     private val currentLoginKey = stringPreferencesKey("current_login")

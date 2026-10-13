@@ -3,7 +3,7 @@ package com.dertefter.user
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dertefter.user.presentation.UserScreen
 
@@ -11,7 +11,7 @@ import com.dertefter.user.presentation.UserScreen
 fun UserRoute(
     userId: String,
     showBackButton: Boolean,
-    viewModel: UserViewModel = hiltViewModel(),
+    viewModel: UserViewModel = metroViewModel(),
 ) {
     val userUiState by viewModel.userUiState.collectAsStateWithLifecycle()
     val selectedTab by viewModel.selectedTab.collectAsStateWithLifecycle()
@@ -39,7 +39,7 @@ fun UserRoute(
 fun UserByUsernameRoute(
     username: String,
     showBackButton: Boolean,
-    viewModel: UserViewModel = hiltViewModel(),
+    viewModel: UserViewModel = metroViewModel(),
 ) {
     val userUiState by viewModel.userUiState.collectAsStateWithLifecycle()
     val selectedTab by viewModel.selectedTab.collectAsStateWithLifecycle()

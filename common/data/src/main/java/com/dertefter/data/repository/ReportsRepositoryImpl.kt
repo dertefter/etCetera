@@ -4,7 +4,7 @@ import com.dertefter.data.common.onFailureLog
 import com.dertefter.data.datasource.remote.RemoteDataSource
 import com.dertefter.data.dto.reports.ReportDataDto
 import com.dertefter.data.dto.reports.ReportRequestDto
-import javax.inject.Inject
+import dev.zacsweers.metro.Inject
 
 class ReportsRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,

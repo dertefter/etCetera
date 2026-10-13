@@ -1,7 +1,7 @@
 package com.dertefter.comments.usecase
 
 import com.dertefter.data.repository.CommentsRepository
-import javax.inject.Inject
+import dev.zacsweers.metro.Inject
 
 class DeleteCommentUseCase @Inject constructor(
     private val commentsRepository: CommentsRepository

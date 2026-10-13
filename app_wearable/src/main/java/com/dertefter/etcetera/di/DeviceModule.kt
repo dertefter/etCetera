@@ -1,14 +1,14 @@
 package com.dertefter.etcetera.di
 
+import dev.zacsweers.metro.AppScope
 import com.dertefter.data.di.IsWearDevice
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
+import dev.zacsweers.metro.BindingContainer
+import dev.zacsweers.metro.ContributesTo
+import dev.zacsweers.metro.Provides
 
+@BindingContainer
 @Suppress("SameReturnValue")
-@Module
-@InstallIn(SingletonComponent::class)
+@ContributesTo(AppScope::class)
 object DeviceModule {
     @Provides
     @IsWearDevice

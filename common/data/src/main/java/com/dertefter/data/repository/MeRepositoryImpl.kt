@@ -10,9 +10,9 @@ import com.dertefter.data.dto.me.SavePinRequestDto
 import com.dertefter.data.dto.me.UpdateMeRequestDto
 import com.dertefter.data.dto.me.UpdateMeResponse
 import com.dertefter.data.dto.me.UpdatePrivacyRequestDto
+import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
-import javax.inject.Inject
 
 class MeRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,

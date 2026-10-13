@@ -13,10 +13,11 @@ import com.jamal_aliev.paginator.cursor.extension.updateWhere
 import com.jamal_aliev.paginator.cursor.load.CursorLoadResult
 import java.lang.ref.WeakReference
 import java.util.concurrent.CopyOnWriteArrayList
-import javax.inject.Inject
-import javax.inject.Singleton
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 
-@Singleton
+@SingleIn(AppScope::class)
 class FollowersRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
     private val localDataSource: LocalDataSource,

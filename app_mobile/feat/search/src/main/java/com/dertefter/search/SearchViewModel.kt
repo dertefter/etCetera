@@ -2,12 +2,15 @@ package com.dertefter.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.zacsweers.metro.AppScope
 import com.dertefter.data.repository.SearchRepository
 import com.dertefter.navigation.Navigator
 import com.dertefter.navigation.Routes
 import com.dertefter.search.presentation.Event
 import com.dertefter.search.presentation.UiState
-import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,10 +18,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
 
-@HiltViewModel
+
+@ViewModelKey(SearchViewModel::class)
+@ContributesIntoMap(AppScope::class)
 class SearchViewModel @Inject constructor(
     private val searchRepository: SearchRepository,
     private val navigator: Navigator
@@ -48,9 +52,18 @@ class SearchViewModel @Inject constructor(
                 _uiState.update { it.copy(query = event.q) }
                 getSearchResults(event.q)
             }
-            is Event.OnNavigateBack -> { navigator.navigateUp() }
-            is Event.OnOpenUser -> { navigator.navigate(Routes.User(event.userId)) }
-            is Event.OnOpenHashtag -> { navigator.navigate(Routes.HashtagFeed(event.name)) }
+
+            is Event.OnNavigateBack -> {
+                navigator.navigateUp()
+            }
+
+            is Event.OnOpenUser -> {
+                navigator.navigate(Routes.User(event.userId))
+            }
+
+            is Event.OnOpenHashtag -> {
+                navigator.navigate(Routes.HashtagFeed(event.name))
+            }
         }
     }
 

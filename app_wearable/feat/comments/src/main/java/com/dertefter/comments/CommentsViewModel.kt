@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dertefter.comments.presentation.CommentSort
 import com.dertefter.comments.presentation.Event
+import dev.zacsweers.metro.AppScope
 import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.data.repository.CommentsRepository
 import com.dertefter.data.repository.MeRepository
@@ -17,16 +18,19 @@ import com.jamal_aliev.paginator.cursor.extension.prefetchController
 import com.jamal_aliev.paginator.cursor.extension.refreshAll
 import com.jamal_aliev.paginator.cursor.extension.uiState
 import com.jamal_aliev.paginator.cursor.extension.warmUpFromPersistent
-import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
+
+@ViewModelKey(CommentsViewModel::class)
+@ContributesIntoMap(AppScope::class)
 class CommentsViewModel @Inject constructor(
     private val commentsRepository: CommentsRepository,
     meRepository: MeRepository,
@@ -96,22 +100,26 @@ class CommentsViewModel @Inject constructor(
                     commentsRepository.likeComment(event.commentId)
                 }
             }
+
             is Event.OnUnlike -> {
                 viewModelScope.launch {
                     commentsRepository.unlikeComment(event.commentId)
                 }
             }
+
             Event.OnLoadMore -> {
                 viewModelScope.launch {
                     val postId = currentPostId ?: return@launch
                     paginators[postId]?.goNextPage()
                 }
             }
+
             is Event.OnLoadMoreReplies -> {
                 viewModelScope.launch {
                     commentsRepository.getReplies(event.commentId, null)
                 }
             }
+
             is Event.OnRefresh -> {
                 viewModelScope.launch {
                     paginators[event.postId]?.restart(silentlyLoading = true)

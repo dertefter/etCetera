@@ -3,7 +3,7 @@ package com.dertefter.user.usecase
 import com.dertefter.data.dto.user.UserDto
 import com.dertefter.data.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
+import dev.zacsweers.metro.Inject
 
 class GetUserByIdUseCase @Inject constructor(
     private val userRepository: UserRepository

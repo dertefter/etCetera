@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dertefter.data.datasource.local.TokenManager
+import dev.zacsweers.metro.AppScope
 import com.dertefter.data.repository.AuthRepository
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.DataClient
@@ -12,8 +13,10 @@ import com.google.android.gms.wearable.DataEvent
 import com.google.android.gms.wearable.DataEventBuffer
 import com.google.android.gms.wearable.DataMapItem
 import com.google.android.gms.wearable.Wearable
-import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.binding
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -21,16 +24,17 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
-@HiltViewModel
+@ViewModelKey(MainViewModel::class)
+@ContributesIntoMap(AppScope::class, binding<ViewModel>())
 class MainViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val tokenManager: TokenManager,
-    @param:ApplicationContext private val context: Context
+    context: Context
 ) : ViewModel(), DataClient.OnDataChangedListener {
 
-    private val dataClient by lazy { Wearable.getDataClient(context) }
+    private val appContext = context.applicationContext
+    private val dataClient by lazy { Wearable.getDataClient(appContext) }
 
     val mainScreenState: StateFlow<MainScreenState> = authRepository.isAuthorized
         .map { isAuthorized ->
@@ -51,9 +55,9 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val nodes = withContext(Dispatchers.IO) {
-                    Tasks.await(Wearable.getNodeClient(context).connectedNodes)
+                    Tasks.await(Wearable.getNodeClient(appContext).connectedNodes)
                 }
-                val messageClient = Wearable.getMessageClient(context)
+                val messageClient = Wearable.getMessageClient(appContext)
                 for (node in nodes) {
                     messageClient.sendMessage(node.id, "/request_token_refresh", byteArrayOf())
                 }

@@ -1,8 +1,10 @@
 package com.dertefter.user
 
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dertefter.data.common.AppError
+import dev.zacsweers.metro.AppScope
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.dto.me.UpdateMeRequestDto
 import com.dertefter.data.dto.user.UserDto
@@ -42,7 +44,9 @@ import com.jamal_aliev.paginator.cursor.extension.prefetchController
 import com.jamal_aliev.paginator.cursor.extension.refreshAll
 import com.jamal_aliev.paginator.cursor.extension.uiState
 import com.jamal_aliev.paginator.cursor.extension.warmUpFromPersistent
-import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -57,12 +61,12 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 
 @Suppress("unchecked_cast")
 @OptIn(ExperimentalCoroutinesApi::class)
-@HiltViewModel
+@ViewModelKey(UserViewModel::class)
+@ContributesIntoMap(AppScope::class)
 class UserViewModel @Inject constructor(
     getMeUseCase: GetMeUseCase,
     private val updateMeUseCase: UpdateMeUseCase,
@@ -106,8 +110,10 @@ class UserViewModel @Inject constructor(
 
     val tabs = FeedTab.entries
 
-    private val _paginators = MutableStateFlow<Map<FeedTab, MutableCursorPaginator<String, PostDto>>>(emptyMap())
-    val paginators: StateFlow<Map<FeedTab, MutableCursorPaginator<String, PostDto>>> = _paginators.asStateFlow()
+    private val _paginators =
+        MutableStateFlow<Map<FeedTab, MutableCursorPaginator<String, PostDto>>>(emptyMap())
+    val paginators: StateFlow<Map<FeedTab, MutableCursorPaginator<String, PostDto>>> =
+        _paginators.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val uiStates: Map<FeedTab, StateFlow<PaginatorUiState<PostDto>>> = tabs.associateWith { tab ->
@@ -162,7 +168,7 @@ class UserViewModel @Inject constructor(
             _isLoading.value = true
             val userId: String? = updateUserUseCase(username)
                 .getOrNull()?.id ?: getUserByUsernameUseCase(username).first()?.id
-            if (userId != null){
+            if (userId != null) {
                 initWithUserId(userId)
             } else {
                 _isLoading.value = false
@@ -172,7 +178,7 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    fun updateMe(){
+    fun updateMe() {
         viewModelScope.launch {
             updateMeUseCase()
         }
@@ -218,7 +224,7 @@ class UserViewModel @Inject constructor(
             is Event.OnOpenAttachmentsViewer -> {
                 navigateToScreenUseCase(
                     Routes.AttachmentsViewer(
-                        attachments = event.attachments.map {it.toNavigationModel()},
+                        attachments = event.attachments.map { it.toNavigationModel() },
                         viewPosition = event.position
                     )
                 )
@@ -235,7 +241,7 @@ class UserViewModel @Inject constructor(
                     unpinPostUseCase(event.postId)
                 }
             }
-            
+
             is Event.OnOpenPost -> {
                 navigateToScreenUseCase(Routes.Post(event.postId))
             }
@@ -265,7 +271,7 @@ class UserViewModel @Inject constructor(
             }
 
             is Event.OnTabSelected -> {
-               _selectedTab.value = event.tab
+                _selectedTab.value = event.tab
             }
 
             is Event.OnRefresh -> {
@@ -319,12 +325,12 @@ class UserViewModel @Inject constructor(
             }
 
             is Event.OnOpenNewPost -> {
-                if (userUiState.value.isMe){
+                if (userUiState.value.isMe) {
                     openAsBottomSheetUseCase(
                         Routes.NewPost()
                     )
-                }else{
-                    userUiState.value.userDto?.id.let{ id ->
+                } else {
+                    userUiState.value.userDto?.id.let { id ->
                         openAsBottomSheetUseCase(
                             Routes.NewPost(wallRecipientId = id)
                         )

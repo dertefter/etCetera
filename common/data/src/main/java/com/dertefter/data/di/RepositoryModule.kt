@@ -1,124 +1,52 @@
 package com.dertefter.data.di
 
-import com.dertefter.data.repository.AttachmentsRepository
-import com.dertefter.data.repository.AttachmentsRepositoryImpl
-import com.dertefter.data.repository.AuthRepository
-import com.dertefter.data.repository.AuthRepositoryImpl
-import com.dertefter.data.repository.CommentsRepository
-import com.dertefter.data.repository.CommentsRepositoryImpl
-import com.dertefter.data.repository.CrashlyticsRepository
-import com.dertefter.data.repository.CrashlyticsRepositoryImpl
-import com.dertefter.data.repository.EventsRepository
-import com.dertefter.data.repository.EventsRepositoryImpl
-import com.dertefter.data.repository.FeedRepository
-import com.dertefter.data.repository.FeedRepositoryImpl
-import com.dertefter.data.repository.FollowersRepository
-import com.dertefter.data.repository.FollowersRepositoryImpl
-import com.dertefter.data.repository.MeRepository
-import com.dertefter.data.repository.MeRepositoryImpl
-import com.dertefter.data.repository.NotificationsRepository
-import com.dertefter.data.repository.NotificationsRepositoryImpl
-import com.dertefter.data.repository.PostRepository
-import com.dertefter.data.repository.PostRepositoryImpl
-import com.dertefter.data.repository.ReportsRepository
-import com.dertefter.data.repository.ReportsRepositoryImpl
-import com.dertefter.data.repository.SearchRepository
-import com.dertefter.data.repository.SearchRepositoryImpl
-import com.dertefter.data.repository.SettingsRepository
-import com.dertefter.data.repository.SettingsRepositoryImpl
-import com.dertefter.data.repository.UserRepository
-import com.dertefter.data.repository.UserRepositoryImpl
-import dagger.Binds
-import dagger.Module
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
+import com.dertefter.data.repository.*
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Binds
+import dev.zacsweers.metro.ContributesTo
 
-@Module
-@InstallIn(SingletonComponent::class)
-abstract class RepositoryModule {
+@ContributesTo(AppScope::class)
+interface RepositoryModule {
 
     @Binds
-    @Singleton
-    abstract fun bindAuthRepository(
-        authRepositoryImpl: AuthRepositoryImpl
-    ): AuthRepository
+    fun bindAuthRepository(impl: AuthRepositoryImpl): AuthRepository
 
     @Binds
-    @Singleton
-    abstract fun bindAttachmentsRepository(
-        attachmentsRepositoryImpl: AttachmentsRepositoryImpl
-    ): AttachmentsRepository
+    fun bindAttachmentsRepository(impl: AttachmentsRepositoryImpl): AttachmentsRepository
 
     @Binds
-    @Singleton
-    abstract fun bindMeRepository(
-        meRepositoryImpl: MeRepositoryImpl
-    ): MeRepository
+    fun bindMeRepository(impl: MeRepositoryImpl): MeRepository
 
     @Binds
-    @Singleton
-    abstract fun bindFeedRepository(
-        feedRepositoryImpl: FeedRepositoryImpl
-    ): FeedRepository
+    fun bindFeedRepository(impl: FeedRepositoryImpl): FeedRepository
 
     @Binds
-    @Singleton
-    abstract fun bindPostRepository(
-        postRepositoryImpl: PostRepositoryImpl
-    ): PostRepository
+    fun bindPostRepository(impl: PostRepositoryImpl): PostRepository
 
     @Binds
-    @Singleton
-    abstract fun bindCommentsRepository(
-        commentsRepositoryImpl: CommentsRepositoryImpl
-    ): CommentsRepository
+    fun bindCommentsRepository(impl: CommentsRepositoryImpl): CommentsRepository
 
     @Binds
-    @Singleton
-    abstract fun bindUserRepository(
-        userRepositoryImpl: UserRepositoryImpl
-    ): UserRepository
+    fun bindUserRepository(impl: UserRepositoryImpl): UserRepository
 
     @Binds
-    @Singleton
-    abstract fun bindFollowersRepository(
-        followersRepositoryImpl: FollowersRepositoryImpl
-    ): FollowersRepository
+    fun bindFollowersRepository(impl: FollowersRepositoryImpl): FollowersRepository
 
     @Binds
-    @Singleton
-    abstract fun bindNotificationsRepository(
-        notificationsRepositoryImpl: NotificationsRepositoryImpl
-    ): NotificationsRepository
+    fun bindNotificationsRepository(impl: NotificationsRepositoryImpl): NotificationsRepository
 
     @Binds
-    @Singleton
-    abstract fun bindSearchRepository(
-        searchRepoImpl: SearchRepositoryImpl
-    ): SearchRepository
+    fun bindSearchRepository(impl: SearchRepositoryImpl): SearchRepository
 
     @Binds
-    @Singleton
-    abstract fun bindCrashlyticsRepository(
-        crashlyticsRepositoryImpl: CrashlyticsRepositoryImpl
-    ): CrashlyticsRepository
+    fun bindCrashlyticsRepository(impl: CrashlyticsRepositoryImpl): CrashlyticsRepository
 
     @Binds
-    @Singleton
-    abstract fun bindSettingsRepository(
-        settingsRepositoryImpl: SettingsRepositoryImpl
-    ): SettingsRepository
+    fun bindSettingsRepository(impl: SettingsRepositoryImpl): SettingsRepository
 
     @Binds
-    @Singleton
-    abstract fun bindReportsRepository(
-        reportsRepositoryImpl: ReportsRepositoryImpl
-    ): ReportsRepository
+    fun bindReportsRepository(impl: ReportsRepositoryImpl): ReportsRepository
 
     @Binds
-    @Singleton
-    abstract fun bindEventsRepository(
-        eventsRepositoryImpl: EventsRepositoryImpl
-    ): EventsRepository
+    fun bindEventsRepository(impl: EventsRepositoryImpl): EventsRepository
 }

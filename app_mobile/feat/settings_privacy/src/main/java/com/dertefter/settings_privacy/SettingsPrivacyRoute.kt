@@ -3,12 +3,12 @@ package com.dertefter.settings_privacy
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import com.dertefter.settings_privacy.presentation.SettingsPrivacyScreen
 
 @Composable
 fun SettingsPrivacyRoute(
-    viewModel: SettingsPrivacyViewModel = hiltViewModel(),
+    viewModel: SettingsPrivacyViewModel = metroViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 

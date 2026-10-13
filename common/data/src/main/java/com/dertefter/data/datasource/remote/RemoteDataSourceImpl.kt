@@ -36,12 +36,12 @@ import com.dertefter.data.dto.upload.AttachmentUploadResponseDto
 import com.dertefter.data.dto.user.BlockResponseDto
 import com.dertefter.data.dto.user.FollowResponseDto
 import com.dertefter.data.dto.user.UserDto
+import dev.zacsweers.metro.Inject
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.Response
 import java.io.File
-import javax.inject.Inject
 
 class RemoteDataSourceImpl @Inject constructor(
     private val apiService: ApiService

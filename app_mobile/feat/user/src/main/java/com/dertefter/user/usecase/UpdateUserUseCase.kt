@@ -2,7 +2,7 @@ package com.dertefter.user.usecase
 
 import com.dertefter.data.dto.user.UserDto
 import com.dertefter.data.repository.UserRepository
-import javax.inject.Inject
+import dev.zacsweers.metro.Inject
 
 class UpdateUserUseCase @Inject constructor(
     private val userRepository: UserRepository

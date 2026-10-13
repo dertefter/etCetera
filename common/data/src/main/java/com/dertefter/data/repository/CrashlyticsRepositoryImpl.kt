@@ -5,7 +5,7 @@ import android.util.Log
 import com.dertefter.data.common.AppError
 import com.dertefter.data.common.toAppError
 import com.dertefter.data.dto.app.CrashlyticsItem
-import dagger.hilt.android.qualifiers.ApplicationContext
+import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,10 +13,9 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import javax.inject.Inject
 
 class CrashlyticsRepositoryImpl @Inject constructor(
-    @param:ApplicationContext private val context: Context,
+    private val context: Context,
 ) : CrashlyticsRepository {
 
     private val crashLogsFolder: File by lazy {

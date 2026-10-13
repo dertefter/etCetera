@@ -12,7 +12,10 @@ import com.dertefter.data.repository.NotificationsRepository
 import com.dertefter.data.repository.SettingsRepository
 import com.dertefter.etcetera.presentation.MainUiState
 import com.dertefter.etcetera.presentation.ThemeState
-import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -24,11 +27,11 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
-import javax.inject.Inject
 
 
 @OptIn(ExperimentalCoroutinesApi::class)
-@HiltViewModel
+@ViewModelKey(MainViewModel::class)
+@ContributesIntoMap(AppScope::class)
 class MainViewModel @Inject constructor(
     authRepository: AuthRepository,
     meRepository: MeRepository,

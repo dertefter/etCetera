@@ -2,7 +2,7 @@ package com.dertefter.user.usecase
 
 import com.dertefter.data.dto.feed.PollDto
 import com.dertefter.data.repository.PostRepository
-import javax.inject.Inject
+import dev.zacsweers.metro.Inject
 
 class VotePollUseCase @Inject constructor(
     private val postRepository: PostRepository

@@ -1,12 +1,12 @@
 package com.dertefter.onboarding
 
 import androidx.compose.runtime.Composable
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import com.dertefter.onboarding.presentation.OnBoardingScreen
 
 @Composable
 fun OnBoardingRoute(
-    viewModel: OnBoardingViewModel = hiltViewModel(),
+    viewModel: OnBoardingViewModel = metroViewModel(),
 ) {
 
     OnBoardingScreen(

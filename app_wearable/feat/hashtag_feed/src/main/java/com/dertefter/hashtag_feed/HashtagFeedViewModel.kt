@@ -2,6 +2,7 @@ package com.dertefter.hashtag_feed
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.zacsweers.metro.AppScope
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.repository.FeedRepository
 import com.dertefter.data.repository.PostRepository
@@ -18,7 +19,9 @@ import com.jamal_aliev.paginator.cursor.extension.prefetchController
 import com.jamal_aliev.paginator.cursor.extension.refreshAll
 import com.jamal_aliev.paginator.cursor.extension.uiState
 import com.jamal_aliev.paginator.cursor.extension.warmUpFromPersistent
-import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -28,10 +31,10 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
-@HiltViewModel
+@ViewModelKey(HashtagFeedViewModel::class)
+@ContributesIntoMap(AppScope::class)
 class HashtagFeedViewModel @Inject constructor(
     private val feedRepository: FeedRepository,
     private val postRepository: PostRepository,
@@ -40,7 +43,8 @@ class HashtagFeedViewModel @Inject constructor(
 
     private val _hashtagName = MutableStateFlow<String?>(null)
 
-    private val _paginators = MutableStateFlow<Map<String, MutableCursorPaginator<String, PostDto>>>(emptyMap())
+    private val _paginators =
+        MutableStateFlow<Map<String, MutableCursorPaginator<String, PostDto>>>(emptyMap())
 
     fun getPaginator() = _hashtagName.value?.let { _paginators.value[it] }
 
@@ -94,7 +98,7 @@ class HashtagFeedViewModel @Inject constructor(
             is Event.OnOpenAttachmentsViewer -> {
                 navigator.navigate(
                     Routes.AttachmentsViewer(
-                        attachments = event.attachments.map {it.toNavigationModel()},
+                        attachments = event.attachments.map { it.toNavigationModel() },
                         viewPosition = event.position
                     )
                 )

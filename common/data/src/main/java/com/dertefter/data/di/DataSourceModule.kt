@@ -6,31 +6,25 @@ import com.dertefter.data.datasource.local.TokenManager
 import com.dertefter.data.datasource.local.TokenManagerImpl
 import com.dertefter.data.datasource.remote.RemoteDataSource
 import com.dertefter.data.datasource.remote.RemoteDataSourceImpl
-import dagger.Binds
-import dagger.Module
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Binds
+import dev.zacsweers.metro.ContributesTo
 
-@Module
-@InstallIn(SingletonComponent::class)
-abstract class DataSourceModule {
+@ContributesTo(AppScope::class)
+interface DataSourceModule {
 
     @Binds
-    @Singleton
-    abstract fun bindRemoteDataSource(
+    fun bindRemoteDataSource(
         remoteDataSourceImpl: RemoteDataSourceImpl
     ): RemoteDataSource
 
     @Binds
-    @Singleton
-    abstract fun bindLocalDataSource(
+    fun bindLocalDataSource(
         localDataSourceImpl: LocalDataSourceImpl
     ): LocalDataSource
 
     @Binds
-    @Singleton
-    abstract fun bindTokenManager(
+    fun bindTokenManager(
         tokenManagerImpl: TokenManagerImpl
     ): TokenManager
 }

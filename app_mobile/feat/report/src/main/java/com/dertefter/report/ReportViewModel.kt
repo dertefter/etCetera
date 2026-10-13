@@ -2,18 +2,22 @@ package com.dertefter.report
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.zacsweers.metro.AppScope
 import com.dertefter.data.repository.ReportsRepository
 import com.dertefter.navigation.Navigator
 import com.dertefter.report.presentation.Event
 import com.dertefter.report.presentation.UiState
-import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
+
+@ViewModelKey(ReportViewModel::class)
+@ContributesIntoMap(AppScope::class)
 class ReportViewModel @Inject constructor(
     private val reportsRepository: ReportsRepository,
     private val navigator: Navigator
@@ -31,12 +35,15 @@ class ReportViewModel @Inject constructor(
             is Event.OnNavigateBack -> {
                 navigator.hideBottomSheet()
             }
+
             is Event.OnReasonSelected -> {
                 _uiState.update { it.copy(reason = event.reason) }
             }
+
             is Event.OnDescriptionChanged -> {
                 _uiState.update { it.copy(description = event.description) }
             }
+
             is Event.OnSubmitReport -> {
                 submitReport()
             }

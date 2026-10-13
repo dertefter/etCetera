@@ -6,7 +6,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.FileProvider
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dertefter.crash_reports.presentation.CrashReportsScreen
 import com.dertefter.crash_reports.presentation.Event
@@ -14,7 +14,7 @@ import java.io.File
 
 @Composable
 fun CrashReportsRoute(
-    viewModel: CrashReportsViewModel = hiltViewModel(),
+    viewModel: CrashReportsViewModel = metroViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current

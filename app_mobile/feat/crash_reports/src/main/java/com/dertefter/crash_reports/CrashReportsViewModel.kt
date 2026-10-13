@@ -6,14 +6,17 @@ import com.dertefter.crash_reports.presentation.Event
 import com.dertefter.crash_reports.presentation.UiState
 import com.dertefter.data.repository.CrashlyticsRepository
 import com.dertefter.navigation.Navigator
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 
-@HiltViewModel
+@ViewModelKey(CrashReportsViewModel::class)
+@ContributesIntoMap(AppScope::class)
 class CrashReportsViewModel @Inject constructor(
     private val crashReportsRepository: CrashlyticsRepository,
     private val navigator: Navigator

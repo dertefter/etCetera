@@ -57,9 +57,8 @@ import com.dertefter.data.dto.search.TopClanDto
 import com.dertefter.design.components.avatar.EmojiColorCache
 import com.dertefter.etcetera.MainActivity
 import com.dertefter.etcetera.R
-import com.dertefter.etcetera.di.WidgetEntryPoint
+import com.dertefter.etcetera.EtCetera
 import com.materialkolor.ktx.harmonize
-import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.flow.firstOrNull
 import java.util.Locale
 import kotlin.math.abs
@@ -81,10 +80,7 @@ class TopClansWidget : GlanceAppWidget() {
     }
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        val repository = EntryPointAccessors.fromApplication(
-            context.applicationContext,
-            WidgetEntryPoint::class.java
-        ).searchRepository()
+        val repository = (context.applicationContext as EtCetera).appGraph.searchRepository
 
         val clans = repository.getTopClans().firstOrNull() ?: emptyList()
 

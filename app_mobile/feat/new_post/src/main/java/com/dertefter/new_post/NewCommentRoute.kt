@@ -3,7 +3,7 @@ package com.dertefter.new_post
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dertefter.new_post.presentation.NewPostScreen
 import com.dertefter.new_post.presentation.ScreenMode
@@ -11,7 +11,7 @@ import com.dertefter.new_post.presentation.ScreenMode
 @Composable
 fun NewCommentRoute(
     postId: String,
-    viewModel: NewCommentViewModel = hiltViewModel(),
+    viewModel: NewCommentViewModel = metroViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -33,7 +33,7 @@ fun NewCommentReplyRoute(
     postId: String,
     commentId: String,
     replyToUserId: String,
-    viewModel: NewCommentViewModel = hiltViewModel(),
+    viewModel: NewCommentViewModel = metroViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 

@@ -7,12 +7,12 @@ import com.dertefter.data.datasource.remote.ApiService
 import com.dertefter.data.dto.auth.SignInRequest
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.Wearable
-import dagger.Lazy
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.BindingContainer
+import dev.zacsweers.metro.ContributesTo
+import dev.zacsweers.metro.Provides
+import dev.zacsweers.metro.Qualifier
+import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
@@ -30,8 +30,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import java.util.concurrent.ConcurrentHashMap
-import javax.inject.Qualifier
-import javax.inject.Singleton
 import kotlin.time.Duration.Companion.milliseconds
 
 @Qualifier
@@ -49,12 +47,12 @@ object RequestContext {
     fun clear() = ownerLogin.remove()
 }
 
-@Module
-@InstallIn(SingletonComponent::class)
+@BindingContainer
+@ContributesTo(AppScope::class)
 object NetworkModule {
 
     @Provides
-    @Singleton
+    @SingleIn(AppScope::class)
     fun provideJson(): Json {
         return Json {
             ignoreUnknownKeys = true
@@ -63,7 +61,7 @@ object NetworkModule {
     }
 
     @Provides
-    @Singleton
+    @SingleIn(AppScope::class)
     fun provideCookieJar(
         tokenManager: TokenManager,
         localDataSource: LocalDataSource,
@@ -129,7 +127,7 @@ object NetworkModule {
     }
 
     @Provides
-    @Singleton
+    @SingleIn(AppScope::class)
     @InternalAuthApi
     fun provideInternalAuthApiService(
         cookieJar: CookieJar,
@@ -198,14 +196,14 @@ object NetworkModule {
     }
 
     @Provides
-    @Singleton
+    @SingleIn(AppScope::class)
     fun provideOkHttpClient(
         cookieJar: CookieJar,
         tokenManager: TokenManager,
         localDataSource: LocalDataSource,
         @InternalAuthApi authApiService: Lazy<ApiService>,
         @IsWearDevice isWear: Boolean,
-        @ApplicationContext context: Context,
+        context: Context,
         json: Json
     ): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
@@ -353,7 +351,9 @@ object NetworkModule {
                             .build()
                     }
 
-                    val refreshResponse = runBlocking { authApiService.get().refreshToken(login) }
+                    val refreshResponse = runBlocking {
+                        authApiService.value.refreshToken(login)
+                    }
                     if (refreshResponse.isSuccessful) {
                         val body = refreshResponse.body()
                         val newAccessToken = body?.get("accessToken")
@@ -374,7 +374,7 @@ object NetworkModule {
     }
 
     @Provides
-    @Singleton
+    @SingleIn(AppScope::class)
     fun provideRetrofit(okHttpClient: OkHttpClient, json: Json): Retrofit {
         return Retrofit.Builder()
             .baseUrl("https://xn--d1ah4a.com/")
@@ -384,7 +384,7 @@ object NetworkModule {
     }
 
     @Provides
-    @Singleton
+    @SingleIn(AppScope::class)
     fun provideAuthApi(retrofit: Retrofit): ApiService {
         return retrofit.create(ApiService::class.java)
     }

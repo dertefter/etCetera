@@ -3,7 +3,7 @@ package com.dertefter.followers
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dertefter.followers.presentation.FollowersScreen
 import com.dertefter.followers.presentation.Tab
@@ -12,7 +12,7 @@ import com.dertefter.followers.presentation.Tab
 fun FollowersRoute(
     userId: String,
     startTabIsFollowing: Boolean,
-    viewModel: FollowersViewModel = hiltViewModel(),
+    viewModel: FollowersViewModel = metroViewModel(),
 ) {
     remember(userId, startTabIsFollowing) {
         viewModel.init(userId, startTabIsFollowing)

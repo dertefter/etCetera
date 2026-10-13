@@ -2,13 +2,16 @@ package com.dertefter.post.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.zacsweers.metro.AppScope
 import com.dertefter.data.repository.MeRepository
 import com.dertefter.data.repository.PostRepository
 import com.dertefter.navigation.Navigator
 import com.dertefter.navigation.Routes
 import com.dertefter.post.presentation.mapper.toNavigationModel
 import com.dertefter.post.presentation.mapper.toUiModel
-import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -20,9 +23,10 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
+
+@ViewModelKey(PostViewModel::class)
+@ContributesIntoMap(AppScope::class)
 class PostViewModel @Inject constructor(
     private val postRepository: PostRepository,
     meRepository: MeRepository,
@@ -75,8 +79,9 @@ class PostViewModel @Inject constructor(
             is Event.OnOpenAttachmentsViewer -> {
                 navigator.navigate(
                     Routes.AttachmentsViewer(
-                        attachments = event.attachments.map {it.toNavigationModel()},
-                        viewPosition = event.position)
+                        attachments = event.attachments.map { it.toNavigationModel() },
+                        viewPosition = event.position
+                    )
                 )
             }
 

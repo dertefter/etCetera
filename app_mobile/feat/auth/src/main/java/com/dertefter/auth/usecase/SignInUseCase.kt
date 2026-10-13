@@ -2,7 +2,7 @@ package com.dertefter.auth.usecase
 
 import com.dertefter.data.dto.auth.SignInResponse
 import com.dertefter.data.repository.AuthRepository
-import javax.inject.Inject
+import dev.zacsweers.metro.Inject
 
 class SignInUseCase @Inject constructor(
     private val authRepository: AuthRepository,

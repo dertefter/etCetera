@@ -2,20 +2,24 @@ package com.dertefter.switch_account
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.zacsweers.metro.AppScope
 import com.dertefter.data.repository.AuthRepository
 import com.dertefter.navigation.Navigator
 import com.dertefter.navigation.Routes
 import com.dertefter.switch_account.presentation.Event
 import com.dertefter.switch_account.presentation.UiState
-import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
+
+@ViewModelKey(SwitchAccountViewModel::class)
+@ContributesIntoMap(AppScope::class)
 class SwitchAccountViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val navigator: Navigator

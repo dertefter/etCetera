@@ -69,7 +69,7 @@ fun OnBoardingScreen(onEvent: (Event) -> Unit) {
         ) { page ->
             when (page) {
                 0 -> Page1(onEvent = handleEvent)
-                1 -> Page2(onEvent = handleEvent)
+                1 -> Page2()
                 2 -> Page3()
             }
         }

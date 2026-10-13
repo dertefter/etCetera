@@ -1,7 +1,7 @@
 package com.dertefter.user.usecase
 
 import com.dertefter.data.repository.PostRepository
-import javax.inject.Inject
+import dev.zacsweers.metro.Inject
 
 class PinPostUseCase @Inject constructor(
     private val postRepository: PostRepository

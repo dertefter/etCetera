@@ -8,6 +8,7 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -16,17 +17,15 @@ import com.dertefter.etcetera.navigation.AppNavHost
 import com.dertefter.etcetera.navigation.DeepLinkParser
 import com.dertefter.etcetera.presentation.MainScreen
 import com.dertefter.navigation.Navigator
-import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
+import dev.zacsweers.metrox.viewmodel.LocalMetroViewModelFactory
 import com.dertefter.design.theme.EmojiAvatarHarmonizationColor as DesignColor
 
-@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @Inject
-    lateinit var navigator: Navigator
+    private val navigator by lazy { (applicationContext as EtCetera).appGraph.navigator }
+    private val viewModelFactory by lazy { (applicationContext as EtCetera).appGraph.viewModelFactory }
 
-    private val viewModel: MainViewModel by viewModels()
+    private val viewModel: MainViewModel by viewModels { viewModelFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -48,48 +47,47 @@ class MainActivity : ComponentActivity() {
         )
 
         setContent {
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+            CompositionLocalProvider(LocalMetroViewModelFactory provides viewModelFactory) {
+                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-            val themeState by viewModel.themeState.collectAsStateWithLifecycle()
+                val themeState by viewModel.themeState.collectAsStateWithLifecycle()
 
-            if (uiState.isReady){
-                themeState?.let { themeState ->
-                    val harmonizationColor =
-                        DesignColor.valueOf(themeState.emojiHarmonizationColor.name)
-                    val darkTheme = themeState.darkTheme
+                if (uiState.isReady){
+                    themeState?.let { themeState ->
+                        val harmonizationColor =
+                            DesignColor.valueOf(themeState.emojiHarmonizationColor.name)
+                        val darkTheme = themeState.darkTheme
 
-                    AppTheme(
-                        emojiAvatarHarmonizeColor = harmonizationColor,
-                        darkTheme = darkTheme,
-                        postHorizontalExtraSpace = themeState.postHorizontalExtraSpace,
-                        postContained = themeState.postContained,
-                        postShowUsername = themeState.postShowUsername,
-                        postSwapDateAndUsername = themeState.postSwapDateAndUsername,
-                        navFloating = themeState.navFloating,
-                        navLabeled = themeState.navLabeled,
-                        navBlurred = themeState.navBlurred,
-                        appBarBlurred = themeState.appBarBlurred,
-                        appBarFaded = themeState.appBarFaded
-                    ) {
-                        MainScreen(
-                            navigator,
-                            uiState = uiState,
-                            themeState = themeState,
-                            appNavHost = { entries, onBack, modifier ->
-                                AppNavHost(
-                                    entries = entries,
-                                    onBack = onBack,
-                                    modifier = modifier
-                                )
-                            }
-                        )
+                        AppTheme(
+                            emojiAvatarHarmonizeColor = harmonizationColor,
+                            darkTheme = darkTheme,
+                            postHorizontalExtraSpace = themeState.postHorizontalExtraSpace,
+                            postContained = themeState.postContained,
+                            postShowUsername = themeState.postShowUsername,
+                            postSwapDateAndUsername = themeState.postSwapDateAndUsername,
+                            navFloating = themeState.navFloating,
+                            navLabeled = themeState.navLabeled,
+                            navBlurred = themeState.navBlurred,
+                            appBarBlurred = themeState.appBarBlurred,
+                            appBarFaded = themeState.appBarFaded
+                        ) {
+                            MainScreen(
+                                navigator,
+                                uiState = uiState,
+                                themeState = themeState,
+                                appNavHost = { entries, onBack, modifier ->
+                                    AppNavHost(
+                                        entries = entries,
+                                        onBack = onBack,
+                                        modifier = modifier
+                                    )
+                                }
+                            )
+                        }
+
                     }
-
                 }
             }
-
-
-
         }
     }
 
@@ -104,4 +102,3 @@ class MainActivity : ComponentActivity() {
         route?.let { navigator.navigate(it) }
     }
 }
-

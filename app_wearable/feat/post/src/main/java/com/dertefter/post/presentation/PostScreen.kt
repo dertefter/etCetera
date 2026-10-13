@@ -8,7 +8,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.wear.compose.foundation.lazy.TransformingLazyColumnState
 import androidx.wear.compose.material3.MaterialTheme
@@ -35,7 +35,7 @@ fun PostScreen(
     uiState: UiState,
     meUserId: String?,
     onEvent: (Event) -> Unit,
-    commentsViewModel: CommentsViewModel = hiltViewModel()
+    commentsViewModel: CommentsViewModel = metroViewModel()
 ) {
     val commentsUiState by if (uiState.post != null) {
         commentsViewModel.getUiState(uiState.post.id).collectAsStateWithLifecycle()

@@ -2,13 +2,13 @@ package com.dertefter.auth
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dertefter.auth.presentation.AuthScreen
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 
 @Composable
 fun AuthRoute(
-    viewModel: AuthViewModel = hiltViewModel(),
+    viewModel: AuthViewModel = metroViewModel(),
 ) {
 
     val uiState by viewModel.state.collectAsStateWithLifecycle()

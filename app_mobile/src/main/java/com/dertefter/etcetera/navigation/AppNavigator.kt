@@ -3,13 +3,14 @@ package com.dertefter.etcetera.navigation
 import com.dertefter.navigation.NavigationAction
 import com.dertefter.navigation.Navigator
 import com.dertefter.navigation.Routes
+import dev.zacsweers.metro.AppScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
-import javax.inject.Inject
-import javax.inject.Singleton
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 
-@Singleton
+@SingleIn(AppScope::class)
 class AppNavigator @Inject constructor() : Navigator {
 
     private val _navigationActions = Channel<NavigationAction>(Channel.BUFFERED)

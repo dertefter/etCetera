@@ -9,16 +9,19 @@ import com.dertefter.auth.presentation.UiState
 import com.dertefter.auth.usecase.SignInUseCase
 import com.dertefter.data.common.AppError
 import com.dertefter.data.common.toAppError
-import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
+@ViewModelKey(AuthViewModel::class)
+@ContributesIntoMap(AppScope::class)
 class AuthViewModel @Inject constructor(
     private val signInUseCase: SignInUseCase
 ) : ViewModel() {

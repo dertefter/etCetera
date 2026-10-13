@@ -2,13 +2,13 @@ package com.dertefter.banner_edit
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dertefter.banner_edit.presentation.BannerEditScreen
 
 @Composable
 fun BannerEditRoute(
-    viewModel: BannerEditViewModel = hiltViewModel(),
+    viewModel: BannerEditViewModel = metroViewModel(),
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()

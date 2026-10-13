@@ -2,18 +2,22 @@ package com.dertefter.new_post
 
 import android.app.Application
 import androidx.lifecycle.viewModelScope
+import dev.zacsweers.metro.AppScope
 import com.dertefter.data.dto.feed.SpanDto
 import com.dertefter.data.dto.new_post.EditPostRequestDto
 import com.dertefter.data.repository.AttachmentsRepository
 import com.dertefter.data.repository.PostRepository
 import com.dertefter.design.components.post.SpanUiModel
 import com.dertefter.navigation.Navigator
-import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
+
+@ViewModelKey(EditPostViewModel::class)
+@ContributesIntoMap(AppScope::class)
 class EditPostViewModel @Inject constructor(
     application: Application,
     private val postRepository: PostRepository,
@@ -32,7 +36,16 @@ class EditPostViewModel @Inject constructor(
             postRepository.getPost(postId).collectLatest { post ->
                 if (post != null && !isInitialized) {
                     content.value = post.content
-                    spans.value = post.spans.map { SpanUiModel(it.type, it.length, it.offset, it.username, it.tag, it.url) }
+                    spans.value = post.spans.map {
+                        SpanUiModel(
+                            it.type,
+                            it.length,
+                            it.offset,
+                            it.username,
+                            it.tag,
+                            it.url
+                        )
+                    }
                     isInitialized = true
                 }
             }
@@ -48,7 +61,16 @@ class EditPostViewModel @Inject constructor(
             isUploadingPost.value = true
             val request = EditPostRequestDto(
                 content = content.value,
-                spans = spans.value.map { SpanDto(it.type, it.length, it.offset, it.username, it.tag, it.url) }
+                spans = spans.value.map {
+                    SpanDto(
+                        it.type,
+                        it.length,
+                        it.offset,
+                        it.username,
+                        it.tag,
+                        it.url
+                    )
+                }
             )
 
             val result = postRepository.editPost(postId, request)

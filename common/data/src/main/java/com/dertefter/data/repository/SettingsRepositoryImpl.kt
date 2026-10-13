@@ -4,10 +4,11 @@ import com.dertefter.data.datasource.local.LocalDataSource
 import com.dertefter.data.dto.app.EmojiAvatarHarmonizationColor
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
-import javax.inject.Singleton
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 
-@Singleton
+@SingleIn(AppScope::class)
 class SettingsRepositoryImpl @Inject constructor(
     private val localDataSource: LocalDataSource
 ) : SettingsRepository {

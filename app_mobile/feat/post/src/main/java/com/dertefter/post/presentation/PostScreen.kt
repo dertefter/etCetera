@@ -26,7 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dertefter.comments.CommentsViewModel
 import com.dertefter.comments.presentation.CommentSort
@@ -51,7 +51,7 @@ fun PostScreen(
     uiState: UiState,
     meUserId: String?,
     onEvent: (Event) -> Unit,
-    commentsViewModel: CommentsViewModel = hiltViewModel()
+    commentsViewModel: CommentsViewModel = metroViewModel()
 ) {
     val selectedTab by commentsViewModel.selectedTab.collectAsStateWithLifecycle()
     val commentsUiState by if (uiState.post != null) {

@@ -1,7 +1,7 @@
 package com.dertefter.banner_edit.usecase
 
 import com.dertefter.navigation.Navigator
-import javax.inject.Inject
+import dev.zacsweers.metro.Inject
 
 class NavigateBackUseCase @Inject constructor(
     private val navigator: Navigator

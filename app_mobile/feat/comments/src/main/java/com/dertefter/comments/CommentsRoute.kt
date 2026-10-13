@@ -3,7 +3,7 @@ package com.dertefter.comments
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dertefter.comments.presentation.CommentSort
 import com.dertefter.comments.presentation.Event
@@ -12,7 +12,7 @@ import com.dertefter.comments.presentation.CommentsScreen
 @Composable
 fun CommentsRoute(
     postId: String,
-    viewModel: CommentsViewModel = hiltViewModel(),
+    viewModel: CommentsViewModel = metroViewModel(),
 ) {
 
     val selectedTab by viewModel.selectedTab.collectAsStateWithLifecycle()

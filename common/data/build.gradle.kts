@@ -9,7 +9,7 @@ kotlin {
 
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.hilt)
+    alias(libs.plugins.metro)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
 }
@@ -35,10 +35,10 @@ android {
 
 dependencies {
     implementation(libs.androidx.annotation.experimental)
-    implementation(libs.hilt.android)
+    implementation(libs.metro.runtime)
+    implementation(libs.metrox.viewmodel)
     implementation(libs.datastore.preferences)
     implementation(libs.androidx.datastore.core)
-    ksp(libs.hilt.compiler)
     implementation(libs.room.runtime)
     ksp(libs.room.compiler)
     implementation(libs.retrofit)

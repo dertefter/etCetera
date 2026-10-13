@@ -2,6 +2,7 @@ package com.dertefter.new_post
 
 import android.app.Application
 import androidx.lifecycle.viewModelScope
+import dev.zacsweers.metro.AppScope
 import com.dertefter.data.dto.comments.NewCommentRequestDto
 import com.dertefter.data.dto.feed.SpanDto
 import com.dertefter.data.repository.AttachmentsRepository
@@ -9,11 +10,14 @@ import com.dertefter.data.repository.CommentsRepository
 import com.dertefter.navigation.Navigator
 import com.dertefter.navigation.Routes
 import com.dertefter.new_post.presentation.UploadStatus
-import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
+
+@ViewModelKey(NewCommentViewModel::class)
+@ContributesIntoMap(AppScope::class)
 class NewCommentViewModel @Inject constructor(
     application: Application,
     private val commentsRepository: CommentsRepository,
@@ -62,7 +66,16 @@ class NewCommentViewModel @Inject constructor(
 
             val request = NewCommentRequestDto(
                 content = content.value,
-                spans = spans.value.map { SpanDto(it.type, it.length, it.offset, it.username, it.tag, it.url) },
+                spans = spans.value.map {
+                    SpanDto(
+                        it.type,
+                        it.length,
+                        it.offset,
+                        it.username,
+                        it.tag,
+                        it.url
+                    )
+                },
                 attachmentIds = attachmentIds
             )
 
@@ -84,7 +97,16 @@ class NewCommentViewModel @Inject constructor(
 
             val request = NewCommentRequestDto(
                 content = content.value,
-                spans = spans.value.map { SpanDto(it.type, it.length, it.offset, it.username, it.tag, it.url) },
+                spans = spans.value.map {
+                    SpanDto(
+                        it.type,
+                        it.length,
+                        it.offset,
+                        it.username,
+                        it.tag,
+                        it.url
+                    )
+                },
                 attachmentIds = attachmentIds,
                 replyToUserId = replyToUserId
             )

@@ -7,14 +7,11 @@ import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.glance.appwidget.updateAll
-import com.dertefter.etcetera.di.WidgetEntryPoint
-import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.EntryPointAccessors
+import com.dertefter.etcetera.EtCetera
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@AndroidEntryPoint
 class TrendingHashtagsWidgetReceiver : GlanceAppWidgetReceiver() {
     override val glanceAppWidget: GlanceAppWidget = TrendingHashtagsWidget()
 
@@ -24,10 +21,7 @@ class TrendingHashtagsWidgetReceiver : GlanceAppWidgetReceiver() {
         appWidgetIds: IntArray
     ) {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
-        val repository = EntryPointAccessors.fromApplication(
-            context.applicationContext,
-            WidgetEntryPoint::class.java
-        ).searchRepository()
+        val repository = (context.applicationContext as EtCetera).appGraph.searchRepository
 
         val pendingResult = goAsync()
         CoroutineScope(Dispatchers.IO).launch {

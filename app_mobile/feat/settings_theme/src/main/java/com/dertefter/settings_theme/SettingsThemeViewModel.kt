@@ -2,19 +2,23 @@ package com.dertefter.settings_theme
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.zacsweers.metro.AppScope
 import com.dertefter.data.dto.app.EmojiAvatarHarmonizationColor
 import com.dertefter.data.repository.SettingsRepository
 import com.dertefter.navigation.Navigator
 import com.dertefter.settings_theme.presentation.Event
 import com.dertefter.settings_theme.presentation.UiState
-import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
+
+@ViewModelKey(SettingsThemeViewModel::class)
+@ContributesIntoMap(AppScope::class)
 class SettingsThemeViewModel @Inject constructor(
     private val navigator: Navigator,
     private val settingsRepository: SettingsRepository
@@ -66,7 +70,19 @@ class SettingsThemeViewModel @Inject constructor(
         val navBlurred = params[8] as Boolean
         val appBarBlurred = params[9] as Boolean
         val appBarFaded = params[10] as Boolean?
-        UiState(color, darkTheme, postHorizontalExtraSpace, postContained, postShowUsername, postSwapDateAndUsername, navFloating, navLabeled, navBlurred, appBarBlurred, appBarFaded)
+        UiState(
+            color,
+            darkTheme,
+            postHorizontalExtraSpace,
+            postContained,
+            postShowUsername,
+            postSwapDateAndUsername,
+            navFloating,
+            navLabeled,
+            navBlurred,
+            appBarBlurred,
+            appBarFaded
+        )
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),

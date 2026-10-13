@@ -4,12 +4,12 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import com.dertefter.settings_theme.presentation.SettingsThemeScreen
 
 @Composable
 fun SettingsThemeRoute(
-    viewModel: SettingsThemeViewModel = hiltViewModel(),
+    viewModel: SettingsThemeViewModel = metroViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 

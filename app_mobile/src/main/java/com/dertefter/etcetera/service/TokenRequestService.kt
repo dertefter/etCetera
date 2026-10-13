@@ -2,28 +2,22 @@ package com.dertefter.etcetera.service
 
 import android.content.Intent
 import android.util.Log
-import com.dertefter.data.datasource.local.TokenManager
-import com.dertefter.data.repository.AuthRepository
+import com.dertefter.etcetera.EtCetera
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
 import com.google.android.gms.wearable.WearableListenerService
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@AndroidEntryPoint
 class TokenRequestService : WearableListenerService() {
 
-    @Inject
-    lateinit var authRepository: AuthRepository
-
-    @Inject
-    lateinit var tokenManager: TokenManager
+    private val appGraph get() = (applicationContext as EtCetera).appGraph
+    private val authRepository by lazy { appGraph.authRepository }
+    private val tokenManager by lazy { appGraph.tokenManager }
 
     private val dataClient by lazy { Wearable.getDataClient(this) }
 

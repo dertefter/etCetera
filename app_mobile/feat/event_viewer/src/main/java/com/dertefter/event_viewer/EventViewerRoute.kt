@@ -13,7 +13,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.parkwoocheol.composewebview.ComposeWebView
 import com.parkwoocheol.composewebview.WebView
@@ -21,13 +20,14 @@ import com.parkwoocheol.composewebview.client.onPageStarted
 import com.parkwoocheol.composewebview.client.rememberWebViewClient
 import com.parkwoocheol.composewebview.rememberSaveableWebViewState
 import com.parkwoocheol.composewebview.rememberWebViewController
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import java.io.ByteArrayInputStream
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
 fun EventViewerRoute(
     targetUrl: String,
-    viewModel: WebViewModel = hiltViewModel(),
+    viewModel: WebViewModel = metroViewModel(),
 ) {
     val accessToken by viewModel.accessToken.collectAsStateWithLifecycle()
 

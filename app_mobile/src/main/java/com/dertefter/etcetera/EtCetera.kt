@@ -1,15 +1,14 @@
 package com.dertefter.etcetera
 
 import android.app.Application
-import com.dertefter.data.repository.CrashlyticsRepository
-import dagger.hilt.android.HiltAndroidApp
-import javax.inject.Inject
+import com.dertefter.etcetera.di.AppGraph
+import dev.zacsweers.metro.createGraphFactory
 
-@HiltAndroidApp
 class EtCetera : Application() {
 
-    @Inject
-    lateinit var crashlyticsRepository: CrashlyticsRepository
+    val appGraph: AppGraph by lazy {
+        createGraphFactory<AppGraph.Factory>().create(this)
+    }
 
     override fun onCreate() {
         super.onCreate()
@@ -25,8 +24,8 @@ class EtCetera : Application() {
 
     private fun saveCrashLogToFile(exception: Throwable) {
         try {
-            crashlyticsRepository.saveCrashLog(exception)
-        } catch (e: Exception) {
+            appGraph.crashlyticsRepository.saveCrashLog(exception)
+        } catch (_: Exception) {
         }
     }
 

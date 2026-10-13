@@ -4,10 +4,11 @@ import com.dertefter.data.common.onFailureLog
 import com.dertefter.data.datasource.remote.RemoteDataSource
 import com.dertefter.data.dto.upload.AttachmentUploadResponseDto
 import java.io.File
-import javax.inject.Inject
-import javax.inject.Singleton
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 
-@Singleton
+@SingleIn(AppScope::class)
 class AttachmentsRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
     private val crashlyticsRepository: CrashlyticsRepository,

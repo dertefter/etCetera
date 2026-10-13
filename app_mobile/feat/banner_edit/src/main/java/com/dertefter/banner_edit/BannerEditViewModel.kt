@@ -12,16 +12,20 @@ import com.dertefter.banner_edit.usecase.GetMeUseCase
 import com.dertefter.banner_edit.usecase.NavigateBackUseCase
 import com.dertefter.banner_edit.usecase.SaveBannerUseCase
 import com.dertefter.banner_edit.usecase.UploadBannerDrawingUseCase
-import dagger.hilt.android.lifecycle.HiltViewModel
+
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 
-@HiltViewModel
+@ViewModelKey(BannerEditViewModel::class)
+@ContributesIntoMap(AppScope::class)
 class BannerEditViewModel @Inject constructor(
     private val uploadBannerDrawingUseCase: UploadBannerDrawingUseCase,
     private val saveBannerUseCase: SaveBannerUseCase,

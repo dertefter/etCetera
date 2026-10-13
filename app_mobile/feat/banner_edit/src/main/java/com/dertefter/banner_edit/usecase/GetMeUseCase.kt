@@ -2,7 +2,7 @@ package com.dertefter.banner_edit.usecase
 
 import com.dertefter.data.dto.me.Me
 import com.dertefter.data.repository.MeRepository
-import javax.inject.Inject
+import dev.zacsweers.metro.Inject
 
 class GetMeUseCase @Inject constructor(
     private val meRepository: MeRepository,

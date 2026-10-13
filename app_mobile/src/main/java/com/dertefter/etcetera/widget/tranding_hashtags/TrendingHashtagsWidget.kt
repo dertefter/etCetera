@@ -43,10 +43,9 @@ import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import com.dertefter.data.dto.search.SearchHashtagDto
+import com.dertefter.etcetera.EtCetera
 import com.dertefter.etcetera.MainActivity
 import com.dertefter.etcetera.R
-import com.dertefter.etcetera.di.WidgetEntryPoint
-import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.flow.firstOrNull
 import java.util.Locale
 import kotlin.math.floor
@@ -68,10 +67,7 @@ class TrendingHashtagsWidget : GlanceAppWidget() {
     }
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        val repository = EntryPointAccessors.fromApplication(
-            context.applicationContext,
-            WidgetEntryPoint::class.java
-        ).searchRepository()
+        val repository = (context.applicationContext as EtCetera).appGraph.searchRepository
 
         val hashtags = repository.getTrendingHashtags().firstOrNull() ?: emptyList()
 

@@ -3,7 +3,7 @@ package com.dertefter.user.usecase
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.repository.FeedRepository
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
-import javax.inject.Inject
+import dev.zacsweers.metro.Inject
 
 class GetPostsPaginatorUseCase @Inject constructor(
     private val feedRepository: FeedRepository

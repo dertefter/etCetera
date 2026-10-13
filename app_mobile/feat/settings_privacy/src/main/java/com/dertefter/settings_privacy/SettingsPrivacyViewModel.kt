@@ -2,21 +2,25 @@ package com.dertefter.settings_privacy
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.zacsweers.metro.AppScope
 import com.dertefter.data.dto.me.UpdatePrivacyRequestDto
 import com.dertefter.data.repository.MeRepository
 import com.dertefter.navigation.Navigator
 import com.dertefter.settings_privacy.presentation.Event
 import com.dertefter.settings_privacy.presentation.UiState
-import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
+
+@ViewModelKey(SettingsPrivacyViewModel::class)
+@ContributesIntoMap(AppScope::class)
 class SettingsPrivacyViewModel @Inject constructor(
     private val navigator: Navigator,
     private val meRepository: MeRepository

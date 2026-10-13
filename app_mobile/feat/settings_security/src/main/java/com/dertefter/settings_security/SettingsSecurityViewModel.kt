@@ -2,20 +2,24 @@ package com.dertefter.settings_security
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.zacsweers.metro.AppScope
 import com.dertefter.data.repository.AuthRepository
 import com.dertefter.navigation.Navigator
 import com.dertefter.settings_security.presentation.Event
 import com.dertefter.settings_security.presentation.UiState
-import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
+
+@ViewModelKey(SettingsSecurityViewModel::class)
+@ContributesIntoMap(AppScope::class)
 class SettingsSecurityViewModel @Inject constructor(
     private val navigator: Navigator,
     private val authRepository: AuthRepository

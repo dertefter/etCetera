@@ -5,15 +5,14 @@ import com.dertefter.data.dto.me.UpdateMeRequestDto
 import com.dertefter.data.dto.me.UpdateMeResponse
 import com.dertefter.data.repository.AttachmentsRepository
 import com.dertefter.data.repository.MeRepository
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.net.URL
-import javax.inject.Inject
+import dev.zacsweers.metro.Inject
 
 class StoleBannerUseCase @Inject constructor(
-    @ApplicationContext private val context: Context,
+    private val context: Context,
     private val meRepository: MeRepository,
     private val attachmentsRepository: AttachmentsRepository
 ) {

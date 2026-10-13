@@ -2,23 +2,22 @@ package com.dertefter.data.datasource.local
 
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.core.content.edit
-import dagger.hilt.android.qualifiers.ApplicationContext
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
+@SingleIn(AppScope::class)
 class TokenManagerImpl @Inject constructor(
-    @param:ApplicationContext private val context: Context
+    private val context: Context
 ) : TokenManager {
 
     private val prefs: SharedPreferences = context.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
 
     override fun saveAccessTokenForLogin(login: String, token: String) {
-        prefs.edit { putString("access_token_$login", token) }
+        prefs.edit().putString("access_token_$login", token).apply()
     }
 
     override fun getAccessTokenForLogin(login: String): Flow<String?> = callbackFlow {
@@ -33,7 +32,7 @@ class TokenManagerImpl @Inject constructor(
     }
 
     override fun saveRefreshTokenForLogin(login: String, token: String) {
-        prefs.edit { putString("refresh_token_$login", token) }
+        prefs.edit().putString("refresh_token_$login", token).apply()
     }
 
     override fun getRefreshTokenForLogin(login: String): Flow<String?> = callbackFlow {
@@ -48,10 +47,10 @@ class TokenManagerImpl @Inject constructor(
     }
 
     override fun deleteAccessTokenForLogin(login: String) {
-        prefs.edit { remove("access_token_$login") }
+        prefs.edit().remove("access_token_$login").apply()
     }
 
     override fun deleteRefreshTokenForLogin(login: String) {
-        prefs.edit { remove("refresh_token_$login") }
+        prefs.edit().remove("refresh_token_$login").apply()
     }
 }

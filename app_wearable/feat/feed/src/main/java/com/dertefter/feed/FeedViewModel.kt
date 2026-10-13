@@ -2,6 +2,7 @@ package com.dertefter.feed
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.zacsweers.metro.AppScope
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.repository.FeedRepository
 import com.dertefter.data.repository.MeRepository
@@ -21,7 +22,9 @@ import com.jamal_aliev.paginator.cursor.extension.prefetchController
 import com.jamal_aliev.paginator.cursor.extension.refreshAll
 import com.jamal_aliev.paginator.cursor.extension.uiState
 import com.jamal_aliev.paginator.cursor.extension.warmUpFromPersistent
-import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -30,9 +33,10 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
+
+@ViewModelKey(FeedViewModel::class)
+@ContributesIntoMap(AppScope::class)
 class FeedViewModel @Inject constructor(
     private val feedRepository: FeedRepository,
     private val searchRepository: SearchRepository,
@@ -193,7 +197,7 @@ class FeedViewModel @Inject constructor(
                 updateTrendingHashtags()
                 updateMe()
                 viewModelScope.launch {
-                  val paginator = getPaginator(event.tab)
+                    val paginator = getPaginator(event.tab)
                     paginator.restart()
                 }
             }
