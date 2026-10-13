@@ -113,4 +113,4 @@ You will need:
 - [Cola Bochkari](https://bochkari.ru/brand-portfolio/beverages/cola_bochkari/) (for being so delicious!)
 
 ## Support me
-[https://www.donationalerts.com/r/dertefter](https://www.donationalerts.com/r/dertefter)
+[https://dalink.to/dertefter](https://www.donationalerts.com/r/dertefter)

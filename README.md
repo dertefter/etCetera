@@ -114,4 +114,4 @@
 - [Cola Bochkari](https://bochkari.ru/brand-portfolio/beverages/cola_bochkari/) (за то, что она очень вкусная!)
 
 ## Поддержать меня
-[https://www.donationalerts.com/r/dertefter](https://www.donationalerts.com/r/dertefter)
+[https://dalink.to/dertefter](https://www.donationalerts.com/r/dertefter)
