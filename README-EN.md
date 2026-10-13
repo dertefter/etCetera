@@ -3,7 +3,7 @@
 [![Google Play](art/badges/badge_gp.svg)](https://play.google.com/store/apps/details?id=com.dertefter.etcetera)
 [![Telegram](art/badges/badge_tg.svg)](https://t.me/etcetera_app)
 [![Читать на русском](art/badges/badge_ru.svg)](README.md)
-[![Dontate](art/badges/badge_dontate_en.svg)](https://www.donationalerts.com/r/dertefter)
+[![Dontate](art/badges/badge_dontate_en.svg)](https://dalink.to/dertefter)
 
 <img src="art/app_icon.svg" alt="App Icon" width="180" />  
 
@@ -113,4 +113,4 @@ You will need:
 - [Cola Bochkari](https://bochkari.ru/brand-portfolio/beverages/cola_bochkari/) (for being so delicious!)
 
 ## Support me
-[https://dalink.to/dertefter](https://www.donationalerts.com/r/dertefter)
+[https://dalink.to/dertefter](https://dalink.to/dertefter)
