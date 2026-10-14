@@ -34,29 +34,19 @@ android {
 
 dependencies {
 
-    implementation(project(":common:data"))
-    implementation(project(":common:navigation"))
+    api(project(":common:navigation"))
+    api(project(":app_wearable:design"))
 
-    implementation(project(":app_wearable:design"))
-
-    implementation(libs.core.ktx)
     implementation(platform(libs.compose.bom.alpha))
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.graphics)
-    implementation(libs.compose.ui.tooling.preview)
-    implementation(libs.androidx.wear.tooling.preview)
     implementation(libs.compose.wear.material3)
     implementation(libs.compose.wear.foundation)
-    implementation(libs.androidx.lifecycle.runtime.compose)
-    implementation(libs.metro.runtime)
-    implementation(libs.metrox.viewmodel)
-    implementation(libs.metrox.viewmodel.compose)
     debugImplementation(libs.compose.ui.tooling)
-    debugImplementation(libs.compose.ui.test.manifest)
-    implementation(libs.coil.compose)
-    implementation(libs.material.kolor)
-    implementation(libs.lightspark.compose.qr.code)
-    implementation(libs.zoomable)
-    implementation(libs.haze)
-    implementation(libs.haze.blur)
+    debugRuntimeOnly(libs.compose.ui.test.manifest)
+    implementation(libs.androidx.foundation.layout)
+    implementation(libs.androidx.foundation)
+    api(libs.androidx.runtime)
+    implementation(libs.androidx.ui.text)
+    implementation(libs.androidx.ui.unit)
 }

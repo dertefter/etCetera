@@ -1,12 +1,24 @@
 [versions]
 # Build and Plugins
 agp = "9.4.1"
+animation = "1.13.0-beta01"
+annotation = "1.11.0"
 annotationExperimental = "1.6.0"
+annotations = "26.1.0"
 coilGif = "3.6.3"
 composeWebview = "1.9.1"
+core = "1.7.0"
+foundation = "1.13.0-beta01"
+glanceVersion = "1.2.0"
+graphicsShapes = "1.1.0"
 kotlin = "2.4.21"
+kotlinxCoroutinesCore = "1.11.0"
+kotlinxSerializationCore = "1.11.0"
 ksp = "2.3.12"
+materialColorUtilities = "5.0.1"
+media3Common = "1.11.1"
 navigationCommon = "2.10.2"
+okio = "3.18.2"
 ossLicensesPlugin = "0.13.0"
 
 # AndroidX Core
@@ -16,29 +28,36 @@ coreSplashscreen = "1.2.0"
 datastoreCore = "1.2.1"
 datastorePreferences = "1.2.1"
 lifecycleRuntimeKtx = "2.11.0"
+paginatorComposeCursorAndroidDebug = "10.2.5"
+paginatorCore = "10.2.5"
+paginatorCoreAndroidDebug = "10.2.5"
+paginatorCursorAndroidDebug = "10.2.5"
 palette = "1.0.0"
 
 # Jetpack Compose
 activityCompose = "1.13.0"
 composeBomAlpha = "2026.10.00"
-navigationCompose = "2.10.2"
 navigation3 = "1.2.0"
 
 # UI Libraries
 coilCompose = "3.6.3"
 composemediaplayer = "0.11.4"
-composeQrCode = "1.0.1"
 drawboxEnhanced = "2.1.2"
 haze = "2.0.1"
-material = "1.14.0"
 materialKolor = "5.0.1"
+roomCommon = "2.8.5"
+runtime = "1.13.0-beta01"
+runtimeAnnotation = "1.13.0-beta01"
+sqlite = "2.7.1"
+transition = "1.7.2"
+uiUnit = "1.13.0-beta01"
+uiUtil = "1.13.0-beta01"
 zoomable = "2.16.0"
 animationGraphics = "1.12.1"
 
 # Wear OS
 composeWear = "1.7.1"
 playServicesWearable = "20.0.1"
-wearToolingPreview = "1.0.0"
 
 # Dependency Injection
 metro = "1.4.5"
@@ -61,9 +80,6 @@ paginatorBom = "10.2.5"
 glance = "1.2.0"
 
 # Testing
-espressoCore = "3.7.0"
-junit = "4.13.2"
-junitVersion = "1.3.0"
 kotlinxCoroutines = "1.11.0"
 mockk = "1.14.11"
 
@@ -72,16 +88,46 @@ droibitOssLicenses = "0.10.0"
 
 [libraries]
 # AndroidX Core
+androidx-activity = { module = "androidx.activity:activity", version.ref = "activityCompose" }
+androidx-animation = { module = "androidx.compose.animation:animation", version.ref = "animation" }
+androidx-animation-core = { module = "androidx.compose.animation:animation-core", version.ref = "animation" }
+androidx-annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
 androidx-annotation-experimental = { module = "androidx.annotation:annotation-experimental", version.ref = "annotationExperimental" }
+androidx-core = { module = "androidx.core:core", version.ref = "coreKtx" }
 androidx-datastore-core = { group = "androidx.datastore", name = "datastore-core", version.ref = "datastoreCore" }
+androidx-datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastoreCore" }
+androidx-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "foundation" }
+androidx-foundation-layout = { module = "androidx.compose.foundation:foundation-layout", version.ref = "foundation" }
+androidx-glance = { module = "androidx.glance:glance", version.ref = "glanceVersion" }
+androidx-graphics-shapes = { module = "androidx.graphics:graphics-shapes", version.ref = "graphicsShapes" }
+androidx-lifecycle-common = { module = "androidx.lifecycle:lifecycle-common", version.ref = "lifecycleRuntimeKtx" }
 androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleRuntimeKtx" }
-androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "lifecycleRuntimeKtx" }
+androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
+androidx-media3-common = { module = "androidx.media3:media3-common", version.ref = "media3Common" }
+androidx-media3-database = { module = "androidx.media3:media3-database", version.ref = "media3Common" }
+androidx-media3-datasource = { module = "androidx.media3:media3-datasource", version.ref = "media3Common" }
 androidx-navigation-common = { module = "androidx.navigation:navigation-common", version.ref = "navigationCommon" }
 androidx-palette = { module = "androidx.palette:palette", version.ref = "palette" }
+androidx-room-common = { module = "androidx.room:room-common", version.ref = "roomCommon" }
+androidx-runner = { module = "androidx.test:runner", version.ref = "core" }
+androidx-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "runtime" }
+androidx-runtime-annotation = { module = "androidx.compose.runtime:runtime-annotation", version.ref = "runtimeAnnotation" }
+androidx-runtime-saveable = { module = "androidx.compose.runtime:runtime-saveable", version.ref = "runtime" }
+androidx-sqlite = { module = "androidx.sqlite:sqlite", version.ref = "sqlite" }
+androidx-transition = { module = "androidx.transition:transition", version.ref = "transition" }
+androidx-ui-geometry = { module = "androidx.compose.ui:ui-geometry", version.ref = "uiUnit" }
+androidx-ui-text = { module = "androidx.compose.ui:ui-text", version.ref = "uiUnit" }
+androidx-ui-unit = { module = "androidx.compose.ui:ui-unit", version.ref = "uiUnit" }
+androidx-ui-util = { module = "androidx.compose.ui:ui-util", version.ref = "uiUtil" }
+annotations = { module = "org.jetbrains:annotations", version.ref = "annotations" }
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
+coil-compose-core = { module = "io.coil-kt.coil3:coil-compose-core", version.ref = "coilGif" }
+coil-core = { module = "io.coil-kt.coil3:coil-core", version.ref = "coilGif" }
 coil-gif = { module = "io.coil-kt.coil3:coil-gif", version.ref = "coilGif" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilGif" }
 compose-webview = { module = "io.github.parkwoocheol:compose-webview", version.ref = "composeWebview" }
+core = { module = "androidx.test:core", version.ref = "core" }
 core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
 core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
@@ -94,8 +140,10 @@ compose-ui = { group = "androidx.compose.ui", name = "ui" }
 compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
+kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerializationCore" }
 lifecycle-viewmodel-navigation3 = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "lifecycleRuntimeKtx" }
-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+material-color-utilities = { module = "com.materialkolor:material-color-utilities", version.ref = "materialColorUtilities" }
 navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "navigation3" }
 navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "navigation3" }
 
@@ -106,17 +154,18 @@ haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
 haze-blur = { module = "dev.chrisbanes.haze:haze-blur", version.ref = "haze" }
 haze-blur-materials = { module = "dev.chrisbanes.haze:haze-blur-materials", version.ref = "haze" }
 kdroidfilter-composemediaplayer = { module = "io.github.kdroidfilter:composemediaplayer", version.ref = "composemediaplayer" }
-lightspark-compose-qr-code = { module = "com.lightspark:compose-qr-code", version.ref = "composeQrCode" }
-material = { module = "com.google.android.material:material", version.ref = "material" }
 material-kolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor" }
+okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
+paginator-compose-cursor-android-debug = { module = "io.github.jamal-wia:paginator-compose-cursor-android-debug", version.ref = "paginatorComposeCursorAndroidDebug" }
+paginator-core = { module = "io.github.jamal-wia:paginator-core", version.ref = "paginatorCore" }
+paginator-core-android-debug = { module = "io.github.jamal-wia:paginator-core-android-debug", version.ref = "paginatorCoreAndroidDebug" }
+paginator-cursor-android-debug = { module = "io.github.jamal-wia:paginator-cursor-android-debug", version.ref = "paginatorCursorAndroidDebug" }
 zoomable = { module = "net.engawapg.lib:zoomable", version.ref = "zoomable" }
 
 # Wear OS
-androidx-wear-tooling-preview = { group = "androidx.wear", name = "wear-tooling-preview", version.ref = "wearToolingPreview" }
 compose-wear-foundation = { group = "androidx.wear.compose", name = "compose-foundation", version.ref = "composeWear" }
 compose-wear-material3 = { group = "androidx.wear.compose", name = "compose-material3", version.ref = "composeWear" }
 compose-wear-navigation3 = { module = "androidx.wear.compose:compose-navigation3", version.ref = "composeWear" }
-compose-wear-ui-tooling = { group = "androidx.wear.compose", name = "compose-ui-tooling", version.ref = "composeWear" }
 play-services-wearable = { group = "com.google.android.gms", name = "play-services-wearable", version.ref = "playServicesWearable" }
 
 # Dependency Injection
@@ -137,8 +186,6 @@ retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit
 
 # Media
 androidx-media3-exoplayer = { group = "androidx.media3", name = "media3-exoplayer", version.ref = "media3" }
-androidx-media3-ui = { group = "androidx.media3", name = "media3-ui", version.ref = "media3" }
-androidx-media3-ui-compose = { group = "androidx.media3", name = "media3-ui-compose", version.ref = "media3" }
 
 # Paging
 jamal-wia-paginator-bom = { module = "io.github.jamal-wia:paginator-bom", version.ref = "paginatorBom" }
@@ -147,16 +194,10 @@ paginator-cursor = { module = "io.github.jamal-wia:paginator-cursor" }
 
 # Widgets
 androidx-glance-appwidget = { group = "androidx.glance", name = "glance-appwidget", version.ref = "glance" }
-androidx-glance-appwidget-preview = { group = "androidx.glance", name = "glance-appwidget-preview", version.ref = "glance" }
-androidx-glance-material3 = { group = "androidx.glance", name = "glance-material3", version.ref = "glance" }
 androidx-glance-preview = { group = "androidx.glance", name = "glance-preview", version.ref = "glance" }
 
 # Testing
-androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4", version = "1.12.1" }
 compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version = "1.12.1" }
-junit = { group = "junit", name = "junit", version.ref = "junit" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 

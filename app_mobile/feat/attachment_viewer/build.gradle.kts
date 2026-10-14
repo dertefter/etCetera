@@ -34,10 +34,22 @@ android {
 
 dependencies {
 
-    implementation(project(":common:navigation"))
-    implementation(project(":app_mobile:design"))
+    api(project(":common:navigation"))
+    api(project(":app_mobile:design"))
 
-    implementation(libs.metro.runtime)
-    implementation(libs.metrox.viewmodel)
+    api(libs.metro.runtime)
+    api(libs.metrox.viewmodel)
     implementation(libs.metrox.viewmodel.compose)
+    implementation(libs.androidx.foundation.layout)
+    implementation(libs.androidx.foundation)
+    implementation(libs.compose.material3)
+    api(libs.androidx.runtime)
+    implementation(libs.compose.ui.graphics)
+    implementation(libs.androidx.ui.text)
+    implementation(libs.androidx.ui.unit)
+    implementation(libs.compose.ui)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    api(libs.androidx.lifecycle.viewmodel)
+    implementation(libs.haze)
+    implementation(libs.androidx.core)
 }

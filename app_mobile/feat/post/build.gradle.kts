@@ -21,7 +21,7 @@ android {
         minSdk = 29
     }
 
-    
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
@@ -34,13 +34,31 @@ android {
 
 dependencies {
 
-    implementation(project(":common:data"))
-    implementation(project(":common:navigation"))
-    implementation(project(":app_mobile:design"))
-    implementation(project(":app_mobile:feat:comments"))
+    api(project(":common:data"))
+    api(project(":common:navigation"))
+    api(project(":app_mobile:design"))
+    api(project(":app_mobile:feat:comments"))
 
-    implementation(libs.metro.runtime)
-    implementation(libs.metrox.viewmodel)
+    api(libs.metro.runtime)
+    api(libs.metrox.viewmodel)
     implementation(libs.metrox.viewmodel.compose)
 
+    implementation(libs.androidx.animation.core)
+    implementation(libs.androidx.foundation.layout)
+    implementation(libs.androidx.foundation)
+    implementation(libs.compose.material3)
+    api(libs.androidx.runtime)
+    implementation(libs.compose.ui.graphics)
+    implementation(libs.androidx.ui.text)
+    implementation(libs.compose.ui)
+    implementation(libs.androidx.lifecycle.common)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    api(libs.androidx.lifecycle.viewmodel)
+    implementation(libs.haze)
+    debugApi(libs.paginator.core.android.debug)
+    releaseApi(libs.paginator.core)
+    debugApi(libs.paginator.cursor.android.debug)
+    releaseApi(libs.paginator.cursor)
+    api(libs.kotlinx.coroutines.core)
 }

@@ -75,10 +75,6 @@ android {
     }
 }
 
-metro {
-    reportsDestination = layout.buildDirectory.dir("metro")
-}
-
 dependencies {
 
     implementation(project(":common:data"))
@@ -121,11 +117,39 @@ dependencies {
     implementation(libs.navigation3.ui)
     implementation(libs.lifecycle.viewmodel.navigation3)
     implementation(libs.androidx.glance.appwidget)
-    implementation(libs.androidx.glance.material3)
     implementation(libs.androidx.glance.preview)
-    debugImplementation(libs.androidx.glance.appwidget.preview)
     implementation(libs.kotlinx.serialization.json)
-    testImplementation(libs.junit)
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.annotation)
+    implementation(libs.androidx.animation.core)
+    implementation(libs.androidx.animation)
+    implementation(libs.androidx.foundation.layout)
+    implementation(libs.androidx.foundation)
+    implementation(libs.compose.material3)
+    implementation(libs.androidx.runtime.saveable)
+    implementation(libs.androidx.runtime)
+    implementation(libs.androidx.ui.geometry)
+    implementation(libs.compose.ui.graphics)
+    implementation(libs.androidx.ui.text)
+    implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.androidx.ui.unit)
+    implementation(libs.compose.ui)
+    implementation(libs.androidx.core)
+    implementation(libs.androidx.datastore.preferences.core)
+    implementation(libs.androidx.glance)
+    implementation(libs.androidx.lifecycle.common)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.navigation3.runtime)
+    implementation(libs.androidx.palette)
+    implementation(libs.material.kolor)
+    implementation(libs.okhttp)
+    implementation(libs.haze.blur.materials)
+    implementation(libs.haze.blur)
+    implementation(libs.haze)
+    implementation(libs.coil.compose)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.serialization.core)
+    implementation(libs.retrofit)
 }
