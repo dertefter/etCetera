@@ -5,7 +5,8 @@ import com.dertefter.data.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
 import dev.zacsweers.metro.Inject
 
-class GetUserUseCase @Inject constructor(
+@Inject
+class GetUserUseCase(
     private val userRepository: UserRepository
 ) {
     operator fun invoke(userId: String): Flow<UserDto?> {

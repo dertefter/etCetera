@@ -5,7 +5,8 @@ import com.dertefter.data.repository.CommentsRepository
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
 import dev.zacsweers.metro.Inject
 
-class GetCommentsPaginatorUseCase @Inject constructor(
+@Inject
+class GetCommentsPaginatorUseCase(
     private val commentsRepository: CommentsRepository
 ) {
     operator fun invoke(postId: String, sort: String): MutableCursorPaginator<String, CommentDto> {

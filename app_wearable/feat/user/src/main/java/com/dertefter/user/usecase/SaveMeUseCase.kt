@@ -5,7 +5,8 @@ import com.dertefter.data.dto.me.UpdateMeResponse
 import com.dertefter.data.repository.MeRepository
 import dev.zacsweers.metro.Inject
 
-class SaveMeUseCase @Inject constructor(
+@Inject
+class SaveMeUseCase(
     private val meRepository: MeRepository
 ) {
     suspend operator fun invoke(updateMeRequestDto: UpdateMeRequestDto): Result<UpdateMeResponse> {

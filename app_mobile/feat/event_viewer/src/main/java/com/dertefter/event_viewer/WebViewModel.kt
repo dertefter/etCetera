@@ -16,9 +16,10 @@ import dev.zacsweers.metro.Inject
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
 
 @OptIn(ExperimentalCoroutinesApi::class)
-@ViewModelKey(WebViewModel::class)
+@ViewModelKey
 @ContributesIntoMap(AppScope::class)
-class WebViewModel @Inject constructor(
+@Inject
+class WebViewModel(
     authRepository: AuthRepository,
     private val tokenManager: TokenManager,
 ) : ViewModel() {

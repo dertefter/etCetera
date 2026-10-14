@@ -4,7 +4,8 @@ import com.dertefter.data.dto.feed.stats.PostStatsDto
 import com.dertefter.data.repository.PostRepository
 import dev.zacsweers.metro.Inject
 
-class UpdatePostStatsUseCase @Inject constructor(
+@Inject
+class UpdatePostStatsUseCase(
     private val postRepository: PostRepository
 ) {
     suspend operator fun invoke(ids: List<String>): Result<List<PostStatsDto>> {

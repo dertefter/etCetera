@@ -22,9 +22,10 @@ import dev.zacsweers.metro.Inject
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
 
 
-@ViewModelKey(SettingsAccountViewModel::class)
+@ViewModelKey
 @ContributesIntoMap(AppScope::class)
-class SettingsAccountViewModel @Inject constructor(
+@Inject
+class SettingsAccountViewModel(
     private val navigator: Navigator,
     private val meRepository: MeRepository,
     private val authRepository: AuthRepository

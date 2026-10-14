@@ -10,7 +10,8 @@ import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 
 @SingleIn(AppScope::class)
-class EventsRepositoryImpl @Inject constructor(
+@Inject
+class EventsRepositoryImpl(
     private val remoteDataSource: RemoteDataSource,
     private val localDataSource: LocalDataSource,
     private val crashlyticsRepository: CrashlyticsRepository,

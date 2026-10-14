@@ -32,9 +32,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
-@ViewModelKey(HashtagFeedViewModel::class)
+@ViewModelKey
 @ContributesIntoMap(AppScope::class)
-class HashtagFeedViewModel @Inject constructor(
+@Inject
+class HashtagFeedViewModel(
     private val feedRepository: FeedRepository,
     private val postRepository: PostRepository,
     private val navigator: Navigator

@@ -57,9 +57,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
-@ViewModelKey(UserViewModel::class)
+@ViewModelKey
 @ContributesIntoMap(AppScope::class)
-class UserViewModel @Inject constructor(
+@Inject
+class UserViewModel(
     getMeUseCase: GetMeUseCase,
     private val updateMeUseCase: UpdateMeUseCase,
     private val saveMeUseCase: SaveMeUseCase,

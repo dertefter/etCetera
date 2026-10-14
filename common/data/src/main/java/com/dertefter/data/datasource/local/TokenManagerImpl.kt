@@ -10,7 +10,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
 @SingleIn(AppScope::class)
-class TokenManagerImpl @Inject constructor(
+@Inject
+class TokenManagerImpl(
     private val context: Context
 ) : TokenManager {
 

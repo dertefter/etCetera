@@ -8,9 +8,10 @@ import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
 
-@ViewModelKey(AttachmentViewerViewModel::class)
+@ViewModelKey
 @ContributesIntoMap(AppScope::class)
-class AttachmentViewerViewModel @Inject constructor(
+@Inject
+class AttachmentViewerViewModel(
     private val navigateBackUseCase: NavigateBackUseCase
 ) : ViewModel() {
 

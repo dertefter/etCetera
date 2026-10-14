@@ -13,7 +13,8 @@ import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 
 @SingleIn(AppScope::class)
-class UserRepositoryImpl @Inject constructor(
+@Inject
+class UserRepositoryImpl(
     private val remoteDataSource: RemoteDataSource,
     private val localDataSource: LocalDataSource,
     private val followersRepository: FollowersRepository,

@@ -3,7 +3,8 @@ package com.dertefter.attachment_viewer.usecase
 import com.dertefter.navigation.Navigator
 import dev.zacsweers.metro.Inject
 
-class NavigateBackUseCase @Inject constructor(
+@Inject
+class NavigateBackUseCase(
     private val navigator: Navigator
 ) {
     operator fun invoke() {

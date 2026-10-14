@@ -10,8 +10,9 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 
+@Inject
 @SingleIn(AppScope::class)
-class AppNavigator @Inject constructor() : Navigator {
+class AppNavigator : Navigator {
 
     private val _navigationActions = Channel<NavigationAction>(Channel.BUFFERED)
     override val navigationActions: Flow<NavigationAction> = _navigationActions.receiveAsFlow()

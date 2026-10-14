@@ -30,9 +30,10 @@ import kotlinx.coroutines.flow.stateIn
 
 
 @OptIn(ExperimentalCoroutinesApi::class)
-@ViewModelKey(MainViewModel::class)
+@ViewModelKey
 @ContributesIntoMap(AppScope::class)
-class MainViewModel @Inject constructor(
+@Inject
+class MainViewModel(
     authRepository: AuthRepository,
     meRepository: MeRepository,
     notificationsRepository: NotificationsRepository,

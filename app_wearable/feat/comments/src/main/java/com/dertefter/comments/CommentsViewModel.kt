@@ -29,9 +29,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 
-@ViewModelKey(CommentsViewModel::class)
+@ViewModelKey
 @ContributesIntoMap(AppScope::class)
-class CommentsViewModel @Inject constructor(
+@Inject
+class CommentsViewModel(
     private val commentsRepository: CommentsRepository,
     meRepository: MeRepository,
     private val navigator: Navigator

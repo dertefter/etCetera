@@ -4,7 +4,8 @@ import com.dertefter.navigation.Navigator
 import com.dertefter.navigation.Routes
 import dev.zacsweers.metro.Inject
 
-class NavigateToScreenUseCase @Inject constructor(
+@Inject
+class NavigateToScreenUseCase(
     private val navigator: Navigator
 ) {
     operator fun invoke(route: Routes) {

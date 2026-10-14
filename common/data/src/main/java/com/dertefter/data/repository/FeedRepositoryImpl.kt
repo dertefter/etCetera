@@ -19,7 +19,8 @@ import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 
 @SingleIn(AppScope::class)
-class FeedRepositoryImpl @Inject constructor(
+@Inject
+class FeedRepositoryImpl(
     private val remoteDataSource: RemoteDataSource,
     private val localDataSource: LocalDataSource,
     private val postRepository: PostRepository,

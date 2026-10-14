@@ -24,9 +24,10 @@ import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
 
-@ViewModelKey(BannerEditViewModel::class)
+@ViewModelKey
 @ContributesIntoMap(AppScope::class)
-class BannerEditViewModel @Inject constructor(
+@Inject
+class BannerEditViewModel(
     private val uploadBannerDrawingUseCase: UploadBannerDrawingUseCase,
     private val saveBannerUseCase: SaveBannerUseCase,
     private val navigateBackUseCase: NavigateBackUseCase,

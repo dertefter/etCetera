@@ -4,7 +4,8 @@ import com.dertefter.data.dto.auth.SignInResponse
 import com.dertefter.data.repository.AuthRepository
 import dev.zacsweers.metro.Inject
 
-class SignInUseCase @Inject constructor(
+@Inject
+class SignInUseCase(
     private val authRepository: AuthRepository,
 ) {
     suspend operator fun invoke(

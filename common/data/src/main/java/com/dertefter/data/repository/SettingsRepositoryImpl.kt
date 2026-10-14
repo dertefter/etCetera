@@ -9,7 +9,8 @@ import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 
 @SingleIn(AppScope::class)
-class SettingsRepositoryImpl @Inject constructor(
+@Inject
+class SettingsRepositoryImpl(
     private val localDataSource: LocalDataSource
 ) : SettingsRepository {
 

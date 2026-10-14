@@ -9,7 +9,8 @@ import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 
 @SingleIn(AppScope::class)
-class AttachmentsRepositoryImpl @Inject constructor(
+@Inject
+class AttachmentsRepositoryImpl(
     private val remoteDataSource: RemoteDataSource,
     private val crashlyticsRepository: CrashlyticsRepository,
 ) : AttachmentsRepository {

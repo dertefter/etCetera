@@ -5,7 +5,8 @@ import com.dertefter.data.repository.MeRepository
 import kotlinx.coroutines.flow.Flow
 import dev.zacsweers.metro.Inject
 
-class GetMeUseCase @Inject constructor(
+@Inject
+class GetMeUseCase(
     private val meRepository: MeRepository
 ) {
     operator fun invoke(): Flow<Me?> = meRepository.me

@@ -75,6 +75,10 @@ android {
     }
 }
 
+metro {
+    reportsDestination = layout.buildDirectory.dir("metro")
+}
+
 dependencies {
 
     implementation(project(":common:data"))

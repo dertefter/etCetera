@@ -20,9 +20,10 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-@ViewModelKey(AuthViewModel::class)
+@ViewModelKey
 @ContributesIntoMap(AppScope::class)
-class AuthViewModel @Inject constructor(
+@Inject
+class AuthViewModel(
     private val signInUseCase: SignInUseCase
 ) : ViewModel() {
 

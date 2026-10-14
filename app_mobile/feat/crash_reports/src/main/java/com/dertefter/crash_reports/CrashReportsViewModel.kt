@@ -15,9 +15,10 @@ import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
 
-@ViewModelKey(CrashReportsViewModel::class)
+@ViewModelKey
 @ContributesIntoMap(AppScope::class)
-class CrashReportsViewModel @Inject constructor(
+@Inject
+class CrashReportsViewModel(
     private val crashReportsRepository: CrashlyticsRepository,
     private val navigator: Navigator
 ) : ViewModel() {

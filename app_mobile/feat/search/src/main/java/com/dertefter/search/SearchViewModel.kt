@@ -21,9 +21,10 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
 
-@ViewModelKey(SearchViewModel::class)
+@ViewModelKey
 @ContributesIntoMap(AppScope::class)
-class SearchViewModel @Inject constructor(
+@Inject
+class SearchViewModel(
     private val searchRepository: SearchRepository,
     private val navigator: Navigator
 ) : ViewModel() {

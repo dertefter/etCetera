@@ -11,14 +11,17 @@ import com.dertefter.design.components.post.SpanUiModel
 import com.dertefter.navigation.Navigator
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.binding
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
+import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 
-@ViewModelKey(EditPostViewModel::class)
-@ContributesIntoMap(AppScope::class)
-class EditPostViewModel @Inject constructor(
+@ViewModelKey
+@ContributesIntoMap(AppScope::class, binding<ViewModel>())
+@Inject
+class EditPostViewModel(
     application: Application,
     private val postRepository: PostRepository,
     attachmentsRepository: AttachmentsRepository,

@@ -4,7 +4,8 @@ import com.dertefter.data.dto.comments.RepliesDataDto
 import com.dertefter.data.repository.CommentsRepository
 import dev.zacsweers.metro.Inject
 
-class GetRepliesUseCase @Inject constructor(
+@Inject
+class GetRepliesUseCase(
     private val commentsRepository: CommentsRepository
 ) {
     suspend operator fun invoke(commentId: String, page: String? = null): Result<RepliesDataDto> {

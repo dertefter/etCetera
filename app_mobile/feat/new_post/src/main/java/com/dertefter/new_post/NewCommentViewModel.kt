@@ -1,8 +1,8 @@
 package com.dertefter.new_post
 
 import android.app.Application
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.zacsweers.metro.AppScope
 import com.dertefter.data.dto.comments.NewCommentRequestDto
 import com.dertefter.data.dto.feed.SpanDto
 import com.dertefter.data.repository.AttachmentsRepository
@@ -10,15 +10,18 @@ import com.dertefter.data.repository.CommentsRepository
 import com.dertefter.navigation.Navigator
 import com.dertefter.navigation.Routes
 import com.dertefter.new_post.presentation.UploadStatus
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.binding
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.launch
 
 
-@ViewModelKey(NewCommentViewModel::class)
-@ContributesIntoMap(AppScope::class)
-class NewCommentViewModel @Inject constructor(
+@ViewModelKey
+@ContributesIntoMap(AppScope::class, binding<ViewModel>())
+@Inject
+class NewCommentViewModel(
     application: Application,
     private val commentsRepository: CommentsRepository,
     attachmentsRepository: AttachmentsRepository,

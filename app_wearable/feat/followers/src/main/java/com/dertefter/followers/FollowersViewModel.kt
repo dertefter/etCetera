@@ -33,9 +33,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 
-@ViewModelKey(FollowersViewModel::class)
+@ViewModelKey
 @ContributesIntoMap(AppScope::class)
-class FollowersViewModel @Inject constructor(
+@Inject
+class FollowersViewModel(
     private val userRepository: UserRepository,
     private val followersRepository: FollowersRepository,
     private val navigator: Navigator

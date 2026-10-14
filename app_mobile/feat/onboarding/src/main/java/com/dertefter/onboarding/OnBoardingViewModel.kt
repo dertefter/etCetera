@@ -8,9 +8,10 @@ import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
 
-@ViewModelKey(OnBoardingViewModel::class)
+@ViewModelKey
 @ContributesIntoMap(AppScope::class)
-class OnBoardingViewModel @Inject constructor(
+@Inject
+class OnBoardingViewModel(
     private val settingsRepository: SettingsRepository
 ) : ViewModel() {
 

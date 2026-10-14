@@ -43,7 +43,8 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.Response
 import java.io.File
 
-class RemoteDataSourceImpl @Inject constructor(
+@Inject
+class RemoteDataSourceImpl(
     private val apiService: ApiService
 ) : RemoteDataSource {
 

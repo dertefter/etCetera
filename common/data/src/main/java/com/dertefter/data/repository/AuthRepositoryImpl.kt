@@ -13,7 +13,8 @@ import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 
 @SingleIn(AppScope::class)
-class AuthRepositoryImpl @Inject constructor(
+@Inject
+class AuthRepositoryImpl(
     private val remoteDataSource: RemoteDataSource,
     private val localDataSource: LocalDataSource,
     private val crashlyticsRepository: CrashlyticsRepository,

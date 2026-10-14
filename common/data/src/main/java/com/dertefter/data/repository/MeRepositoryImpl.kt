@@ -14,7 +14,8 @@ import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 
-class MeRepositoryImpl @Inject constructor(
+@Inject
+class MeRepositoryImpl(
     private val remoteDataSource: RemoteDataSource,
     private val localDataSource: LocalDataSource,
     private val crashlyticsRepository: CrashlyticsRepository,

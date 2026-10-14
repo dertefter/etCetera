@@ -29,9 +29,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 
-@ViewModelKey(FeedViewModel::class)
+@ViewModelKey
 @ContributesIntoMap(AppScope::class)
-class FeedViewModel @Inject constructor(
+@Inject
+class FeedViewModel(
     private val feedRepository: FeedRepository,
     private val postRepository: PostRepository,
     private val meRepository: MeRepository,

@@ -29,9 +29,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 
-@ViewModelKey(NotificationsViewModel::class)
+@ViewModelKey
 @ContributesIntoMap(AppScope::class)
-class NotificationsViewModel @Inject constructor(
+@Inject
+class NotificationsViewModel(
     private val notificationsRepository: NotificationsRepository,
     private val navigator: Navigator
 ) : ViewModel() {

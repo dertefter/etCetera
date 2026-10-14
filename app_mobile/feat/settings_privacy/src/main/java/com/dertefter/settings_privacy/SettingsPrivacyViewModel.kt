@@ -19,9 +19,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 
-@ViewModelKey(SettingsPrivacyViewModel::class)
+@ViewModelKey
 @ContributesIntoMap(AppScope::class)
-class SettingsPrivacyViewModel @Inject constructor(
+@Inject
+class SettingsPrivacyViewModel(
     private val navigator: Navigator,
     private val meRepository: MeRepository
 ) : ViewModel() {

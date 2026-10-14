@@ -9,9 +9,10 @@ import dev.zacsweers.metro.Inject
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
 
 
-@ViewModelKey(SettingsViewModel::class)
+@ViewModelKey
 @ContributesIntoMap(AppScope::class)
-class SettingsViewModel @Inject constructor(
+@Inject
+class SettingsViewModel(
     private val navigator: Navigator
 ) : ViewModel() {
 

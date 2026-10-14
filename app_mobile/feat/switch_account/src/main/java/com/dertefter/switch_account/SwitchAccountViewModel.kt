@@ -18,9 +18,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 
-@ViewModelKey(SwitchAccountViewModel::class)
+@ViewModelKey
 @ContributesIntoMap(AppScope::class)
-class SwitchAccountViewModel @Inject constructor(
+@Inject
+class SwitchAccountViewModel(
     private val authRepository: AuthRepository,
     private val navigator: Navigator
 ) : ViewModel() {

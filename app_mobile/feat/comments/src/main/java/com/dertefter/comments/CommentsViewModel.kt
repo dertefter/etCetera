@@ -37,9 +37,10 @@ import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
 
-@ViewModelKey(CommentsViewModel::class)
+@ViewModelKey
 @ContributesIntoMap(AppScope::class)
-class CommentsViewModel @Inject constructor(
+@Inject
+class CommentsViewModel(
     getMeUseCase: GetMeUseCase,
     private val getCommentsPaginatorUseCase: GetCommentsPaginatorUseCase,
     private val deleteCommentUseCase: DeleteCommentUseCase,

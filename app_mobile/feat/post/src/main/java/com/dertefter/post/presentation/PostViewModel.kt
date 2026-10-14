@@ -25,9 +25,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 
-@ViewModelKey(PostViewModel::class)
+@ViewModelKey
 @ContributesIntoMap(AppScope::class)
-class PostViewModel @Inject constructor(
+@Inject
+class PostViewModel(
     private val postRepository: PostRepository,
     meRepository: MeRepository,
     private val navigator: Navigator

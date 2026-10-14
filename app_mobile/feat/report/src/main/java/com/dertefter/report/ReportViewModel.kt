@@ -16,9 +16,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 
-@ViewModelKey(ReportViewModel::class)
+@ViewModelKey
 @ContributesIntoMap(AppScope::class)
-class ReportViewModel @Inject constructor(
+@Inject
+class ReportViewModel(
     private val reportsRepository: ReportsRepository,
     private val navigator: Navigator
 ) : ViewModel() {

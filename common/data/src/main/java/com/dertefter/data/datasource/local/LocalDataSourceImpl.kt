@@ -44,7 +44,8 @@ import kotlinx.serialization.json.Json
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @SingleIn(AppScope::class)
-class LocalDataSourceImpl @Inject constructor(
+@Inject
+class LocalDataSourceImpl(
     @AuthDataStore private val authDataStore: DataStore<Preferences>,
     @SettingsDataStore private val settingsDataStore: DataStore<Preferences>,
     private val context: Context

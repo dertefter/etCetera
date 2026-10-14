@@ -25,9 +25,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-@ViewModelKey(MainViewModel::class)
+@ViewModelKey
 @ContributesIntoMap(AppScope::class, binding<ViewModel>())
-class MainViewModel @Inject constructor(
+@Inject
+class MainViewModel(
     private val authRepository: AuthRepository,
     private val tokenManager: TokenManager,
     context: Context

@@ -14,13 +14,16 @@ import com.dertefter.new_post.presentation.UploadStatus
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
+import dev.zacsweers.metro.binding
+import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 
-@ViewModelKey(RepostViewModel::class)
-@ContributesIntoMap(AppScope::class)
-class RepostViewModel @Inject constructor(
+@ViewModelKey
+@ContributesIntoMap(AppScope::class, binding<ViewModel>())
+@Inject
+class RepostViewModel(
     application: Application,
     private val postRepository: PostRepository,
     attachmentsRepository: AttachmentsRepository,

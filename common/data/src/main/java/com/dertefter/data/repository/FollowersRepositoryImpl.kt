@@ -18,7 +18,8 @@ import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 
 @SingleIn(AppScope::class)
-class FollowersRepositoryImpl @Inject constructor(
+@Inject
+class FollowersRepositoryImpl(
     private val remoteDataSource: RemoteDataSource,
     private val localDataSource: LocalDataSource,
     private val crashlyticsRepository: CrashlyticsRepository,

@@ -5,7 +5,8 @@ import com.dertefter.data.repository.FeedRepository
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
 import dev.zacsweers.metro.Inject
 
-class GetLikedPostsPaginatorUseCase @Inject constructor(
+@Inject
+class GetLikedPostsPaginatorUseCase(
     private val feedRepository: FeedRepository
 ) {
     operator fun invoke(userId: String): MutableCursorPaginator<String, PostDto> {

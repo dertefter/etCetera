@@ -4,7 +4,8 @@ import com.dertefter.data.dto.user.UserDto
 import com.dertefter.data.repository.UserRepository
 import dev.zacsweers.metro.Inject
 
-class UpdateUserUseCase @Inject constructor(
+@Inject
+class UpdateUserUseCase(
     private val userRepository: UserRepository
 ) {
     suspend operator fun invoke(userId: String): Result<UserDto> {

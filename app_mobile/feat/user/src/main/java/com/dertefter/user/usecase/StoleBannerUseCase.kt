@@ -11,7 +11,8 @@ import java.io.File
 import java.net.URL
 import dev.zacsweers.metro.Inject
 
-class StoleBannerUseCase @Inject constructor(
+@Inject
+class StoleBannerUseCase(
     private val context: Context,
     private val meRepository: MeRepository,
     private val attachmentsRepository: AttachmentsRepository

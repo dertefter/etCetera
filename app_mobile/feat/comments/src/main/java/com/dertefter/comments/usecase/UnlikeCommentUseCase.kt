@@ -4,7 +4,8 @@ import com.dertefter.data.dto.feed.like.LikeResponseDto
 import com.dertefter.data.repository.CommentsRepository
 import dev.zacsweers.metro.Inject
 
-class UnlikeCommentUseCase @Inject constructor(
+@Inject
+class UnlikeCommentUseCase(
     private val commentsRepository: CommentsRepository
 ) {
     suspend operator fun invoke(commentId: String): Result<LikeResponseDto> {

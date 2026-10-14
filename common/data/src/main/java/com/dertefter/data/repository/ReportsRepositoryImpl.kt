@@ -6,7 +6,8 @@ import com.dertefter.data.dto.reports.ReportDataDto
 import com.dertefter.data.dto.reports.ReportRequestDto
 import dev.zacsweers.metro.Inject
 
-class ReportsRepositoryImpl @Inject constructor(
+@Inject
+class ReportsRepositoryImpl(
     private val remoteDataSource: RemoteDataSource,
     private val crashlyticsRepository: CrashlyticsRepository,
 ) : ReportsRepository {

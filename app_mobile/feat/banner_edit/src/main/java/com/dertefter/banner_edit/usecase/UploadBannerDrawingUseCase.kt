@@ -7,7 +7,8 @@ import com.dertefter.data.repository.AttachmentsRepository
 import java.io.File
 import dev.zacsweers.metro.Inject
 
-class UploadBannerDrawingUseCase @Inject constructor(
+@Inject
+class UploadBannerDrawingUseCase(
     private val context: Context,
     private val attachmentsRepository: AttachmentsRepository
 ) {

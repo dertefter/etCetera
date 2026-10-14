@@ -12,7 +12,8 @@ import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 
 @SingleIn(AppScope::class)
-class SearchRepositoryImpl @Inject constructor(
+@Inject
+class SearchRepositoryImpl(
     private val remoteDataSource: RemoteDataSource,
     private val localDataSource: LocalDataSource,
     private val crashlyticsRepository: CrashlyticsRepository,

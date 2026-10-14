@@ -17,9 +17,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 
-@ViewModelKey(SettingsThemeViewModel::class)
+@ViewModelKey
 @ContributesIntoMap(AppScope::class)
-class SettingsThemeViewModel @Inject constructor(
+@Inject
+class SettingsThemeViewModel(
     private val navigator: Navigator,
     private val settingsRepository: SettingsRepository
 ) : ViewModel() {
