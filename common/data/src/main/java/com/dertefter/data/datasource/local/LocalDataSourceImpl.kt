@@ -22,12 +22,14 @@ import com.dertefter.data.di.AuthDataStore
 import com.dertefter.data.di.SettingsDataStore
 import com.dertefter.data.dto.auth.AuthSessionDto
 import com.dertefter.data.dto.comments.CommentDto
+import com.dertefter.data.dto.draft.DraftDto
 import com.dertefter.data.dto.event.CurrentEvent
 import com.dertefter.data.dto.feed.Pin
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.dto.followers.FollowerUserDto
 import com.dertefter.data.dto.me.Me
 import com.dertefter.data.dto.me.Privacy
+import com.dertefter.data.dto.new_post.NewPostRequestDto
 import com.dertefter.data.dto.notifications.NotificationDto
 import com.dertefter.data.dto.search.SearchHashtagDto
 import com.dertefter.data.dto.search.TopClanDto
@@ -465,5 +467,15 @@ class LocalDataSourceImpl(
                 preferences[currentEventKey] = json.encodeToString(currentEvent)
             }
         }
+    }
+
+    override suspend fun saveDraft(key: String, draftDto: DraftDto) {
+        db().postDraftDao().savePostDraft(draftDto.asEntity(key))
+    }
+
+    override fun getDraft(key: String): Flow<DraftDto> = currentLogin.flatMapLatest { login ->
+        getDatabase(login).postDraftDao().getPostDraft(key)
+    }.map { entity ->
+        entity?.asExternalModel() ?: DraftDto()
     }
 }

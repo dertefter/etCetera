@@ -7,8 +7,10 @@ import com.dertefter.data.datasource.remote.RemoteDataSource
 import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.data.dto.comments.NewCommentRequestDto
 import com.dertefter.data.dto.comments.RepliesDataDto
+import com.dertefter.data.dto.draft.DraftDto
 import com.dertefter.data.dto.feed.like.LikeResponseDto
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
+import kotlinx.coroutines.flow.Flow
 import com.jamal_aliev.paginator.cursor.bookmark.CursorBookmark
 import com.jamal_aliev.paginator.cursor.cache.eviction.CursorMostRecentPagingCache
 import com.jamal_aliev.paginator.cursor.dsl.mutableCursorPaginator
@@ -175,5 +177,13 @@ class CommentsRepositoryImpl(
     private suspend fun handleLikeResponse(commentId: String, response: LikeResponseDto) {
         val transform: (CommentDto) -> CommentDto = { it.copy(isLiked = response.liked, likesCount = response.likesCount) }
         updateData(commentId, transform)
+    }
+
+    override suspend fun saveCommentDraft(draftDto: DraftDto, key: String) {
+        localDataSource.saveDraft(key, draftDto)
+    }
+
+    override fun getCommentDraft(key: String): Flow<DraftDto> {
+        return localDataSource.getDraft(key)
     }
 }

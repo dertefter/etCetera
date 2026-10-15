@@ -21,6 +21,7 @@
     <string name="action_save">Save</string>
     <string name="post_placeholder">What\'s new?</string>
     <string name="repost_placeholder" tools:ignore="TypographyEllipsis">Comment for post...</string>
-    <string name="comment_placeholder" tools:ignore="TypographyEllipsis">Write a comment...</string>
+    <string name="comment_placeholder" tools:ignore="TypographyEllipsis">Comment...</string>
+    <string name="restore_draft">Restore draft</string>
 
 </resources>

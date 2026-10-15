@@ -31,4 +31,7 @@ sealed interface Event {
 
     data object OnSavePost : Event
 
+    data object OnRestoreDraft : Event
+
+    data object OnDeleteDraft : Event
 }

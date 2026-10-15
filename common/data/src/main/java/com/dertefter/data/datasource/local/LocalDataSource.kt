@@ -9,7 +9,9 @@ import com.dertefter.data.dto.feed.Pin
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.dto.followers.FollowerUserDto
 import com.dertefter.data.dto.me.Me
+import com.dertefter.data.dto.draft.DraftDto
 import com.dertefter.data.dto.me.Privacy
+import com.dertefter.data.dto.new_post.NewPostRequestDto
 import com.dertefter.data.dto.notifications.NotificationDto
 import com.dertefter.data.dto.search.SearchHashtagDto
 import com.dertefter.data.dto.search.TopClanDto
@@ -122,4 +124,7 @@ interface LocalDataSource {
 
     val currentEvent: Flow<CurrentEvent?>
     suspend fun saveCurrentEvent(currentEvent: CurrentEvent?)
+
+    suspend fun saveDraft(key: String, draftDto: DraftDto)
+    fun getDraft(key: String): Flow<DraftDto>
 }

@@ -1,7 +1,9 @@
 package com.dertefter.data.repository
 
+import com.dertefter.data.dto.draft.DraftDto
 import com.dertefter.data.dto.feed.PollDto
 import com.dertefter.data.dto.feed.PostDto
+import com.dertefter.data.dto.feed.SpanDto
 import com.dertefter.data.dto.feed.like.LikeResponseDto
 import com.dertefter.data.dto.feed.stats.PostStatsDto
 import com.dertefter.data.dto.new_post.EditPostRequestDto
@@ -36,4 +38,8 @@ interface PostRepository {
     suspend fun editPost(postId: String, editPostRequestDto: EditPostRequestDto): Result<EditPostResponseDto>
 
     fun registerPaginator(paginator: MutableCursorPaginator<String, PostDto>)
+
+    suspend fun savePostDraft(draftDto: DraftDto, key: String = "post_main")
+
+    fun getPostDraft(key: String = "post_main"): Flow<DraftDto>
 }

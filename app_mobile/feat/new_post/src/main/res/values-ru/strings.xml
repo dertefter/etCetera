@@ -21,6 +21,7 @@
     <string name="action_save">Сохранить</string>
     <string name="post_placeholder">Что нового?</string>
     <string name="repost_placeholder" tools:ignore="TypographyEllipsis">Комментарий к посту...</string>
-    <string name="comment_placeholder" tools:ignore="TypographyEllipsis">Напишите комментарий...</string>
+    <string name="comment_placeholder" tools:ignore="TypographyEllipsis">Комментарий...</string>
+    <string name="restore_draft">Восстановить черновик</string>
 
 </resources>

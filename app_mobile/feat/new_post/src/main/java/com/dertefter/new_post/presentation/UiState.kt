@@ -10,5 +10,6 @@ data class UiState(
     val uploads: List<Upload>,
     val poll: NewPollUiModel? = null,
     val isUploadingPost: Boolean = false,
-    val originalPost: PostDto? = null
+    val originalPost: PostDto? = null,
+    val hasDraft: Boolean = false
 )

@@ -9,6 +9,7 @@ import com.dertefter.data.dto.feed.OriginalPostDto
 import com.dertefter.data.dto.feed.Pin
 import com.dertefter.data.dto.feed.PollDto
 import com.dertefter.data.dto.feed.SpanDto
+import com.dertefter.data.dto.new_post.NewPollDto
 import com.dertefter.data.dto.notifications.ActorDto
 import com.dertefter.data.dto.user.LastSeenDto
 import com.dertefter.data.dto.user.SubscriptionDto
@@ -145,6 +146,26 @@ class RoomConverters {
     @TypeConverter
     fun toActiveNicknameDto(activeNicknameString: String?): ActiveNicknameDto? {
         return activeNicknameString?.let { json.decodeFromString(it) }
+    }
+
+    @TypeConverter
+    fun fromNewPollDto(poll: NewPollDto?): String? {
+        return poll?.let { json.encodeToString(it) }
+    }
+
+    @TypeConverter
+    fun toNewPollDto(pollString: String?): NewPollDto? {
+        return pollString?.let { json.decodeFromString(it) }
+    }
+
+    @TypeConverter
+    fun fromStringList(list: List<String>): String {
+        return json.encodeToString(list)
+    }
+
+    @TypeConverter
+    fun toStringList(string: String): List<String> {
+        return json.decodeFromString(string)
     }
 
 }

@@ -3,8 +3,10 @@ package com.dertefter.data.repository
 import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.data.dto.comments.NewCommentRequestDto
 import com.dertefter.data.dto.comments.RepliesDataDto
+import com.dertefter.data.dto.draft.DraftDto
 import com.dertefter.data.dto.feed.like.LikeResponseDto
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
+import kotlinx.coroutines.flow.Flow
 
 interface CommentsRepository {
 
@@ -24,5 +26,9 @@ interface CommentsRepository {
         commentId: String,
         newCommentRequestDto: NewCommentRequestDto
     ): Result<CommentDto>
+
+    suspend fun saveCommentDraft(draftDto: DraftDto, key: String)
+
+    fun getCommentDraft(key: String): Flow<DraftDto>
 
 }
