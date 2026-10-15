@@ -3,6 +3,7 @@ package com.dertefter.data.repository
 import com.dertefter.data.common.onFailureLog
 import com.dertefter.data.datasource.local.LocalDataSource
 import com.dertefter.data.datasource.remote.RemoteDataSource
+import com.dertefter.data.dto.draft.DraftDto
 import com.dertefter.data.dto.feed.PollDto
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.dto.feed.like.LikeResponseDto
@@ -219,5 +220,13 @@ class PostRepositoryImpl(
             }
         }
         updateData(predicate, transform)
+    }
+
+    override suspend fun savePostDraft(draftDto: DraftDto, key: String) {
+        localDataSource.saveDraft(key, draftDto)
+    }
+
+    override fun getPostDraft(key: String): Flow<DraftDto> {
+        return localDataSource.getDraft(key)
     }
 }

@@ -1,6 +1,7 @@
 package com.dertefter.new_post
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import dev.zacsweers.metrox.viewmodel.metroViewModel
@@ -18,6 +19,12 @@ fun RepostRoute(
 
     LaunchedEffect(postIdForRepost, wallRecipientId) {
         viewModel.initWith(postIdForRepost, wallRecipientId)
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            viewModel.saveDraft()
+        }
     }
 
     NewPostScreen(

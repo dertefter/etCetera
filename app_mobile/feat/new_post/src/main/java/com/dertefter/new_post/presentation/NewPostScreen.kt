@@ -5,8 +5,12 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,6 +26,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.contextmenu.builder.TextContextMenuBuilderScope
 import androidx.compose.foundation.text.contextmenu.builder.item
@@ -52,6 +57,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -274,6 +280,61 @@ fun NewPostScreen(
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
 
         ) {
+
+            AnimatedVisibility(
+                visible = uiState.hasDraft,
+                modifier = Modifier
+                    .fillMaxWidth(),
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically()
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
+                        .clip(CircleShape)
+                        .clickable(
+                            onClick = {
+                                onEvent(Event.OnRestoreDraft)
+                            }
+                        )
+                        .background(MaterialTheme.colorScheme.surfaceVariant),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+
+                    Icon(
+                        imageVector = Icons.Undo,
+                        tint = MaterialTheme.colorScheme.onSurface,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .padding(start = 14.dp, end = 6.dp)
+                            .size(22.dp)
+                    )
+                    Text(
+                        text = stringResource(R.string.restore_draft),
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.weight(1f),
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Icon(
+                        imageVector = Icons.Close,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSecondary,
+                        modifier = Modifier
+                            .padding(MaterialTheme.spacing.medium)
+                            .clip(CircleShape)
+                            .clickable(
+                                onClick = {
+                                    onEvent(Event.OnDeleteDraft)
+                                }
+                            )
+                            .background(MaterialTheme.colorScheme.secondary)
+                            .padding(horizontal = 14.dp, vertical = 6.dp)
+                            .size(22.dp)
+                    )
+
+                }
+            }
 
             uiState.originalPost?.let {
                 OriginalPostCard(

@@ -50,13 +50,17 @@ abstract class BaseNewPostViewModel(
     private val _originalPost = MutableStateFlow<PostDto?>(null)
     protected val originalPost: MutableStateFlow<PostDto?> = _originalPost
 
+    private val _hasDraft = MutableStateFlow(false)
+    protected val hasDraft: MutableStateFlow<Boolean> = _hasDraft
+
     val uiState: StateFlow<UiState> = combine(
         _content,
         _spans,
         _uploads,
         _poll,
         _isUploadingPost,
-        _originalPost
+        _originalPost,
+        _hasDraft
     ) { flows ->
         UiState(
             content = flows[0] as String,
@@ -64,7 +68,8 @@ abstract class BaseNewPostViewModel(
             uploads = flows[2] as List<Upload>,
             poll = flows[3] as NewPollUiModel?,
             isUploadingPost = flows[4] as Boolean,
-            originalPost = flows[5] as PostDto?
+            originalPost = flows[5] as PostDto?,
+            hasDraft = flows[6] as Boolean
         )
     }.stateIn(
         viewModelScope, SharingStarted.WhileSubscribed(5000), UiState(
@@ -97,6 +102,8 @@ abstract class BaseNewPostViewModel(
             is Event.OnRemovePollQuestion -> removePollQuestion(event.id)
             is Event.OnPollMultipleChoiceChanged -> _poll.update { it?.copy(isMultipleChoice = event.isMultipleChoice) }
             Event.OnSavePost -> savePost()
+            Event.OnRestoreDraft -> {}
+            Event.OnDeleteDraft -> {}
         }
     }
 

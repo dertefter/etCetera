@@ -9,6 +9,7 @@ import com.dertefter.data.datasource.local.room.dao.CommentDao
 import com.dertefter.data.datasource.local.room.dao.NotificationDao
 import com.dertefter.data.datasource.local.room.dao.PageDao
 import com.dertefter.data.datasource.local.room.dao.PostDao
+import com.dertefter.data.datasource.local.room.dao.PostDraftDao
 import com.dertefter.data.datasource.local.room.dao.SearchDao
 import com.dertefter.data.datasource.local.room.dao.UserDao
 import com.dertefter.data.datasource.local.room.entity.AuthSessionEntity
@@ -19,6 +20,7 @@ import com.dertefter.data.datasource.local.room.entity.PageEntity
 import com.dertefter.data.datasource.local.room.entity.PageNotificationEntity
 import com.dertefter.data.datasource.local.room.entity.PagePostEntity
 import com.dertefter.data.datasource.local.room.entity.PageUserEntity
+import com.dertefter.data.datasource.local.room.entity.PostDraftEntity
 import com.dertefter.data.datasource.local.room.entity.PostEntity
 import com.dertefter.data.datasource.local.room.entity.SearchHashtagEntity
 import com.dertefter.data.datasource.local.room.entity.TopClanEntity
@@ -37,9 +39,10 @@ import com.dertefter.data.datasource.local.room.entity.UserEntity
         NotificationEntity::class,
         PageNotificationEntity::class,
         TopClanEntity::class,
-        AuthSessionEntity::class
+        AuthSessionEntity::class,
+        PostDraftEntity::class,
     ],
-    version = 65,
+    version = 67,
     exportSchema = false
 )
 
@@ -53,5 +56,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun searchDao(): SearchDao
     abstract fun notificationDao(): NotificationDao
     abstract fun authSessionDao(): AuthSessionDao
+    abstract fun postDraftDao(): PostDraftDao
 
 }

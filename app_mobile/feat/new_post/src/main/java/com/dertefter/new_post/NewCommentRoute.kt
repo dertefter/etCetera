@@ -1,6 +1,7 @@
 package com.dertefter.new_post
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import dev.zacsweers.metrox.viewmodel.metroViewModel
@@ -17,6 +18,12 @@ fun NewCommentRoute(
 
     LaunchedEffect(postId) {
         viewModel.initCommentForPost(postId)
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            viewModel.saveDraft()
+        }
     }
 
     NewPostScreen(
@@ -39,6 +46,12 @@ fun NewCommentReplyRoute(
 
     LaunchedEffect(commentId, replyToUserId) {
         viewModel.initCommentForReply(postId, commentId, replyToUserId)
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            viewModel.saveDraft()
+        }
     }
 
     NewPostScreen(
