@@ -12,3 +12,4 @@
 *.keystore
 secrets.properties
 /.kotlin/
+/.idea/
