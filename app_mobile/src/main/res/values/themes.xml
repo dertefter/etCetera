@@ -6,8 +6,7 @@
     </style>
 
     <style name="Theme.EtCetera.Splash" parent="Theme.SplashScreen.IconBackground">
-        <item name="windowSplashScreenAnimatedIcon">@drawable/app_icon_splash_animated</item>
-        <item name="windowSplashScreenIconBackgroundColor">@color/splashscreen_icon_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/app_icon_splash</item>
         <item name="postSplashScreenTheme">@style/Theme.EtCetera</item>
     </style>
 

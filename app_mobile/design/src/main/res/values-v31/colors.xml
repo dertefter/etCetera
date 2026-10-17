@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="splashscreen_icon_background">#BAD9FF</color>
+    <color name="splashscreen_icon">#012041</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="app_icon_bg_start">@android:color/system_accent1_100</color>
+    <color name="app_icon_bg_end">@android:color/system_accent1_200</color>
+    <color name="app_icon_white">@android:color/system_accent1_10</color>
+
+    <color name="app_icon_26_end">@android:color/system_accent1_100</color>
+    <color name="app_icon_6_end">@android:color/system_accent1_200</color>
+
+    <color name="app_icon_body_start">@android:color/system_accent1_800</color>
+
+    <color name="app_icon_eye_start">@android:color/system_accent1_700</color>
+    <color name="app_icon_eye_end">@android:color/system_accent1_800</color>
+    <color name="app_icon_eyes_path_start">@android:color/system_accent1_800</color>
+
+    <color name="app_icon_body_l_start">@android:color/system_accent1_600</color>
+    <color name="app_icon_body_l_end">@android:color/transparent</color>
+
+    <color name="app_icon_body_l2_start">@android:color/system_accent2_800</color>
+    <color name="app_icon_body_l2_end">@android:color/transparent</color>
+
+    <color name="app_icon_body_l3_start">@android:color/system_accent1_800</color>
+    <color name="app_icon_body_l3_end">@android:color/transparent</color>
+</resources>

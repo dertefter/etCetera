@@ -4,10 +4,11 @@ import android.content.res.Configuration
 import androidx.compose.animation.graphics.res.animatedVectorResource
 import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
 import androidx.compose.animation.graphics.vector.AnimatedImageVector
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
@@ -22,6 +23,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dertefter.design.theme.AppTheme
@@ -36,7 +39,7 @@ fun AppAboutHeader(
     desc: String
 ) {
 
-    val image = AnimatedImageVector.animatedVectorResource(com.dertefter.design.R.drawable.app_icon_animated)
+    val image = AnimatedImageVector.animatedVectorResource(com.dertefter.design.R.drawable.app_icon)
     var atEnd by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
@@ -53,15 +56,22 @@ fun AppAboutHeader(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraLarge)
     ) {
-        Icon(
-            painter = rememberAnimatedVectorPainter(image, atEnd),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onPrimaryFixed,
+
+        Box(
             modifier = Modifier
                 .clip(MaterialTheme.shapes.largeIncreased)
-                .background(MaterialTheme.colorScheme.primaryFixed)
                 .size(74.dp)
-        )
+        ){
+            Icon(
+                painter = rememberAnimatedVectorPainter(image, atEnd),
+                contentDescription = null,
+                tint = Color.Unspecified,
+                modifier = Modifier
+                    .fillMaxSize()
+            )
+        }
+
+
 
         Column {
             Text(

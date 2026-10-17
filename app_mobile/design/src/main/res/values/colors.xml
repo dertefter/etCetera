@@ -2,4 +2,22 @@
 <resources>
     <color name="splashscreen_icon_background">#BAD9FF</color>
     <color name="splashscreen_icon">#012041</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- App Icon & Gradients Colors -->
+    <color name="app_icon_bg_start">#FFAADAFD</color>
+    <color name="app_icon_bg_end">#FF48A4FE</color>
+    <color name="app_icon_white">#FFFFFFFF</color>
+    <color name="app_icon_26_end">#FFB0D3FF</color>
+    <color name="app_icon_6_end">#FF8DB8ED</color>
+    <color name="app_icon_body_start">#FF0F4298</color>
+    <color name="app_icon_eye_start">#FF0E4A86</color>
+    <color name="app_icon_eye_end">#FF0C3A85</color>
+    <color name="app_icon_eyes_path_start">#FF0A3576</color>
+    <color name="app_icon_body_l_start">#FF0172FF</color>
+    <color name="app_icon_body_l_end">#0007479C</color>
+    <color name="app_icon_body_l2_start">#FF052048</color>
+    <color name="app_icon_body_l2_end">#00093475</color>
+    <color name="app_icon_body_l3_start">#FF056FF9</color>
+    <color name="app_icon_body_l3_end">#00030912</color>
 </resources>

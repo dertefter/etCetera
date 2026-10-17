@@ -3,7 +3,6 @@
     <style name="MainActivityTheme.Starting" parent="Theme.SplashScreen.IconBackground">
         <item name="windowSplashScreenBackground">@android:color/black</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/app_icon_splash_animated</item>
-        <item name="windowSplashScreenIconBackgroundColor">@color/splashscreen_icon_background</item>
         <item name="postSplashScreenTheme">@android:style/Theme.DeviceDefault</item>
     </style>
 </resources>

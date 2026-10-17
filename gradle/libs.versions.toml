@@ -1,6 +1,7 @@
 [versions]
 # Build and Plugins
 agp = "9.4.1"
+androidxSplashscreenCompose = "1.2.0"
 animation = "1.13.0-beta01"
 annotation = "1.11.0"
 annotationExperimental = "1.6.0"
@@ -114,6 +115,7 @@ androidx-runner = { module = "androidx.test:runner", version.ref = "core" }
 androidx-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "runtime" }
 androidx-runtime-annotation = { module = "androidx.compose.runtime:runtime-annotation", version.ref = "runtimeAnnotation" }
 androidx-runtime-saveable = { module = "androidx.compose.runtime:runtime-saveable", version.ref = "runtime" }
+androidx-splashscreen-compose = { module = "net.kibotu:androidx-splashscreen-compose", version.ref = "androidxSplashscreenCompose" }
 androidx-sqlite = { module = "androidx.sqlite:sqlite", version.ref = "sqlite" }
 androidx-transition = { module = "androidx.transition:transition", version.ref = "transition" }
 androidx-ui-geometry = { module = "androidx.compose.ui:ui-geometry", version.ref = "uiUnit" }

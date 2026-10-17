@@ -22,8 +22,6 @@ object Icons {
     val GridView: ImageVector
         @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_grid_view)
 
-    val AppIcon: ImageVector
-        @Composable get() = ImageVector.vectorResource(id = R.drawable.app_icon)
     val LogOut: ImageVector
         @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_logout)
     val DominoMask: ImageVector
