@@ -17,6 +17,7 @@ kotlinxCoroutinesCore = "1.11.0"
 kotlinxSerializationCore = "1.11.0"
 ksp = "2.3.12"
 materialColorUtilities = "6.0.0"
+materialKolorCore = "6.0.0"
 media3Common = "1.11.1"
 navigationCommon = "2.10.2"
 okio = "3.18.2"
@@ -146,6 +147,7 @@ kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-c
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerializationCore" }
 lifecycle-viewmodel-navigation3 = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "lifecycleRuntimeKtx" }
 material-color-utilities = { module = "com.materialkolor:material-color-utilities", version.ref = "materialColorUtilities" }
+material-kolor-core = { module = "com.materialkolor:material-kolor-core", version.ref = "materialKolorCore" }
 navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "navigation3" }
 navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "navigation3" }
 

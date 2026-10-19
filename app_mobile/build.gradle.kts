@@ -105,7 +105,6 @@ dependencies {
     implementation(project(":app_mobile:feat:event_viewer"))
     implementation(project(":app_mobile:feat:onboarding"))
 
-    implementation(libs.androidx.splashscreen.compose)
     implementation(libs.core.splashscreen)
     implementation(libs.activity.compose)
     implementation(libs.appcompat)
@@ -144,7 +143,6 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.navigation3.runtime)
     implementation(libs.androidx.palette)
-    implementation(libs.materialKolorMaterial3)
     implementation(libs.okhttp)
     implementation(libs.haze.blur.materials)
     implementation(libs.haze.blur)
@@ -153,4 +151,6 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.serialization.core)
     implementation(libs.retrofit)
+    implementation(libs.material.kolor.core)
+    implementation(libs.core.ktx)
 }

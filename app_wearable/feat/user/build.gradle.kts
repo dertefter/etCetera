@@ -68,6 +68,4 @@ dependencies {
     debugApi(libs.paginator.cursor.android.debug)
     releaseApi(libs.paginator.cursor)
     api(libs.kotlinx.coroutines.core)
-    implementation(libs.material.color.utilities)
-    implementation(libs.materialKolorMaterial3)
 }

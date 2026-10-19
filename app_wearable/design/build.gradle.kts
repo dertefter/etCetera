@@ -44,7 +44,6 @@ dependencies {
     api(libs.compose.wear.foundation)
     debugImplementation(libs.compose.ui.tooling)
     debugRuntimeOnly(libs.compose.ui.test.manifest)
-    api(libs.materialKolorMaterial3)
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
     api(libs.androidx.media3.exoplayer)
@@ -73,5 +72,5 @@ dependencies {
     implementation(libs.coil.compose.core)
     implementation(libs.coil.core)
     implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.core.ktx)
+    implementation(libs.material.kolor.core)
 }

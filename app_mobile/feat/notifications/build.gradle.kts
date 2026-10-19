@@ -56,7 +56,6 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     api(libs.androidx.lifecycle.viewmodel)
-    implementation(libs.materialKolorMaterial3)
     implementation(libs.haze)
     debugImplementation(libs.paginator.compose.cursor.android.debug)
     releaseImplementation(libs.paginator.compose.cursor)
@@ -65,4 +64,5 @@ dependencies {
     debugApi(libs.paginator.cursor.android.debug)
     releaseApi(libs.paginator.cursor)
     api(libs.kotlinx.coroutines.core)
+    implementation(libs.material.kolor.core)
 }

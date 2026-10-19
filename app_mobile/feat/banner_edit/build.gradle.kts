@@ -64,4 +64,5 @@ dependencies {
     implementation(libs.coil.core)
     api(libs.kotlinx.coroutines.core)
     implementation(libs.androidx.core)
+    implementation(libs.core.ktx)
 }

@@ -42,7 +42,6 @@ dependencies {
     api(libs.compose.material3)
     debugApi(libs.compose.ui.tooling)
     debugRuntimeOnly(libs.compose.ui.test.manifest)
-    api(libs.materialKolorMaterial3)
     implementation(libs.kdroidfilter.composemediaplayer)
     api(libs.androidx.media3.exoplayer)
     api(libs.haze)
@@ -73,4 +72,6 @@ dependencies {
     implementation(libs.coil.core)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.annotations)
+    implementation(libs.material.kolor.core)
+    implementation(libs.core.ktx)
 }

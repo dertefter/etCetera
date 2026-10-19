@@ -124,8 +124,6 @@ dependencies {
     implementation(libs.androidx.navigation.common)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.serialization.core)
-    implementation(libs.material.color.utilities)
-    implementation(libs.materialKolorMaterial3)
     implementation(libs.okhttp)
     implementation(libs.retrofit)
 }

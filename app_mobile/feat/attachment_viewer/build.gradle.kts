@@ -52,4 +52,5 @@ dependencies {
     api(libs.androidx.lifecycle.viewmodel)
     implementation(libs.haze)
     implementation(libs.androidx.core)
+    implementation(libs.core.ktx)
 }
