@@ -157,7 +157,7 @@ fun MainScreen(
     val authBackStack = rememberNavBackStack(Routes.Auth)
     val feedBackStack = rememberNavBackStack(Routes.Feed)
     val searchBackStack = rememberNavBackStack(Routes.Search)
-    val eventViewerBackStack = rememberNavBackStack(Routes.EventViewer(uiState.currentEvent?.url ?: ""))
+    val eventViewerBackStack = rememberNavBackStack(Routes.EventViewer)
     val notificationsBackStack = rememberNavBackStack(Routes.Notifications(showBackButton = false))
     val profileBackStack = rememberNavBackStack(
         if (uiState.meUserId != null) Routes.User(uiState.meUserId, showBackButton = false) else Routes.Auth
