@@ -125,7 +125,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.serialization.core)
     implementation(libs.material.color.utilities)
-    implementation(libs.material.kolor)
+    implementation(libs.materialKolorMaterial3)
     implementation(libs.okhttp)
     implementation(libs.retrofit)
 }

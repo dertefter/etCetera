@@ -144,7 +144,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.navigation3.runtime)
     implementation(libs.androidx.palette)
-    implementation(libs.material.kolor)
+    implementation(libs.materialKolorMaterial3)
     implementation(libs.okhttp)
     implementation(libs.haze.blur.materials)
     implementation(libs.haze.blur)

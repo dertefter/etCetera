@@ -42,7 +42,7 @@ dependencies {
     api(libs.compose.material3)
     debugApi(libs.compose.ui.tooling)
     debugRuntimeOnly(libs.compose.ui.test.manifest)
-    api(libs.material.kolor)
+    api(libs.materialKolorMaterial3)
     implementation(libs.kdroidfilter.composemediaplayer)
     api(libs.androidx.media3.exoplayer)
     api(libs.haze)

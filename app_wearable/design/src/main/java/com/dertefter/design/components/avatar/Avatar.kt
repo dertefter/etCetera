@@ -306,33 +306,3 @@ private fun ImageAvatarPreview() {
         )
     }
 }
-
-@Preview
-@Composable
-fun PreviewAv() {
-    WearableTheme(
-        paletteStyle = PaletteStyle.Vibrant,
-        specVersion = ColorSpec.SpecVersion.SPEC_2025,
-        seedColor = Color.Green.toArgb().toLong()
-    ) {
-        val emojiList = listOf(
-            "🌏", "🪲", "⚙️", "😍", "🖼️", "❤️", "😆", "🔥", "🌈", "🍎", "⚽", "🚗", "📱", "💻", "⌚",
-            "🎧", "📷", "💡", "🔑", "🎁", "🎈", "🎉", "🎨", "🎭", "🎮", "🎲", "🎯", "🎳"
-        )
-
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(4),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.background)
-                .padding(2.dp)
-        ) {
-            items(emojiList) { emoji ->
-                Avatar(data = emoji, containerSize = 40.dp)
-            }
-        }
-    }
-}

@@ -45,7 +45,7 @@ coilCompose = "3.6.3"
 composemediaplayer = "0.11.4"
 drawboxEnhanced = "2.1.2"
 haze = "2.0.1"
-materialKolor = "5.0.1"
+materialKolor = "6.0.0"
 roomCommon = "2.8.5"
 runtime = "1.13.0-beta01"
 runtimeAnnotation = "1.13.0-beta01"
@@ -157,6 +157,7 @@ haze-blur = { module = "dev.chrisbanes.haze:haze-blur", version.ref = "haze" }
 haze-blur-materials = { module = "dev.chrisbanes.haze:haze-blur-materials", version.ref = "haze" }
 kdroidfilter-composemediaplayer = { module = "io.github.kdroidfilter:composemediaplayer", version.ref = "composemediaplayer" }
 material-kolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor" }
+materialKolorMaterial3 = { module = "com.materialkolor:material-kolor-material3", version.ref = "materialKolor" }
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
 paginator-compose-cursor-android-debug = { module = "io.github.jamal-wia:paginator-compose-cursor-android-debug", version.ref = "paginatorComposeCursorAndroidDebug" }
 paginator-core = { module = "io.github.jamal-wia:paginator-core", version.ref = "paginatorCore" }

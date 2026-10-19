@@ -66,5 +66,5 @@ dependencies {
     releaseApi(libs.paginator.cursor)
     api(libs.kotlinx.coroutines.core)
     implementation(libs.material.color.utilities)
-    implementation(libs.material.kolor)
+    implementation(libs.materialKolorMaterial3)
 }

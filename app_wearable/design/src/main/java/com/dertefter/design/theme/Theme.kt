@@ -15,16 +15,8 @@ import androidx.wear.compose.material3.ColorScheme
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.MotionScheme
 import androidx.wear.compose.material3.dynamicColorScheme
-import com.materialkolor.PaletteStyle
-import com.materialkolor.dynamiccolor.ColorSpec
 import com.materialkolor.ktx.harmonize
 
-
-val LocalSeedColor = staticCompositionLocalOf<Long?> { null }
-
-val LocalPaletteStyle = staticCompositionLocalOf { PaletteStyle.Vibrant }
-
-val LocalSpecVersion = staticCompositionLocalOf { ColorSpec.SpecVersion.SPEC_2021 }
 
 @Immutable
 data class CustomColors(
@@ -51,38 +43,17 @@ val MaterialTheme.customColors: CustomColors
     @ReadOnlyComposable
     get() = LocalCustomColors.current
 
-val MaterialTheme.seedColor: Long?
-    @Composable
-    @ReadOnlyComposable
-    get() = LocalSeedColor.current
-
-
-val MaterialTheme.paletteStyle: PaletteStyle
-    @Composable
-    @ReadOnlyComposable
-    get() = LocalPaletteStyle.current
-
-val MaterialTheme.specVersion: ColorSpec.SpecVersion
-    @Composable
-    @ReadOnlyComposable
-    get() = LocalSpecVersion.current
-
 
 @Composable
 fun WearableTheme(
-    dynamicColor: Boolean = true,
-    paletteStyle: PaletteStyle? = null,
-    specVersion: ColorSpec.SpecVersion? = null,
-    seedColor: Long? = null,
     content: @Composable () -> Unit
 ) {
 
     val context = LocalContext.current
 
-    val paletteStyle = paletteStyle ?: PaletteStyle.Vibrant
-    val specVersion = specVersion ?: ColorSpec.SpecVersion.SPEC_2021
 
-    val colorScheme: ColorScheme = if (dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+
+    val colorScheme: ColorScheme = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         dynamicColorScheme(context) ?:  ColorScheme()
     } else {
         ColorScheme()
@@ -91,9 +62,6 @@ fun WearableTheme(
     CompositionLocalProvider(
         LocalSpacing provides Spacing(),
         LocalRounding provides Rounding(),
-        LocalSeedColor provides seedColor,
-        LocalPaletteStyle provides paletteStyle,
-        LocalSpecVersion provides specVersion
     ) {
         MaterialTheme(
             motionScheme = MotionScheme.expressive(),

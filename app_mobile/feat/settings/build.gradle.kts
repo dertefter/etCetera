@@ -54,7 +54,7 @@ dependencies {
     implementation(libs.androidx.graphics.shapes)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     api(libs.androidx.lifecycle.viewmodel)
-    implementation(libs.material.kolor)
+    implementation(libs.materialKolorMaterial3)
     implementation(libs.haze)
     implementation(libs.androidx.core)
 }
