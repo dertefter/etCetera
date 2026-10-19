@@ -136,7 +136,7 @@ fun RouteContent(route: Routes) {
         is Routes.SettingsPrivacy -> SettingsPrivacyRoute()
         is Routes.SettingsAbout -> SettingsAboutRoute()
         is Routes.Report -> ReportRoute(route.targetType, route.targetId)
-        is Routes.EventViewer -> EventViewerRoute(route.targetUrl)
+        is Routes.EventViewer -> EventViewerRoute()
 
     }
 }
