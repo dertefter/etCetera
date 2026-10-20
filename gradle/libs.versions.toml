@@ -22,6 +22,7 @@ media3Common = "1.11.1"
 navigationCommon = "2.10.2"
 okio = "3.18.2"
 ossLicensesPlugin = "0.13.0"
+desugarJdkLibs = "2.1.5"
 
 # AndroidX Core
 appcompat = "1.8.0"
@@ -46,7 +47,6 @@ coilCompose = "3.6.3"
 composemediaplayer = "0.11.4"
 drawboxEnhanced = "2.1.2"
 haze = "2.0.1"
-materialKolor = "6.0.0"
 roomCommon = "2.8.5"
 runtime = "1.13.0-beta01"
 runtimeAnnotation = "1.13.0-beta01"
@@ -116,7 +116,6 @@ androidx-runner = { module = "androidx.test:runner", version.ref = "core" }
 androidx-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "runtime" }
 androidx-runtime-annotation = { module = "androidx.compose.runtime:runtime-annotation", version.ref = "runtimeAnnotation" }
 androidx-runtime-saveable = { module = "androidx.compose.runtime:runtime-saveable", version.ref = "runtime" }
-androidx-splashscreen-compose = { module = "net.kibotu:androidx-splashscreen-compose", version.ref = "androidxSplashscreenCompose" }
 androidx-sqlite = { module = "androidx.sqlite:sqlite", version.ref = "sqlite" }
 androidx-transition = { module = "androidx.transition:transition", version.ref = "transition" }
 androidx-ui-geometry = { module = "androidx.compose.ui:ui-geometry", version.ref = "uiUnit" }
@@ -134,6 +133,7 @@ core = { module = "androidx.test:core", version.ref = "core" }
 core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
 core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
+desugar-jdk-libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugarJdkLibs" }
 
 # Jetpack Compose
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
@@ -158,8 +158,6 @@ haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
 haze-blur = { module = "dev.chrisbanes.haze:haze-blur", version.ref = "haze" }
 haze-blur-materials = { module = "dev.chrisbanes.haze:haze-blur-materials", version.ref = "haze" }
 kdroidfilter-composemediaplayer = { module = "io.github.kdroidfilter:composemediaplayer", version.ref = "composemediaplayer" }
-material-kolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor" }
-materialKolorMaterial3 = { module = "com.materialkolor:material-kolor-material3", version.ref = "materialKolor" }
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
 paginator-compose-cursor-android-debug = { module = "io.github.jamal-wia:paginator-compose-cursor-android-debug", version.ref = "paginatorComposeCursorAndroidDebug" }
 paginator-core = { module = "io.github.jamal-wia:paginator-core", version.ref = "paginatorCore" }
