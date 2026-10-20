@@ -35,6 +35,7 @@ import com.dertefter.design.components.lists.SegmentedColumn
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.bottomNavHeight
+import com.dertefter.design.theme.isBlurSupported
 import com.dertefter.design.theme.spacing
 import com.dertefter.settings_theme.R
 import com.dertefter.settings_theme.presentation.Event
@@ -50,6 +51,8 @@ fun AppBarThemingScreen(
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     val hazeState = rememberHazeState()
+
+    val isBlurSupported = MaterialTheme.isBlurSupported
 
     Scaffold(
         topBar = {
@@ -142,19 +145,21 @@ fun AppBarThemingScreen(
                         }
                     }
 
-                    item {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large)
-                        ) {
-                            Text(
-                                text = stringResource(R.string.settings_theme_app_bar_blurred),
-                                modifier = Modifier.weight(1f)
-                            )
-                            Switch(
-                                checked = uiState.appBarBlurred,
-                                onCheckedChange = { onEvent(Event.OnUpdateAppBarBlurred(it)) }
-                            )
+                    if (isBlurSupported){
+                        item {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large)
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.settings_theme_app_bar_blurred),
+                                    modifier = Modifier.weight(1f)
+                                )
+                                Switch(
+                                    checked = uiState.appBarBlurred,
+                                    onCheckedChange = { onEvent(Event.OnUpdateAppBarBlurred(it)) }
+                                )
+                            }
                         }
                     }
 
