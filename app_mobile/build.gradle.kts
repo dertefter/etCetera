@@ -105,6 +105,7 @@ dependencies {
     implementation(project(":app_mobile:feat:event_viewer"))
     implementation(project(":app_mobile:feat:onboarding"))
 
+    implementation(libs.coil.gif)
     implementation(libs.core.splashscreen)
     implementation(libs.activity.compose)
     implementation(libs.appcompat)
