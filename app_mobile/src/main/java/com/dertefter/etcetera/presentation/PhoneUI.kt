@@ -57,7 +57,6 @@ import androidx.navigation3.runtime.NavKey
 import coil3.compose.AsyncImage
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.LocalBottomNavHeight
-import com.dertefter.design.theme.bottomNavHeight
 import com.dertefter.design.theme.navBlurred
 import com.dertefter.design.theme.navFloating
 import com.dertefter.design.theme.navLabeled

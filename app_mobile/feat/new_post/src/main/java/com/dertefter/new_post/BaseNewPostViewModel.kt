@@ -147,7 +147,7 @@ abstract class BaseNewPostViewModel(
 
             if (editStart == editEndOld) {
                 // Pure insertion
-                if (oldStart < editStart && oldEnd > editStart) {
+                if (editStart in (oldStart + 1)..<oldEnd) {
                     // Insertion inside span -> span expands
                     newStart = oldStart
                     newEnd = oldEnd + delta

@@ -16,7 +16,6 @@ import com.dertefter.design.theme.AppTheme
 import com.dertefter.etcetera.navigation.AppNavHost
 import com.dertefter.etcetera.navigation.DeepLinkParser
 import com.dertefter.etcetera.presentation.MainScreen
-import com.dertefter.navigation.Navigator
 import dev.zacsweers.metrox.viewmodel.LocalMetroViewModelFactory
 import com.dertefter.design.theme.EmojiAvatarHarmonizationColor as DesignColor
 

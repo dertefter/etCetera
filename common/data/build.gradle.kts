@@ -34,6 +34,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.core.ktx)
     api(libs.metro.runtime)
     implementation(libs.datastore.preferences)
     api(libs.androidx.datastore.core)

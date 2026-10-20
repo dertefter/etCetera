@@ -37,7 +37,7 @@ class CrashlyticsRepositoryImpl(
 
     private data class TimestampedError(val error: AppError?, val timestamp: Long = System.currentTimeMillis())
 
-    private val _currentError = MutableStateFlow<TimestampedError>(TimestampedError(null))
+    private val _currentError = MutableStateFlow(TimestampedError(null))
     override val currentError: Flow<AppError?> = _currentError.map { it.error }
 
     private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())

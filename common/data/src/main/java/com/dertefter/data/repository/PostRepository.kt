@@ -3,7 +3,6 @@ package com.dertefter.data.repository
 import com.dertefter.data.dto.draft.DraftDto
 import com.dertefter.data.dto.feed.PollDto
 import com.dertefter.data.dto.feed.PostDto
-import com.dertefter.data.dto.feed.SpanDto
 import com.dertefter.data.dto.feed.like.LikeResponseDto
 import com.dertefter.data.dto.feed.stats.PostStatsDto
 import com.dertefter.data.dto.new_post.EditPostRequestDto

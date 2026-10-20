@@ -17,7 +17,6 @@ import androidx.wear.compose.material3.AppScaffold
 import com.dertefter.design.theme.WearableTheme
 import com.dertefter.etcetera.navigation.AppNavHost
 import com.dertefter.navigation.NavigationAction
-import com.dertefter.navigation.Navigator
 import com.dertefter.navigation.Routes
 import dev.zacsweers.metrox.viewmodel.LocalMetroViewModelFactory
 
