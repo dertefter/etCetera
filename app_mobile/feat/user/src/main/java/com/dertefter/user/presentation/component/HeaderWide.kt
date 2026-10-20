@@ -1,6 +1,7 @@
 package com.dertefter.user.presentation.component
 
 import android.content.res.Configuration
+import android.os.Build.VERSION.SDK_INT
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.foundation.background
@@ -68,8 +69,12 @@ fun HeaderWide(
     val context = LocalContext.current
     val hazeState = rememberHazeState()
 
-    val scrollFraction = if (scrollBehavior != null){
-        (scrollBehavior.state.contentOffset.absoluteValue / (scrollBehavior.state.heightOffsetLimit.absoluteValue * 4)).coerceIn(0f, 1f)
+    val scrollFraction = if (scrollBehavior != null) {
+        if (SDK_INT <= 29) {
+            0f
+        } else {
+            (scrollBehavior.state.contentOffset.absoluteValue / (scrollBehavior.state.heightOffsetLimit.absoluteValue * 4)).coerceIn(0f, 1f)
+        }
     }else{
         0f
     }
