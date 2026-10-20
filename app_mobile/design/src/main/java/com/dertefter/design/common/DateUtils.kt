@@ -26,20 +26,15 @@ object DateParser {
     fun parseToInstant(dateString: String?): Instant? {
         if (dateString == null) return null
         return try {
-            // Try standard Instant.parse first (ISO-8601)
             Instant.parse(dateString)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             try {
-                // Try parsing with flexible formatter
                 OffsetDateTime.parse(dateString, formatter).toInstant()
-            } catch (e2: Exception) {
-                // Fallback: replace space with T and try Instant.parse again
+            } catch (_: Exception) {
                 try {
                     val normalized = dateString.replace(" ", "T")
-                    // If it ends with +XX, append :00 to make it +XX:00 which Instant.parse often prefers if it's not using a formatter
-                    // Actually OffsetDateTime should handle it.
                     OffsetDateTime.parse(normalized).toInstant()
-                } catch (e3: Exception) {
+                } catch (_: Exception) {
                     null
                 }
             }
