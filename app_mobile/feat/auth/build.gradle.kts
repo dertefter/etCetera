@@ -18,7 +18,7 @@ android {
     compileSdk { version = release(37) { minorApiLevel = 1 } }
 
     defaultConfig {
-        minSdk = 29
+        minSdk = 25
     }
 
 
@@ -37,6 +37,7 @@ dependencies {
     api(project(":common:data"))
     implementation(project(":app_mobile:design"))
 
+    implementation(libs.compose.webview)
     api(libs.metro.runtime)
     api(libs.metrox.viewmodel)
     implementation(libs.metrox.viewmodel.compose)
