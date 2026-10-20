@@ -86,10 +86,6 @@ fun PhoneUI(
     hazeState: HazeState = rememberHazeState()
 ) {
 
-
-
-
-
     var navBarHeightPx by remember { mutableIntStateOf(0) }
     val density = LocalDensity.current
     val measuredBottomNavHeight = remember(navBarHeightPx, density) {
@@ -219,48 +215,25 @@ fun PhoneUI(
                         .fillMaxWidth()
                     )
                 {
-                    MainTab.entries.forEach { tab ->
+                    MainTab.entries
+                        .filter { tab -> tab != MainTab.EventViewer || isPortalVisible }
+                        .forEach { tab ->
+                            val selected = selectedTab == tab
+                            val isEventViewer = tab == MainTab.EventViewer
 
-                        val selected = selectedTab == tab
-
-                        if (tab == MainTab.EventViewer) {
-                            if (isPortalVisible){
-                                NavigationBarItem(
-                                    colors = NavigationBarItemDefaults.colors().copy(
+                            NavigationBarItem(
+                                selected = selected,
+                                onClick = { onNavItemClick(tab) },
+                                colors = if (isEventViewer) {
+                                    NavigationBarItemDefaults.colors().copy(
                                         selectedIndicatorColor = Color(0xFF35F5BF).harmonize(
                                             MaterialTheme.colorScheme.secondaryContainer,
                                             matchSaturation = true
                                         )
-                                    ),
-                                    selected = selected,
-                                    onClick = { onNavItemClick(tab) },
-                                    icon = {
-                                        BadgedBox(
-                                            badge = {
-                                                if (tab == MainTab.Notifications && notificationCount != null && notificationCount > 0) {
-                                                    Badge {
-                                                        Text(notificationCount.toString())
-                                                    }
-                                                }
-                                            }
-                                        ) {
-                                            AsyncImage(
-                                                model = "https://xn--d1ah4a.com/assets/portal/portal-active.gif",
-                                                contentDescription = null,
-                                                modifier = Modifier
-                                                    .size(22.dp)
-                                            )
-                                        }
-                                    },
-                                    label =  labeled(
-                                        label = stringResource(tab.label)
                                     )
-                                )
-                            }
-                        } else {
-                            NavigationBarItem(
-                                selected = selected,
-                                onClick = { onNavItemClick(tab) },
+                                } else {
+                                    NavigationBarItemDefaults.colors()
+                                },
                                 icon = {
                                     BadgedBox(
                                         badge = {
@@ -271,21 +244,25 @@ fun PhoneUI(
                                             }
                                         }
                                     ) {
-                                        Icon(
-                                            imageVector = if (selected) tab.selectedIcon() else tab.icon(),
-                                            contentDescription = stringResource(tab.label)
-                                        )
+                                        if (isEventViewer) {
+                                            AsyncImage(
+                                                model = "https://xn--d1ah4a.com/assets/portal/portal-active.gif",
+                                                contentDescription = null,
+                                                modifier = Modifier.size(22.dp)
+                                            )
+                                        } else {
+                                            Icon(
+                                                imageVector = if (selected) tab.selectedIcon() else tab.icon(),
+                                                contentDescription = stringResource(tab.label)
+                                            )
+                                        }
                                     }
                                 },
-                                label =  labeled(
+                                label = labeled(
                                     label = stringResource(tab.label)
                                 )
                             )
                         }
-
-
-
-                    }
                 }
             }
         }

@@ -322,40 +322,12 @@ fun TabUIStateless(
 
                 )
                 {
-                    MainTab.entries.forEach { tab ->
+                    MainTab.entries
+                        .filter { tab -> tab != MainTab.EventViewer || isPortalVisible }
+                        .forEach { tab ->
+                            val selected = selectedTab == tab
+                            val isEventViewer = tab == MainTab.EventViewer
 
-                        val selected = selectedTab == tab
-
-                        if (tab == MainTab.EventViewer) {
-                            if (isPortalVisible) {
-                                WideNavigationRailItem(
-                                    selected = selected,
-                                    onClick = { onNavItemClick(tab) },
-                                    icon = {
-                                        BadgedBox(
-                                            badge = {
-                                                if (tab == MainTab.Notifications && notificationCount != null && notificationCount > 0) {
-                                                    Badge {
-                                                        Text(notificationCount.toString())
-                                                    }
-                                                }
-                                            }
-                                        ) {
-                                            AsyncImage(
-                                                model = "https://xn--d1ah4a.com/assets/portal/portal-active.gif",
-                                                contentDescription = null,
-                                                modifier = Modifier
-                                                    .size(28.dp)
-                                            )
-                                        }
-                                    },
-                                    label =  labeled(
-                                        label = stringResource(tab.label)
-                                    ),
-                                    railExpanded = railState.currentValue == WideNavigationRailValue.Expanded,
-                                )
-                            }
-                        } else {
                             WideNavigationRailItem(
                                 selected = selected,
                                 onClick = { onNavItemClick(tab) },
@@ -369,20 +341,26 @@ fun TabUIStateless(
                                             }
                                         }
                                     ) {
-                                        Icon(
-                                            imageVector = if (selected) tab.selectedIcon() else tab.icon(),
-                                            contentDescription = stringResource(tab.label)
-                                        )
+                                        if (isEventViewer) {
+                                            AsyncImage(
+                                                model = "https://xn--d1ah4a.com/assets/portal/portal-active.gif",
+                                                contentDescription = null,
+                                                modifier = Modifier.size(28.dp)
+                                            )
+                                        } else {
+                                            Icon(
+                                                imageVector = if (selected) tab.selectedIcon() else tab.icon(),
+                                                contentDescription = stringResource(tab.label)
+                                            )
+                                        }
                                     }
                                 },
-                                label =  labeled(
+                                label = labeled(
                                     label = stringResource(tab.label)
                                 ),
                                 railExpanded = railState.currentValue == WideNavigationRailValue.Expanded,
                             )
                         }
-
-                    }
                 }
             }
 
