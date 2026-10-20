@@ -2,12 +2,14 @@ package com.dertefter.auth.presentation
 
 import android.annotation.SuppressLint
 import android.content.ContextWrapper
+import android.os.Handler
+import android.os.Looper
 import android.webkit.JavascriptInterface
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.viewinterop.AndroidView
+import com.parkwoocheol.composewebview.ComposeWebView
+import com.parkwoocheol.composewebview.WebView
+import com.parkwoocheol.composewebview.rememberSaveableWebViewStateWithData
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
@@ -48,25 +50,34 @@ fun TurnstileWebView(
         </html>
     """.trimIndent()
 
-    AndroidView(
+    val state = rememberSaveableWebViewStateWithData(
+        data = html,
+        baseUrl = "https://xn--d1ah4a.com",
+        mimeType = "text/html",
+        encoding = "UTF-8"
+    )
+
+    ComposeWebView(
+        state = state,
         modifier = modifier,
         factory = { context ->
             val contextWrapper = object : ContextWrapper(context) {
                 override fun getPackageName(): String = "com.itd.app"
             }
-            WebView(contextWrapper).apply {
-                settings.javaScriptEnabled = true
-                webViewClient = WebViewClient()
-                addJavascriptInterface(object {
-                    @JavascriptInterface
-                    fun onToken(token: String) {
-                        post {
-                            onTokenReceived(token)
-                        }
+            WebView(contextWrapper)
+        },
+        javaScriptInterfaces = mapOf(
+            "TurnstileInterface" to object {
+                @JavascriptInterface
+                fun onToken(token: String) {
+                    Handler(Looper.getMainLooper()).post {
+                        onTokenReceived(token)
                     }
-                }, "TurnstileInterface")
-                loadDataWithBaseURL("https://xn--d1ah4a.com", html, "text/html", "UTF-8", null)
+                }
             }
+        ),
+        onCreated = { webView ->
+            webView.settings.javaScriptEnabled = true
         }
     )
 }
