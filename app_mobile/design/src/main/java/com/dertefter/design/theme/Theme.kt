@@ -39,6 +39,7 @@ val LocalIsFold = staticCompositionLocalOf { false }
 val LocalIsDark = staticCompositionLocalOf { false }
 
 val LocalIsTab = staticCompositionLocalOf { false }
+val LocalIsBlurSupported = staticCompositionLocalOf { Build.VERSION.SDK_INT >= Build.VERSION_CODES.S }
 
 val LocalEmojiAvatarHarmonizationColor = staticCompositionLocalOf { EmojiAvatarHarmonizationColor.PRIMARY_CONTAINER }
 
@@ -161,6 +162,11 @@ val MaterialTheme.appBarFaded: Boolean?
     @ReadOnlyComposable
     get() = LocalAppBarFaded.current
 
+val MaterialTheme.isBlurSupported: Boolean
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalIsBlurSupported.current
+
 
 enum class EmojiAvatarHarmonizationColor {
     DEFAULT,
@@ -199,6 +205,8 @@ fun AppTheme(
 
 
     val darkTheme = darkTheme ?: isSystemInDarkTheme()
+
+    val isBlurSupported = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
     val view = LocalView.current
     if (!view.isInEditMode) {
@@ -242,6 +250,7 @@ fun AppTheme(
         LocalIsFold provides isFold,
         LocalIsTab provides isTab,
         LocalIsDark provides darkTheme,
+        LocalIsBlurSupported provides isBlurSupported,
         LocalEmojiAvatarHarmonizationColor provides emojiAvatarHarmonizeColor,
         LocalPostHorizontalExtraSpace provides postHorizontalExtraSpace,
         LocalPostContained provides postContained,
@@ -252,8 +261,8 @@ fun AppTheme(
         LocalBottomNavHeight provides bottomNavHeight,
         LocalNavFloating provides navFloating,
         LocalNavLabeled provides navLabeled,
-        LocalNavBlurred provides navBlurred,
-        LocalAppBarBlurred provides appBarBlurred,
+        LocalNavBlurred provides (navBlurred && isBlurSupported),
+        LocalAppBarBlurred provides (appBarBlurred && isBlurSupported),
         LocalAppBarFaded provides appBarFaded,
     ) {
         MaterialExpressiveTheme (
