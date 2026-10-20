@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
@@ -26,6 +27,8 @@ import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.WideNavigationRail
@@ -52,6 +55,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import coil3.compose.AsyncImage
@@ -84,7 +88,8 @@ fun TabUI(
     ) -> Unit,
     onBack: () -> Unit,
     onNavItemClick: (tab: MainTab) -> Unit,
-    hazeState: HazeState = rememberHazeState()
+    hazeState: HazeState = rememberHazeState(),
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
 ) {
     TabUIStateless(
         hazeState = hazeState,
@@ -94,6 +99,7 @@ fun TabUI(
         notificationCount = notificationCount,
         isPortalVisible = isPortalVisible,
         onNavItemClick = onNavItemClick,
+        snackbarHostState = snackbarHostState,
         content = {
             appNavHost(
                 entries,
@@ -114,6 +120,7 @@ fun TabUIStateless(
     notificationCount: Int?,
     isPortalVisible: Boolean = false,
     onNavItemClick: (tab: MainTab) -> Unit,
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     content: @Composable () -> Unit
 ) {
     val isTab = MaterialTheme.isTab
@@ -365,6 +372,17 @@ fun TabUIStateless(
             }
 
         }
+
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(
+                    bottom = if (!hideNav) navigationBarHeight + 8.dp
+                    else max(8.dp, WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 8.dp)
+                )
+                .imePadding()
+        )
 
     }
 }

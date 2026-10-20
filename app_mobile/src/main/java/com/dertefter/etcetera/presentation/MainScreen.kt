@@ -249,6 +249,7 @@ fun MainScreen(
     val snackbarHostState = remember { SnackbarHostState() }
 
     val errorMessage = getErrorMessage(uiState.currentError)
+    android.util.Log.d("MainScreen", "currentError: ${uiState.currentError}, errorMessage: $errorMessage")
 
     val bottomSheetBlurStyle = HazeMaterials.thick( // I L0VE TH1CK G1RLSSSSSS!!!!11!!!
         containerColor = MaterialTheme.colorScheme.surfaceContainer
@@ -260,14 +261,13 @@ fun MainScreen(
                 || activeBackStack == onBoardingBackStack
 
     LaunchedEffect(errorMessage) {
-        scope.launch {
-            errorMessage?.let { errorMessage ->
-                snackbarHostState
-                    .showSnackbar(
-                        message = errorMessage,
-                        duration = SnackbarDuration.Short
-                    )
-            }
+        android.util.Log.d("MainScreen", "errorMessage: $errorMessage")
+        errorMessage?.let { errorMessage ->
+            snackbarHostState
+                .showSnackbar(
+                    message = errorMessage,
+                    duration = SnackbarDuration.Short
+                )
         }
     }
 
@@ -323,6 +323,7 @@ fun MainScreen(
             notificationCount = uiState.notificationCount,
             appNavHost = appNavHost,
             isPortalVisible = isPortalVisible,
+            snackbarHostState = snackbarHostState,
             onBack = {
                 if (activeBackStack.size > 1) {
                     activeBackStack.removeAt(activeBackStack.lastIndex)
@@ -342,6 +343,7 @@ fun MainScreen(
             notificationCount = uiState.notificationCount,
             isPortalVisible = isPortalVisible,
             appNavHost = appNavHost,
+            snackbarHostState = snackbarHostState,
             onBack = {
                 if (activeBackStack.size > 1) {
                     activeBackStack.removeAt(activeBackStack.lastIndex)

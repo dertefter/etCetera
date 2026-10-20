@@ -5,15 +5,25 @@ import android.util.Log
 import com.dertefter.data.common.AppError
 import com.dertefter.data.common.toAppError
 import com.dertefter.data.dto.app.CrashlyticsItem
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.time.Duration.Companion.milliseconds
 
+@SingleIn(AppScope::class)
 @Inject
 class CrashlyticsRepositoryImpl(
     private val context: Context,
@@ -25,13 +35,30 @@ class CrashlyticsRepositoryImpl(
         }
     }
 
-    private val _currentError = MutableStateFlow<AppError?>(null)
-    override val currentError: Flow<AppError?> = _currentError.asStateFlow()
+    private data class TimestampedError(val error: AppError?, val timestamp: Long = System.currentTimeMillis())
+
+    private val _currentError = MutableStateFlow<TimestampedError>(TimestampedError(null))
+    override val currentError: Flow<AppError?> = _currentError.map { it.error }
+
+    private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
+    private var resetJob: Job? = null
 
     override fun showError(e: Throwable?) {
-        Log.e("showError", e?.stackTraceToString() ?: "")
+        Log.e("showError", "Throwable: $e, stack: ${e?.stackTraceToString()}")
         val appError = e?.toAppError()
-        _currentError.value = appError
+        Log.e("showError", "Mapped appError: $appError")
+        resetJob?.cancel()
+        if (appError != null) {
+            _currentError.value = TimestampedError(appError, System.currentTimeMillis())
+            Log.e("showError", "Set _currentError.value to: $appError")
+            resetJob = scope.launch {
+                delay(2000L.milliseconds)
+                Log.e("showError", "Resetting _currentError.value to null")
+                _currentError.value = TimestampedError(null, System.currentTimeMillis())
+            }
+        } else {
+            _currentError.value = TimestampedError(null, System.currentTimeMillis())
+        }
     }
 
     override fun saveCrashLog(exception: Throwable) {

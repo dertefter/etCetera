@@ -50,6 +50,7 @@ class MainViewModel(
         eventsRepository.currentEvent,
         crashlyticsRepository.currentError
     ) { login, meId, notificationCount, currentEvent, error ->
+        android.util.Log.d("MainViewModel", "uiState combine update -> error: $error")
         MainUiState(
             isReady = true,
             currentLogin = login,

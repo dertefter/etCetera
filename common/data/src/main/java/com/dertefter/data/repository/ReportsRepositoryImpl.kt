@@ -4,8 +4,11 @@ import com.dertefter.data.common.onFailureLog
 import com.dertefter.data.datasource.remote.RemoteDataSource
 import com.dertefter.data.dto.reports.ReportDataDto
 import com.dertefter.data.dto.reports.ReportRequestDto
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 
+@SingleIn(AppScope::class)
 @Inject
 class ReportsRepositoryImpl(
     private val remoteDataSource: RemoteDataSource,

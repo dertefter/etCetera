@@ -30,6 +30,8 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -55,6 +57,7 @@ import androidx.navigation3.runtime.NavKey
 import coil3.compose.AsyncImage
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.LocalBottomNavHeight
+import com.dertefter.design.theme.bottomNavHeight
 import com.dertefter.design.theme.navBlurred
 import com.dertefter.design.theme.navFloating
 import com.dertefter.design.theme.navLabeled
@@ -83,7 +86,8 @@ fun PhoneUI(
     ) -> Unit,
     onBack: () -> Unit,
     onNavItemClick: (tab: MainTab) -> Unit,
-    hazeState: HazeState = rememberHazeState()
+    hazeState: HazeState = rememberHazeState(),
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
 ) {
 
     var navBarHeightPx by remember { mutableIntStateOf(0) }
@@ -159,6 +163,17 @@ fun PhoneUI(
 
             )
         }
+
+
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(
+                    bottom = bottomNavHeight
+                )
+                .imePadding()
+        )
 
         AnimatedVisibility(
             visible = !hideNav,
@@ -266,8 +281,6 @@ fun PhoneUI(
                 }
             }
         }
-
-
 
     }
 
