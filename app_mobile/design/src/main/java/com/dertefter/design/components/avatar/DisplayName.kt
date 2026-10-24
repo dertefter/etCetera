@@ -10,13 +10,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.Text
 import androidx.compose.material3.TooltipAnchorPosition
 import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,7 +31,9 @@ import com.dertefter.design.components.post.PinUiModel
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 
 @Composable
@@ -64,7 +66,8 @@ fun DisplayName(
     verified: Boolean,
     hasNuksta: Boolean,
     pin: PinUiModel? = null,
-    textStyle: TextStyle = MaterialTheme.typography.bodyLarge
+    textStyle: TextStyle = MaterialTheme.typography.bodyLarge,
+    onPinClick: (() -> Unit)? = null
     )
 {
 
@@ -108,24 +111,24 @@ fun DisplayName(
         }
 
         pin?.let { pinModel ->
-            val tooltipState = rememberTooltipState()
+            val tooltipState = rememberTooltipState(isPersistent = true)
             val scope = rememberCoroutineScope()
+
+            if (tooltipState.isVisible) {
+                LaunchedEffect(tooltipState) {
+                    delay(5000.milliseconds)
+                    tooltipState.dismiss()
+                }
+            }
+
             TooltipBox(
                 positionProvider = TooltipDefaults.rememberTooltipPositionProvider(
                     positioning = TooltipAnchorPosition.Above
                 ),
                 tooltip = {
-                    PlainTooltip(
-                        containerColor = MaterialTheme.colorScheme.tertiary,
-                        contentColor = MaterialTheme.colorScheme.onTertiary,
-                        shape = MaterialTheme.shapes.medium
-                    ) {
-                        Text(
-                            text = "${pinModel.name} • ${pinModel.description}",
-                            style = MaterialTheme.typography.labelLargeEmphasized,
-                            modifier = Modifier.padding(MaterialTheme.spacing.small)
-                        )
-                    }
+                    PinTooltip(
+                        pin = pinModel
+                    )
                 },
                 state = tooltipState
             ) {
@@ -135,7 +138,11 @@ fun DisplayName(
                     modifier = Modifier
                         .clickable(
                             onClick = {
-                                scope.launch { tooltipState.show() }
+                                if (onPinClick != null) {
+                                    onPinClick()
+                                } else {
+                                    scope.launch { tooltipState.show() }
+                                }
                             }
                         )
                         .size(20.dp)
