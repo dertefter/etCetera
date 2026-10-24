@@ -64,6 +64,7 @@ fun HeaderWide(
     onFollowingClock: () -> Unit,
     lastSeenDto: LastSeenDto? = null,
     isOnline: Boolean = false,
+    onOpenPinChanger: () -> Unit = {},
 ){
 
     val context = LocalContext.current
@@ -152,7 +153,8 @@ fun HeaderWide(
                             verified = author.verified,
                             hasNuksta = author.hasNuksta,
                             pin = author.pin,
-                            textStyle = MaterialTheme.typography.titleLargeEmphasized
+                            textStyle = MaterialTheme.typography.titleLargeEmphasized,
+                            onPinClick = if (isMe) onOpenPinChanger else null
                         )
                         Text(
                             text = "@${author.username}",

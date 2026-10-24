@@ -393,6 +393,9 @@ fun UserScreen(
                     item {
                         if (MaterialTheme.isFold){
                             HeaderWide(
+                                onOpenPinChanger = {
+                                    onEvent(Event.OnOpenPinChanger)
+                                },
                                 bannerUrl = userUiState.userDto.banner,
                                 modifier = Modifier
                                     .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
@@ -421,6 +424,9 @@ fun UserScreen(
                             )
                         }else{
                             Header(
+                                onOpenPinChanger = {
+                                    onEvent(Event.OnOpenPinChanger)
+                                },
                                 bannerUrl = userUiState.userDto.banner,
                                 modifier = Modifier
                                     .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),

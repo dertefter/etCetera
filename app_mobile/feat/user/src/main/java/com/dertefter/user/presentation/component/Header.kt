@@ -61,6 +61,7 @@ fun Header(
     onFollowingClock: () -> Unit,
     lastSeenDto: LastSeenDto? = null,
     isOnline: Boolean = false,
+    onOpenPinChanger: () -> Unit = {},
 ){
 
     val context = LocalContext.current
@@ -152,7 +153,8 @@ fun Header(
            verified = author.verified,
            hasNuksta = author.hasNuksta,
            pin = author.pin,
-           textStyle = MaterialTheme.typography.titleLarge
+           textStyle = MaterialTheme.typography.titleLarge,
+           onPinClick = if (isMe) onOpenPinChanger else null
        )
        Text(
            text = "@${author.username}",

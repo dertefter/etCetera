@@ -82,6 +82,7 @@ include(":app_mobile:feat:settings_about")
 include(":app_mobile:feat:report")
 include(":app_mobile:feat:event_viewer")
 include(":app_mobile:feat:onboarding")
+include(":app_mobile:feat:pin_changer")
 
 //wearable
 include(":app_wearable")

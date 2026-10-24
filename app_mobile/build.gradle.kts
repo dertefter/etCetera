@@ -105,6 +105,7 @@ dependencies {
     implementation(project(":app_mobile:feat:report"))
     implementation(project(":app_mobile:feat:event_viewer"))
     implementation(project(":app_mobile:feat:onboarding"))
+    implementation(project(":app_mobile:feat:pin_changer"))
 
     coreLibraryDesugaring(libs.desugar.jdk.libs)
     implementation(libs.coil.gif)

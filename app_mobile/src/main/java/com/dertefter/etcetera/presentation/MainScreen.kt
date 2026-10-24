@@ -57,6 +57,7 @@ import com.dertefter.new_post.NewCommentReplyRoute
 import com.dertefter.new_post.NewCommentRoute
 import com.dertefter.new_post.NewPostRoute
 import com.dertefter.new_post.RepostRoute
+import com.dertefter.pin_changer.PinChangerRoute
 import com.dertefter.report.ReportRoute
 import com.dertefter.switch_account.SwitchAccountRoute
 import dev.chrisbanes.haze.HazeInput
@@ -397,6 +398,7 @@ fun MainScreen(
                         )
                 ) {
                     when (bottomSheetRoute) {
+                        is Routes.PinChanger -> PinChangerRoute()
                         is Routes.Report -> ReportRoute(bottomSheetRoute.targetType, bottomSheetRoute.targetId)
                         is Routes.SwitchAccount -> SwitchAccountRoute()
                         is Routes.Comments -> CommentsRoute(bottomSheetRoute.postId)

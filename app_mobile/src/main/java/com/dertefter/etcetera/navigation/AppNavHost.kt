@@ -46,6 +46,7 @@ import com.dertefter.user.UserByUsernameRoute
 import com.dertefter.user.UserRoute
 import com.dertefter.event_viewer.EventViewerRoute
 import com.dertefter.onboarding.OnBoardingRoute
+import com.dertefter.pin_changer.PinChangerRoute
 import kotlin.math.roundToInt
 
 
@@ -137,6 +138,6 @@ fun RouteContent(route: Routes) {
         is Routes.SettingsAbout -> SettingsAboutRoute()
         is Routes.Report -> ReportRoute(route.targetType, route.targetId)
         is Routes.EventViewer -> EventViewerRoute()
-
+        is Routes.PinChanger -> PinChangerRoute()
     }
 }

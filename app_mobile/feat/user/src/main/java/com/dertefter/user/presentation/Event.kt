@@ -13,6 +13,8 @@ sealed interface Event {
 
     data object OnNavigateBack : Event
 
+    data object OnOpenPinChanger : Event
+
     data object OnNavigateToAuth : Event
     data object OnOpenSwitchAccount : Event
     data class OnTabSelected(val tab: FeedTab) : Event

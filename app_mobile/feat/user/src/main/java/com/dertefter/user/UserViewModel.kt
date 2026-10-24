@@ -204,6 +204,10 @@ class UserViewModel(
     fun onEvent(event: Event) {
         when (event) {
 
+            is Event.OnOpenPinChanger -> {
+                openAsBottomSheetUseCase(Routes.PinChanger)
+            }
+
             is Event.OnStoleBanner -> {
                 viewModelScope.launch {
                     stoleBannerUseCase(event.banner)
