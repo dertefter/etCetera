@@ -86,7 +86,7 @@ private class SegmentedColumnScopeImpl : SegmentedColumnScope {
 @Composable
 fun SegmentedColumn(
     modifier: Modifier = Modifier,
-    itemInnerPadding: PaddingValues = PaddingValues(MaterialTheme.spacing.large),
+    itemInnerPadding: PaddingValues = PaddingValues(MaterialTheme.spacing.largeIncreased),
     content: SegmentedColumnScope.() -> Unit
 ) {
     SegmentedColumnImpl(
@@ -101,7 +101,7 @@ fun SegmentedColumn(
 fun SegmentedColumn(
     modifier: Modifier = Modifier,
     title: String,
-    itemInnerPadding: PaddingValues = PaddingValues(MaterialTheme.spacing.large),
+    itemInnerPadding: PaddingValues = PaddingValues(MaterialTheme.spacing.largeIncreased),
     content: SegmentedColumnScope.() -> Unit
 ) {
     SegmentedColumnImpl(
@@ -116,7 +116,7 @@ fun SegmentedColumn(
 private fun SegmentedColumnImpl(
     modifier: Modifier = Modifier,
     title: String? = null,
-    itemInnerPadding: PaddingValues = PaddingValues(MaterialTheme.spacing.large),
+    itemInnerPadding: PaddingValues = PaddingValues(MaterialTheme.spacing.largeIncreased),
     content: SegmentedColumnScope.() -> Unit
 ) {
     val scope = remember { SegmentedColumnScopeImpl() }
