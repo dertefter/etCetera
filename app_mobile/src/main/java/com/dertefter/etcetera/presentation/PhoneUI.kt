@@ -182,6 +182,7 @@ fun PhoneUI(
         ) {
             Box(
                 modifier = Modifier
+                    .hazeSource(hazeState)
                     .align(Alignment.BottomCenter)
                     .background(
                         brush = Brush.verticalGradient(
@@ -198,7 +199,7 @@ fun PhoneUI(
             Surface(
                 color =  MaterialTheme.colorScheme.surfaceContainer,
                 shadowElevation = navSpacingHorizontal.coerceAtLeast(0.dp),
-                shape =RoundedCornerShape(navCornerSizePercent.coerceIn(0,100)),
+                shape = RoundedCornerShape(navCornerSizePercent.coerceIn(0,100)),
                 modifier = Modifier
                     .onSizeChanged { size ->
                         navBarHeightPx = size.height
@@ -218,7 +219,7 @@ fun PhoneUI(
                             if (MaterialTheme.navBlurred){
                                 Modifier.hazeBlur(
                                     input = HazeInput.Backdrop(hazeState),
-                                    style = HazeMaterials.thin(
+                                    style = HazeMaterials.regular(
                                         containerColor = MaterialTheme.colorScheme.surfaceContainer
                                     ),
                                 )
