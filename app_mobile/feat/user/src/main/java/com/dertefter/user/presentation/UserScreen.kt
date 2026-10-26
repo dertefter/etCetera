@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonGroup
 import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.DropdownMenu
@@ -220,6 +221,31 @@ fun UserScreen(
                                 onClick = { onEvent(Event.OnNavigateBack) },
                                 contentDescription = stringResource(com.dertefter.design.R.string.design_back_content_desc)
                             )
+                        } else if (userUiState.isMe){
+                            Button(
+                                modifier = Modifier.padding(start = MaterialTheme.spacing.small),
+                                onClick = { onEvent(Event.OnOpenSwitchAccount) },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                                ),
+                                contentPadding = PaddingValues(
+                                    horizontal = MaterialTheme.spacing.medium
+                                ),
+                            ) {
+                                Icon(
+                                    imageVector = Icons.PersonSwitch,
+                                    contentDescription = null
+                                )
+                                Text(
+                                    modifier = Modifier.padding(
+                                        start = MaterialTheme.spacing.small,
+                                        end = MaterialTheme.spacing.small
+                                    ),
+                                    text = stringResource(R.string.user_switch_account)
+                                )
+                            }
+
                         }
                     },
                     title = {
@@ -645,6 +671,7 @@ fun UserScreenPreview() {
         UserScreen(
             onEvent = {},
             userUiState = UserUiState(
+                isMe = true,
                 userDto = UserDto(
                     avatar = "🥳",
                     banner = "https://example.com/banner.png",
