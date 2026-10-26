@@ -1,8 +1,10 @@
 package com.dertefter.data.repository
 
+import com.dertefter.data.common.loadCursorResultWithLocalFallback
 import com.dertefter.data.common.onFailureLog
 import com.dertefter.data.datasource.local.LocalDataSource
-import com.dertefter.data.datasource.local.room.NotificationPagingCache
+import com.dertefter.data.datasource.local.room.entity.PageEntity
+import com.dertefter.data.datasource.local.room.entity.PageType
 import com.dertefter.data.datasource.remote.RemoteDataSource
 import com.dertefter.data.dto.notifications.NotificationDto
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
@@ -28,43 +30,67 @@ class NotificationsRepositoryImpl(
     private val activePaginators = CopyOnWriteArrayList<WeakReference<MutableCursorPaginator<String, NotificationDto>>>()
 
     override fun getNotificationsPaginator(type: String?): MutableCursorPaginator<String, NotificationDto> {
+        val cacheKey = type ?: "all"
         return mutableCursorPaginator(capacity = 20) {
             cache = CursorMostRecentPagingCache(maxSize = 50)
-            persistentCache = NotificationPagingCache(type ?: "all", localDataSource)
             load { cursor ->
-                val startOffset = cursor?.self?.toIntOrNull() ?: 0
-                var currentOffset = startOffset
-                val accumulatedNotifications = mutableListOf<NotificationDto>()
-                var nextOffset: String?
+                val result = loadCursorResultWithLocalFallback<NotificationDto>(
+                    localDataSource = localDataSource,
+                    crashlyticsRepository = crashlyticsRepository,
+                    type = PageType.NOTIFICATION,
+                    tab = cacheKey,
+                    cursor = cursor,
+                    remote = {
+                        val startOffset = cursor?.self?.takeIf { it != "initial" }?.toIntOrNull() ?: 0
+                        var currentOffset = startOffset
+                        val accumulatedNotifications = mutableListOf<NotificationDto>()
+                        var nextOffset: String?
 
-                while (true) {
-                    val result = remoteDataSource.getNotifications(currentOffset).onFailureLog(crashlyticsRepository)
-                    val data = result.getOrThrow()
+                        while (true) {
+                            val data = remoteDataSource.getNotifications(currentOffset)
+                                .onFailureLog(crashlyticsRepository).getOrThrow()
 
-                    val pageFiltered = if (type == null) {
-                        data.notifications
-                    } else {
-                        data.notifications.filter { it.type.equals(type, ignoreCase = true) }
-                    }
+                            val pageFiltered = if (type == null) {
+                                data.notifications
+                            } else {
+                                data.notifications.filter { it.type.equals(type, ignoreCase = true) }
+                            }
 
-                    accumulatedNotifications.addAll(pageFiltered)
-                    
-                    val fetchedSize = data.notifications.size
-                    currentOffset += if (fetchedSize > 0) fetchedSize else 20
-                    if (accumulatedNotifications.size >= 20 || !data.hasMore || (currentOffset - startOffset >= 1000)) {
-                        nextOffset = if (data.hasMore) currentOffset.toString() else null
-                        break
-                    }
-                }
+                            accumulatedNotifications.addAll(pageFiltered)
 
-                CursorLoadResult(
-                    data = accumulatedNotifications,
-                    bookmark = CursorBookmark(
-                        prev = if (startOffset > 0) (startOffset - 20).coerceAtLeast(0).toString() else null,
-                        self = cursor?.self ?: "initial",
-                        next = nextOffset
+                            val fetchedSize = data.notifications.size
+                            currentOffset += if (fetchedSize > 0) fetchedSize else 20
+                            if (accumulatedNotifications.size >= 20 || !data.hasMore || (currentOffset - startOffset >= 1000)) {
+                                nextOffset = if (data.hasMore) currentOffset.toString() else null
+                                break
+                            }
+                        }
+
+                        CursorLoadResult(
+                            data = accumulatedNotifications,
+                            bookmark = CursorBookmark(
+                                prev = if (startOffset > 0) (startOffset - 20).coerceAtLeast(0).toString() else null,
+                                self = cursor?.self ?: "initial",
+                                next = nextOffset
+                            )
+                        )
+                    },
+                    local = { localDataSource.getNotificationsForPage(PageType.NOTIFICATION, cacheKey, cursor?.self ?: "initial") }
+                )
+
+                localDataSource.upsertPage(
+                    PageEntity(
+                        type = PageType.NOTIFICATION,
+                        tab = cacheKey,
+                        self = result.bookmark.self,
+                        prev = result.bookmark.prev,
+                        next = result.bookmark.next,
+                        isEmpty = result.data.isEmpty()
                     )
                 )
+                localDataSource.saveNotifications(PageType.NOTIFICATION, cacheKey, result.bookmark.self, result.data)
+
+                result
             }
             initialCursor = CursorBookmark(prev = null, self = "initial", next = null)
         }.also {

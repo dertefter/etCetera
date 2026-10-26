@@ -1,8 +1,10 @@
 package com.dertefter.data.repository
 
+import com.dertefter.data.common.loadCursorResultWithLocalFallback
 import com.dertefter.data.common.onFailureLog
 import com.dertefter.data.datasource.local.LocalDataSource
-import com.dertefter.data.datasource.local.room.FollowerPagingCache
+import com.dertefter.data.datasource.local.room.entity.PageEntity
+import com.dertefter.data.datasource.local.room.entity.PageType
 import com.dertefter.data.datasource.remote.RemoteDataSource
 import com.dertefter.data.dto.followers.FollowerUserDto
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
@@ -32,7 +34,6 @@ class FollowersRepositoryImpl(
         activePaginators.forEach { ref ->
             ref.get()?.let { paginator ->
                 paginator.updateWhere(predicate = predicate, transform = transform)
-                paginator.flush()
             }
         }
     }
@@ -48,21 +49,43 @@ class FollowersRepositoryImpl(
         val cacheKey = "followers_$userId"
         return mutableCursorPaginator(capacity = 20) {
             cache = CursorMostRecentPagingCache(maxSize = 20)
-            persistentCache = FollowerPagingCache(cacheKey, localDataSource)
 
             load { cursor ->
-                val page = (cursor?.self)?.toIntOrNull() ?: 1
-                val result = remoteDataSource.getFollowers(userId, page).onFailureLog(crashlyticsRepository)
-                val data = result.getOrThrow()
+                val result = loadCursorResultWithLocalFallback<FollowerUserDto>(
+                    localDataSource = localDataSource,
+                    crashlyticsRepository = crashlyticsRepository,
+                    type = PageType.USER,
+                    tab = cacheKey,
+                    cursor = cursor,
+                    remote = {
+                        val page = (cursor?.self)?.toIntOrNull() ?: 1
+                        val data = remoteDataSource.getFollowers(userId, page)
+                            .onFailureLog(crashlyticsRepository).getOrThrow()
+                        CursorLoadResult(
+                            data = data.users,
+                            bookmark = CursorBookmark(
+                                prev = if (page > 1) (page - 1).toString() else null,
+                                self = page.toString(),
+                                next = if (data.pagination.hasMore) (page + 1).toString() else null
+                            )
+                        )
+                    },
+                    local = { localDataSource.getUsersForPage(PageType.USER, cacheKey, cursor?.self ?: "1") }
+                )
 
-                CursorLoadResult(
-                    data = data.users,
-                    bookmark = CursorBookmark(
-                        prev = if (page > 1) (page - 1).toString() else null,
-                        self = page.toString(),
-                        next = if (data.pagination.hasMore) (page + 1).toString() else null
+                localDataSource.upsertPage(
+                    PageEntity(
+                        type = PageType.USER,
+                        tab = cacheKey,
+                        self = result.bookmark.self,
+                        prev = result.bookmark.prev,
+                        next = result.bookmark.next,
+                        isEmpty = result.data.isEmpty()
                     )
                 )
+                localDataSource.saveUsers(PageType.USER, cacheKey, result.bookmark.self, result.data)
+
+                result
             }
             initialCursor = CursorBookmark(prev = null, self = "1", next = null)
         }.also {
@@ -74,21 +97,43 @@ class FollowersRepositoryImpl(
         val cacheKey = "following_$userId"
         return mutableCursorPaginator(capacity = 20) {
             cache = CursorMostRecentPagingCache(maxSize = 20)
-            persistentCache = FollowerPagingCache(cacheKey, localDataSource)
 
             load { cursor ->
-                val page = (cursor?.self)?.toIntOrNull() ?: 1
-                val result = remoteDataSource.getFollowing(userId, page).onFailureLog(crashlyticsRepository)
-                val data = result.getOrThrow()
+                val result = loadCursorResultWithLocalFallback<FollowerUserDto>(
+                    localDataSource = localDataSource,
+                    crashlyticsRepository = crashlyticsRepository,
+                    type = PageType.USER,
+                    tab = cacheKey,
+                    cursor = cursor,
+                    remote = {
+                        val page = (cursor?.self)?.toIntOrNull() ?: 1
+                        val data = remoteDataSource.getFollowing(userId, page)
+                            .onFailureLog(crashlyticsRepository).getOrThrow()
+                        CursorLoadResult(
+                            data = data.users,
+                            bookmark = CursorBookmark(
+                                prev = if (page > 1) (page - 1).toString() else null,
+                                self = page.toString(),
+                                next = if (data.pagination.hasMore) (page + 1).toString() else null
+                            )
+                        )
+                    },
+                    local = { localDataSource.getUsersForPage(PageType.USER, cacheKey, cursor?.self ?: "1") }
+                )
 
-                CursorLoadResult(
-                    data = data.users,
-                    bookmark = CursorBookmark(
-                        prev = if (page > 1) (page - 1).toString() else null,
-                        self = page.toString(),
-                        next = if (data.pagination.hasMore) (page + 1).toString() else null
+                localDataSource.upsertPage(
+                    PageEntity(
+                        type = PageType.USER,
+                        tab = cacheKey,
+                        self = result.bookmark.self,
+                        prev = result.bookmark.prev,
+                        next = result.bookmark.next,
+                        isEmpty = result.data.isEmpty()
                     )
                 )
+                localDataSource.saveUsers(PageType.USER, cacheKey, result.bookmark.self, result.data)
+
+                result
             }
             initialCursor = CursorBookmark(prev = null, self = "1", next = null)
         }.also {

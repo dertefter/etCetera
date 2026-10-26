@@ -1,8 +1,10 @@
 package com.dertefter.data.repository
 
+import com.dertefter.data.common.loadCursorResultWithLocalFallback
 import com.dertefter.data.common.onFailureLog
 import com.dertefter.data.datasource.local.LocalDataSource
-import com.dertefter.data.datasource.local.room.CommentPagingCache
+import com.dertefter.data.datasource.local.room.entity.PageEntity
+import com.dertefter.data.datasource.local.room.entity.PageType
 import com.dertefter.data.datasource.remote.RemoteDataSource
 import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.data.dto.comments.NewCommentRequestDto
@@ -37,7 +39,6 @@ class CommentsRepositoryImpl(
         activePaginators.forEach {
             it.get()?.let { paginator ->
                 action(paginator)
-                paginator.flush()
             }
         }
     }
@@ -77,35 +78,58 @@ class CommentsRepositoryImpl(
 
     override fun getCommentsPaginator(postId: String, sort: String): MutableCursorPaginator<String, CommentDto> {
         val cacheKey = "$postId:$sort"
-        return mutableCursorPaginator(capacity = 100) {
+        return mutableCursorPaginator<String, CommentDto>(capacity = 100) {
             cache = CursorMostRecentPagingCache(maxSize = 100)
-            persistentCache = CommentPagingCache(cacheKey, localDataSource)
 
             load { cursor ->
                 val requestCursor = if (cursor?.self == "initial") null else cursor?.self
-                val result = remoteDataSource.getComments(postId, requestCursor, sort).onFailureLog(crashlyticsRepository)
-                val data = result.getOrThrow()
-
-                val otherPagesItems = core.cursors
+                val existingIds = core.cursors
                     .filter { it.self != cursor?.self }
                     .mapNotNull { core.getStateOf(it.self) }
                     .flatMap { it.data }
-                val existingIds = otherPagesItems.map { it.id }.toSet()
+                    .map { it.id }
+                    .toSet()
+                val result = loadCursorResultWithLocalFallback<CommentDto>(
+                    localDataSource = localDataSource,
+                    crashlyticsRepository = crashlyticsRepository,
+                    type = PageType.COMMENT,
+                    tab = cacheKey,
+                    cursor = cursor,
+                    remote = {
+                        val data = remoteDataSource.getComments(postId, requestCursor, sort)
+                            .onFailureLog(crashlyticsRepository).getOrThrow()
 
-                val seenInNewPage = mutableSetOf<String>()
-                val uniqueComments = data.comments.filter { comment ->
-                    val isUnique = comment.id !in existingIds && comment.id !in seenInNewPage
-                    if (isUnique) seenInNewPage.add(comment.id)
-                    isUnique
-                }
-                CursorLoadResult(
-                    data = uniqueComments,
-                    bookmark = CursorBookmark(
-                        prev = cursor?.prev,
-                        self = cursor?.self ?: "initial",
-                        next = if (data.hasMore) data.nextCursor else null
+                        val seenInNewPage = mutableSetOf<String>()
+                        val uniqueComments = data.comments.filter { comment ->
+                            val isUnique = comment.id !in existingIds && comment.id !in seenInNewPage
+                            if (isUnique) seenInNewPage.add(comment.id)
+                            isUnique
+                        }
+                        CursorLoadResult(
+                            data = uniqueComments,
+                            bookmark = CursorBookmark(
+                                prev = cursor?.prev,
+                                self = cursor?.self ?: "initial",
+                                next = if (data.hasMore) data.nextCursor else null
+                            )
+                        )
+                    },
+                    local = { localDataSource.getCommentsForPage(PageType.COMMENT, cacheKey, cursor?.self ?: "initial") }
+                )
+
+                localDataSource.upsertPage(
+                    PageEntity(
+                        type = PageType.COMMENT,
+                        tab = cacheKey,
+                        self = result.bookmark.self,
+                        prev = result.bookmark.prev,
+                        next = result.bookmark.next,
+                        isEmpty = result.data.isEmpty()
                     )
                 )
+                localDataSource.saveComments(PageType.COMMENT, cacheKey, result.bookmark.self, result.data)
+
+                result
             }
 
             initialCursor = CursorBookmark(prev = null, self = "initial", next = null)

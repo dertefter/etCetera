@@ -14,10 +14,8 @@ import com.dertefter.navigation.Navigator
 import com.dertefter.navigation.Routes
 import com.jamal_aliev.paginator.core.page.PaginatorUiState
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
-import com.jamal_aliev.paginator.cursor.bookmark.CursorBookmark
 import com.jamal_aliev.paginator.cursor.extension.prefetchController
 import com.jamal_aliev.paginator.cursor.extension.uiState
-import com.jamal_aliev.paginator.cursor.extension.warmUpFromPersistent
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
@@ -78,16 +76,7 @@ class FeedViewModel(
             paginator.prefetchController(
                 scope = viewModelScope, prefetchDistance = 2
             )
-            val inserted = paginator.warmUpFromPersistent()
-            if (inserted == 0) {
-                paginator.restart()
-            } else {
-                paginator.jump(
-                    CursorBookmark(
-                        prev = null, self = "initial", next = null
-                    )
-                )
-            }
+            paginator.restart()
 
         }
     }

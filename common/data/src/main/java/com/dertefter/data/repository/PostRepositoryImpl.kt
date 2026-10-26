@@ -42,7 +42,6 @@ class PostRepositoryImpl(
         activePaginators.forEach { ref ->
             ref.get()?.let { paginator ->
                 paginator.updateWhere(predicate = predicate, transform = transform)
-                paginator.flush()
             }
         }
         updatePagesInDb(predicate, transform)
@@ -98,7 +97,6 @@ class PostRepositoryImpl(
             activePaginators.forEach { ref ->
                 ref.get()?.let { paginator ->
                     paginator.removeAll { it.id == postId }
-                    paginator.flush()
                 }
             }
             localDataSource.deletePost(postId)
@@ -126,7 +124,6 @@ class PostRepositoryImpl(
                     if (post != null) {
                         paginator.removeAll { it.id == postId }
                         paginator.prependElement(post.copy(isPinned = true))
-                        paginator.flush()
                     }
                 }
             }
@@ -172,7 +169,6 @@ class PostRepositoryImpl(
             activePaginators.forEach { ref ->
                 ref.get()?.let { paginator ->
                     paginator.prependElement(postDto)
-                    paginator.flush()
                 }
             }
         }
@@ -185,7 +181,6 @@ class PostRepositoryImpl(
             activePaginators.forEach { ref ->
                 ref.get()?.let { paginator ->
                     paginator.prependElement(postDto)
-                    paginator.flush()
                 }
             }
         }
