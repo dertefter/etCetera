@@ -21,4 +21,5 @@
     <string name="auth_login_button">Войти</string>
     <string name="auth_invalid_email">Введите корректный email</string>
     <string name="auth_forgot_password">Забыли пароль?</string>
+    <string name="auth_remove_from_history">Удалить из истории</string>
 </resources>

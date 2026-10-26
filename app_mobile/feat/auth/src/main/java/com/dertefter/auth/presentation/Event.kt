@@ -7,4 +7,5 @@ sealed class Event {
     data class OnPasswordChanged(val password: String) : Event()
     data class OnTurnstileTokenReceived(val token: String) : Event()
     object OnDismissTurnstile : Event()
+    data class OnRemoveAccountFromHistory(val login: String) : Event()
 }

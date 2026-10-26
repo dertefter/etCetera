@@ -2,8 +2,13 @@ package com.dertefter.auth.presentation
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -34,18 +39,24 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dertefter.auth.R
 import com.dertefter.design.components.appbar.AppTopBar
+import com.dertefter.design.components.lists.SegmentedColumn
 import com.dertefter.design.components.loading.AppLoadingIndicator
+import com.dertefter.design.components.lists.SegmentedContentItem
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.bottomNavHeight
@@ -125,15 +136,16 @@ fun AuthScreen(onEvent: (Event) -> Unit, uiState: UiState) {
                 .padding(bottom = MaterialTheme.bottomNavHeight)
                 .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.SpaceBetween,
         ) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
                 modifier = Modifier
-                    .padding(bottom = 140.dp)
+                    .padding(top = LocalWindowInfo.current.containerDpSize.height/6)
                     .widthIn(max = 400.dp)
                     .fillMaxWidth()
-            ) {
+            )
+            {
 
                 OutlinedTextField(
                     value = uiState.login,
@@ -242,6 +254,68 @@ fun AuthScreen(onEvent: (Event) -> Unit, uiState: UiState) {
 
             }
 
+            AnimatedVisibility(
+                visible = uiState.loginHistory.isNotEmpty()
+            ) {
+                SegmentedColumn(
+                    title = stringResource(R.string.auth_saved_accounts),
+                    modifier = Modifier
+                        .padding(vertical = MaterialTheme.spacing.largeIncreased)
+                        .fillMaxWidth(),
+                    itemInnerPadding = PaddingValues(all = 0.dp)
+                )
+                {
+                    itemsIndexed(uiState.loginHistory) { index, login ->
+                        val isCurrent = login == uiState.currentLogin
+
+                        val containerColor by animateColorAsState(
+                            if (isCurrent) {
+                                MaterialTheme.colorScheme.primary
+                            } else {
+                                MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = 0.9f)
+                            }
+                        )
+
+                        val contentColor by animateColorAsState(
+                            if (isCurrent) {
+                                MaterialTheme.colorScheme.onPrimary
+                            } else {
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                            }
+                        )
+
+                        Row(
+                            modifier = Modifier
+                                .background(containerColor)
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = login,
+                                color = contentColor,
+                                fontWeight = if (isCurrent) FontWeight.Bold else FontWeight.Normal,
+                                modifier = Modifier
+                                    .padding(MaterialTheme.spacing.extraLarge)
+                                    .weight(1f)
+                                    .fillMaxWidth()
+                            )
+
+                            if (!isCurrent){
+                                IconButton(
+                                    onClick = {
+                                        onEvent(Event.OnRemoveAccountFromHistory(login))
+                                    },
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Delete,
+                                        contentDescription = stringResource(R.string.auth_remove_from_history),
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 
 
 
@@ -261,7 +335,9 @@ fun AuthScreenPreview2() {
                 onEvent = {},
                 uiState = UiState(isLoading = false,
                     login = "1",
-                    password = "f"
+                    password = "f",
+                    loginHistory = listOf("user1@example.com", "user2@example.com"),
+                    currentLogin = "user1@example.com"
                 )
             )
         },

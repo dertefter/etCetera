@@ -9,6 +9,7 @@ import com.dertefter.auth.presentation.UiState
 import com.dertefter.auth.usecase.SignInUseCase
 import com.dertefter.data.common.AppError
 import com.dertefter.data.common.toAppError
+import com.dertefter.data.repository.AuthRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
@@ -24,7 +25,8 @@ import kotlinx.coroutines.launch
 @ContributesIntoMap(AppScope::class)
 @Inject
 class AuthViewModel(
-    private val signInUseCase: SignInUseCase
+    private val signInUseCase: SignInUseCase,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _login = MutableStateFlow("")
@@ -52,6 +54,10 @@ class AuthViewModel(
             isLoading = isLoading,
             error = error,
         )
+    }.combine(authRepository.loginHistory) { uiState, loginHistory ->
+        uiState.copy(loginHistory = loginHistory)
+    }.combine(authRepository.currentLogin) { uiState, currentLogin ->
+        uiState.copy(currentLogin = currentLogin)
     }.combine(_isTurnstileVisible) { uiState, isTurnstileVisible ->
         uiState.copy(isTurnstileVisible = isTurnstileVisible)
     }.stateIn(
@@ -86,6 +92,12 @@ class AuthViewModel(
 
             Event.OnDismissTurnstile -> {
                 _isTurnstileVisible.value = false
+            }
+
+            is Event.OnRemoveAccountFromHistory -> {
+                viewModelScope.launch {
+                    authRepository.removeLoginFromHistory(event.login)
+                }
             }
 
         }

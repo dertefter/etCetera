@@ -9,5 +9,7 @@ data class UiState(
     val isPasswordVisible: Boolean = false,
     val isLoading: Boolean = false,
     val error: AppError? = null,
-    val isTurnstileVisible: Boolean = false
+    val isTurnstileVisible: Boolean = false,
+    val loginHistory: List<String> = emptyList(),
+    val currentLogin: String? = null
 )
