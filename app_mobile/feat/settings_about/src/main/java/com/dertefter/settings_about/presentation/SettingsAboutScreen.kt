@@ -1,6 +1,13 @@
 package com.dertefter.settings_about.presentation
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -11,6 +18,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -44,6 +52,29 @@ fun SettingsAboutScreen(
     val titleAlpha = (scrollBehavior.state.overlappedFraction).coerceIn(0f, 1f)
 
     val hazeState = rememberHazeState()
+
+    val packageManager = context.packageManager
+    val packageInfo = remember(context) {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                packageManager.getPackageInfo(context.packageName, PackageManager.PackageInfoFlags.of(0))
+            } else {
+                @Suppress("DEPRECATION")
+                packageManager.getPackageInfo(context.packageName, 0)
+            }
+        } catch (_: Exception) {
+            null
+        }
+    }
+    val versionName = packageInfo?.versionName ?: "1.0"
+    val versionCode = packageInfo?.let {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            it.longVersionCode.toString()
+        } else {
+            @Suppress("DEPRECATION")
+            it.versionCode.toString()
+        }
+    } ?: "1"
 
     val itdItems = listOf(
         Item(
@@ -85,6 +116,42 @@ fun SettingsAboutScreen(
             uriHandler.openUri("https://github.com/dertefter/etCetera")
         }
         )
+    )
+
+    val versionCopiedText = stringResource(R.string.settings_about_version_copied)
+    val buildCopiedText = stringResource(R.string.settings_about_build_number_copied)
+
+    val appDebugItems = listOf(
+        Item(
+            title = stringResource(R.string.settings_about_app_version),
+            subtitle = versionName,
+            action = {
+                val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val clip = ClipData.newPlainText("App Version", versionName)
+                @Suppress("UsePropertyAccessSyntax")
+                clipboardManager.setPrimaryClip(clip)
+                Toast.makeText(context, versionCopiedText, Toast.LENGTH_SHORT).show()
+            }
+        ),
+        Item(
+            title = stringResource(R.string.settings_about_build_number),
+            subtitle = versionCode,
+            action = {
+                val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val clip = ClipData.newPlainText("Build Number", versionCode)
+                @Suppress("UsePropertyAccessSyntax")
+                clipboardManager.setPrimaryClip(clip)
+                Toast.makeText(context, buildCopiedText, Toast.LENGTH_SHORT).show()
+            }
+        ),
+        Item(
+            title = stringResource(R.string.settings_about_crash_reports),
+            action = {
+                onEvent(
+                    Event.OnOpenCrashlytics
+                )
+            }
+        ),
     )
 
     Scaffold(
@@ -140,7 +207,7 @@ fun SettingsAboutScreen(
                 SegmentedColumn(
                     title = stringResource(R.string.settings_about_itd_title)
                 ) {
-                    for ((title, action) in itdItems){
+                    for ((title, _, action) in itdItems){
                         item(
                             onClick = action
                         ) {
@@ -156,7 +223,7 @@ fun SettingsAboutScreen(
                 SegmentedColumn(
                     title = stringResource(R.string.settings_about_etcetera_title)
                 ) {
-                    for ((title, action) in etCeteraItems){
+                    for ((title, _, action) in etCeteraItems){
                         item(
                             onClick = action
                         ) {
@@ -167,6 +234,33 @@ fun SettingsAboutScreen(
                     }
                 }
             }
+
+            item {
+                SegmentedColumn(
+                    title = stringResource(R.string.settings_about_debug_title)
+                ) {
+                    for ((title, subtitle, action) in appDebugItems){
+                        item(
+                            onClick = action
+                        ) {
+                            Column{
+                                Text(
+                                    title
+                                )
+                                subtitle?.let {
+                                    Text(
+                                        text = subtitle,
+                                        style = MaterialTheme.typography.labelLarge
+                                    )
+                                }
+
+                            }
+
+                        }
+                    }
+                }
+            }
+
 
         }
     }

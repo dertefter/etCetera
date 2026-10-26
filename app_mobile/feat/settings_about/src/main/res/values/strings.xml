@@ -9,4 +9,10 @@
     <string name="settings_about_app_desc">Alternative client for itd</string>
     <string name="settings_about_itd_title">itd</string>
     <string name="settings_about_etcetera_title">etCetera</string>
+    <string name="settings_about_app_version">App version</string>
+    <string name="settings_about_build_number">Build number</string>
+    <string name="settings_about_crash_reports">Crash reports</string>
+    <string name="settings_about_debug_title">Debug</string>
+    <string name="settings_about_version_copied">Version copied to clipboard</string>
+    <string name="settings_about_build_number_copied">Build number copied to clipboard</string>
 </resources>

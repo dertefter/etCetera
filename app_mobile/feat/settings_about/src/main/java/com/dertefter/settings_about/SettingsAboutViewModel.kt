@@ -2,6 +2,7 @@ package com.dertefter.settings_about
 
 import androidx.lifecycle.ViewModel
 import com.dertefter.navigation.Navigator
+import com.dertefter.navigation.Routes
 import com.dertefter.settings_about.presentation.Event
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
@@ -20,6 +21,10 @@ class SettingsAboutViewModel(
         when (event) {
             is Event.OnNavigateBack -> {
                 navigator.navigateUp()
+            }
+
+            is Event.OnOpenCrashlytics -> {
+                navigator.navigate(Routes.CrashReports)
             }
 
         }

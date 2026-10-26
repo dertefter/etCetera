@@ -9,4 +9,10 @@
     <string name="settings_about_app_desc">Альтернативный клиент для итд</string>
     <string name="settings_about_itd_title">итд</string>
     <string name="settings_about_etcetera_title">etCetera</string>
+    <string name="settings_about_app_version">Версия приложения</string>
+    <string name="settings_about_build_number">Номер сборки</string>
+    <string name="settings_about_crash_reports">Отчёты об ошибках</string>
+    <string name="settings_about_debug_title">Отладка</string>
+    <string name="settings_about_version_copied">Версия скопирована в буфер обмена</string>
+    <string name="settings_about_build_number_copied">Номер сборки скопирован в буфер обмена</string>
 </resources>

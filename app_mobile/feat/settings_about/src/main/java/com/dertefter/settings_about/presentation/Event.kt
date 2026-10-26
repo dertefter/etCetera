@@ -4,4 +4,6 @@ sealed interface Event {
 
     data object OnNavigateBack : Event
 
+    data object OnOpenCrashlytics : Event
+
 }
