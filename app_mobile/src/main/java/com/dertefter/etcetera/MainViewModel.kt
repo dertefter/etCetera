@@ -142,10 +142,12 @@ class MainViewModel(
     }
 
     init {
-        combine(currentLogin, accessToken, refreshToken) { _, _, _ -> }.onEach {
-            meRepository.updateMe()
-            eventsRepository.updateCurrentEvent()
-            notificationsRepository.updateNotificationCount()
+        combine(currentLogin, accessToken, refreshToken) { login, _, _ -> login }.onEach { login ->
+            if (login != null) {
+                meRepository.updateMe()
+                eventsRepository.updateCurrentEvent()
+                notificationsRepository.updateNotificationCount()
+            }
         }.launchIn(viewModelScope)
 
         combine(currentLogin, settingsRepository.skipOnBoarding) { login, skip ->

@@ -1,7 +1,6 @@
 package com.dertefter.user.presentation.component
 
 import android.os.Build.VERSION.SDK_INT
-import android.util.Log
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.foundation.background
@@ -144,8 +143,6 @@ fun Header(
                 containerSize = avatarSize
             )
         }
-
-       Log.e("activeNick", author.activeNickname?.label.toString())
 
        DisplayName(
            name = author.displayName,

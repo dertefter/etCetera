@@ -8,8 +8,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Me(
-    val clanAvatar: String,
     val avatar: String,
+    val clanAvatar: String = avatar,
     val banner: String?,
     val bio: String?,
     val createdAt: String,
