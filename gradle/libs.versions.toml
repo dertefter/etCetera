@@ -44,7 +44,6 @@ navigation3 = "1.2.0"
 # UI Libraries
 coilCompose = "3.6.3"
 composemediaplayer = "0.11.4"
-drawboxEnhanced = "2.1.2"
 haze = "2.0.1"
 roomCommon = "2.8.5"
 runtime = "1.13.0-beta02"
@@ -152,7 +151,6 @@ navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref =
 
 # UI Components
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
-drawbox-enhanced = { module = "uk.codecymru.drawbox:DrawBox-Enhanced", version.ref = "drawboxEnhanced" }
 haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
 haze-blur = { module = "dev.chrisbanes.haze:haze-blur", version.ref = "haze" }
 haze-blur-materials = { module = "dev.chrisbanes.haze:haze-blur-materials", version.ref = "haze" }

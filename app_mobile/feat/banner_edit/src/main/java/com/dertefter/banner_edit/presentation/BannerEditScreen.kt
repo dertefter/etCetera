@@ -23,7 +23,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -54,6 +54,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.asImageBitmap
@@ -62,6 +63,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -88,11 +90,12 @@ import com.dertefter.design.theme.spacing
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.launch
-import uk.codecymru.drawbox.box.DrawBox
-import uk.codecymru.drawbox.controller.DrawController
+import com.dertefter.banner_edit.presentation.drawbox.DrawBox
+import com.dertefter.banner_edit.presentation.drawbox.DrawController
 import kotlin.math.abs
 import kotlin.math.round
 import kotlin.math.roundToInt
+import androidx.core.graphics.withTranslation
 
 private fun triggerHapticTick(haptic: HapticFeedback) {
     try {
@@ -129,6 +132,9 @@ fun BannerEditScreen(
 
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
+    var containerPositionInRoot by remember { mutableStateOf(Offset.Zero) }
+    var placedImageCenter by remember { mutableStateOf(Offset.Zero) }
+    var placedImageSize by remember { mutableStateOf(IntSize.Zero) }
     var scale by remember { mutableFloatStateOf(1f) }
     var rawRotation by remember { mutableFloatStateOf(0f) }
     var rotation by remember { mutableFloatStateOf(0f) }
@@ -303,7 +309,10 @@ fun BannerEditScreen(
                     .clip(RoundedCornerShape(16.dp))
                     .background(Color.White)
                     .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(16.dp))
-                    .onSizeChanged { containerSize = it },
+                    .onSizeChanged { containerSize = it }
+                    .onGloballyPositioned { coordinates ->
+                        containerPositionInRoot = coordinates.localToRoot(Offset.Zero)
+                    },
                 contentAlignment = Alignment.TopStart
             ) {
                 Box(
@@ -353,24 +362,54 @@ fun BannerEditScreen(
                         1f
                     )
                     val baseW = currentBitmap.width * baseScale
+                    val baseH = currentBitmap.height * baseScale
 
                     val currentW = baseW * scale
-                    val currentH = currentW / imageAspectRatio
 
                     Box(
                         modifier = Modifier
                             .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
-                            .width(with(LocalDensity.current) { currentW.toDp() })
+                            .requiredWidth(with(LocalDensity.current) { currentW.toDp() })
                             .aspectRatio(imageAspectRatio)
+                            .onGloballyPositioned { coordinates ->
+                                placedImageCenter =
+                                    coordinates.localToRoot(
+                                        Offset(
+                                            coordinates.size.width / 2f,
+                                            coordinates.size.height / 2f
+                                        )
+                                    ) - containerPositionInRoot
+                                placedImageSize = coordinates.size
+                            }
                             .graphicsLayer {
                                 rotationZ = rotation
                             }
-                            .pointerInput(currentBitmap) {
+                            .pointerInput(currentBitmap, containerSize) {
                                 detectTransformGestures { _, pan, zoom, rot ->
-                                    scale = (scale * zoom).coerceIn(0.1f, 15.0f)
+                                    val oldScale = scale
+                                    scale = (scale * zoom).coerceIn(0.05f, 100.0f)
+                                    val effectiveZoom = scale / oldScale
+                                    val oldW = baseW * oldScale
+                                    val oldH = baseH * oldScale
+                                    val newW = baseW * scale
+                                    val newH = baseH * scale
+
                                     rawRotation += rot
+
+                                    offsetX += (oldW / 2f) * (1f - effectiveZoom)
+                                    offsetY += (oldH / 2f) * (1f - effectiveZoom)
+
                                     offsetX += pan.x
                                     offsetY += pan.y
+
+                                    if (containerSize.width > 0 && containerSize.height > 0) {
+                                        val minX = -newW + 50f
+                                        val maxX = containerSize.width.toFloat() - 50f
+                                        val minY = -newH + 50f
+                                        val maxY = containerSize.height.toFloat() - 50f
+                                        offsetX = offsetX.coerceIn(minX, maxX)
+                                        offsetY = offsetY.coerceIn(minY, maxY)
+                                    }
 
                                     val snapThreshold = 5f
                                     val nearestSnap = (round(rawRotation / 90f) * 90f)
@@ -429,17 +468,16 @@ fun BannerEditScreen(
                                 onClick = {
                                     val bitmapToBake = pendingImageBitmap
                                     if (bitmapToBake != null && containerSize.width > 0 && containerSize.height > 0) {
-                                        val bakeAspectRatio = bitmapToBake.width.toFloat() / bitmapToBake.height.toFloat()
-                                        val scaleX = drawController.internalBitmap.width.toFloat() / containerSize.width.toFloat()
-                                        val scaleY = drawController.internalBitmap.height.toFloat() / containerSize.height.toFloat()
-
-                                        val targetW = currentW * scaleX
-                                        val targetH = targetW / bakeAspectRatio
-
-                                        val canvasCenterX = (offsetX + currentW / 2f) * scaleX
-                                        val canvasCenterY = (offsetY + currentH / 2f) * scaleY
-
                                         val currentCanvasBitmap = drawController.internalBitmap.asAndroidBitmap()
+                                        val scaleX = currentCanvasBitmap.width.toFloat() / containerSize.width
+                                        val scaleY = currentCanvasBitmap.height.toFloat() / containerSize.height
+
+                                        val targetW = placedImageSize.width * scaleX
+                                        val targetH = placedImageSize.height * scaleY
+
+                                        val canvasCenterX = placedImageCenter.x * scaleX
+                                        val canvasCenterY = placedImageCenter.y * scaleY
+
                                         val combinedBitmap = createBitmap(
                                             currentCanvasBitmap.width,
                                             currentCanvasBitmap.height
@@ -447,22 +485,24 @@ fun BannerEditScreen(
                                         val canvas = android.graphics.Canvas(combinedBitmap)
                                         canvas.drawBitmap(currentCanvasBitmap, 0f, 0f, null)
 
-                                        val matrix = android.graphics.Matrix().apply {
-                                            postScale(
-                                                targetW / bitmapToBake.width.toFloat(),
-                                                targetH / bitmapToBake.height.toFloat()
-                                            )
-                                            postTranslate(-targetW / 2f, -targetH / 2f)
-                                            postRotate(rotation)
-                                            postTranslate(canvasCenterX, canvasCenterY)
-                                        }
-
                                         val paint = android.graphics.Paint().apply {
                                             isAntiAlias = true
                                             isFilterBitmap = true
                                         }
 
-                                        canvas.drawBitmap(bitmapToBake, matrix, paint)
+                                        canvas.withTranslation(canvasCenterX, canvasCenterY) {
+                                            canvas.rotate(rotation)
+                                            canvas.scale(
+                                                targetW / bitmapToBake.width,
+                                                targetH / bitmapToBake.height
+                                            )
+                                            canvas.drawBitmap(
+                                                bitmapToBake,
+                                                -bitmapToBake.width / 2f,
+                                                -bitmapToBake.height / 2f,
+                                                paint
+                                            )
+                                        }
 
                                         drawController.open(combinedBitmap.asImageBitmap())
 

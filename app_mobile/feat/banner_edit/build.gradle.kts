@@ -39,7 +39,6 @@ dependencies {
     implementation(project(":app_mobile:design"))
 
     implementation(libs.activity.compose)
-    implementation(libs.drawbox.enhanced)
     api(libs.metro.runtime)
     api(libs.metrox.viewmodel)
     implementation(libs.metrox.viewmodel.compose)
