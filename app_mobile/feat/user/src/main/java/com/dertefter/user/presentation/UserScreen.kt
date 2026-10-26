@@ -1,6 +1,7 @@
 package com.dertefter.user.presentation
 
 import android.content.Intent
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -43,7 +44,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -221,52 +221,56 @@ fun UserScreen(
                                 onClick = { onEvent(Event.OnNavigateBack) },
                                 contentDescription = stringResource(com.dertefter.design.R.string.design_back_content_desc)
                             )
-                        } else if (userUiState.isMe){
-                            Button(
-                                modifier = Modifier.padding(start = MaterialTheme.spacing.small),
-                                onClick = { onEvent(Event.OnOpenSwitchAccount) },
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer
-                                ),
-                                contentPadding = PaddingValues(
-                                    horizontal = MaterialTheme.spacing.medium
-                                ),
-                            ) {
-                                Icon(
-                                    imageVector = Icons.PersonSwitch,
-                                    contentDescription = null
-                                )
-                                Text(
-                                    modifier = Modifier.padding(
-                                        start = MaterialTheme.spacing.small,
-                                        end = MaterialTheme.spacing.small
-                                    ),
-                                    text = stringResource(R.string.user_switch_account)
-                                )
-                            }
-
                         }
                     },
                     title = {
-                        userUiState.userDto?.let {
-                            Row(
-                                modifier = Modifier
-                                    .graphicsLayer(
-                                        alpha = appBarTitleAlpha
-                                    ),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
-                            ) {
-                                Avatar(
-                                    data = it.avatar,
-                                    containerSize = 40.dp
-                                )
-                                Text(
-                                    text = it.displayName,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                )
+                        userUiState.userDto?.let { itDto ->
+                            Crossfade(
+                                targetState = appBarTitleAlpha < 0.1f,
+                                label = "AppBarTitleCrossfade"
+                            ) { isExpanded ->
+                                if (isExpanded) {
+                                    if (userUiState.isMe) {
+                                        Button(
+                                            onClick = { onEvent(Event.OnOpenSwitchAccount) },
+                                            colors = ButtonDefaults.buttonColors(
+                                                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                                                contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                                            ),
+                                            contentPadding = PaddingValues(
+                                                horizontal = MaterialTheme.spacing.medium
+                                            ),
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.PersonSwitch,
+                                                contentDescription = null
+                                            )
+                                            Text(
+                                                modifier = Modifier
+                                                    .padding(
+                                                        start = MaterialTheme.spacing.small,
+                                                        end = MaterialTheme.spacing.small
+                                                    ),
+                                                text = stringResource(R.string.user_switch_account)
+                                            )
+                                        }
+                                    }
+                                } else {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+                                    ) {
+                                        Avatar(
+                                            data = itDto.avatar,
+                                            containerSize = 48.dp
+                                        )
+                                        Text(
+                                            text = itDto.displayName,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis,
+                                        )
+                                    }
+                                }
                             }
                         }
                     },
