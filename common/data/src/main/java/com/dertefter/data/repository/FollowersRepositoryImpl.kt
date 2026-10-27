@@ -7,6 +7,7 @@ import com.dertefter.data.datasource.local.room.entity.PageEntity
 import com.dertefter.data.datasource.local.room.entity.PageType
 import com.dertefter.data.datasource.remote.RemoteDataSource
 import com.dertefter.data.dto.followers.FollowerUserDto
+import com.jamal_aliev.paginator.cursor.CursorPagingCore.Companion.UNLIMITED_CAPACITY
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
 import com.jamal_aliev.paginator.cursor.bookmark.CursorBookmark
 import com.jamal_aliev.paginator.cursor.cache.eviction.CursorMostRecentPagingCache
@@ -29,12 +30,10 @@ class FollowersRepositoryImpl(
 
     private val activePaginators = CopyOnWriteArrayList<WeakReference<MutableCursorPaginator<String, FollowerUserDto>>>()
 
-    private suspend fun updateInMem(predicate: (FollowerUserDto) -> Boolean, transform: (FollowerUserDto) -> FollowerUserDto) {
+    private fun updateInMem(predicate: (FollowerUserDto) -> Boolean, transform: (FollowerUserDto) -> FollowerUserDto) {
         activePaginators.removeIf { it.get() == null }
         activePaginators.forEach { ref ->
-            ref.get()?.let { paginator ->
-                paginator.updateWhere(predicate = predicate, transform = transform)
-            }
+            ref.get()?.updateWhere(predicate = predicate, transform = transform)
         }
     }
 
@@ -47,11 +46,11 @@ class FollowersRepositoryImpl(
 
     override fun getFollowersPaginator(userId: String): MutableCursorPaginator<String, FollowerUserDto> {
         val cacheKey = "followers_$userId"
-        return mutableCursorPaginator(capacity = 20) {
+        return mutableCursorPaginator(capacity = UNLIMITED_CAPACITY) {
             cache = CursorMostRecentPagingCache(maxSize = 20)
 
             load { cursor ->
-                val result = loadCursorResultWithLocalFallback<FollowerUserDto>(
+                val result = loadCursorResultWithLocalFallback(
                     localDataSource = localDataSource,
                     crashlyticsRepository = crashlyticsRepository,
                     type = PageType.USER,
@@ -95,11 +94,11 @@ class FollowersRepositoryImpl(
 
     override fun getFollowingPaginator(userId: String): MutableCursorPaginator<String, FollowerUserDto> {
         val cacheKey = "following_$userId"
-        return mutableCursorPaginator(capacity = 20) {
+        return mutableCursorPaginator(capacity = UNLIMITED_CAPACITY) {
             cache = CursorMostRecentPagingCache(maxSize = 20)
 
             load { cursor ->
-                val result = loadCursorResultWithLocalFallback<FollowerUserDto>(
+                val result = loadCursorResultWithLocalFallback(
                     localDataSource = localDataSource,
                     crashlyticsRepository = crashlyticsRepository,
                     type = PageType.USER,

@@ -2,7 +2,6 @@ package com.dertefter.hashtag_feed
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.zacsweers.metro.AppScope
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.repository.FeedRepository
 import com.dertefter.data.repository.PostRepository
@@ -13,10 +12,8 @@ import com.dertefter.navigation.Routes
 import com.dertefter.navigation.Routes.Comments
 import com.jamal_aliev.paginator.core.page.PaginatorUiState
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
-import com.jamal_aliev.paginator.cursor.extension.distinctBy
-import com.jamal_aliev.paginator.cursor.extension.prefetchController
-import com.jamal_aliev.paginator.cursor.extension.refreshAll
 import com.jamal_aliev.paginator.cursor.extension.uiState
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
@@ -42,19 +39,32 @@ class HashtagFeedViewModel(
     private val _hashtagName = MutableStateFlow<String?>(null)
 
     private var paginator: MutableCursorPaginator<String, PostDto>? = null
+    private var paginatorHashtag: String? = null
 
     val uiState: StateFlow<PaginatorUiState<PostDto>> = _hashtagName
         .filterNotNull()
         .flatMapLatest { name ->
-            val p = feedRepository.getHashtagPaginator(name)
-            paginator = p
-            setupPaginator(p)
-            p.uiState
+            getOrCreatePaginator(name).uiState
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = PaginatorUiState.Idle
         )
+
+    /**
+     * Reuses the paginator of the current hashtag so a re-subscription (for example after
+     * [SharingStarted.WhileSubscribed] stops the flow) does not throw away the loaded pages.
+     * Switching to another hashtag releases the previous paginator before a new one is built.
+     */
+    private fun getOrCreatePaginator(name: String): MutableCursorPaginator<String, PostDto> {
+        paginator?.takeIf { paginatorHashtag == name }?.let { return it }
+        paginator?.release()
+        return feedRepository.getHashtagPaginator(name).also {
+            paginator = it
+            paginatorHashtag = name
+            setupPaginator(it)
+        }
+    }
 
     fun initHashtagName(hashtagName: String?) {
         if (_hashtagName.value == hashtagName) return
@@ -63,10 +73,8 @@ class HashtagFeedViewModel(
 
     private fun setupPaginator(paginator: MutableCursorPaginator<String, PostDto>) {
         viewModelScope.launch {
-            paginator.distinctBy { it.id }
-            paginator.prefetchController(
-                scope = viewModelScope, prefetchDistance = 3
-            )
+            // Prefetch is owned by rememberPaginated() on the UI side: it creates and binds
+            // its own controller, so one built here would never be attached to the list.
             paginator.restart()
         }
     }
@@ -154,7 +162,7 @@ class HashtagFeedViewModel(
             }
 
             Event.OnLoadMore -> {
-                // Handled by prefetchController
+                // Handled by the prefetch controller owned by rememberPaginated() on the list
             }
 
             is Event.OnRefresh -> {
@@ -185,5 +193,7 @@ class HashtagFeedViewModel(
 
     override fun onCleared() {
         paginator?.release()
+        paginator = null
+        paginatorHashtag = null
     }
 }

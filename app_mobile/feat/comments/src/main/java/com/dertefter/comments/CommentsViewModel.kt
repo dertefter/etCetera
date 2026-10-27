@@ -17,11 +17,12 @@ import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.navigation.Routes
 import com.jamal_aliev.paginator.core.page.PaginatorUiState
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
-import com.jamal_aliev.paginator.cursor.extension.distinctBy
-import com.jamal_aliev.paginator.cursor.extension.prefetchController
-import com.jamal_aliev.paginator.cursor.extension.refreshAll
+import com.jamal_aliev.paginator.cursor.exception.EndOfCursorFeedException
 import com.jamal_aliev.paginator.cursor.extension.uiState
-
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -30,10 +31,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import dev.zacsweers.metro.AppScope
-import dev.zacsweers.metro.ContributesIntoMap
-import dev.zacsweers.metro.Inject
-import dev.zacsweers.metrox.viewmodel.ViewModelKey
 
 @ViewModelKey
 @ContributesIntoMap(AppScope::class)
@@ -91,10 +88,10 @@ class CommentsViewModel(
 
     private fun setupPaginator(paginator: MutableCursorPaginator<String, CommentDto>) {
         viewModelScope.launch {
-            paginator.distinctBy { it.id }
-            paginator.prefetchController(
-                scope = viewModelScope, prefetchDistance = 3
-            )
+            // Prefetch is owned by rememberPaginated() on the UI side: it creates and binds
+            // its own controller, so one built here would never be attached to the list.
+            // Duplicates are dropped by the list itself (distinctBy in the item builder);
+            // mutating the cache here would shrink pages and block forward pagination.
             paginator.restart(silentlyLoading = true)
         }
     }
@@ -157,7 +154,11 @@ class CommentsViewModel(
                     val postId = currentPostId ?: return@launch
                     val sort = _selectedTab.value
                     val key = "$postId-${sort.value}"
-                    paginators[key]?.goNextPage()
+                    try {
+                        paginators[key]?.goNextPage()
+                    } catch (_: EndOfCursorFeedException) {
+                        // The feed is exhausted: nothing left to append.
+                    }
                 }
             }
 

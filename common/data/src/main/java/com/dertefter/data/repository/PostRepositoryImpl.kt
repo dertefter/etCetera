@@ -31,18 +31,43 @@ class PostRepositoryImpl(
     private val crashlyticsRepository: CrashlyticsRepository,
 ) : PostRepository {
 
-    private val activePaginators = CopyOnWriteArrayList<WeakReference<MutableCursorPaginator<String, PostDto>>>()
+    /**
+     * A live paginator plus the rule that decides whether a post belongs to its feed.
+     * Likes, edits, deletions and stat updates apply to every registered paginator, but a
+     * post may only be inserted at the head of the feeds that actually own it — a cursor
+     * paginator cannot spawn a trailing page for the overflow, so inserting into a foreign
+     * feed would show content that does not belong there and drop the head page's tail.
+     */
+    private class RegisteredPaginator(
+        val paginator: WeakReference<MutableCursorPaginator<String, PostDto>>,
+        val ownsPost: (PostDto) -> Boolean,
+    )
 
-    override fun registerPaginator(paginator: MutableCursorPaginator<String, PostDto>) {
-        activePaginators.add(WeakReference(paginator))
+    private val activePaginators = CopyOnWriteArrayList<RegisteredPaginator>()
+
+    override fun registerPaginator(
+        paginator: MutableCursorPaginator<String, PostDto>,
+        ownsPost: (PostDto) -> Boolean,
+    ) {
+        activePaginators.add(RegisteredPaginator(WeakReference(paginator), ownsPost))
+    }
+
+    private fun forEachPaginator(action: (MutableCursorPaginator<String, PostDto>) -> Unit) {
+        activePaginators.removeIf { it.paginator.get() == null }
+        activePaginators.forEach { registered -> registered.paginator.get()?.let(action) }
+    }
+
+    private fun prependWhereOwned(post: PostDto) {
+        activePaginators.removeIf { it.paginator.get() == null }
+        activePaginators.forEach { registered ->
+            val paginator = registered.paginator.get() ?: return@forEach
+            if (registered.ownsPost(post)) paginator.prependElement(post)
+        }
     }
 
     private suspend fun updateData(predicate: (PostDto) -> Boolean, transform: (PostDto) -> PostDto) {
-        activePaginators.removeIf { it.get() == null }
-        activePaginators.forEach { ref ->
-            ref.get()?.let { paginator ->
-                paginator.updateWhere(predicate = predicate, transform = transform)
-            }
+        forEachPaginator { paginator ->
+            paginator.updateWhere(predicate = predicate, transform = transform)
         }
         updatePagesInDb(predicate, transform)
     }
@@ -93,11 +118,8 @@ class PostRepositoryImpl(
 
     override suspend fun deletePost(postId: String): Result<Unit> {
         return remoteDataSource.deletePost(postId).onFailureLog(crashlyticsRepository).onSuccess {
-            activePaginators.removeIf { it.get() == null }
-            activePaginators.forEach { ref ->
-                ref.get()?.let { paginator ->
-                    paginator.removeAll { it.id == postId }
-                }
+            forEachPaginator { paginator ->
+                paginator.removeAll { it.id == postId }
             }
             localDataSource.deletePost(postId)
         }
@@ -117,15 +139,13 @@ class PostRepositoryImpl(
 
     override suspend fun pinPost(postId: String): Result<Unit> {
         return remoteDataSource.pinPost(postId).onFailureLog(crashlyticsRepository).onSuccess {
-            activePaginators.removeIf { it.get() == null }
-            activePaginators.forEach { ref ->
-                ref.get()?.let { paginator ->
-                    val post = paginator.find { it.id == postId }
-                    if (post != null) {
-                        paginator.removeAll { it.id == postId }
-                        paginator.prependElement(post.copy(isPinned = true))
-                    }
-                }
+            activePaginators.removeIf { it.paginator.get() == null }
+            activePaginators.forEach { registered ->
+                val paginator = registered.paginator.get() ?: return@forEach
+                val post = paginator.find { it.id == postId } ?: return@forEach
+                if (!registered.ownsPost(post)) return@forEach
+                paginator.removeAll { it.id == postId }
+                paginator.prependElement(post.copy(isPinned = true))
             }
         }
     }
@@ -165,24 +185,14 @@ class PostRepositoryImpl(
     override suspend fun newPost(newPostRequestDto: NewPostRequestDto): Result<PostDto> {
         return remoteDataSource.newPost(newPostRequestDto).onFailureLog(crashlyticsRepository).onSuccess { postDto ->
             localDataSource.savePost(postDto)
-            activePaginators.removeIf { it.get() == null }
-            activePaginators.forEach { ref ->
-                ref.get()?.let { paginator ->
-                    paginator.prependElement(postDto)
-                }
-            }
+            prependWhereOwned(postDto)
         }
     }
 
     override suspend fun repost(postId: String, newPostRequestDto: NewPostRequestDto): Result<PostDto> {
         return remoteDataSource.repost(postId, newPostRequestDto).onFailureLog(crashlyticsRepository).onSuccess { postDto ->
             localDataSource.savePost(postDto)
-            activePaginators.removeIf { it.get() == null }
-            activePaginators.forEach { ref ->
-                ref.get()?.let { paginator ->
-                    paginator.prependElement(postDto)
-                }
-            }
+            prependWhereOwned(postDto)
         }
     }
 

@@ -36,7 +36,10 @@ interface PostRepository {
 
     suspend fun editPost(postId: String, editPostRequestDto: EditPostRequestDto): Result<EditPostResponseDto>
 
-    fun registerPaginator(paginator: MutableCursorPaginator<String, PostDto>)
+    fun registerPaginator(
+        paginator: MutableCursorPaginator<String, PostDto>,
+        ownsPost: (PostDto) -> Boolean,
+    )
 
     suspend fun savePostDraft(draftDto: DraftDto, key: String = "post_main")
 

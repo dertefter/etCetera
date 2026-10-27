@@ -7,6 +7,7 @@ import com.dertefter.data.datasource.local.room.entity.PageEntity
 import com.dertefter.data.datasource.local.room.entity.PageType
 import com.dertefter.data.datasource.remote.RemoteDataSource
 import com.dertefter.data.dto.notifications.NotificationDto
+import com.jamal_aliev.paginator.cursor.CursorPagingCore.Companion.UNLIMITED_CAPACITY
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
 import kotlinx.coroutines.flow.Flow
 import com.jamal_aliev.paginator.cursor.bookmark.CursorBookmark
@@ -31,10 +32,10 @@ class NotificationsRepositoryImpl(
 
     override fun getNotificationsPaginator(type: String?): MutableCursorPaginator<String, NotificationDto> {
         val cacheKey = type ?: "all"
-        return mutableCursorPaginator(capacity = 20) {
+        return mutableCursorPaginator(capacity = UNLIMITED_CAPACITY) {
             cache = CursorMostRecentPagingCache(maxSize = 50)
             load { cursor ->
-                val result = loadCursorResultWithLocalFallback<NotificationDto>(
+                val result = loadCursorResultWithLocalFallback(
                     localDataSource = localDataSource,
                     crashlyticsRepository = crashlyticsRepository,
                     type = PageType.NOTIFICATION,
@@ -69,7 +70,7 @@ class NotificationsRepositoryImpl(
                         CursorLoadResult(
                             data = accumulatedNotifications,
                             bookmark = CursorBookmark(
-                                prev = if (startOffset > 0) (startOffset - 20).coerceAtLeast(0).toString() else null,
+                                prev = cursor?.prev,
                                 self = cursor?.self ?: "initial",
                                 next = nextOffset
                             )

@@ -23,11 +23,14 @@ suspend inline fun <T> loadCursorResultWithLocalFallback(
     val self = cursor?.self ?: "initial"
     return try {
         remote()
+    } catch (cancellation: CancellationException) {
+        // A cancelled load must not be served from the cache: the caller is no longer
+        // interested and committing stale data would overwrite the new page.
+        throw cancellation
     } catch (remoteError: Throwable) {
-        if (remoteError !is CancellationException) crashlyticsRepository.showError(remoteError)
+        crashlyticsRepository.showError(remoteError)
         val entity = runCatching { localDataSource.getPage(type, tab, self) }.getOrNull()
         if (entity == null) throw remoteError
-        android.util.Log.e("CursorLoad", "remote load failed, serving cached page $type/$tab/$self", remoteError)
         val bookmark = CursorBookmark(prev = entity.prev, self = entity.self, next = entity.next)
         CursorLoadResult(data = local(), bookmark = bookmark)
     }

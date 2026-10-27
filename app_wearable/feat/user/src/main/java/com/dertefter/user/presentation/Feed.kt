@@ -39,6 +39,7 @@ import com.jamal_aliev.paginator.core.extension.isErrorState
 import com.jamal_aliev.paginator.core.extension.isProgressState
 import com.jamal_aliev.paginator.core.page.PaginatorUiState
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
+import com.jamal_aliev.paginator.cursor.exception.EndOfCursorFeedException
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -73,7 +74,11 @@ fun Feed(
                 if (lastIndex >= totalItemsCount - 2) {
                     val appendState = state.appendState
                     if (appendState == null || (!appendState.isProgressState() && !appendState.isErrorState())) {
-                        paginator.goNextPage()
+                        try {
+                            paginator.goNextPage()
+                        } catch (_: EndOfCursorFeedException) {
+                            // The feed is exhausted: keep the append indicator hidden.
+                        }
                     }
                 }
             }

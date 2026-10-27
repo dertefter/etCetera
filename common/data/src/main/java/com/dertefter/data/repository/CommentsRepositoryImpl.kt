@@ -11,6 +11,7 @@ import com.dertefter.data.dto.comments.NewCommentRequestDto
 import com.dertefter.data.dto.comments.RepliesDataDto
 import com.dertefter.data.dto.draft.DraftDto
 import com.dertefter.data.dto.feed.like.LikeResponseDto
+import com.jamal_aliev.paginator.cursor.CursorPagingCore.Companion.UNLIMITED_CAPACITY
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
 import kotlinx.coroutines.flow.Flow
 import com.jamal_aliev.paginator.cursor.bookmark.CursorBookmark
@@ -78,18 +79,12 @@ class CommentsRepositoryImpl(
 
     override fun getCommentsPaginator(postId: String, sort: String): MutableCursorPaginator<String, CommentDto> {
         val cacheKey = "$postId:$sort"
-        return mutableCursorPaginator<String, CommentDto>(capacity = 100) {
+        return mutableCursorPaginator(capacity = UNLIMITED_CAPACITY) {
             cache = CursorMostRecentPagingCache(maxSize = 100)
 
             load { cursor ->
                 val requestCursor = if (cursor?.self == "initial") null else cursor?.self
-                val existingIds = core.cursors
-                    .filter { it.self != cursor?.self }
-                    .mapNotNull { core.getStateOf(it.self) }
-                    .flatMap { it.data }
-                    .map { it.id }
-                    .toSet()
-                val result = loadCursorResultWithLocalFallback<CommentDto>(
+                val result = loadCursorResultWithLocalFallback(
                     localDataSource = localDataSource,
                     crashlyticsRepository = crashlyticsRepository,
                     type = PageType.COMMENT,
@@ -99,14 +94,8 @@ class CommentsRepositoryImpl(
                         val data = remoteDataSource.getComments(postId, requestCursor, sort)
                             .onFailureLog(crashlyticsRepository).getOrThrow()
 
-                        val seenInNewPage = mutableSetOf<String>()
-                        val uniqueComments = data.comments.filter { comment ->
-                            val isUnique = comment.id !in existingIds && comment.id !in seenInNewPage
-                            if (isUnique) seenInNewPage.add(comment.id)
-                            isUnique
-                        }
                         CursorLoadResult(
-                            data = uniqueComments,
+                            data = data.comments,
                             bookmark = CursorBookmark(
                                 prev = cursor?.prev,
                                 self = cursor?.self ?: "initial",

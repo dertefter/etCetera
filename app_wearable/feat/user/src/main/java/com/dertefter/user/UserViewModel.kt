@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dertefter.data.common.AppError
 import com.dertefter.data.common.toAppError
-import dev.zacsweers.metro.AppScope
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.dto.me.UpdateMeRequestDto
 import com.dertefter.navigation.Routes
@@ -33,10 +32,8 @@ import com.dertefter.user.usecase.UpdateUserUseCase
 import com.dertefter.user.usecase.VotePollUseCase
 import com.jamal_aliev.paginator.core.page.PaginatorUiState
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
-import com.jamal_aliev.paginator.cursor.extension.distinctBy
-import com.jamal_aliev.paginator.cursor.extension.prefetchController
-import com.jamal_aliev.paginator.cursor.extension.refreshAll
 import com.jamal_aliev.paginator.cursor.extension.uiState
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
@@ -174,10 +171,8 @@ class UserViewModel(
 
     private fun setupPaginator(paginator: MutableCursorPaginator<String, PostDto>) {
         viewModelScope.launch {
-            paginator.distinctBy { it.id }
-            paginator.prefetchController(
-                scope = viewModelScope, prefetchDistance = 3
-            )
+            // Prefetch is owned by the list itself (rememberPaginated creates and binds
+            // its own controller), so one built here would never be attached to it.
             paginator.restart(silentlyLoading = true)
         }
     }

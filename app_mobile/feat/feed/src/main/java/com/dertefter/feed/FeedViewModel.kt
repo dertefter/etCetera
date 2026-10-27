@@ -14,7 +14,6 @@ import com.dertefter.navigation.Navigator
 import com.dertefter.navigation.Routes
 import com.jamal_aliev.paginator.core.page.PaginatorUiState
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
-import com.jamal_aliev.paginator.cursor.extension.prefetchController
 import com.jamal_aliev.paginator.cursor.extension.uiState
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
@@ -73,11 +72,9 @@ class FeedViewModel(
 
     private fun setupPaginator(paginator: MutableCursorPaginator<String, PostDto>) {
         viewModelScope.launch {
-            paginator.prefetchController(
-                scope = viewModelScope, prefetchDistance = 2
-            )
+            // Prefetch is owned by rememberPaginated() on the UI side: it creates and binds
+            // its own controller, so one built here would never be attached to the list.
             paginator.restart()
-
         }
     }
 
@@ -162,7 +159,7 @@ class FeedViewModel(
             }
 
             Event.OnLoadMore -> {
-                // Handled by prefetchController
+                // Pagination is driven by the list whenever it reaches the end.
             }
 
             is Event.OnRefresh -> {

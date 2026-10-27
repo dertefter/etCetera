@@ -2,7 +2,6 @@ package com.dertefter.followers
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.zacsweers.metro.AppScope
 import com.dertefter.data.dto.followers.FollowerUserDto
 import com.dertefter.data.repository.FollowersRepository
 import com.dertefter.data.repository.UserRepository
@@ -12,10 +11,8 @@ import com.dertefter.navigation.Navigator
 import com.dertefter.navigation.Routes.User
 import com.jamal_aliev.paginator.core.page.PaginatorUiState
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
-import com.jamal_aliev.paginator.cursor.extension.distinctBy
-import com.jamal_aliev.paginator.cursor.extension.prefetchController
-import com.jamal_aliev.paginator.cursor.extension.refreshAll
 import com.jamal_aliev.paginator.cursor.extension.uiState
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
@@ -82,11 +79,8 @@ class FollowersViewModel(
 
     private fun setupPaginator(paginator: MutableCursorPaginator<String, FollowerUserDto>) {
         viewModelScope.launch {
-            paginator.distinctBy { it.id }
-            paginator.prefetchController(
-                scope = viewModelScope,
-                prefetchDistance = 3
-            )
+            // Prefetch is owned by the list itself (rememberPaginated creates and binds
+            // its own controller), so one built here would never be attached to it.
             paginator.restart(silentlyLoading = true)
         }
     }

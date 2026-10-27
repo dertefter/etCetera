@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -22,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -33,6 +35,7 @@ import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.design.components.comment.CommentCard
 import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.theme.spacing
+import com.jamal_aliev.paginator.compose.cursor.PaginatedLazyListScope
 import com.jamal_aliev.paginator.compose.cursor.paginated
 import com.jamal_aliev.paginator.compose.cursor.rememberPaginated
 import com.jamal_aliev.paginator.core.extension.isErrorState
@@ -112,6 +115,11 @@ fun CommentsFeed(
                     is PaginatorUiState.Error -> state.state.data
                     is PaginatorUiState.Content -> state.items
                 }
+                // Deduplicated once per page set: `count` is read by every row, so counting
+                // inside the row factory would make composition O(n^2).
+                val visibleItems = remember(items) { items.distinctBy { it.id } }
+                // Aliased so that the parameter is not shadowed by the DSL `header { }` slot.
+                val headerScope = header
 
                 LazyColumn(
                     modifier = Modifier
@@ -124,24 +132,22 @@ fun CommentsFeed(
                     state = listState,
                     contentPadding = contentPadding
                 ) {
-
-                    header?.invoke(this)
-
-                    item {
-                        Spacer(
-                            modifier = Modifier.height(MaterialTheme.spacing.small)
-                        )
-                    }
-
                     paginated(paged) {
+                        headerScope?.invoke(HeaderLazyListScope(this))
+                        header {
+                            Spacer(
+                                modifier = Modifier.height(MaterialTheme.spacing.small)
+                            )
+                        }
+
                         itemsIndexed(
-                            items.distinctBy { it.id },
+                            visibleItems,
                             key = { _, comment -> comment.id }) { index, comment ->
                             Column(Modifier.animateItem()) {
                                 CommentCard(
                                     modifier = Modifier.padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
                                     index = index,
-                                    count = items.count(),
+                                    count = visibleItems.size,
                                     onAttachmentClick = {attachments, position ->
                                         onEvent(Event.OnOpenAttachmentsViewer(attachments, position))
                                     },
@@ -178,6 +184,37 @@ fun CommentsFeed(
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+/**
+ * Routes the caller's header items through [PaginatedLazyListScope.header] so the paginator also
+ * counts them: the DSL only tallies what the list actually rendered, and a header placed outside
+ * the `paginated { }` block would shift every data index by its item count.
+ */
+private class HeaderLazyListScope(
+    private val scope: PaginatedLazyListScope,
+) : LazyListScope by scope {
+
+    override fun item(
+        key: Any?,
+        contentType: Any?,
+        content: @Composable LazyItemScope.() -> Unit,
+    ) {
+        scope.header(key = key, contentType = contentType, content = content)
+    }
+
+    override fun items(
+        count: Int,
+        key: ((index: Int) -> Any)?,
+        contentType: (index: Int) -> Any?,
+        itemContent: @Composable LazyItemScope.(index: Int) -> Unit,
+    ) {
+        repeat(count) { index ->
+            scope.header(key = key?.invoke(index), contentType = contentType(index)) {
+                itemContent(index)
             }
         }
     }

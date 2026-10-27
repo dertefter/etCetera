@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dertefter.comments.presentation.CommentSort
 import com.dertefter.comments.presentation.Event
-import dev.zacsweers.metro.AppScope
 import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.data.repository.CommentsRepository
 import com.dertefter.data.repository.MeRepository
@@ -12,10 +11,9 @@ import com.dertefter.navigation.Navigator
 import com.dertefter.navigation.Routes
 import com.jamal_aliev.paginator.core.page.PaginatorUiState
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
-import com.jamal_aliev.paginator.cursor.extension.distinctBy
-import com.jamal_aliev.paginator.cursor.extension.prefetchController
-import com.jamal_aliev.paginator.cursor.extension.refreshAll
+import com.jamal_aliev.paginator.cursor.exception.EndOfCursorFeedException
 import com.jamal_aliev.paginator.cursor.extension.uiState
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
@@ -71,10 +69,8 @@ class CommentsViewModel(
 
     private fun setupPaginator(paginator: MutableCursorPaginator<String, CommentDto>) {
         viewModelScope.launch {
-            paginator.distinctBy { it.id }
-            paginator.prefetchController(
-                scope = viewModelScope, prefetchDistance = 3
-            )
+            // Prefetch is owned by the list itself (rememberPaginated creates and binds
+            // its own controller), so one built here would never be attached to it.
             paginator.restart(silentlyLoading = true)
         }
     }
@@ -103,7 +99,11 @@ class CommentsViewModel(
             Event.OnLoadMore -> {
                 viewModelScope.launch {
                     val postId = currentPostId ?: return@launch
-                    paginators[postId]?.goNextPage()
+                    try {
+                        paginators[postId]?.goNextPage()
+                    } catch (_: EndOfCursorFeedException) {
+                        // The feed is exhausted: nothing left to append.
+                    }
                 }
             }
 

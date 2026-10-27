@@ -2,7 +2,6 @@ package com.dertefter.hashtag_feed
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.zacsweers.metro.AppScope
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.repository.FeedRepository
 import com.dertefter.data.repository.PostRepository
@@ -13,10 +12,8 @@ import com.dertefter.navigation.Routes
 import com.dertefter.navigation.Routes.Comments
 import com.jamal_aliev.paginator.core.page.PaginatorUiState
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
-import com.jamal_aliev.paginator.cursor.extension.distinctBy
-import com.jamal_aliev.paginator.cursor.extension.prefetchController
-import com.jamal_aliev.paginator.cursor.extension.refreshAll
 import com.jamal_aliev.paginator.cursor.extension.uiState
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
@@ -77,10 +74,8 @@ class HashtagFeedViewModel(
 
     private fun setupPaginator(paginator: MutableCursorPaginator<String, PostDto>) {
         viewModelScope.launch {
-            paginator.distinctBy { it.id }
-            paginator.prefetchController(
-                scope = viewModelScope, prefetchDistance = 3
-            )
+            // Prefetch is owned by the list itself (rememberPaginated creates and binds
+            // its own controller), so one built here would never be attached to it.
             paginator.restart(silentlyLoading = true)
         }
     }
@@ -160,7 +155,7 @@ class HashtagFeedViewModel(
             }
 
             Event.OnLoadMore -> {
-                // Handled by prefetchController
+                // Pagination is driven by the list whenever it reaches the end.
             }
 
             is Event.OnRefresh -> {

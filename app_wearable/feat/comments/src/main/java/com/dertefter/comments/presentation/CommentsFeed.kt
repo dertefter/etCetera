@@ -44,6 +44,7 @@ import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
 import com.jamal_aliev.paginator.cursor.bookmark.CursorBookmark
 import com.jamal_aliev.paginator.cursor.dsl.mutableCursorPaginator
 import com.jamal_aliev.paginator.cursor.load.CursorLoadResult
+import com.jamal_aliev.paginator.cursor.exception.EndOfCursorFeedException
 
 @Composable
 fun CommentsFeed(
@@ -67,7 +68,11 @@ fun CommentsFeed(
                 if (lastIndex >= totalItemsCount - 2) {
                     val appendState = state.appendState
                     if (appendState == null || (!appendState.isProgressState() && !appendState.isErrorState())) {
-                        runCatching { paginator.goNextPage() }
+                        try {
+                            paginator.goNextPage()
+                        } catch (_: EndOfCursorFeedException) {
+                            // The feed is exhausted: keep the append indicator hidden.
+                        }
                     }
                 }
             }

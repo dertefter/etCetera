@@ -120,7 +120,6 @@ private fun UserFeedAppendIndicator(state: PaginatorUiState<PostDto>) {
                     }
                 }
             }
-            is PaginatorUiState.Idle -> AppLoadingIndicator()
             else -> {}
         }
     }
