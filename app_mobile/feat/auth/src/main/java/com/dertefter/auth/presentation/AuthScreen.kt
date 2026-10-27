@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -44,7 +43,6 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
@@ -56,7 +54,6 @@ import com.dertefter.auth.R
 import com.dertefter.design.components.appbar.AppTopBar
 import com.dertefter.design.components.lists.SegmentedColumn
 import com.dertefter.design.components.loading.AppLoadingIndicator
-import com.dertefter.design.components.lists.SegmentedContentItem
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.bottomNavHeight
@@ -265,7 +262,7 @@ fun AuthScreen(onEvent: (Event) -> Unit, uiState: UiState) {
                     itemInnerPadding = PaddingValues(all = 0.dp)
                 )
                 {
-                    itemsIndexed(uiState.loginHistory) { index, login ->
+                    items(uiState.loginHistory) { login ->
                         val isCurrent = login == uiState.currentLogin
 
                         val containerColor by animateColorAsState(
