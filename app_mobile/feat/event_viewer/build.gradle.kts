@@ -36,6 +36,7 @@ dependencies {
 
     api(project(":common:data"))
     api(project(":common:navigation"))
+    api(project(":app_mobile:design"))
 
     implementation(libs.compose.webview)
     api(libs.metro.runtime)

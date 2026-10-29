@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
@@ -16,8 +17,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.dertefter.design.theme.bottomNavHeight
 import com.parkwoocheol.composewebview.ComposeWebView
+import com.parkwoocheol.composewebview.DarkMode
 import com.parkwoocheol.composewebview.LoadingState
+import com.parkwoocheol.composewebview.WebViewSettings
 import com.parkwoocheol.composewebview.client.rememberWebViewClient
 import com.parkwoocheol.composewebview.client.shouldInterceptRequest
 import com.parkwoocheol.composewebview.createPlatformWebResourceResponse
@@ -72,7 +76,7 @@ fun EventViewerRoute(
 
     val density = LocalDensity.current
     val topInset = (WindowInsets.systemBars.getTop(density) / density.density).toInt()
-    val bottomInset = (WindowInsets.systemBars.getBottom(density) / density.density).toInt()
+    val bottomInset = (MaterialTheme.bottomNavHeight).value.toInt()
 
     val insetsScript = "window.setNativeInsets({top:$topInset,right:0,bottom:$bottomInset,left:0});"
 
@@ -111,6 +115,7 @@ fun EventViewerRoute(
         ComposeWebView(
             state = state,
             controller = controller,
+            settings = WebViewSettings(darkMode = DarkMode.LIGHT),
             client = client,
             modifier = Modifier.fillMaxSize(),
             javaScriptInterfaces = remember(bridge) { mapOf("AndroidBridge" to bridge) },
@@ -124,6 +129,7 @@ fun EventViewerRoute(
                 }
             },
         )
+
     } else {
         Box(
             modifier = Modifier.fillMaxSize()
