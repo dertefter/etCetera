@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_ai_title">ИИ</string>
+    <string name="settings_ai_models">Модель</string>
+    <string name="settings_ai_models_empty">Модель не импортирована</string>
+    <string name="settings_ai_import">Импортировать модель</string>
+    <string name="settings_ai_importing">Импорт модели…</string>
+    <string name="settings_ai_import_hint">Выберите файл .litertlm. Он будет скопирован в хранилище приложения и не покинет устройство.</string>
+    <string name="settings_ai_active">Активная модель</string>
+    <string name="settings_ai_delete">Удалить модель</string>
+    <string name="settings_ai_delete_title">Удалить модель?</string>
+    <string name="settings_ai_delete_text">Модель «%1$s» будет удалена из хранилища приложения. Файл придётся импортировать заново.</string>
+    <string name="settings_ai_delete_confirm">Удалить</string>
+    <string name="settings_ai_cancel">Отмена</string>
+    <string name="settings_ai_error_title">Ошибка ИИ</string>
+    <string name="settings_ai_error_not_configured">Модель не выбрана</string>
+    <string name="settings_ai_error_model_not_found">Файл модели не найден</string>
+    <string name="settings_ai_error_invalid_model">Этот файл не является моделью LiteRT-LM</string>
+    <string name="settings_ai_error_import_failed">Не удалось импортировать модель</string>
+    <string name="settings_ai_error_delete_failed">Не удалось удалить модель</string>
+    <string name="settings_ai_error_unexpected">Что-то пошло не так</string>
+</resources>
