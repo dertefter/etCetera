@@ -195,7 +195,6 @@ class AiRepositoryImpl(
             if (error is CancellationException) throw error
             throw AiError.GenerationFailed(error)
         }
-        // Нативная генерация не реагирует на отмену корутины, поэтому останавливаем её явно.
         val cancellationWatcher = currentCoroutineContext()[Job]?.invokeOnCompletion { cause ->
             if (cause is CancellationException) runCatching { conversation.cancelProcess() }
         }
@@ -243,7 +242,11 @@ class AiRepositoryImpl(
     private fun AiBackend.toLitertBackend(): Backend = when (this) {
         AiBackend.Gpu -> Backend.GPU()
         is AiBackend.Cpu -> Backend.CPU(threadCount = threadCount)
-        is AiBackend.Npu -> Backend.NPU(nativeLibraryDir = nativeLibraryDir)
+        is AiBackend.Npu -> Backend.NPU(
+            nativeLibraryDir = nativeLibraryDir
+                .takeIf { it.isNotEmpty() && File(it).isDirectory }
+                ?: context.applicationInfo.nativeLibraryDir
+        )
         AiBackend.GoogleTensor -> Backend.GOOGLE_TENSOR()
     }
 

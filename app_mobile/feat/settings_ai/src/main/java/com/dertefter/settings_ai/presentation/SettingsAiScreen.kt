@@ -30,6 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.dertefter.ai.model.AiBackend
 import com.dertefter.ai.model.AiError
 import com.dertefter.ai.model.AiModel
 import com.dertefter.design.components.appbar.AppTopBar
@@ -158,6 +159,35 @@ fun SettingsAiScreen(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
+                
+                if (uiState.activeModelId != null) {
+                    item {
+                        SegmentedColumn(
+                            title = stringResource(R.string.settings_ai_backend)
+                        ) {
+                            items(
+                                items = uiState.backends,
+                                onClick = { backend -> onEvent(Event.OnBackendSelected(backend)) }
+                            ) { backend ->
+                                BackendItem(
+                                    backend = backend,
+                                    isActive = backend == uiState.activeBackend
+                                )
+                            }
+                        }
+                    }
+
+                    item {
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = MaterialTheme.rounding.largeIncreased),
+                            text = stringResource(R.string.settings_ai_backend_hint),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
             }
         }
     }
@@ -237,6 +267,38 @@ private fun ModelItem(
 }
 
 @Composable
+private fun BackendItem(
+    backend: AiBackend,
+    isActive: Boolean,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large)
+    ) {
+        Text(
+            modifier = Modifier.weight(1f),
+            text = stringResource(backend.titleRes()),
+            style = MaterialTheme.typography.titleMedium
+        )
+        if (isActive) {
+            Icon(
+                imageVector = Icons.Check,
+                contentDescription = stringResource(R.string.settings_ai_backend_active),
+                tint = MaterialTheme.colorScheme.primary
+            )
+        }
+    }
+}
+
+private fun AiBackend.titleRes(): Int = when (this) {
+    AiBackend.Gpu -> R.string.settings_ai_backend_gpu
+    is AiBackend.Cpu -> R.string.settings_ai_backend_cpu
+    is AiBackend.Npu -> R.string.settings_ai_backend_npu
+    AiBackend.GoogleTensor -> R.string.settings_ai_backend_tensor
+}
+
+@Composable
 private fun ImportItem(isImporting: Boolean) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -300,7 +362,13 @@ private fun SettingsAiScreenPreview() {
                         importedAt = 1_760_000_000_000
                     )
                 ),
-                activeModelId = "gemma-3n-e2b.litertlm"
+                activeModelId = "gemma-3n-e2b.litertlm",
+                backends = listOf(
+                    AiBackend.Gpu,
+                    AiBackend.Cpu(),
+                    AiBackend.GoogleTensor
+                ),
+                activeBackend = AiBackend.Gpu
             ),
             onEvent = {}
         )

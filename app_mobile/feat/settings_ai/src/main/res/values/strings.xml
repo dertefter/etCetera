@@ -7,6 +7,13 @@
     <string name="settings_ai_importing">Importing model…</string>
     <string name="settings_ai_import_hint">The AI model will run locally on the device. Models in the .litertlm format are supported</string>
     <string name="settings_ai_active">Active model</string>
+    <string name="settings_ai_backend">Backend</string>
+    <string name="settings_ai_backend_gpu">GPU</string>
+    <string name="settings_ai_backend_cpu">CPU</string>
+    <string name="settings_ai_backend_npu">NPU</string>
+    <string name="settings_ai_backend_tensor">Google Tensor</string>
+    <string name="settings_ai_backend_active">Active backend</string>
+    <string name="settings_ai_backend_hint">GPU is the fastest option, CPU is the most compatible one. NPU works only if the model and the device support it. After switching the model is reloaded.</string>
     <string name="settings_ai_delete">Delete model</string>
     <string name="settings_ai_delete_title">Delete model?</string>
     <string name="settings_ai_delete_text">%1$s will be removed from the app storage. The file will have to be imported again.</string>

@@ -7,6 +7,13 @@
     <string name="settings_ai_importing">Импорт модели…</string>
     <string name="settings_ai_import_hint">ИИ модель будет работать локально на устройсте. Поддерживаются модели в формате .litertlm</string>
     <string name="settings_ai_active">Активная модель</string>
+    <string name="settings_ai_backend">Бэкенд</string>
+    <string name="settings_ai_backend_gpu">GPU</string>
+    <string name="settings_ai_backend_cpu">CPU</string>
+    <string name="settings_ai_backend_npu">NPU</string>
+    <string name="settings_ai_backend_tensor">Google Tensor</string>
+    <string name="settings_ai_backend_active">Активный бэкенд</string>
+    <string name="settings_ai_backend_hint">GPU — самый быстрый вариант, CPU — самый совместимый. NPU работает, только если его поддерживают модель и устройство. После смены модель загрузится заново.</string>
     <string name="settings_ai_delete">Удалить модель</string>
     <string name="settings_ai_delete_title">Удалить модель?</string>
     <string name="settings_ai_delete_text">Модель «%1$s» будет удалена из хранилища приложения. Файл придётся импортировать заново.</string>

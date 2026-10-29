@@ -1,8 +1,11 @@
 package com.dertefter.settings_ai
 
+import android.app.Application
 import android.net.Uri
+import android.os.Build
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dertefter.ai.model.AiBackend
 import com.dertefter.ai.model.AiError
 import com.dertefter.ai.model.AiModel
 import com.dertefter.ai.model.AiModelConfig
@@ -27,6 +30,7 @@ import kotlinx.coroutines.launch
 @ContributesIntoMap(AppScope::class)
 @Inject
 class SettingsAiViewModel(
+    private val application: Application,
     private val navigator: Navigator,
     private val aiRepository: AiRepository,
 ) : ViewModel() {
@@ -37,6 +41,13 @@ class SettingsAiViewModel(
 
     private val error = MutableStateFlow<AiError?>(null)
 
+    private val backends: List<AiBackend> = buildList {
+        add(AiBackend.Gpu)
+        add(AiBackend.Cpu())
+        add(AiBackend.Npu(nativeLibraryDir = application.applicationInfo.nativeLibraryDir))
+        if (supportsGoogleTensor()) add(AiBackend.GoogleTensor)
+    }
+
     private val library = combine(
         aiRepository.models,
         aiRepository.config,
@@ -44,6 +55,7 @@ class SettingsAiViewModel(
         Library(
             models = models,
             activeModelId = models.firstOrNull { model -> model.path == config?.modelPath }?.id,
+            activeBackend = config?.backend ?: AiBackend.Gpu,
         )
     }
 
@@ -57,6 +69,8 @@ class SettingsAiViewModel(
             isLoading = false,
             models = library.models,
             activeModelId = library.activeModelId,
+            backends = backends,
+            activeBackend = library.activeBackend,
             isImporting = importing,
             pendingDelete = deleting,
             error = failure,
@@ -74,6 +88,8 @@ class SettingsAiViewModel(
             is Event.OnImport -> import(event.uri)
 
             is Event.OnSelect -> select(event.model)
+
+            is Event.OnBackendSelected -> selectBackend(event.backend)
 
             is Event.OnDeleteRequest -> pendingDelete.value = event.model
 
@@ -118,10 +134,24 @@ class SettingsAiViewModel(
         ).onFailure { failure -> error.value = failure.asAiError() }
     }
 
+    private fun selectBackend(backend: AiBackend) {
+        viewModelScope.launch {
+            val config = aiRepository.config.first() ?: return@launch
+            if (config.backend == backend) return@launch
+            aiRepository.configure(config.copy(backend = backend))
+                .onFailure { failure -> error.value = failure.asAiError() }
+        }
+    }
+
+    private fun supportsGoogleTensor(): Boolean =
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+            Build.SOC_MODEL.trim().startsWith("Tensor", ignoreCase = true)
+
     private fun Throwable.asAiError(): AiError = this as? AiError ?: AiError.Unexpected(this)
 
     private data class Library(
         val models: List<AiModel>,
         val activeModelId: String?,
+        val activeBackend: AiBackend,
     )
 }
