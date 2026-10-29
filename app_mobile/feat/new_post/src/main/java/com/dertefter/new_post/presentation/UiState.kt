@@ -1,5 +1,6 @@
 package com.dertefter.new_post.presentation
 
+import com.dertefter.ai.prompt.Prompt
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.design.components.poll.NewPollUiModel
 import com.dertefter.design.components.post.SpanUiModel
@@ -13,6 +14,7 @@ data class UiState(
     val originalPost: PostDto? = null,
     val hasDraft: Boolean = false,
 
-    /** Модель переписывает текст: поле ввода заблокировано. */
-    val isRewritingWithAi: Boolean = false
+    val isRewritingWithAi: Boolean = false,
+
+    val availablePrompts: List<Prompt> = Prompt.available
 )

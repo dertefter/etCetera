@@ -7,8 +7,8 @@ import com.dertefter.ai.model.AiError
 import com.dertefter.ai.model.AiModel
 import com.dertefter.ai.model.AiModelConfig
 import com.dertefter.ai.model.AiState
-import com.dertefter.ai.model.SummarizeOptions
-import com.dertefter.ai.prompt.SummarizePrompt
+import com.dertefter.ai.model.GenerateOptions
+import com.dertefter.ai.prompt.Prompt
 import com.dertefter.ai.storage.AiModelStorage
 import com.dertefter.ai.store.AiSettingsStore
 import com.google.ai.edge.litertlm.Backend
@@ -111,15 +111,18 @@ class AiRepositoryImpl(
         }
     }
 
-    override suspend fun summarize(
+    override val availablePrompts: List<Prompt> = Prompt.available
+
+    override suspend fun generate(
         text: String,
-        options: SummarizeOptions,
+        prompt: Prompt,
+        options: GenerateOptions,
     ): Result<String> = handle {
         val source = text.trim()
         if (source.isEmpty()) throw AiError.EmptyInput
         mutex.withLock {
             val activeEngine = acquireEngine()
-            generate(activeEngine, source, options)
+            generateText(activeEngine, source, prompt, options)
         }
     }
 
@@ -174,15 +177,16 @@ class AiRepositoryImpl(
         mutableState.value = AiState.Idle
     }
 
-    private suspend fun generate(
+    private suspend fun generateText(
         activeEngine: Engine,
         source: String,
-        options: SummarizeOptions,
+        prompt: Prompt,
+        options: GenerateOptions,
     ): String {
         val conversation = try {
             activeEngine.createConversation(
                 ConversationConfig(
-                    systemInstruction = Contents.of(SummarizePrompt.system(options)),
+                    systemInstruction = Contents.of(prompt.system(options)),
                     samplerConfig = SAMPLER_CONFIG,
                     maxOutputToken = options.maxWords?.let { it * TOKENS_PER_WORD + OUTPUT_TOKENS_MARGIN },
                 )
@@ -197,7 +201,7 @@ class AiRepositoryImpl(
         }
         return try {
             val message = withContext(Dispatchers.Default) {
-                conversation.sendMessage(SummarizePrompt.user(source))
+                conversation.sendMessage(prompt.user(source, options))
             }
             val result = message.text().cleanUp()
             if (result.isEmpty()) throw AiError.EmptyResponse
@@ -251,7 +255,9 @@ class AiRepositoryImpl(
         const val OUTPUT_TOKENS_MARGIN = 64
 
         val SERVICE_PREFIX_REGEX = Regex(
-            "^(summary|shortened text|short version|краткое содержание|краткий пересказ|кратко|сокращённый текст)\\s*[:\\-—]\\s*",
+            "^(summary|shortened text|short version|rewritten text|result|answer|" +
+                "краткое содержание|краткий пересказ|кратко|сокращённый текст|переписанный текст|результат|ответ)" +
+                "\\s*[:\\-—]\\s*",
             RegexOption.IGNORE_CASE,
         )
     }

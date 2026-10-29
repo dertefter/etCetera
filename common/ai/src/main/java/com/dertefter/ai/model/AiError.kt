@@ -18,7 +18,7 @@ sealed class AiError(
     class DeleteFailed(cause: Throwable?) :
         AiError("Не удалось удалить модель: ${cause?.message}", cause)
 
-    data object EmptyInput : AiError("Пустой текст: нечего сокращать")
+    data object EmptyInput : AiError("Пустой текст: нечего переписывать")
 
     class EngineInitializationFailed(cause: Throwable?) :
         AiError("Не удалось инициализировать движок: ${cause?.message}", cause)

@@ -1,6 +1,6 @@
 package com.dertefter.ai.model
 
-data class SummarizeOptions(
+data class GenerateOptions(
     val maxWords: Int? = null,
     val language: String? = null,
 ) {

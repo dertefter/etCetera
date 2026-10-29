@@ -6,6 +6,7 @@ import android.webkit.MimeTypeMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dertefter.ai.model.AiError
+import com.dertefter.ai.prompt.Prompt
 import com.dertefter.ai.repository.AiRepository
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.repository.AttachmentsRepository
@@ -78,7 +79,8 @@ abstract class BaseNewPostViewModel(
             isUploadingPost = flows[4] as Boolean,
             originalPost = flows[5] as PostDto?,
             hasDraft = flows[6] as Boolean,
-            isRewritingWithAi = flows[7] as Boolean
+            isRewritingWithAi = flows[7] as Boolean,
+            availablePrompts = aiRepository.availablePrompts
         )
     }.stateIn(
         viewModelScope, SharingStarted.WhileSubscribed(5000), UiState(
@@ -110,14 +112,14 @@ abstract class BaseNewPostViewModel(
             Event.OnAddPollQuestion -> addPollQuestion()
             is Event.OnRemovePollQuestion -> removePollQuestion(event.id)
             is Event.OnPollMultipleChoiceChanged -> _poll.update { it?.copy(isMultipleChoice = event.isMultipleChoice) }
-            Event.OnRewriteWithAi -> rewriteWithAi()
+            is Event.OnRewriteWithAi -> rewriteWithAi(event.prompt)
             Event.OnSavePost -> savePost()
             Event.OnRestoreDraft -> {}
             Event.OnDeleteDraft -> {}
         }
     }
 
-    private fun rewriteWithAi() {
+    private fun rewriteWithAi(prompt: Prompt) {
         if (_isRewritingWithAi.value) return
         val source = _content.value.trim()
         if (source.isEmpty()) return
@@ -128,7 +130,7 @@ abstract class BaseNewPostViewModel(
             }
             _isRewritingWithAi.value = true
             try {
-                aiRepository.summarize(source)
+                aiRepository.generate(source, prompt)
                     .onSuccess { rewritten ->
                         if (_content.value.trim() == source) applyRewrittenText(rewritten)
                     }
