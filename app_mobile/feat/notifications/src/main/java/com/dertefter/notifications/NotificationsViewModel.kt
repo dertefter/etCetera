@@ -57,11 +57,6 @@ class NotificationsViewModel(
             initialValue = PaginatorUiState.Idle
         )
 
-    /**
-     * One paginator per filter, kept for the lifetime of the ViewModel: switching a filter
-     * back and forth — or a re-subscription after [SharingStarted.WhileSubscribed] stopped
-     * the flow — restores the pages that were already loaded instead of starting over.
-     */
     private fun getOrCreatePaginator(filter: String?): MutableCursorPaginator<String, NotificationDto> {
         val paginator = paginators.getOrPut(filter.orEmpty()) {
             notificationsRepository.getNotificationsPaginator(filter).also { setupPaginator(it) }
@@ -72,9 +67,7 @@ class NotificationsViewModel(
 
     private fun setupPaginator(paginator: MutableCursorPaginator<String, NotificationDto>) {
         viewModelScope.launch {
-            // Prefetch is owned by rememberPaginated() on the UI side: it creates and binds
-            // its own controller, so one built here would never be attached to the list.
-            paginator.restart(silentlyLoading = true)
+            paginator.restart()
         }
     }
 
@@ -94,7 +87,7 @@ class NotificationsViewModel(
 
             is Event.OnRefresh -> {
                 viewModelScope.launch {
-                    paginator.restart(silentlyLoading = true)
+                    paginator.restart()
                     notificationsRepository.readAll()
                 }
             }
