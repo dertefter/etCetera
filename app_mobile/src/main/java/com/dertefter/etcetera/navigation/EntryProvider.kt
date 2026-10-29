@@ -26,6 +26,7 @@ fun getAppEntryProvider(): (NavKey) -> NavEntry<NavKey> = entryProvider {
     entry<Routes.HashtagFeed> { RouteContent(it) }
     entry<Routes.AttachmentsViewer> { RouteContent(it) }
     entry<Routes.Settings> { RouteContent(it) }
+    entry<Routes.SettingsAi> { RouteContent(it) }
     entry<Routes.SettingsTheme> { RouteContent(it) }
     entry<Routes.SettingsThemeAvatars> { RouteContent(it) }
     entry<Routes.SettingsThemePosts> { RouteContent(it) }

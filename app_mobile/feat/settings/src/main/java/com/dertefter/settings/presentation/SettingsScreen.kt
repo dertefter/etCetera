@@ -120,6 +120,11 @@ fun SettingsScreen(
                     }
                 ),
                 SettingsItem(
+                    title = "ИИ",
+                    icon = Icons.Keep,
+                    onClick = { onEvent(Event.OnNavigateTo(Routes.SettingsAi)) }
+                ),
+                SettingsItem(
                     title = stringResource(R.string.settings_about),
                     icon = Icons.InfoFilled,
                     onClick = { onEvent(Event.OnNavigateTo(Routes.SettingsAbout)) }
