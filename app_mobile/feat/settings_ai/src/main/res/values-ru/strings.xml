@@ -5,7 +5,7 @@
     <string name="settings_ai_models_empty">Модель не импортирована</string>
     <string name="settings_ai_import">Импортировать модель</string>
     <string name="settings_ai_importing">Импорт модели…</string>
-    <string name="settings_ai_import_hint">Выберите файл .litertlm. Он будет скопирован в хранилище приложения и не покинет устройство.</string>
+    <string name="settings_ai_import_hint">ИИ модель будет работать локально на устройсте. Поддерживаются модели в формате .litertlm</string>
     <string name="settings_ai_active">Активная модель</string>
     <string name="settings_ai_delete">Удалить модель</string>
     <string name="settings_ai_delete_title">Удалить модель?</string>

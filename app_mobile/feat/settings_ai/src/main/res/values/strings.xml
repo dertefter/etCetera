@@ -5,7 +5,7 @@
     <string name="settings_ai_models_empty">No model imported</string>
     <string name="settings_ai_import">Import model</string>
     <string name="settings_ai_importing">Importing model…</string>
-    <string name="settings_ai_import_hint">Pick a .litertlm file. It is copied to the app storage and never leaves the device.</string>
+    <string name="settings_ai_import_hint">The AI model will run locally on the device. Models in the .litertlm format are supported</string>
     <string name="settings_ai_active">Active model</string>
     <string name="settings_ai_delete">Delete model</string>
     <string name="settings_ai_delete_title">Delete model?</string>
