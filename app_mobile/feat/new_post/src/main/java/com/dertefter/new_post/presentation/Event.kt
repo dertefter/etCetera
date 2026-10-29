@@ -29,6 +29,9 @@ sealed interface Event {
 
     data class OnPollMultipleChoiceChanged(val isMultipleChoice: Boolean) : Event
 
+    /** Переписать текст через локальную модель. */
+    data object OnRewriteWithAi : Event
+
     data object OnSavePost : Event
 
     data object OnRestoreDraft : Event

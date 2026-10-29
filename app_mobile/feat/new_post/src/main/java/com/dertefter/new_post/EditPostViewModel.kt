@@ -3,6 +3,7 @@ package com.dertefter.new_post
 import android.app.Application
 import androidx.lifecycle.viewModelScope
 import dev.zacsweers.metro.AppScope
+import com.dertefter.ai.repository.AiRepository
 import com.dertefter.data.dto.feed.SpanDto
 import com.dertefter.data.dto.new_post.EditPostRequestDto
 import com.dertefter.data.repository.AttachmentsRepository
@@ -25,8 +26,9 @@ class EditPostViewModel(
     application: Application,
     private val postRepository: PostRepository,
     attachmentsRepository: AttachmentsRepository,
+    aiRepository: AiRepository,
     navigator: Navigator
-) : BaseNewPostViewModel(application, attachmentsRepository, navigator) {
+) : BaseNewPostViewModel(application, attachmentsRepository, navigator, aiRepository) {
 
     private var postId: String? = null
     private var isInitialized = false

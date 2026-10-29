@@ -221,6 +221,30 @@ fun NewPostScreen(
                     }
                 )
 
+
+                AnimatedVisibility(
+                    visible = uiState.content.isNotEmpty()
+                ) {
+                    // Пока модель работает, кнопка показывает прогресс;
+                    // повторное нажатие игнорирует ViewModel.
+                    FilledTonalIconButton(
+                        onClick = { onEvent(Event.OnRewriteWithAi) },
+                        shape = MaterialTheme.shapes.medium,
+                    ) {
+                        if (uiState.isRewritingWithAi) {
+                            AppLoadingIndicator(
+                                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        } else {
+                            Icon(
+                                imageVector = Icons.EditNote,
+                                contentDescription = stringResource(R.string.action_rewrite_with_ai)
+                            )
+                        }
+                    }
+                }
+
                 if (screenMode == ScreenMode.NEW_POST || screenMode == ScreenMode.NEW_COMMENT){
                     if (screenMode == ScreenMode.NEW_POST){
                         FilledTonalIconButton(
@@ -402,6 +426,8 @@ fun NewPostScreen(
 
             BasicTextField(
                 state = textFieldState,
+                // Пока модель переписывает текст, ввод запрещён: ответ затрёт его целиком.
+                enabled = !uiState.isRewritingWithAi,
                 modifier = Modifier
                     .appendTextContextMenuComponents {
                         menuBuilder()
@@ -418,7 +444,7 @@ fun NewPostScreen(
                 outputTransformation = outputTransformation,
                 decorator = TextFieldDefaults.decorator(
                     state = textFieldState,
-                    enabled = true,
+                    enabled = !uiState.isRewritingWithAi,
                     lineLimits = TextFieldLineLimits.MultiLine(),
                     outputTransformation = outputTransformation,
                     interactionSource = interactionSource,

@@ -36,6 +36,7 @@ dependencies {
 
     api(project(":common:data"))
     api(project(":common:navigation"))
+    implementation(project(":common:ai"))
     api(project(":app_mobile:design"))
 
     implementation(libs.activity.compose)

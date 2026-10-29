@@ -11,5 +11,8 @@ data class UiState(
     val poll: NewPollUiModel? = null,
     val isUploadingPost: Boolean = false,
     val originalPost: PostDto? = null,
-    val hasDraft: Boolean = false
+    val hasDraft: Boolean = false,
+
+    /** Модель переписывает текст: поле ввода заблокировано. */
+    val isRewritingWithAi: Boolean = false
 )

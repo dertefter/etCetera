@@ -19,6 +19,7 @@
     <string name="action_add_poll">Add poll</string>
     <string name="action_add_media">Add media</string>
     <string name="action_save">Save</string>
+    <string name="action_rewrite_with_ai">Rewrite with AI</string>
     <string name="post_placeholder">What\'s new?</string>
     <string name="repost_placeholder" tools:ignore="TypographyEllipsis">Comment for post...</string>
     <string name="comment_placeholder" tools:ignore="TypographyEllipsis">Comment...</string>

@@ -4,6 +4,7 @@ import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dertefter.ai.repository.AiRepository
 import com.dertefter.data.dto.draft.DraftDto
 import com.dertefter.data.dto.feed.SpanDto
 import com.dertefter.data.dto.new_post.NewPollDto
@@ -37,8 +38,9 @@ class RepostViewModel(
     application: Application,
     private val postRepository: PostRepository,
     attachmentsRepository: AttachmentsRepository,
+    aiRepository: AiRepository,
     navigator: Navigator
-) : BaseNewPostViewModel(application, attachmentsRepository, navigator) {
+) : BaseNewPostViewModel(application, attachmentsRepository, navigator, aiRepository) {
 
     private var postIdForRepost: String? = null
     private var wallRecipientId: String? = null
