@@ -36,10 +36,5 @@ dependencies {
     implementation(libs.datastore.preferences)
     implementation(libs.metro.runtime)
     implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.appcompat)
     implementation(libs.core.ktx)
-    implementation(libs.material)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(libs.androidx.junit)
 }
