@@ -11,4 +11,5 @@
     <string name="settings_section_app">Приложение</string>
     <string name="settings_open_by_default">Открывать по умолчанию</string>
     <string name="settings_open_by_default_error">Не удалось открыть настройки приложения</string>
+    <string name="settings_ai">ИИ</string>
 </resources>

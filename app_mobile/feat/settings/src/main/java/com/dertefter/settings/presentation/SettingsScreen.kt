@@ -120,8 +120,8 @@ fun SettingsScreen(
                     }
                 ),
                 SettingsItem(
-                    title = "ИИ",
-                    icon = Icons.Keep,
+                    title = stringResource(R.string.settings_ai),
+                    icon = Icons.NetworkIntelligenceFilled,
                     onClick = { onEvent(Event.OnNavigateTo(Routes.SettingsAi)) }
                 ),
                 SettingsItem(
