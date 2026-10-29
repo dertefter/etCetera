@@ -1,9 +1,11 @@
-package com.dertefter.etcetera.navigation
+package com.dertefter.navigation
 
 import android.net.Uri
-import com.dertefter.navigation.Routes
 
 object DeepLinkParser {
+
+    private const val SITE_HOST = "xn--d1ah4a.com"
+    private const val SITE_HOST_CYRILLIC = "итд.com"
 
     private val RESERVED_PATHS = setOf(
         "feed", "search", "notifications", "settings", "auth",
@@ -18,7 +20,7 @@ object DeepLinkParser {
 
         val host = uri.host?.lowercase()
         if (scheme == "http" || scheme == "https") {
-            if (host != "xn--d1ah4a.com" && host != "итд.com") return null
+            if (host != SITE_HOST && host != SITE_HOST_CYRILLIC) return null
         }
 
         val pathSegments = uri.pathSegments ?: return null
@@ -66,5 +68,10 @@ object DeepLinkParser {
         }
 
         return null
+    }
+    
+    fun parsePath(path: String?): Routes? {
+        if (path.isNullOrBlank() || !path.startsWith("/")) return null
+        return parse(Uri.parse("https://$SITE_HOST$path"))
     }
 }

@@ -14,7 +14,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.etcetera.navigation.AppNavHost
-import com.dertefter.etcetera.navigation.DeepLinkParser
+import com.dertefter.navigation.DeepLinkParser
 import com.dertefter.etcetera.presentation.MainScreen
 import dev.zacsweers.metrox.viewmodel.LocalMetroViewModelFactory
 import com.dertefter.design.theme.EmojiAvatarHarmonizationColor as DesignColor

@@ -35,6 +35,7 @@ android {
 dependencies {
 
     api(project(":common:data"))
+    api(project(":common:navigation"))
 
     implementation(libs.compose.webview)
     api(libs.metro.runtime)
