@@ -15,6 +15,7 @@ kotlin = "2.4.21"
 kotlinxCoroutinesCore = "1.11.0"
 kotlinxSerializationCore = "1.12.0"
 ksp = "2.3.12"
+litertlmAndroid = "0.18.1"
 materialColorUtilities = "6.0.0"
 materialKolorCore = "6.0.0"
 media3Common = "1.11.1"
@@ -85,6 +86,10 @@ mockk = "1.14.11"
 
 # Licenses
 droibitOssLicenses = "0.10.0"
+junit = "4.13.2"
+junitVersion = "1.1.5"
+espressoCore = "3.5.1"
+material = "1.10.0"
 
 [libraries]
 # AndroidX Core
@@ -144,6 +149,7 @@ compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerializationCore" }
 lifecycle-viewmodel-navigation3 = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "lifecycleRuntimeKtx" }
+litertlm-android = { module = "com.google.ai.edge.litertlm:litertlm-android", version.ref = "litertlmAndroid" }
 material-color-utilities = { module = "com.materialkolor:material-color-utilities", version.ref = "materialColorUtilities" }
 material-kolor-core = { module = "com.materialkolor:material-kolor-core", version.ref = "materialKolorCore" }
 navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "navigation3" }
@@ -204,6 +210,10 @@ mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 # Licenses
 oss-licenses-droibit = { group = "io.github.droibit.oss-licenses-android", name = "ui-compose-material3", version.ref = "droibitOssLicenses" }
 androidx-animation-graphics = { group = "androidx.compose.animation", name = "animation-graphics", version.ref = "animationGraphics" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
