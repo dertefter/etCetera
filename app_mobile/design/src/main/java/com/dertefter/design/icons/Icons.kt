@@ -8,6 +8,8 @@ import com.dertefter.design.R
 @Suppress("unused")
 object Icons {
 
+    val WandStars: ImageVector
+        @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_wand_stars)
     val PersonSwitch: ImageVector
         @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_person_switch)
     val PenSize1: ImageVector

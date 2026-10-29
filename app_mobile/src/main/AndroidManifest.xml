@@ -18,6 +18,13 @@
         android:theme="@style/Theme.EtCetera"
         tools:targetApi="37">
 
+        <uses-native-library
+            android:name="libvndksupport.so"
+            android:required="false"/>
+        <uses-native-library
+            android:name="libOpenCL.so"
+            android:required="false"/>
+
         <!--suppress AndroidDomInspection, AndroidDomInspection -->
         <service android:name="com.google.android.gms.metadata.ModuleDependencies"
             android:enabled="false"

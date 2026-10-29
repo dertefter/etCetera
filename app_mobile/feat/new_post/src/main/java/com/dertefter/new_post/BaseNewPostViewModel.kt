@@ -5,12 +5,16 @@ import android.net.Uri
 import android.webkit.MimeTypeMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dertefter.ai.model.AiError
+import com.dertefter.ai.prompt.Prompt
+import com.dertefter.ai.repository.AiRepository
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.repository.AttachmentsRepository
 import com.dertefter.design.components.poll.NewPollOptionUiModel
 import com.dertefter.design.components.poll.NewPollUiModel
 import com.dertefter.design.components.post.SpanUiModel
 import com.dertefter.navigation.Navigator
+import com.dertefter.navigation.Routes
 import com.dertefter.new_post.presentation.Event
 import com.dertefter.new_post.presentation.UiState
 import com.dertefter.new_post.presentation.Upload
@@ -19,6 +23,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -29,7 +34,8 @@ import java.util.UUID
 abstract class BaseNewPostViewModel(
     protected val application: Application,
     protected val attachmentsRepository: AttachmentsRepository,
-    protected val navigator: Navigator
+    protected val navigator: Navigator,
+    protected val aiRepository: AiRepository,
 ) : ViewModel() {
 
     private val _poll = MutableStateFlow<NewPollUiModel?>(null)
@@ -47,6 +53,8 @@ abstract class BaseNewPostViewModel(
     private val _isUploadingPost = MutableStateFlow(false)
     protected val isUploadingPost: MutableStateFlow<Boolean> = _isUploadingPost
 
+    private val _isRewritingWithAi = MutableStateFlow(false)
+
     private val _originalPost = MutableStateFlow<PostDto?>(null)
     protected val originalPost: MutableStateFlow<PostDto?> = _originalPost
 
@@ -60,7 +68,8 @@ abstract class BaseNewPostViewModel(
         _poll,
         _isUploadingPost,
         _originalPost,
-        _hasDraft
+        _hasDraft,
+        _isRewritingWithAi
     ) { flows ->
         UiState(
             content = flows[0] as String,
@@ -69,7 +78,9 @@ abstract class BaseNewPostViewModel(
             poll = flows[3] as NewPollUiModel?,
             isUploadingPost = flows[4] as Boolean,
             originalPost = flows[5] as PostDto?,
-            hasDraft = flows[6] as Boolean
+            hasDraft = flows[6] as Boolean,
+            isRewritingWithAi = flows[7] as Boolean,
+            availablePrompts = aiRepository.availablePrompts
         )
     }.stateIn(
         viewModelScope, SharingStarted.WhileSubscribed(5000), UiState(
@@ -101,10 +112,42 @@ abstract class BaseNewPostViewModel(
             Event.OnAddPollQuestion -> addPollQuestion()
             is Event.OnRemovePollQuestion -> removePollQuestion(event.id)
             is Event.OnPollMultipleChoiceChanged -> _poll.update { it?.copy(isMultipleChoice = event.isMultipleChoice) }
+            is Event.OnRewriteWithAi -> rewriteWithAi(event.prompt)
             Event.OnSavePost -> savePost()
             Event.OnRestoreDraft -> {}
             Event.OnDeleteDraft -> {}
         }
+    }
+
+    private fun rewriteWithAi(prompt: Prompt) {
+        if (_isRewritingWithAi.value) return
+        val source = _content.value.trim()
+        if (source.isEmpty()) return
+        viewModelScope.launch {
+            if (aiRepository.config.first() == null) {
+                navigator.navigate(Routes.SettingsAi)
+                return@launch
+            }
+            _isRewritingWithAi.value = true
+            try {
+                aiRepository.generate(source, prompt)
+                    .onSuccess { rewritten ->
+                        if (_content.value.trim() == source) applyRewrittenText(rewritten)
+                    }
+                    .onFailure { failure ->
+                        if (failure is AiError.NotConfigured || failure is AiError.ModelNotFound) {
+                            navigator.navigate(Routes.SettingsAi)
+                        }
+                    }
+            } finally {
+                _isRewritingWithAi.value = false
+            }
+        }
+    }
+
+    private fun applyRewrittenText(rewritten: String) {
+        _spans.value = emptyList()
+        onEvent(Event.OnContentChanged(rewritten))
     }
 
     private fun toggleSpan(type: String, start: Int, end: Int) {
@@ -258,6 +301,7 @@ abstract class BaseNewPostViewModel(
         _uploads.value = emptyList()
         _poll.value = null
         _isUploadingPost.value = false
+        _isRewritingWithAi.value = false
     }
 
     protected fun uploadMedia(uris: List<Uri>) {

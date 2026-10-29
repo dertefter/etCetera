@@ -4,6 +4,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -72,6 +73,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dertefter.design.components.loading.AppLoadingIndicator
+import com.dertefter.design.components.loading.Shimmer
 import com.dertefter.design.components.poll.NewPollCard
 import com.dertefter.design.components.post.OriginalPostCard
 import com.dertefter.design.icons.Icons
@@ -79,6 +81,7 @@ import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.bottomNavHeight
 import com.dertefter.design.theme.spacing
 import com.dertefter.new_post.R
+import com.dertefter.new_post.presentation.component.PromptSelector
 import com.dertefter.new_post.presentation.component.UploadCard
 import com.dertefter.new_post.presentation.mapper.toOriginalPostUiModel
 
@@ -128,6 +131,16 @@ fun NewPostScreen(
     var showLinkDialog by remember { mutableStateOf(false) }
     var linkDialogSelection by remember { mutableStateOf(TextRange.Zero) }
     var linkUrlInput by remember { mutableStateOf("") }
+
+    var showPromptSelector by remember { mutableStateOf(false) }
+
+    LaunchedEffect(uiState.isRewritingWithAi, uiState.content.isEmpty()) {
+        if (uiState.isRewritingWithAi || uiState.content.isEmpty()) showPromptSelector = false
+    }
+
+    LaunchedEffect(showPromptSelector) {
+        if (showPromptSelector) scrollState.animateScrollTo(0)
+    }
 
     val menuBuilder: TextContextMenuBuilderScope.() -> Unit = {
         item(label = boldLabel, key = "bold", onClick = { onEvent(Event.OnSpanToggled("bold", selection.min, selection.max)) })
@@ -221,6 +234,28 @@ fun NewPostScreen(
                     }
                 )
 
+
+                AnimatedVisibility(
+                    visible = uiState.content.isNotEmpty()
+                ) {
+                    FilledTonalIconButton(
+                        onClick = { showPromptSelector = !showPromptSelector },
+                        shape = MaterialTheme.shapes.medium,
+                    ) {
+                        if (uiState.isRewritingWithAi) {
+                            AppLoadingIndicator(
+                                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        } else {
+                            Icon(
+                                imageVector = Icons.WandStars,
+                                contentDescription = stringResource(R.string.action_rewrite_with_ai)
+                            )
+                        }
+                    }
+                }
+
                 if (screenMode == ScreenMode.NEW_POST || screenMode == ScreenMode.NEW_COMMENT){
                     if (screenMode == ScreenMode.NEW_POST){
                         FilledTonalIconButton(
@@ -256,6 +291,7 @@ fun NewPostScreen(
                     shape = MaterialTheme.shapes.extraLargeIncreased,
                     enabled = (uiState.content.isNotBlank()
                             || uiState.uploads.isNotEmpty()
+                            || !uiState.isRewritingWithAi
                             || ((uiState.poll != null)) && (uiState.poll.isReady()))
                             || (uiState.originalPost != null)
                 ) {
@@ -280,6 +316,22 @@ fun NewPostScreen(
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
 
         ) {
+
+            AnimatedVisibility(
+                visible = showPromptSelector,
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically()
+            ) {
+                PromptSelector(
+                    modifier = Modifier.padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
+                    prompts = uiState.availablePrompts,
+                    onPromptSelected = { prompt ->
+                        showPromptSelector = false
+                        onEvent(Event.OnRewriteWithAi(prompt))
+                    },
+                    onClose = { showPromptSelector = false }
+                )
+            }
 
             AnimatedVisibility(
                 visible = uiState.hasDraft,
@@ -400,50 +452,79 @@ fun NewPostScreen(
                 label = "fontSize"
             )
 
-            BasicTextField(
-                state = textFieldState,
-                modifier = Modifier
-                    .appendTextContextMenuComponents {
-                        menuBuilder()
-                    }
-                    .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
-                    .fillMaxWidth(),
-                textStyle = MaterialTheme.typography.bodyLarge.copy(
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = animatedFontSize.sp,
-                    lineHeight = androidx.compose.ui.unit.TextUnit.Unspecified
-                ),
-                cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
-                lineLimits = TextFieldLineLimits.MultiLine(),
-                outputTransformation = outputTransformation,
-                decorator = TextFieldDefaults.decorator(
-                    state = textFieldState,
-                    enabled = true,
-                    lineLimits = TextFieldLineLimits.MultiLine(),
-                    outputTransformation = outputTransformation,
-                    interactionSource = interactionSource,
-                    placeholder = {
-                        Text(
-                            fontSize = animatedFontSize.sp,
-                            text = when (screenMode){
-                                ScreenMode.NEW_POST -> stringResource(R.string.post_placeholder)
-                                ScreenMode.REPOST -> stringResource(R.string.repost_placeholder)
-                                ScreenMode.EDIT_POST -> stringResource(R.string.post_placeholder)
-                                ScreenMode.NEW_COMMENT -> stringResource(R.string.comment_placeholder)
+            Crossfade(
+                targetState = uiState.isRewritingWithAi,
+                modifier = Modifier.fillMaxWidth()
+            ) { isRewritingWithAi ->
+                if (!isRewritingWithAi){
+                    BasicTextField(
+                        state = textFieldState,
+                        enabled = !uiState.isRewritingWithAi,
+                        modifier = Modifier
+                            .appendTextContextMenuComponents {
+                                menuBuilder()
                             }
+                            .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
+                            .fillMaxWidth(),
+                        textStyle = MaterialTheme.typography.bodyLarge.copy(
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontSize = animatedFontSize.sp,
+                            lineHeight = androidx.compose.ui.unit.TextUnit.Unspecified
+                        ),
+                        cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+                        lineLimits = TextFieldLineLimits.MultiLine(),
+                        outputTransformation = outputTransformation,
+                        decorator = TextFieldDefaults.decorator(
+                            state = textFieldState,
+                            enabled = !uiState.isRewritingWithAi,
+                            lineLimits = TextFieldLineLimits.MultiLine(),
+                            outputTransformation = outputTransformation,
+                            interactionSource = interactionSource,
+                            placeholder = {
+                                Text(
+                                    fontSize = animatedFontSize.sp,
+                                    text = when (screenMode){
+                                        ScreenMode.NEW_POST -> stringResource(R.string.post_placeholder)
+                                        ScreenMode.REPOST -> stringResource(R.string.repost_placeholder)
+                                        ScreenMode.EDIT_POST -> stringResource(R.string.post_placeholder)
+                                        ScreenMode.NEW_COMMENT -> stringResource(R.string.comment_placeholder)
+                                    }
+                                )
+                            },
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = Color.Transparent,
+                                unfocusedContainerColor = Color.Transparent,
+                                disabledContainerColor = Color.Transparent,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent,
+                                cursorColor = MaterialTheme.colorScheme.primary,
+                            ),
+                            contentPadding = PaddingValues(0.dp)
                         )
-                    },
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        disabledContainerColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        cursorColor = MaterialTheme.colorScheme.primary,
-                    ),
-                    contentPadding = PaddingValues(0.dp)
-                )
-            )
+                    )
+                }
+                else{
+                    Column(
+                        modifier = Modifier.padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+                    ){
+
+                        for (s in 2 downTo 0){
+                            Shimmer(
+                                modifier = Modifier
+                                    .clip(MaterialTheme.shapes.large)
+                                    .height(26.dp)
+                                    .fillMaxWidth(1f - 0.5f * if (s == 0) 1f else 0f),
+                                baseColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                                highlightColor = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.7f),
+                                scale = 0.6f,
+                                speed = 0.08f + 0.05f * s
+                            )
+                        }
+                    }
+
+                }
+            }
 
             AnimatedVisibility(
                 modifier = Modifier

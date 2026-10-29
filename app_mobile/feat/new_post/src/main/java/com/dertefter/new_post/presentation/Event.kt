@@ -1,6 +1,7 @@
 package com.dertefter.new_post.presentation
 
 import android.net.Uri
+import com.dertefter.ai.prompt.Prompt
 
 sealed interface Event {
     data class OnMediaSelected(val uris: List<Uri>) : Event
@@ -28,6 +29,9 @@ sealed interface Event {
     data class OnRemovePollQuestion(val id: String) : Event
 
     data class OnPollMultipleChoiceChanged(val isMultipleChoice: Boolean) : Event
+
+
+    data class OnRewriteWithAi(val prompt: Prompt) : Event
 
     data object OnSavePost : Event
 

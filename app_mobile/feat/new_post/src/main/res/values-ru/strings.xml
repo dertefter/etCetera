@@ -19,6 +19,13 @@
     <string name="action_add_poll">Добавить опрос</string>
     <string name="action_add_media">Добавить медиа</string>
     <string name="action_save">Сохранить</string>
+    <string name="action_rewrite_with_ai">Переписать с помощью ИИ</string>
+    <string name="action_close">Закрыть</string>
+    <string name="prompt_summarize">Краткий</string>
+    <string name="prompt_zoomer">Зумерский</string>
+    <string name="prompt_boomer">Бумерский</string>
+    <string name="prompt_millennial">Миллениальский</string>
+    <string name="prompt_scientific">Научный</string>
     <string name="post_placeholder">Что нового?</string>
     <string name="repost_placeholder" tools:ignore="TypographyEllipsis">Комментарий к посту...</string>
     <string name="comment_placeholder" tools:ignore="TypographyEllipsis">Комментарий...</string>

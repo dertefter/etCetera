@@ -80,6 +80,7 @@ dependencies {
 
     implementation(project(":common:data"))
     implementation(project(":common:navigation"))
+    implementation(project(":common:ai"))
 
     implementation(project(":app_mobile:design"))
     implementation(project(":app_mobile:feat:auth"))
@@ -97,6 +98,7 @@ dependencies {
     implementation(project(":app_mobile:feat:hashtag_feed"))
     implementation(project(":app_mobile:feat:switch_account"))
     implementation(project(":app_mobile:feat:settings"))
+    implementation(project(":app_mobile:feat:settings_ai"))
     implementation(project(":app_mobile:feat:settings_theme"))
     implementation(project(":app_mobile:feat:settings_account"))
     implementation(project(":app_mobile:feat:settings_security"))

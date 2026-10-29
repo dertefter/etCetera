@@ -1,5 +1,8 @@
 @file:Suppress("UnstableApiUsage")
 
+include(":common:ai")
+
+
 
 
 pluginManagement {
@@ -79,6 +82,7 @@ include(":app_mobile:feat:settings_account")
 include(":app_mobile:feat:settings_security")
 include(":app_mobile:feat:settings_privacy")
 include(":app_mobile:feat:settings_about")
+include(":app_mobile:feat:settings_ai")
 include(":app_mobile:feat:report")
 include(":app_mobile:feat:event_viewer")
 include(":app_mobile:feat:onboarding")

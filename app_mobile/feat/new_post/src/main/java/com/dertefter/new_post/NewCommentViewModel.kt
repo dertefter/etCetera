@@ -4,6 +4,7 @@ import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dertefter.ai.repository.AiRepository
 import com.dertefter.data.dto.comments.NewCommentRequestDto
 import com.dertefter.data.dto.draft.DraftDto
 import com.dertefter.data.dto.feed.SpanDto
@@ -33,8 +34,9 @@ class NewCommentViewModel(
     application: Application,
     private val commentsRepository: CommentsRepository,
     attachmentsRepository: AttachmentsRepository,
+    aiRepository: AiRepository,
     navigator: Navigator
-) : BaseNewPostViewModel(application, attachmentsRepository, navigator) {
+) : BaseNewPostViewModel(application, attachmentsRepository, navigator, aiRepository) {
 
     private var postId: String? = null
     private var commentId: String? = null

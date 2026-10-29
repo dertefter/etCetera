@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_ai_title">AI</string>
+    <string name="settings_ai_models">Model</string>
+    <string name="settings_ai_models_empty">No model imported</string>
+    <string name="settings_ai_import">Import model</string>
+    <string name="settings_ai_importing">Importing model…</string>
+    <string name="settings_ai_import_hint">Pick a .litertlm file. It is copied to the app storage and never leaves the device.</string>
+    <string name="settings_ai_active">Active model</string>
+    <string name="settings_ai_delete">Delete model</string>
+    <string name="settings_ai_delete_title">Delete model?</string>
+    <string name="settings_ai_delete_text">%1$s will be removed from the app storage. The file will have to be imported again.</string>
+    <string name="settings_ai_delete_confirm">Delete</string>
+    <string name="settings_ai_cancel">Cancel</string>
+    <string name="settings_ai_error_title">AI error</string>
+    <string name="settings_ai_error_not_configured">No model selected</string>
+    <string name="settings_ai_error_model_not_found">Model file not found</string>
+    <string name="settings_ai_error_invalid_model">This file is not a LiteRT-LM model</string>
+    <string name="settings_ai_error_import_failed">Failed to import the model</string>
+    <string name="settings_ai_error_delete_failed">Failed to delete the model</string>
+    <string name="settings_ai_error_unexpected">Something went wrong</string>
+</resources>

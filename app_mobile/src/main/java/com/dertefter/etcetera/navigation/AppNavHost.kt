@@ -47,6 +47,7 @@ import com.dertefter.user.UserRoute
 import com.dertefter.event_viewer.EventViewerRoute
 import com.dertefter.onboarding.OnBoardingRoute
 import com.dertefter.pin_changer.PinChangerRoute
+import com.dertefter.settings_ai.SettingsAiRoute
 import kotlin.math.roundToInt
 
 
@@ -127,6 +128,7 @@ fun RouteContent(route: Routes) {
         is Routes.HashtagFeed -> HashtagFeedRoute(route.hashtagName)
         is Routes.SwitchAccount -> SwitchAccountRoute()
         is Routes.Settings -> SettingsRoute()
+        is Routes.SettingsAi -> SettingsAiRoute()
         is Routes.SettingsTheme -> SettingsThemeRoute()
         is Routes.SettingsThemeAvatars -> EmojiAvatarsRoute()
         is Routes.SettingsThemePosts -> PostsThemeRoute()
