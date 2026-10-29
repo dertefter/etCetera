@@ -225,8 +225,6 @@ fun NewPostScreen(
                 AnimatedVisibility(
                     visible = uiState.content.isNotEmpty()
                 ) {
-                    // Пока модель работает, кнопка показывает прогресс;
-                    // повторное нажатие игнорирует ViewModel.
                     FilledTonalIconButton(
                         onClick = { onEvent(Event.OnRewriteWithAi) },
                         shape = MaterialTheme.shapes.medium,

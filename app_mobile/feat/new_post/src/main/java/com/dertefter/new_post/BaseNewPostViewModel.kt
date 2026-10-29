@@ -117,15 +117,8 @@ abstract class BaseNewPostViewModel(
         }
     }
 
-    /**
-     * Переписывает текст через локальную модель.
-     *
-     * Готовность — это сохранённая конфигурация: сам движок [AiRepository.summarize]
-     * загрузит лениво. Если модели нет, открываем настройки ИИ вместо ошибки.
-     */
     private fun rewriteWithAi() {
         if (_isRewritingWithAi.value) return
-        // Исходный текст фиксируем сразу: пока модель работает, поле заблокировано.
         val source = _content.value.trim()
         if (source.isEmpty()) return
         viewModelScope.launch {
@@ -137,7 +130,6 @@ abstract class BaseNewPostViewModel(
             try {
                 aiRepository.summarize(source)
                     .onSuccess { rewritten ->
-                        // Пост могли сохранить и очистить, пока модель работала.
                         if (_content.value.trim() == source) applyRewrittenText(rewritten)
                     }
                     .onFailure { failure ->
@@ -151,7 +143,6 @@ abstract class BaseNewPostViewModel(
         }
     }
 
-    /** Заменяет текст ответом модели: разметка исходного текста к нему уже не подходит. */
     private fun applyRewrittenText(rewritten: String) {
         _spans.value = emptyList()
         onEvent(Event.OnContentChanged(rewritten))
