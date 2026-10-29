@@ -8,6 +8,9 @@ import com.dertefter.design.R
 @Suppress("unused")
 object Icons {
 
+    val NetworkIntelligenceFilled: ImageVector
+        @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_network_intelligence_filled)
+
     val WandStars: ImageVector
         @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_wand_stars)
     val PersonSwitch: ImageVector
