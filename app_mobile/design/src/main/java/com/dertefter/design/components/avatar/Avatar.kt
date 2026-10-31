@@ -27,19 +27,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.Wallpapers
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.createBitmap
@@ -50,9 +54,14 @@ import androidx.palette.graphics.Palette
 import coil3.compose.SubcomposeAsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.dertefter.design.components.common.RoundedPolygonShape
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.EmojiAvatarHarmonizationColor
+import com.dertefter.design.theme.NotoColorEmoji
 import com.dertefter.design.theme.emojiAvatarHarmonizeColor
 import com.materialkolor.ktx.harmonize
 import kotlinx.coroutines.Dispatchers
@@ -157,6 +166,10 @@ fun EmojiAvatar(
     onClick: () -> Unit = {},
 ) {
 
+    val lottieCompositionResult = rememberLottieComposition(
+        LottieCompositionSpec.Url(emojiToLlottieUrl(emoji))
+    )
+    val lottieComposition = lottieCompositionResult.value
 
     val targetBgColor by animateColorAsState(
         when (MaterialTheme.emojiAvatarHarmonizeColor) {
@@ -241,12 +254,8 @@ fun EmojiAvatar(
     val textStyle = remember(harmonizedEmojiColor, isInspection) {
         TextStyle(
             fontSize = dynamicFontSize,
-            //fontFamily = fontFamily,
             color = harmonizedEmojiColor,
-            shadow = Shadow(
-                color = harmonizedEmojiColor,
-                blurRadius = 20f
-            ),
+            fontFamily = NotoColorEmoji,
         )
     }
 
@@ -267,23 +276,49 @@ fun EmojiAvatar(
                     ),
                     interactionSource = interactionSource
                 )
-                .background(harmonizedBgColor),
+                .background(harmonizedBgColor)
+                .background(
+                    brush = Brush.radialGradient(
+                        colors = listOf(
+                            harmonizedEmojiColor.copy(alpha = 0.00f),
+                            harmonizedEmojiColor.copy(alpha = 0.10f),
+                            harmonizedEmojiColor.copy(alpha = 0.34f)
+                        ),
+                        center = Offset.Unspecified,
+                    )
+                ),
             contentAlignment = Alignment.Center
         ) {
 
+            if (lottieComposition == null) {
+                Text(
+                    text = emoji,
+                    maxLines = 1,
+                    modifier = Modifier
+                        .graphicsLayer { rotationZ = -rotation },
+                    textAlign = TextAlign.Center,
+                    style = textStyle,
+                    color = harmonizedEmojiColor
+                )
+            } else {
+                LottieAnimation(
+                    lottieComposition,
+                    iterations = LottieConstants.IterateForever,
+                    modifier = Modifier
+                        .graphicsLayer { rotationZ = -rotation }
+                        .scale(1.1f)
+                        .size(dynamicFontSize.toDpValue())
+                )
+            }
 
-            Text(
-                text = emoji,
-                maxLines = 1,
-                modifier = Modifier
-                    .graphicsLayer { rotationZ = -rotation },
-                textAlign = TextAlign.Center,
-                style = textStyle,
-                color = harmonizedEmojiColor
-            )
         }
     }
 
+}
+
+@Composable
+private fun TextUnit.toDpValue(): Dp {
+    return with(LocalDensity.current) { toDp() }
 }
 
 private fun getEmojiPolygonParameters(
@@ -341,13 +376,18 @@ private suspend fun extractEmojiColor(
     result
 }
 
-@Preview(
-    showBackground = true,
-    wallpaper = Wallpapers.GREEN_DOMINATED_EXAMPLE,
-    uiMode = Configuration.UI_MODE_NIGHT_YES
-)
+private fun emojiToLlottieUrl(emoji: String): String {
+    val code = emoji.codePoints()
+        .toArray()
+        .joinToString("_") { it.toString(16) }
+
+    return "https://fonts.gstatic.com/s/e/notoemoji/latest/$code/lottie.json"
+}
+
+
+@Preview(showBackground = true, wallpaper = Wallpapers.GREEN_DOMINATED_EXAMPLE, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun EmojiAvatarPreview() {
+private fun EmojiAvatarPreview2() {
     AppTheme(
         emojiAvatarHarmonizeColor = EmojiAvatarHarmonizationColor.DEFAULT
     ) {
@@ -405,6 +445,25 @@ private fun EmojiAvatarPreview() {
 
             }
         }
+
+    }
+}
+
+@Preview(
+    showBackground = true,
+    wallpaper = Wallpapers.GREEN_DOMINATED_EXAMPLE,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun EmojiAvatarPreview() {
+    AppTheme(
+        emojiAvatarHarmonizeColor = EmojiAvatarHarmonizationColor.DEFAULT
+    ) {
+
+        EmojiAvatar(
+            rotation = 0f,
+            emoji = "\uD83D\uDE00"
+        )
 
     }
 }

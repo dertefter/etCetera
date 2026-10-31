@@ -34,6 +34,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.ui.text.google.fonts)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
     implementation(libs.appcompat)
     implementation(libs.androidx.palette)
@@ -76,4 +77,5 @@ dependencies {
     implementation(libs.annotations)
     implementation(libs.material.kolor.core)
     implementation(libs.core.ktx)
+    implementation(libs.lottie.compose)
 }
