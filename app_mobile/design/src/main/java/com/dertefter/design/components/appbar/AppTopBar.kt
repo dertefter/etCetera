@@ -50,7 +50,11 @@ fun AppTopBar(
 
     val appBarBlurred = MaterialTheme.appBarBlurred
     val appBarFaded = MaterialTheme.appBarFaded ?: MaterialTheme.isFold
-    val appBarCollaption = scrollBehavior?.state?.collapsedFraction ?: 0f
+    val appBarCollaption = if (appTopBarStyle == AppTopBarStyle.SMALL){
+        scrollBehavior?.state?.overlappedFraction ?: 0f
+    } else {
+        scrollBehavior?.state?.collapsedFraction ?: 0f
+    }
 
     val blurEffectAlpha  = scrollBehavior?.state?.overlappedFraction ?: 0f
 
