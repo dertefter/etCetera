@@ -4,9 +4,59 @@
 # For more details, see
 #   https://d.android.com/r/tools/r8/keep-rules
 
-# LiteRT-LM поставляется без consumer-правил, а нативные методы ищутся по именам
-# (Java_com_google_ai_edge_litertlm_...), поэтому пакет нельзя переименовывать.
--keep class com.google.ai.edge.litertlm.** { *; }
+# LiteRT-LM обращается к Java из нативного кода (liblitertlm_jni.so) по именам:
+#   * FindClass("com/google/ai/edge/litertlm/...") — для классов ниже;
+#   * GetMethodID(<класс>, "имя", "дескриптор") — для геттеров конфигов и колбэков.
+# Поэтому имена этих классов и методов должны пережить минимизацию, а остальной API
+# библиотеки (эмбеддинги, тулы, бенчмарки, спец. декодирование) R8 может сокращать.
+
+# Классы, которые native-код ищет или создаёт по полному имени.
+-keep class com.google.ai.edge.litertlm.LiteRtLmJniException {
+    <init>(java.lang.String);
+}
+-keep class com.google.ai.edge.litertlm.BenchmarkInfo {
+    <init>(...);
+}
+-keep class com.google.ai.edge.litertlm.EmbeddingResponse {
+    <init>(...);
+}
+-keep class com.google.ai.edge.litertlm.InputData$Text {
+    <init>(java.lang.String);
+    java.lang.String getText();
+}
+-keep class com.google.ai.edge.litertlm.InputData$Audio {
+    <init>(byte[]);
+    byte[] getBytes();
+}
+-keep class com.google.ai.edge.litertlm.InputData$Image {
+    <init>(byte[]);
+    byte[] getBytes();
+}
+
+# Геттеры, которые native-код вызывает через GetMethodID.
+-keepclassmembers class com.google.ai.edge.litertlm.SamplerConfig,
+    com.google.ai.edge.litertlm.ThinkingConfig,
+    com.google.ai.edge.litertlm.RepetitionPenaltyConfig,
+    com.google.ai.edge.litertlm.NoRepeatNgramConfig {
+    *** get*();
+}
+
+# Колбэки: native-код ищет их методы на объекте реализации.
+-keepclassmembers class * implements com.google.ai.edge.litertlm.LiteRtLmJni$JniInferenceCallback {
+    void onNext(java.lang.String);
+    void onDone();
+    void onError(int, java.lang.String);
+}
+-keepclassmembers class * implements com.google.ai.edge.litertlm.LiteRtLmJni$JniMessageCallback {
+    void onMessage(java.lang.String);
+    void onDone();
+    void onError(int, java.lang.String);
+}
+
+# Имена класса-моста и его native-методов: Java_com_google_ai_edge_litertlm_LiteRtLmJni_*.
+-keepclasseswithmembernames class com.google.ai.edge.litertlm.LiteRtLmJni {
+    native <methods>;
+}
 
 # If your project uses WebView with JS, uncomment the following
 # and specify the fully qualified class name to the JavaScript interface
