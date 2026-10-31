@@ -34,9 +34,9 @@ import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.bottomNavHeight
 import com.dertefter.design.theme.spacing
+import com.dertefter.navigation.Routes
 import com.dertefter.settings_about.R
 import com.dertefter.settings_about.presentation.components.AppAboutHeader
-import com.github.droibit.oss_licenses.ui.compose.material3.OssLicensesActivity
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 
@@ -107,7 +107,7 @@ fun SettingsAboutScreen(
         Item(
             title = stringResource(R.string.settings_about_oss_licenses),
             action = {
-                context.startActivity(OssLicensesActivity.createIntent(context))
+                onEvent(Event.OnNavigateTo(Routes.Oss))
             }
         ) ,
         Item(
@@ -147,9 +147,7 @@ fun SettingsAboutScreen(
         Item(
             title = stringResource(R.string.settings_about_crash_reports),
             action = {
-                onEvent(
-                    Event.OnOpenCrashlytics
-                )
+                onEvent(Event.OnNavigateTo(Routes.CrashReports))
             }
         ),
     )
