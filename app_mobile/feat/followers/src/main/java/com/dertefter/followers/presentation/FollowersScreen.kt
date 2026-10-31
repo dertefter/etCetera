@@ -1,6 +1,5 @@
 package com.dertefter.followers.presentation
 
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,9 +28,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.text.style.TextOverflow
 import com.dertefter.data.dto.followers.FollowerUserDto
 import com.dertefter.design.components.PullToRefreshIndicator
@@ -186,26 +182,8 @@ fun FollowersScreen(
                                                 Tab.FOLLOWING -> stringResource(R.string.followers_tab_following)
                                             }
 
-                                            val checked = selectedTab == title
-
-                                            val animatedWeight by animateFloatAsState(
-                                                targetValue = if (checked) 900f else 500f,
-                                                label = "WeightAnimation"
-                                            )
-
-                                            val variableFontFamily = FontFamily(
-                                                Font(
-                                                    resId = com.dertefter.design.R.font.google_sans,
-                                                    variationSettings = FontVariation.Settings(
-                                                        FontVariation.weight(animatedWeight.toInt()),
-                                                    )
-                                                )
-                                            )
-
-
                                             Text(
                                                 text,
-                                                fontFamily = variableFontFamily,
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis,
                                                 style = MaterialTheme.typography.bodyMedium

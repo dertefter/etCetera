@@ -3,7 +3,6 @@ package com.dertefter.user.presentation
 import android.content.Intent
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.Arrangement
@@ -48,9 +47,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -575,25 +571,9 @@ fun UserScreen(
                                                     FeedTab.POSTS -> stringResource(R.string.user_posts)
                                                     FeedTab.LIKES -> stringResource(R.string.user_liked)
                                                 }
-                                                val checked = selectedTab == title
-
-                                                val animatedWeight by animateFloatAsState(
-                                                    targetValue = if (checked) 900f else 500f,
-                                                    label = "WeightAnimation"
-                                                )
-
-                                                val variableFontFamily = FontFamily(
-                                                    Font(
-                                                        resId = com.dertefter.design.R.font.google_sans,
-                                                        variationSettings = FontVariation.Settings(
-                                                            FontVariation.weight(animatedWeight.toInt()),
-                                                        )
-                                                    )
-                                                )
 
                                                 Text(
                                                     text,
-                                                    fontFamily = variableFontFamily,
                                                     maxLines = 1,
                                                     overflow = TextOverflow.Ellipsis,
                                                     style = MaterialTheme.typography.bodyMedium
