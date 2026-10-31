@@ -15,7 +15,8 @@ kotlin = "2.4.21"
 kotlinxCoroutinesCore = "1.11.0"
 kotlinxSerializationCore = "1.12.0"
 ksp = "2.3.12"
-litertlmAndroid = "0.18.1"
+litertlmAndroid = "0.19.0"
+lottieCompose = "6.7.1"
 materialColorUtilities = "6.0.0"
 materialKolorCore = "6.0.0"
 media3Common = "1.11.1"
@@ -46,6 +47,7 @@ navigation3 = "1.2.0"
 coilCompose = "3.6.3"
 composemediaplayer = "0.11.4"
 haze = "2.0.1"
+parser = "0.10.0"
 roomCommon = "2.8.5"
 runtime = "1.13.0-beta02"
 runtimeAnnotation = "1.13.0-beta02"
@@ -55,13 +57,14 @@ uiUnit = "1.13.0-beta02"
 uiUtil = "1.13.0-beta02"
 zoomable = "2.16.0"
 animationGraphics = "1.12.1"
+uiTextGoogleFonts = "1.12.1"
 
 # Wear OS
 composeWear = "1.7.1"
 playServicesWearable = "20.0.1"
 
 # Dependency Injection
-metro = "1.5.0"
+metro = "1.5.1"
 
 # Networking and Serialization
 kotlinxSerializationJson = "1.12.0"
@@ -86,10 +89,8 @@ mockk = "1.14.11"
 
 # Licenses
 droibitOssLicenses = "0.10.0"
-junit = "4.13.2"
-junitVersion = "1.1.5"
-espressoCore = "3.5.1"
-material = "1.10.0"
+
+
 
 [libraries]
 # AndroidX Core
@@ -150,6 +151,7 @@ kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-c
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerializationCore" }
 lifecycle-viewmodel-navigation3 = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "lifecycleRuntimeKtx" }
 litertlm-android = { module = "com.google.ai.edge.litertlm:litertlm-android", version.ref = "litertlmAndroid" }
+lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottieCompose" }
 material-color-utilities = { module = "com.materialkolor:material-color-utilities", version.ref = "materialColorUtilities" }
 material-kolor-core = { module = "com.materialkolor:material-kolor-core", version.ref = "materialKolorCore" }
 navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "navigation3" }
@@ -166,6 +168,7 @@ paginator-compose-cursor-android-debug = { module = "io.github.jamal-wia:paginat
 paginator-core = { module = "io.github.jamal-wia:paginator-core", version.ref = "paginatorCore" }
 paginator-core-android-debug = { module = "io.github.jamal-wia:paginator-core-android-debug", version.ref = "paginatorCoreAndroidDebug" }
 paginator-cursor-android-debug = { module = "io.github.jamal-wia:paginator-cursor-android-debug", version.ref = "paginatorCursorAndroidDebug" }
+parser = { module = "io.github.droibit.oss-licenses-android:parser", version.ref = "parser" }
 zoomable = { module = "net.engawapg.lib:zoomable", version.ref = "zoomable" }
 
 # Wear OS
@@ -210,10 +213,7 @@ mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 # Licenses
 oss-licenses-droibit = { group = "io.github.droibit.oss-licenses-android", name = "ui-compose-material3", version.ref = "droibitOssLicenses" }
 androidx-animation-graphics = { group = "androidx.compose.animation", name = "animation-graphics", version.ref = "animationGraphics" }
-junit = { group = "junit", name = "junit", version.ref = "junit" }
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
-androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "uiTextGoogleFonts" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
