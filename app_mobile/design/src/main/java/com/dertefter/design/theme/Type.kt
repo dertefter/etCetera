@@ -1,16 +1,33 @@
 package com.dertefter.design.theme
 
+import android.annotation.SuppressLint
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.googlefonts.Font
+import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.unit.sp
 import com.dertefter.design.R
 
+@SuppressLint("PrivateResource")
+val provider = GoogleFont.Provider(
+    providerAuthority = "com.google.android.gms.fonts",
+    providerPackage = "com.google.android.gms",
+    certificates = androidx.compose.ui.text.googlefonts.R.array.com_google_android_gms_fonts_certs
+)
+
+
+val fontName = GoogleFont("Google Sans")
+
 val GoogleSans = FontFamily(
+    Font(googleFont = fontName, fontProvider = provider)
+)
+
+val NotoColorEmoji = FontFamily(
     Font(
-        resId = R.font.google_sans,
+        resId = R.font.noto_color_emoji,
     )
 )
 
