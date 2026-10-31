@@ -7,6 +7,9 @@ import kotlinx.serialization.Serializable
 sealed interface Routes : NavKey {
 
     @Serializable
+    data object Oss : Routes
+
+    @Serializable
     data object PinChanger : Routes
 
     @Serializable

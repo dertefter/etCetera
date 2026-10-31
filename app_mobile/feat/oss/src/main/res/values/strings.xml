@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_oss_title">Open source licenses</string>
+    <string name="settings_oss_empty">No open source licenses found</string>
+    <string name="settings_oss_error">Failed to load licenses</string>
+    <string name="settings_oss_retry">Retry</string>
+    <string name="settings_oss_google_noto_emoji" translatable="false">Noto Emoji</string>
+</resources>

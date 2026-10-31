@@ -48,6 +48,7 @@ import com.dertefter.event_viewer.EventViewerRoute
 import com.dertefter.onboarding.OnBoardingRoute
 import com.dertefter.pin_changer.PinChangerRoute
 import com.dertefter.settings_ai.SettingsAiRoute
+import com.dertefter.settings_oss.OssRoute
 import kotlin.math.roundToInt
 
 
@@ -107,6 +108,7 @@ fun AppNavHost(
 @Composable
 fun RouteContent(route: Routes) {
     when (route) {
+        is Routes.Oss -> OssRoute()
         is Routes.OnBoarding -> OnBoardingRoute()
         is Routes.Auth -> AuthRoute()
         is Routes.Feed -> FeedRoute()

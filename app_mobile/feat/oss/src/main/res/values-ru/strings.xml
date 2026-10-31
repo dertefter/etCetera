@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_oss_title">Лицензии открытого ПО</string>
+    <string name="settings_oss_empty">Лицензии открытого ПО не найдены</string>
+    <string name="settings_oss_error">Ошибка загрузки лицензий</string>
+    <string name="settings_oss_retry">Повторить</string>
+</resources>
