@@ -1,5 +1,6 @@
 package com.dertefter.design.components.buttons
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
@@ -41,12 +43,21 @@ fun AppNavigationIcon(
     contentDescription: String? = null,
     containerColor: Color = MaterialTheme.colorScheme.surfaceContainer,
     contentColor: Color = MaterialTheme.colorScheme.onSurface,
-    hazeState: HazeState? = null
+    hazeState: HazeState? = null,
+    enabled: Boolean = true,
 ){
 
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     val width by animateDpAsState(targetValue = if (isPressed) 64.dp else 40.dp, label = "width")
+
+    val containerColor by animateColorAsState(
+        if (enabled) containerColor else IconButtonDefaults.filledIconButtonColors().disabledContainerColor
+    )
+
+    val contentColor by animateColorAsState(
+        if (enabled) contentColor else IconButtonDefaults.filledIconButtonColors().disabledContentColor
+    )
 
     val hazeStyle = HazeMaterials.ultraThin(
         containerColor = containerColor
@@ -63,6 +74,7 @@ fun AppNavigationIcon(
             .clickable(
                 interactionSource = interactionSource,
                 indication = ripple(),
+                enabled = enabled,
                 onClick = onClick
             ),
         contentAlignment = Alignment.Center
