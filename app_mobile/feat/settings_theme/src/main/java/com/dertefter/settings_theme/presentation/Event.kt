@@ -8,6 +8,7 @@ sealed interface Event {
     data object OnNavigateBack : Event
     data class OnNavigateTo(val route: Routes) : Event
     data class OnUpdateEmojiAvatarHarmonizationColor(val color: EmojiAvatarHarmonizationColor) : Event
+    data class OnUpdateAnimatedEmoji(val value: Boolean) : Event
 
     data class OnUpdateDarkTheme(val darkTheme: Boolean?) : Event
 

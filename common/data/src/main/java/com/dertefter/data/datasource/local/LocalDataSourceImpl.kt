@@ -57,6 +57,7 @@ class LocalDataSourceImpl(
     private val loginHistoryKey = stringSetPreferencesKey("login_history")
     private val skipOnBoardingKey = booleanPreferencesKey("skip_on_boarding")
     private val emojiAvatarHarmonizationColorKey = stringPreferencesKey("emoji_avatar_harmonization_color")
+    private val animatedEmojiKey = booleanPreferencesKey("animated_emoji")
     private val darkThemeKey = booleanPreferencesKey("dark_theme")
     private val postHorizontalExtraSpaceKey = booleanPreferencesKey("post_horizontal_extra_space")
     private val postContainedKey = booleanPreferencesKey("post_contained")
@@ -327,6 +328,16 @@ class LocalDataSourceImpl(
             } else {
                 preferences[emojiAvatarHarmonizationColorKey] = color
             }
+        }
+    }
+
+    override val animatedEmoji: Flow<Boolean> = settingsDataStore.data.map { preferences ->
+        preferences[animatedEmojiKey] ?: true
+    }
+
+    override suspend fun updateAnimatedEmoji(value: Boolean) {
+        settingsDataStore.edit { preferences ->
+            preferences[animatedEmojiKey] = value
         }
     }
 

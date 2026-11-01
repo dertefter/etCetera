@@ -14,6 +14,12 @@ class SettingsRepositoryImpl(
     private val localDataSource: LocalDataSource
 ) : SettingsRepository {
 
+    override val animatedEmoji: Flow<Boolean> = localDataSource.animatedEmoji
+
+    override suspend fun updateAnimatedEmoji(value: Boolean) {
+        localDataSource.updateAnimatedEmoji(value)
+    }
+
     override val skipOnBoarding: Flow<Boolean> = localDataSource.skipOnBoarding
 
     override suspend fun updateSkipOnBoarding(value: Boolean) {

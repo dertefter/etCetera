@@ -18,6 +18,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -25,6 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -105,6 +107,28 @@ fun EmojiAvatarsScreen(
                             data = it,
                             containerSize = 74.dp
                         )
+                    }
+                }
+            }
+
+            item {
+                SegmentedColumn(
+                    title = stringResource(R.string.settings_theme_emoji_avatar)
+                ) {
+                    item {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large)
+                        ) {
+                            Text(
+                                text = stringResource(R.string.settings_theme_emoji_animated),
+                                modifier = Modifier.weight(1f)
+                            )
+                            Switch(
+                                checked = uiState.animatedEmoji,
+                                onCheckedChange = { onEvent(Event.OnUpdateAnimatedEmoji(it)) }
+                            )
+                        }
                     }
                 }
             }
@@ -199,6 +223,7 @@ private fun EmojiAvatarsScreenPreview() {
             EmojiAvatarsScreen(
                 uiState = UiState(
                     emojiAvatarHarmonizeColor = EmojiAvatarHarmonizationColor.PRIMARY_CONTAINER,
+                    animatedEmoji = true,
                     darkTheme = false,
                     postHorizontalExtraSpace = true,
                     postContained = true,

@@ -67,6 +67,7 @@ class MainViewModel(
 
     val themeState: StateFlow<ThemeState?> = combine(
         settingsRepository.emojiAvatarHarmonizationColor,
+        settingsRepository.animatedEmoji,
         settingsRepository.darkTheme,
         settingsRepository.postHorizontalExtraSpace,
         settingsRepository.postContained,
@@ -80,19 +81,21 @@ class MainViewModel(
         settingsRepository.skipOnBoarding
     ) { params: Array<Any?> ->
         val emojiAvatarHarmonizationColor = params[0] as EmojiAvatarHarmonizationColor
-        val darkTheme = params[1] as Boolean?
-        val postHorizontalExtraSpace = params[2] as Boolean
-        val postContained = params[3] as Boolean
-        val postShowUsername = params[4] as Boolean
-        val postSwapDateAndUsername = params[5] as Boolean
-        val navFloating = params[6] as Boolean
-        val navLabeled = params[7] as Boolean
-        val navBlurred = params[8] as Boolean
-        val appBarBlurred = params[9] as Boolean
-        val appBarFaded = params[10] as Boolean?
-        val skipOnBoarding = params[11] as Boolean
+        val animatedEmoji = params[1] as Boolean
+        val darkTheme = params[2] as Boolean?
+        val postHorizontalExtraSpace = params[3] as Boolean
+        val postContained = params[4] as Boolean
+        val postShowUsername = params[5] as Boolean
+        val postSwapDateAndUsername = params[6] as Boolean
+        val navFloating = params[7] as Boolean
+        val navLabeled = params[8] as Boolean
+        val navBlurred = params[9] as Boolean
+        val appBarBlurred = params[10] as Boolean
+        val appBarFaded = params[11] as Boolean?
+        val skipOnBoarding = params[12] as Boolean
         ThemeState(
             emojiAvatarHarmonizationColor,
+            animatedEmoji,
             darkTheme,
             postHorizontalExtraSpace,
             postContained,

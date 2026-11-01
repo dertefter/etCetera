@@ -68,7 +68,8 @@ class MainActivity : ComponentActivity() {
                             navLabeled = themeState.navLabeled,
                             navBlurred = themeState.navBlurred,
                             appBarBlurred = themeState.appBarBlurred,
-                            appBarFaded = themeState.appBarFaded
+                            appBarFaded = themeState.appBarFaded,
+                            animatedEmoji = themeState.animatedEmoji
                         ) {
                             MainScreen(
                                 navigator,

@@ -62,6 +62,7 @@ import com.dertefter.design.components.common.RoundedPolygonShape
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.EmojiAvatarHarmonizationColor
 import com.dertefter.design.theme.NotoColorEmoji
+import com.dertefter.design.theme.animatedEmoji
 import com.dertefter.design.theme.emojiAvatarHarmonizeColor
 import com.materialkolor.ktx.harmonize
 import kotlinx.coroutines.Dispatchers
@@ -290,7 +291,7 @@ fun EmojiAvatar(
             contentAlignment = Alignment.Center
         ) {
 
-            if (lottieComposition == null) {
+            if (!MaterialTheme.animatedEmoji || lottieComposition == null) {
                 Text(
                     text = emoji,
                     maxLines = 1,
@@ -306,7 +307,7 @@ fun EmojiAvatar(
                     iterations = LottieConstants.IterateForever,
                     modifier = Modifier
                         .graphicsLayer { rotationZ = -rotation }
-                        .scale(1.1f)
+                        .scale(1.16f)
                         .size(dynamicFontSize.toDpValue())
                 )
             }

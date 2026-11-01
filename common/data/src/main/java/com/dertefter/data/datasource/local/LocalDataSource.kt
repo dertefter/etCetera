@@ -88,6 +88,9 @@ interface LocalDataSource {
     val emojiAvatarHarmonizationColor: Flow<String?>
     suspend fun updateEmojiAvatarHarmonizationColor(color: String?)
 
+    val animatedEmoji: Flow<Boolean>
+    suspend fun updateAnimatedEmoji(value: Boolean)
+
     val skipOnBoarding: Flow<Boolean>
     suspend fun updateSkipOnBoarding(value: Boolean)
 

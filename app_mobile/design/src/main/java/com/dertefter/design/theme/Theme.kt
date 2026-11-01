@@ -52,6 +52,7 @@ val LocalNavLabeled = staticCompositionLocalOf { false }
 val LocalNavBlurred = staticCompositionLocalOf { true }
 val LocalAppBarBlurred = staticCompositionLocalOf { true }
 val LocalAppBarFaded = staticCompositionLocalOf<Boolean?> { null }
+val LocalAnimatedEmoji = staticCompositionLocalOf { true }
 
 @Immutable
 data class CustomColors(
@@ -235,6 +236,11 @@ val MaterialTheme.appBarFaded: Boolean?
     @ReadOnlyComposable
     get() = LocalAppBarFaded.current
 
+val MaterialTheme.animatedEmoji: Boolean
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalAnimatedEmoji.current
+
 val MaterialTheme.isBlurSupported: Boolean
     @Composable
     @ReadOnlyComposable
@@ -273,6 +279,7 @@ fun AppTheme(
     navBlurred: Boolean = true,
     appBarBlurred: Boolean = true,
     appBarFaded: Boolean? = null,
+    animatedEmoji: Boolean = true,
     content: @Composable () -> Unit,
 ) {
 
@@ -332,6 +339,7 @@ fun AppTheme(
         LocalNavBlurred provides (navBlurred && isBlurSupported),
         LocalAppBarBlurred provides (appBarBlurred && isBlurSupported),
         LocalAppBarFaded provides appBarFaded,
+        LocalAnimatedEmoji provides animatedEmoji,
     ) {
         MaterialExpressiveTheme (
             motionScheme = MotionScheme.expressive(),

@@ -5,6 +5,10 @@ import kotlinx.coroutines.flow.Flow
 
 interface SettingsRepository {
 
+    val animatedEmoji: Flow<Boolean> // default true
+
+    suspend fun updateAnimatedEmoji(value: Boolean)
+
     val skipOnBoarding: Flow<Boolean> // default false
     suspend fun updateSkipOnBoarding(value: Boolean)
 

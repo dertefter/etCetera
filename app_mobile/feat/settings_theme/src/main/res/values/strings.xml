@@ -6,6 +6,7 @@
     <string name="settings_theme_night">Dark</string>
     <string name="settings_theme_auto">System</string>
     <string name="settings_theme_emoji_avatar">Emoji avatars</string>
+    <string name="settings_theme_emoji_animated">Animated emoji</string>
     <string name="settings_theme_preview">Preview</string>
     <string name="settings_theme_emoji_harmonization">Emoji background harmonization</string>
     <string name="settings_theme_posts_view">Post view</string>

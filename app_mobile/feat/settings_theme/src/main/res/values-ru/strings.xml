@@ -6,6 +6,7 @@
     <string name="settings_theme_night">Ночь</string>
     <string name="settings_theme_auto">Авто</string>
     <string name="settings_theme_emoji_avatar">Эмодзи аватарки</string>
+    <string name="settings_theme_emoji_animated">Анимированные эмодзи</string>
     <string name="settings_theme_preview">Предпросмотр</string>
     <string name="settings_theme_emoji_harmonization">Гармонизация фона эмодзи</string>
     <string name="settings_theme_posts_view">Вид постов</string>
