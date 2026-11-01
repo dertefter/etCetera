@@ -1,6 +1,7 @@
 package com.dertefter.data.datasource.remote
 
 import com.dertefter.data.dto.auth.AuthSessionsResponseDto
+import com.dertefter.data.dto.banner.BannerDrawingDto
 import com.dertefter.data.dto.auth.SignInRequest
 import com.dertefter.data.dto.auth.SignInResponse
 import com.dertefter.data.dto.comments.CommentDto
@@ -198,6 +199,11 @@ interface ApiService {
     @POST("api/files/upload")
     suspend fun upload(
         @Part file: MultipartBody.Part
+    ): Response<AttachmentUploadResponseDto>
+
+    @POST("api/files/banner-drawing")
+    suspend fun uploadBannerDrawing(
+        @Body body: BannerDrawingDto
     ): Response<AttachmentUploadResponseDto>
 
     @GET("api/posts/{id}/comments")

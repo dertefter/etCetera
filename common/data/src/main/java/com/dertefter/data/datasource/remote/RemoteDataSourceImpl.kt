@@ -1,6 +1,7 @@
 package com.dertefter.data.datasource.remote
 
 import com.dertefter.data.dto.auth.AuthSessionsResponseDto
+import com.dertefter.data.dto.banner.BannerDrawingDto
 import com.dertefter.data.dto.auth.SignInRequest
 import com.dertefter.data.dto.auth.SignInResponse
 import com.dertefter.data.dto.comments.CommentDto
@@ -269,6 +270,12 @@ class RemoteDataSourceImpl(
                 requestBody
             )
             apiService.upload(multipartBody).handleResponse { it }.getOrThrow()
+        }
+    }
+
+    override suspend fun uploadBannerDrawing(drawing: BannerDrawingDto): Result<AttachmentUploadResponseDto> {
+        return runCatching {
+            apiService.uploadBannerDrawing(drawing).handleResponse { it }.getOrThrow()
         }
     }
 

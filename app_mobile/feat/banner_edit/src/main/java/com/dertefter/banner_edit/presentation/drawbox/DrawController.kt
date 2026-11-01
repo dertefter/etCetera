@@ -1,143 +1,81 @@
 package com.dertefter.banner_edit.presentation.drawbox
 
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Path
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asAndroidBitmap
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.toArgb
+import com.dertefter.banner_edit.domain.BannerLimits
 import kotlinx.coroutines.flow.MutableStateFlow
+
 
 class DrawController {
     val color = MutableStateFlow(Color.Black)
     val strokeWidth = MutableStateFlow(10f)
     val enabled = MutableStateFlow(true)
 
-    private var currentBitmap: Bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888).apply {
-        eraseColor(android.graphics.Color.WHITE)
-    }
-    private var bitmapCanvas: Canvas = Canvas(currentBitmap)
+    val strokes: List<BannerStroke>
+        field = mutableStateListOf<BannerStroke>()
 
-    private var _imageBitmapState by mutableStateOf(currentBitmap.asImageBitmap())
+    private val _redoStack = mutableStateListOf<BannerStroke>()
+    val canUndo: Boolean get() = strokes.isNotEmpty()
+    val canRedo: Boolean get() = _redoStack.isNotEmpty()
 
-    val internalBitmap: ImageBitmap
-        get() = _imageBitmapState
-
-    internal var drawVersion by mutableIntStateOf(0)
+    var currentStroke by mutableStateOf<BannerStroke?>(null)
         private set
 
-    fun open(imageBitmap: ImageBitmap) {
-        val src = imageBitmap.asAndroidBitmap()
-        val w = if (src.width > 0) src.width else 1
-        val h = if (src.height > 0) src.height else 1
-        val mutableBitmap = try {
-            src.copy(Bitmap.Config.ARGB_8888, true)
-        } catch (_: Exception) {
-            Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888).also { newBm ->
-                Canvas(newBm).drawBitmap(src, 0f, 0f, null)
-            }
-        }
-        currentBitmap = mutableBitmap
-        bitmapCanvas = Canvas(currentBitmap)
-        _imageBitmapState = currentBitmap.asImageBitmap()
-        drawVersion++
+    private val currentPoints = mutableListOf<Offset>()
+
+    fun startStroke(x: Float, y: Float, canvasWidth: Float, canvasHeight: Float) {
+        if (canvasWidth <= 0f || canvasHeight <= 0f) return
+        currentPoints.clear()
+        currentPoints.add(toCanvas(x, y, canvasWidth, canvasHeight))
+        publishCurrent()
     }
 
-    internal fun initSizeIfNeeded(width: Int, height: Int) {
-        if (width <= 0 || height <= 0) return
-        if (currentBitmap.width == 1 && currentBitmap.height == 1) {
-            val newBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-            newBitmap.eraseColor(android.graphics.Color.WHITE)
-            currentBitmap = newBitmap
-            bitmapCanvas = Canvas(currentBitmap)
-            _imageBitmapState = currentBitmap.asImageBitmap()
-            drawVersion++
-        }
+    fun extendStroke(x: Float, y: Float, canvasWidth: Float, canvasHeight: Float) {
+        if (currentPoints.isEmpty() || canvasWidth <= 0f || canvasHeight <= 0f) return
+        currentPoints.add(toCanvas(x, y, canvasWidth, canvasHeight))
+        publishCurrent()
     }
 
-    internal fun startStroke(
-        x: Float,
-        y: Float,
-        canvasWidth: Float,
-        canvasHeight: Float
-    ) {
-        if (currentBitmap.width <= 0 || currentBitmap.height <= 0 || canvasWidth <= 0 || canvasHeight <= 0) return
-        val scaleX = currentBitmap.width.toFloat() / canvasWidth
-        val scaleY = currentBitmap.height.toFloat() / canvasHeight
-        val scaleStroke = (scaleX + scaleY) / 2f
-
-        val paint = Paint().apply {
-            color = this@DrawController.color.value.toArgb()
-            isAntiAlias = true
-            style = Paint.Style.FILL
+    fun endStroke() {
+        if (currentPoints.isNotEmpty()) {
+            strokes.add(BannerStroke(color.value.toHexRrggbb(), strokeWidth.value, currentPoints.toList()))
+            currentPoints.clear()
+            _redoStack.clear()
         }
-
-        val radius = (this@DrawController.strokeWidth.value * scaleStroke) / 2f
-        bitmapCanvas.drawCircle(x * scaleX, y * scaleY, radius, paint)
-        drawVersion++
+        currentStroke = null
     }
 
-    internal fun drawQuadSegment(
-        startX: Float, startY: Float,
-        controlX: Float, controlY: Float,
-        endX: Float, endY: Float,
-        canvasWidth: Float, canvasHeight: Float
-    ) {
-        if (currentBitmap.width <= 0 || currentBitmap.height <= 0 || canvasWidth <= 0 || canvasHeight <= 0) return
-        val scaleX = currentBitmap.width.toFloat() / canvasWidth
-        val scaleY = currentBitmap.height.toFloat() / canvasHeight
-        val scaleStroke = (scaleX + scaleY) / 2f
-
-        val paint = Paint().apply {
-            color = this@DrawController.color.value.toArgb()
-            strokeWidth = this@DrawController.strokeWidth.value * scaleStroke
-            isAntiAlias = true
-            style = Paint.Style.STROKE
-            strokeCap = Paint.Cap.ROUND
-            strokeJoin = Paint.Join.ROUND
-        }
-
-        val path = Path().apply {
-            moveTo(startX * scaleX, startY * scaleY)
-            quadTo(controlX * scaleX, controlY * scaleY, endX * scaleX, endY * scaleY)
-        }
-        bitmapCanvas.drawPath(path, paint)
-        drawVersion++
+    fun undo() {
+        if (strokes.isNotEmpty()) _redoStack.add(strokes.removeAt(strokes.lastIndex))
     }
 
-    internal fun endStroke(
-        lastMidX: Float, lastMidY: Float,
-        finalX: Float, finalY: Float,
-        hasMid: Boolean,
-        canvasWidth: Float, canvasHeight: Float
-    ) {
-        if (!hasMid) return
-        if (currentBitmap.width <= 0 || currentBitmap.height <= 0 || canvasWidth <= 0 || canvasHeight <= 0) return
-        val scaleX = currentBitmap.width.toFloat() / canvasWidth
-        val scaleY = currentBitmap.height.toFloat() / canvasHeight
-        val scaleStroke = (scaleX + scaleY) / 2f
-
-        val paint = Paint().apply {
-            color = this@DrawController.color.value.toArgb()
-            strokeWidth = this@DrawController.strokeWidth.value * scaleStroke
-            isAntiAlias = true
-            style = Paint.Style.STROKE
-            strokeCap = Paint.Cap.ROUND
-            strokeJoin = Paint.Join.ROUND
-        }
-
-        val path = Path().apply {
-            moveTo(lastMidX * scaleX, lastMidY * scaleY)
-            lineTo(finalX * scaleX, finalY * scaleY)
-        }
-        bitmapCanvas.drawPath(path, paint)
-        drawVersion++
+    fun redo() {
+        if (_redoStack.isNotEmpty()) strokes.add(_redoStack.removeAt(_redoStack.lastIndex))
     }
+
+    fun clear() {
+        strokes.clear()
+        _redoStack.clear()
+        currentPoints.clear()
+        currentStroke = null
+    }
+
+    fun loadStrokes(loaded: List<BannerStroke>) {
+        strokes.clear()
+        _redoStack.clear()
+        currentPoints.clear()
+        currentStroke = null
+        strokes.addAll(loaded)
+    }
+
+    private fun publishCurrent() {
+        currentStroke = BannerStroke(color.value.toHexRrggbb(), strokeWidth.value, currentPoints.toList())
+    }
+
+    private fun toCanvas(x: Float, y: Float, canvasWidth: Float, canvasHeight: Float): Offset =
+        Offset(x / canvasWidth * BannerLimits.W, y / canvasHeight * BannerLimits.H)
 }

@@ -9,5 +9,19 @@
     <string name="banner_edit_confirm_placement">Подтвердить</string>
     <string name="banner_edit_cancel_placement">Отмена</string>
     <string name="banner_edit_clear_canvas">Очистить холст</string>
+    <string name="banner_edit_import_image">Из галереи</string>
+    <string name="banner_edit_import_mode">Режим импорта</string>
+    <string name="banner_edit_mode_strokes">Мазки</string>
+    <string name="banner_edit_mode_layers">Слои</string>
+    <string name="banner_edit_mode_exact">Точный</string>
+    <string name="banner_edit_import_progress">Готовим штрихи… %1$s</string>
+    <string name="banner_edit_import_cancel">Отменить импорт</string>
+    <string name="banner_edit_import_replace_title">Заменить рисунок?</string>
+    <string name="banner_edit_import_replace_message">Картинка превращена в штрихи. Текущий рисунок будет заменён, его по-прежнему можно править и отменять по штрихам.</string>
+    <string name="banner_edit_import_replace_confirm">Заменить</string>
+    <string name="banner_edit_import_replace_cancel">Оставить мой</string>
+    <string name="banner_edit_import_error_title">Не удалось импортировать</string>
+    <string name="banner_edit_import_error_message">Картинку не удалось прочитать или превратить в штрихи. Попробуйте другую.</string>
+    <string name="banner_edit_import_error_ok">Понятно</string>
 
 </resources>

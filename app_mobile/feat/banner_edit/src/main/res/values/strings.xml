@@ -9,6 +9,20 @@
     <string name="banner_edit_confirm_placement">Confirm placement</string>
     <string name="banner_edit_cancel_placement">Cancel</string>
     <string name="banner_edit_clear_canvas">Clear canvas</string>
+    <string name="banner_edit_import_image">From gallery</string>
+    <string name="banner_edit_import_mode">Import mode</string>
+    <string name="banner_edit_mode_strokes">Strokes</string>
+    <string name="banner_edit_mode_layers">Layers</string>
+    <string name="banner_edit_mode_exact">Exact</string>
+    <string name="banner_edit_import_progress">Creating strokes… %1$s</string>
+    <string name="banner_edit_import_cancel">Cancel import</string>
+    <string name="banner_edit_import_replace_title">Replace drawing?</string>
+    <string name="banner_edit_import_replace_message">The picture was converted into strokes. The current drawing will be replaced, you can still edit the result and undo strokes.</string>
+    <string name="banner_edit_import_replace_confirm">Replace</string>
+    <string name="banner_edit_import_replace_cancel">Keep mine</string>
+    <string name="banner_edit_import_error_title">Couldn\'t import</string>
+    <string name="banner_edit_import_error_message">The image could not be read or converted into strokes. Try another picture.</string>
+    <string name="banner_edit_import_error_ok">OK</string>
 
 
 </resources>

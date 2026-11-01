@@ -1,18 +1,20 @@
 package com.dertefter.banner_edit
 
-import android.graphics.Bitmap
 import android.net.Uri
-import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dertefter.banner_edit.presentation.Event
+import com.dertefter.banner_edit.presentation.ImportMode
 import com.dertefter.banner_edit.presentation.UiState
 import com.dertefter.banner_edit.presentation.UploadStatus
-import com.dertefter.banner_edit.usecase.GetMeUseCase
+import com.dertefter.banner_edit.presentation.drawbox.BannerStroke
+import com.dertefter.banner_edit.usecase.ImportBannerImageUseCase
 import com.dertefter.banner_edit.usecase.NavigateBackUseCase
 import com.dertefter.banner_edit.usecase.SaveBannerUseCase
 import com.dertefter.banner_edit.usecase.UploadBannerDrawingUseCase
 
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -30,39 +32,33 @@ import dev.zacsweers.metrox.viewmodel.ViewModelKey
 class BannerEditViewModel(
     private val uploadBannerDrawingUseCase: UploadBannerDrawingUseCase,
     private val saveBannerUseCase: SaveBannerUseCase,
-    private val navigateBackUseCase: NavigateBackUseCase,
-    private val getMeUseCase: GetMeUseCase
+    private val importBannerImageUseCase: ImportBannerImageUseCase,
+    private val navigateBackUseCase: NavigateBackUseCase
 ) : ViewModel() {
 
     private val _uploadingStatus = MutableStateFlow<UploadStatus?>(null)
-    private val _uri = MutableStateFlow<Uri?>(null)
     private val _id = MutableStateFlow<String?>(null)
+    private val _importStage = MutableStateFlow<String?>(null)
+    private val _importProgress = MutableStateFlow<Float?>(null)
+    private val _importedStrokes = MutableStateFlow<List<BannerStroke>?>(null)
+    private val _importFailed = MutableStateFlow(false)
+    private val _importMode = MutableStateFlow(ImportMode.STROKES)
+    private var importJob: Job? = null
 
-    val uiState: StateFlow<UiState> = combine(_uploadingStatus, _uri, _id) { uploadingStatus, uri, id ->
-        UiState(uploadingStatus, uri, id)
+    val uiState: StateFlow<UiState> = combine(
+        _uploadingStatus,
+        _id,
+        combine(_importStage, _importProgress) { stage, progress -> stage to progress },
+        combine(_importedStrokes, _importMode) { imported, mode -> imported to mode },
+        _importFailed,
+    ) { uploadingStatus, id, (stage, progress), (imported, mode), failed ->
+        UiState(uploadingStatus, id, stage, progress, imported, failed, mode)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), UiState())
-
-    init {
-        viewModelScope.launch {
-            _uploadingStatus.value = UploadStatus.UPLOADING
-            getMeUseCase().onSuccess { me ->
-                val bannerUrl = me.banner
-                if (!bannerUrl.isNullOrEmpty() && _uri.value == null) {
-                    _uri.value = bannerUrl.toUri()
-                }
-            }
-            _uploadingStatus.value = null
-        }
-    }
-
 
     fun onEvent(event: Event) {
         when (event) {
-            is Event.OnPhotoSelected -> {
-                // Handled in UI placement flow
-            }
             is Event.OnSaveDrawing -> {
-                uploadBitmap(event.bitmap)
+                uploadDrawing(event.strokes)
             }
             Event.OnSave -> {
                 saveBannerId(_id.value)
@@ -70,13 +66,54 @@ class BannerEditViewModel(
             Event.OnBack -> {
                 navigateBackUseCase()
             }
+            is Event.OnImportImage -> {
+                importImage(event.uri)
+            }
+            is Event.OnSelectImportMode -> {
+                _importMode.value = event.mode
+            }
+            Event.OnCancelImport -> {
+                importJob?.cancel()
+                importJob = null
+                _importStage.value = null
+                _importProgress.value = null
+            }
+            is Event.OnAcceptImport -> {
+                _importedStrokes.value = null
+            }
+            Event.OnRejectImport -> {
+                _importedStrokes.value = null
+            }
         }
     }
 
-    private fun uploadBitmap(bitmap: Bitmap) {
+    private fun importImage(uri: Uri) {
+        if (importJob?.isActive == true) return
+        _importFailed.value = false
+        _importStage.value = ""
+        _importProgress.value = 0f
+        importJob = viewModelScope.launch {
+            try {
+                val result = importBannerImageUseCase(uri, _importMode.value.engine) { stage, done ->
+                    _importStage.value = stage
+                    _importProgress.value = done.coerceIn(0.0, 1.0).toFloat()
+                }
+                _importedStrokes.value = result.strokes
+            } catch (e: CancellationException) {
+                throw e
+            } catch (_: Exception) {
+                _importFailed.value = true
+            } finally {
+                _importStage.value = null
+                _importProgress.value = null
+            }
+        }
+    }
+
+    private fun uploadDrawing(strokes: List<BannerStroke>) {
         viewModelScope.launch {
             _uploadingStatus.value = UploadStatus.UPLOADING
-            uploadBannerDrawingUseCase(bitmap)
+            uploadBannerDrawingUseCase(strokes)
                 .onFailure {
                     _uploadingStatus.value = UploadStatus.ERROR
                 }

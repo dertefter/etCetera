@@ -1,6 +1,7 @@
 package com.dertefter.data.datasource.remote
 
 import com.dertefter.data.dto.auth.AuthSessionsResponseDto
+import com.dertefter.data.dto.banner.BannerDrawingDto
 import com.dertefter.data.dto.auth.SignInRequest
 import com.dertefter.data.dto.auth.SignInResponse
 import com.dertefter.data.dto.comments.CommentDto
@@ -95,6 +96,8 @@ interface RemoteDataSource {
     ): Result<CommentDto>
 
     suspend fun uploadMyFile(myFile: File): Result<AttachmentUploadResponseDto>
+
+    suspend fun uploadBannerDrawing(drawing: BannerDrawingDto): Result<AttachmentUploadResponseDto>
 
     suspend fun follow(userId: String): Result<FollowResponseDto>
 

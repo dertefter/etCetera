@@ -2,6 +2,7 @@ package com.dertefter.data.repository
 
 import com.dertefter.data.common.onFailureLog
 import com.dertefter.data.datasource.remote.RemoteDataSource
+import com.dertefter.data.dto.banner.BannerDrawingDto
 import com.dertefter.data.dto.upload.AttachmentUploadResponseDto
 import java.io.File
 import dev.zacsweers.metro.AppScope
@@ -16,5 +17,9 @@ class AttachmentsRepositoryImpl(
 ) : AttachmentsRepository {
     override suspend fun upload(file: File): Result<AttachmentUploadResponseDto> {
         return remoteDataSource.uploadMyFile(file).onFailureLog(crashlyticsRepository)
+    }
+
+    override suspend fun uploadBannerDrawing(drawing: BannerDrawingDto): Result<AttachmentUploadResponseDto> {
+        return remoteDataSource.uploadBannerDrawing(drawing).onFailureLog(crashlyticsRepository)
     }
 }
