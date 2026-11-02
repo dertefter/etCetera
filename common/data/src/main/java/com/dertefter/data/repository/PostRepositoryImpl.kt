@@ -31,13 +31,7 @@ class PostRepositoryImpl(
     private val crashlyticsRepository: CrashlyticsRepository,
 ) : PostRepository {
 
-    /**
-     * A live paginator plus the rule that decides whether a post belongs to its feed.
-     * Likes, edits, deletions and stat updates apply to every registered paginator, but a
-     * post may only be inserted at the head of the feeds that actually own it — a cursor
-     * paginator cannot spawn a trailing page for the overflow, so inserting into a foreign
-     * feed would show content that does not belong there and drop the head page's tail.
-     */
+
     private class RegisteredPaginator(
         val paginator: WeakReference<MutableCursorPaginator<String, PostDto>>,
         val ownsPost: (PostDto) -> Boolean,
