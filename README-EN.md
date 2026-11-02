@@ -14,19 +14,75 @@ Hello, my dear friend! etCetera is an alternative Android client for the [itd](h
 > The authors of the project take no responsibility for any potential issues caused by the etCetera application.
 
 ## Some of what's available now:
-- Authentication
-- Feed: subscriptions, clans, popular
-- Posts: likes, comments, reposts, attachments
-- "Notifications" section (push notifications are not available yet)
-- Search: users, hashtags
-- Profile: banner editor, bio, likes, following/followers
-- User profiles
-- Publishing posts and comments
-- Settings: privacy, security
-- WearOS app
-- Widgets: popular clans, hashtags
-- ...
 
+#### Authorization
+- Login with username and password
+- Ability to add multiple accounts and switch between them
+
+#### Feed
+- For You
+- Clans
+- Subscriptions
+
+#### Posts
+- Text styling
+- Attachments: photo/video
+- Polls
+- Likes, reposts, comments, views
+- Real-time statistics updates
+- Reposts
+
+#### Comments
+- Comment sorting
+- Attachments: photo/video
+- Replies to comments
+
+#### Users
+- Basic information
+- Following/followers
+- Animated emoji avatars
+
+#### Banner Editor
+- Simple drawing tool
+- Ability to set an image as a banner
+
+#### Post/Comment Creation
+- Text styling
+- Attachments: photo/video
+- Polls
+- Restore from drafts
+- Local AI ([LiteRT-LM](https://github.com/google-ai-edge/LiteRT-LM)) to change text style
+
+#### Notifications
+- Notification list
+- Sorting notifications by type
+
+#### Search
+- Search for people and hashtags
+
+#### Settings
+- Account information editor
+- Privacy
+- Security (active sessions)
+
+#### Home Screen Widgets
+- Top clans
+- Popular hashtags
+
+#### Wear OS
+- Synchronization with the mobile app
+- Feed (For You, clan feed, subscriptions)
+- User profiles
+- Comments
+
+#### Other
+- Material 3 Expressive design
+- Post appearance settings
+- Avatar appearance settings
+- Navigation bar appearance settings
+- Blur (can be disabled)
+- Ability to report a post/comment/user
+- Caching of posts, comments, users, etc.
 
 ## Screenshots
 
