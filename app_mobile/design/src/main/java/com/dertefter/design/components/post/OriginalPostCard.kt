@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -201,51 +202,53 @@ fun OriginalPostCard(
                 var revealedSpoilers by remember { mutableStateOf(setOf<Int>()) }
                 val annotatedString = buildPostAnnotatedString(originalPost.content, originalPost.spans, revealedSpoilers)
                 var layoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
-                Text(
-                    modifier = Modifier
-                        .pointerInput(originalPost.id, revealedSpoilers) {
-                            detectTapGestures { offset ->
-                                layoutResult?.let { lr ->
-                                    val tapOffset = lr.getOffsetForPosition(offset)
-                                    val hashtagAnnotations = annotatedString.getStringAnnotations(
-                                        tag = "HASHTAG",
-                                        start = tapOffset,
-                                        end = tapOffset
-                                    )
-                                    val mentionAnnotations = annotatedString.getStringAnnotations(
-                                        tag = "MENTION",
-                                        start = tapOffset,
-                                        end = tapOffset
-                                    )
-                                    val spoilerAnnotations = annotatedString.getStringAnnotations(
-                                        tag = "SPOILER",
-                                        start = tapOffset,
-                                        end = tapOffset
-                                    )
-                                    val linkAnnotations = annotatedString.getStringAnnotations(
-                                        tag = "LINK",
-                                        start = tapOffset,
-                                        end = tapOffset
-                                    )
-                                    if (hashtagAnnotations.isNotEmpty()) {
-                                        onHashtagClick(hashtagAnnotations.first().item)
-                                    } else if (mentionAnnotations.isNotEmpty()) {
-                                        onUserClick(mentionAnnotations.first().item)
-                                    } else if (linkAnnotations.isNotEmpty()) {
-                                        finalOnLinkClick(linkAnnotations.first().item)
-                                    } else if (spoilerAnnotations.isNotEmpty()) {
-                                        spoilerAnnotations.firstOrNull()?.let { annotation ->
-                                            revealedSpoilers = revealedSpoilers + annotation.item.toInt()
+                SelectionContainer{
+                    Text(
+                        modifier = Modifier
+                            .pointerInput(originalPost.id, revealedSpoilers) {
+                                detectTapGestures { offset ->
+                                    layoutResult?.let { lr ->
+                                        val tapOffset = lr.getOffsetForPosition(offset)
+                                        val hashtagAnnotations = annotatedString.getStringAnnotations(
+                                            tag = "HASHTAG",
+                                            start = tapOffset,
+                                            end = tapOffset
+                                        )
+                                        val mentionAnnotations = annotatedString.getStringAnnotations(
+                                            tag = "MENTION",
+                                            start = tapOffset,
+                                            end = tapOffset
+                                        )
+                                        val spoilerAnnotations = annotatedString.getStringAnnotations(
+                                            tag = "SPOILER",
+                                            start = tapOffset,
+                                            end = tapOffset
+                                        )
+                                        val linkAnnotations = annotatedString.getStringAnnotations(
+                                            tag = "LINK",
+                                            start = tapOffset,
+                                            end = tapOffset
+                                        )
+                                        if (hashtagAnnotations.isNotEmpty()) {
+                                            onHashtagClick(hashtagAnnotations.first().item)
+                                        } else if (mentionAnnotations.isNotEmpty()) {
+                                            onUserClick(mentionAnnotations.first().item)
+                                        } else if (linkAnnotations.isNotEmpty()) {
+                                            finalOnLinkClick(linkAnnotations.first().item)
+                                        } else if (spoilerAnnotations.isNotEmpty()) {
+                                            spoilerAnnotations.firstOrNull()?.let { annotation ->
+                                                revealedSpoilers = revealedSpoilers + annotation.item.toInt()
+                                            }
+                                        } else {
+                                            onOpenPost(originalPost.id)
                                         }
-                                    } else {
-                                        onOpenPost(originalPost.id)
                                     }
                                 }
-                            }
-                        },
-                    text = annotatedString,
-                    onTextLayout = { layoutResult = it }
-                )
+                            },
+                        text = annotatedString,
+                        onTextLayout = { layoutResult = it }
+                    )
+                }
             }
             if (originalPost.attachments.isNotEmpty()) {
                 AttachmentsCarousel(
