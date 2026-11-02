@@ -37,6 +37,12 @@ object Icons {
     val DominoMaskFilled: ImageVector
         @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_domino_mask_filled)
 
+    val VolunteerActivism: ImageVector
+        @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_volunteer_activism)
+
+    val VolunteerActivismFilled: ImageVector
+        @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_volunteer_activism_filled)
+
     val Security: ImageVector
         @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_security)
 
@@ -124,6 +130,12 @@ object Icons {
 
     val GitHub: ImageVector
         @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_github)
+    val Telegram: ImageVector
+        @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_telegram)
+    val ITD: ImageVector
+        @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_itd)
+    val TikTok: ImageVector
+        @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_tiktok)
     val Language: ImageVector
         @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_language)
 
@@ -409,15 +421,5 @@ object Icons {
 
     val ArrowBack: ImageVector
         @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_arrow_back)
-
-    val VK: ImageVector
-        @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_vk_logo)
-
-    val TG: ImageVector
-        @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_telegram_logo)
-
-    val LeaderID: ImageVector
-        @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_leaderid)
-
 
 }

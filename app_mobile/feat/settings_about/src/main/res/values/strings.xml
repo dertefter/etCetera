@@ -4,7 +4,7 @@
     <string name="settings_about_privacy_policy">Privacy Policy</string>
     <string name="settings_about_terms_of_use">Terms of Use</string>
     <string name="settings_about_oss_licenses">Open source licenses</string>
-    <string name="settings_about_github_repo">GitHub repository</string>
+    <string name="settings_about_github_repo" translatable="false">GitHub</string>
     <string name="settings_about_app_name">etCetera</string>
     <string name="settings_about_app_desc">Alternative client for itd</string>
     <string name="settings_about_itd_title">itd</string>
@@ -15,4 +15,8 @@
     <string name="settings_about_debug_title">Debug</string>
     <string name="settings_about_version_copied">Version copied to clipboard</string>
     <string name="settings_about_build_number_copied">Build number copied to clipboard</string>
+    <string name="settings_about_telegram" translatable="false">Telegram</string>
+    <string name="settings_about_tiktok" translatable="false">TikTok</string>
+    <string name="settings_about_itd" translatable="false">ИТД</string>
+    <string name="settings_about_support">Support me</string>
 </resources>
