@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
@@ -267,10 +268,11 @@ fun CommentCard(
                         }
                         append(comment.content)
                     }
-                    Text(
-                        text = annotatedString,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
+                    SelectionContainer {
+                        Text(
+                            text = annotatedString,
+                        )
+                    }
                 }
 
                 if (comment.attachments.isNotEmpty()) {
