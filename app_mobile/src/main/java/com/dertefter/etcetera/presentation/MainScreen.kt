@@ -251,7 +251,6 @@ fun MainScreen(
     val snackbarHostState = remember { SnackbarHostState() }
 
     val errorMessage = getErrorMessage(uiState.currentError)
-    android.util.Log.d("MainScreen", "currentError: ${uiState.currentError}, errorMessage: $errorMessage")
 
     val bottomSheetBlurStyle = HazeMaterials.thick( // I L0VE TH1CK G1RLSSSSSS!!!!11!!!
         containerColor = MaterialTheme.colorScheme.surfaceContainer
@@ -263,7 +262,6 @@ fun MainScreen(
                 || activeBackStack == onBoardingBackStack
 
     LaunchedEffect(errorMessage) {
-        android.util.Log.d("MainScreen", "errorMessage: $errorMessage")
         errorMessage?.let { errorMessage ->
             snackbarHostState
                 .showSnackbar(
