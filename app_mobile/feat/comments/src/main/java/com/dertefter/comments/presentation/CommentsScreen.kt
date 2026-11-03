@@ -62,7 +62,7 @@ fun CommentsScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
                 modifier = Modifier
-                    .padding(vertical = MaterialTheme.spacing.small)
+                    .padding(bottom = MaterialTheme.spacing.medium)
                     .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
             ){
 
