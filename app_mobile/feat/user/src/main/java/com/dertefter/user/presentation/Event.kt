@@ -7,8 +7,6 @@ sealed interface Event {
 
     data class OnRepost(val postId: String) : Event
 
-    data class OnStoleBanner(val banner: String): Event
-
     data class OnEditPost(val postId: String) : Event
 
     data object OnNavigateBack : Event
@@ -16,7 +14,7 @@ sealed interface Event {
     data object OnOpenPinChanger : Event
 
     data object OnNavigateToAuth : Event
-    data object OnOpenSwitchAccount : Event
+
     data class OnTabSelected(val tab: FeedTab) : Event
     data class OnLike(val postId: String) : Event
     data class OnUnlike(val postId: String) : Event

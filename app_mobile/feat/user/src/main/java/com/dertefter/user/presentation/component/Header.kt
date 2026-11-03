@@ -28,6 +28,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -37,6 +38,7 @@ import com.dertefter.design.components.avatar.DisplayName
 import com.dertefter.design.components.buttons.AppNavigationIcon
 import com.dertefter.design.components.post.AuthorUiModel
 import com.dertefter.design.icons.Icons
+import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
 import com.dertefter.user.R
 import com.dertefter.user.presentation.mapper.toPresentationString
@@ -145,6 +147,7 @@ fun Header(
         }
 
        DisplayName(
+           modifier = Modifier.padding(top = MaterialTheme.spacing.small),
            name = author.displayName,
            activeNickname = author.activeNickname,
            verified = author.verified,
@@ -222,5 +225,31 @@ fun Header(
 
        }
 
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun HeaderPreview() {
+    AppTheme {
+        Header(
+            bannerUrl = "https://picsum.photos/800/200",
+            author = AuthorUiModel(
+                id = "author1",
+                username = "johndoe",
+                displayName = "John Doe",
+                avatar = "😐",
+                hasNuksta = true,
+                verified = true,
+                pin = null,
+            ),
+            isMe = false,
+            followersCount = 128,
+            followingCount = 64,
+            onFollowersClick = {},
+            onFollowingClock = {},
+            lastSeenDto = LastSeenDto.JustNow,
+            isOnline = true
+        )
     }
 }

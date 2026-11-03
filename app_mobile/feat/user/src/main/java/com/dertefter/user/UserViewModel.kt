@@ -26,7 +26,6 @@ import com.dertefter.user.usecase.NavigateToScreenUseCase
 import com.dertefter.user.usecase.OpenAsBottomSheetUseCase
 import com.dertefter.user.usecase.PinPostUseCase
 import com.dertefter.user.usecase.SaveMeUseCase
-import com.dertefter.user.usecase.StoleBannerUseCase
 import com.dertefter.user.usecase.UnblockUserUseCase
 import com.dertefter.user.usecase.UnfollowUserUseCase
 import com.dertefter.user.usecase.UnlikePostUseCase
@@ -86,7 +85,6 @@ class UserViewModel(
     private val navigateToScreenUseCase: NavigateToScreenUseCase,
     private val openAsBottomSheetUseCase: OpenAsBottomSheetUseCase,
     private val navigateBackUseCase: NavigateBackUseCase,
-    private val stoleBannerUseCase: StoleBannerUseCase
 ) : ViewModel() {
 
     private val _meUserId = getMeUseCase().map {
@@ -195,18 +193,8 @@ class UserViewModel(
                 openAsBottomSheetUseCase(Routes.PinChanger)
             }
 
-            is Event.OnStoleBanner -> {
-                viewModelScope.launch {
-                    stoleBannerUseCase(event.banner)
-                }
-            }
-
             is Event.OnNavigateToAuth -> {
                 navigateToScreenUseCase(Routes.Auth)
-            }
-
-            Event.OnOpenSwitchAccount -> {
-                openAsBottomSheetUseCase(Routes.SwitchAccount)
             }
 
             is Event.OnNavigateToSettings -> {

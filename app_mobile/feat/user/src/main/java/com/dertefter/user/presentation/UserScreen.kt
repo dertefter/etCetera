@@ -1,7 +1,6 @@
 package com.dertefter.user.presentation
 
 import android.content.Intent
-import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.animateScrollBy
@@ -20,7 +19,6 @@ import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonGroup
 import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.DropdownMenu
@@ -44,6 +42,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -222,53 +221,22 @@ fun UserScreen(
                     },
                     title = {
                         userUiState.userDto?.let { itDto ->
-                            Crossfade(
-                                targetState = appBarTitleAlpha < 0.1f,
-                                label = "AppBarTitleCrossfade"
-                            ) { isExpanded ->
-                                if (isExpanded) {
-                                    if (userUiState.isMe) {
-                                        Button(
-                                            onClick = { onEvent(Event.OnOpenSwitchAccount) },
-                                            colors = ButtonDefaults.buttonColors(
-                                                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                                                contentColor = MaterialTheme.colorScheme.onTertiaryContainer
-                                            ),
-                                            contentPadding = PaddingValues(
-                                                horizontal = MaterialTheme.spacing.medium
-                                            ),
-                                        ) {
-                                            Icon(
-                                                imageVector = Icons.PersonSwitch,
-                                                contentDescription = null
-                                            )
-                                            Text(
-                                                modifier = Modifier
-                                                    .padding(
-                                                        start = MaterialTheme.spacing.small,
-                                                        end = MaterialTheme.spacing.small
-                                                    ),
-                                                text = stringResource(R.string.user_switch_account)
-                                            )
-                                        }
-                                    }
-                                } else {
-                                    Row(
-                                        modifier = Modifier.height(48.dp),
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
-                                    ) {
-                                        Avatar(
-                                            data = itDto.avatar,
-                                            containerSize = 44.dp
-                                        )
-                                        Text(
-                                            text = itDto.displayName,
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis,
-                                        )
-                                    }
-                                }
+                            Row(
+                                modifier = Modifier
+                                    .alpha(appBarTitleAlpha)
+                                    .height(48.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+                            ) {
+                                Avatar(
+                                    data = itDto.avatar,
+                                    containerSize = 44.dp
+                                )
+                                Text(
+                                    text = itDto.displayName,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
                             }
                         }
                     },
@@ -306,22 +274,6 @@ fun UserScreen(
                                     }
                                 )
                                 if (!userUiState.isMe) {
-
-                                    userUiState.userDto?.banner?.let { banner ->
-                                        DropdownMenuItem(
-                                            text = { Text("Украсть баннер") },
-                                            leadingIcon = {
-                                                Icon(
-                                                    imageVector = Icons.Cached,
-                                                    contentDescription = null
-                                                )
-                                            },
-                                            onClick = {
-                                                showOverflowMenu = false
-                                                onEvent(Event.OnStoleBanner(banner))
-                                            }
-                                        )
-                                    }
 
                                     userUiState.userDto?.let { userDto ->
                                         DropdownMenuItem(
