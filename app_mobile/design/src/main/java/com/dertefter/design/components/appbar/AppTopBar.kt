@@ -74,7 +74,7 @@ fun AppTopBar(
             )
         }
     } else {
-        HazeMaterials.ultraThin(
+        HazeMaterials.thick( // I LOVE TH1CKK G1RLSSSS!!!!1!!
             containerColor = appBarBackgroundColor
         ).then {
             alpha(blurEffectAlpha)
