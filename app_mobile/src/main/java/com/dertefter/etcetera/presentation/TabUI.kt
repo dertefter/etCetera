@@ -152,7 +152,7 @@ fun TabUIStateless(
     )
 
     val consumedPaddingValues = if (hideNav) PaddingValues(0.dp) else PaddingValues(
-        start = WindowInsets.displayCutout.asPaddingValues().calculateStartPadding(
+        start = WindowInsets.safeContent.asPaddingValues().calculateStartPadding(
             LocalLayoutDirection.current
         ), 0.dp,0.dp,0.dp
     )
@@ -191,7 +191,7 @@ fun TabUIStateless(
 
     val navSpacingStart by animateDpAsState(
         if (MaterialTheme.navFloating) MaterialTheme.spacing.defaultScreenPadding
-                + WindowInsets.displayCutout.asPaddingValues().calculateStartPadding(LocalLayoutDirection.current)
+                + WindowInsets.safeContent.asPaddingValues().calculateStartPadding(LocalLayoutDirection.current)
         else 0.dp,
         animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec()
     )
