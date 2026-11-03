@@ -142,13 +142,14 @@ fun PostScreenContent(
                             paginator = commentsPaginator,
                             onEvent = onCommentsEvent,
                             uiState = commentsUiState,
-                            contentPadding = contentPadding + PaddingValues(bottom = MaterialTheme.bottomNavHeight),
+                            contentPadding = contentPadding
+                                    + PaddingValues(horizontal = MaterialTheme.spacing.defaultScreenPadding)
+                                    + PaddingValues(bottom = MaterialTheme.bottomNavHeight),
                             scrollBehavior = scrollBehavior,
                             header = {
                                 item(key = "post_card_${post.id}") {
                                     PostCard(
                                         post = post,
-
                                         onRepostClick = { postId -> onEvent(Event.OnRepost(postId)) },
                                         onLike = { postId -> onEvent(Event.OnLike(postId)) },
                                         onUnlike = { postId -> onEvent(Event.OnUnlike(postId)) },
@@ -178,7 +179,7 @@ fun PostScreenContent(
                                 item {
                                     Row(
                                         modifier = Modifier
-                                            .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
+                                            .padding(vertical = MaterialTheme.spacing.small)
                                             .fillMaxWidth(),
                                         verticalAlignment = Alignment.CenterVertically,
                                     ) {

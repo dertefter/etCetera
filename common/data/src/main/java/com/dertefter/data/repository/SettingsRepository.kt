@@ -20,9 +20,6 @@ interface SettingsRepository {
 
     suspend fun updateDarkTheme(darkTheme: Boolean?)
 
-    val postHorizontalExtraSpace: Flow<Boolean> // default true
-    suspend fun updatePostHorizontalExtraSpace(value: Boolean)
-
     val postContained: Flow<Boolean> // default true
     suspend fun updatePostContained(value: Boolean)
 

@@ -6,11 +6,9 @@ data class UiState(
     val emojiAvatarHarmonizeColor: EmojiAvatarHarmonizationColor,
     val animatedEmoji: Boolean = true,
     val darkTheme: Boolean?,
-    val postHorizontalExtraSpace: Boolean,
     val postContained: Boolean,
     val postShowUsername: Boolean,
     val postSwapDateAndUsername: Boolean,
-
     val navFloating: Boolean,
     val navLabeled: Boolean,
     val navBlurred: Boolean,

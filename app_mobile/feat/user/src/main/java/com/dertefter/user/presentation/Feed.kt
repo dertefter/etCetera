@@ -71,6 +71,7 @@ private fun LazyListScope.postItems(
     itemsIndexed(items.distinctBy { it.id }, key = { _, post -> "post_${post.id}" }) { _, post ->
         PostCard(
             modifier = Modifier
+                .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
                 .animateItem()
                 .padding(bottom = MaterialTheme.spacing.medium),
             post = post.toUiModel(),

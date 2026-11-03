@@ -47,12 +47,6 @@ class SettingsRepositoryImpl(
         localDataSource.updateDarkTheme(darkTheme)
     }
 
-    override val postHorizontalExtraSpace: Flow<Boolean> = localDataSource.postHorizontalExtraSpace
-
-    override suspend fun updatePostHorizontalExtraSpace(value: Boolean) {
-        localDataSource.updatePostHorizontalExtraSpace(value)
-    }
-
     override val postContained: Flow<Boolean> = localDataSource.postContained
 
     override suspend fun updatePostContained(value: Boolean) {

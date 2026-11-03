@@ -31,8 +31,6 @@ class SettingsThemeViewModel(
 
     private val _darkTheme = settingsRepository.darkTheme
 
-    private val _postHorizontalExtraSpace = settingsRepository.postHorizontalExtraSpace
-
     private val _postContained = settingsRepository.postContained
 
     private val _postShowUsername = settingsRepository.postShowUsername
@@ -53,7 +51,6 @@ class SettingsThemeViewModel(
         _emojiAvatarHarmonizationColor,
         _animatedEmoji,
         _darkTheme,
-        _postHorizontalExtraSpace,
         _postContained,
         _postShowUsername,
         _postSwapDateAndUsername,
@@ -66,20 +63,18 @@ class SettingsThemeViewModel(
         val color = params[0] as EmojiAvatarHarmonizationColor
         val animatedEmoji = params[1] as Boolean
         val darkTheme = params[2] as Boolean?
-        val postHorizontalExtraSpace = params[3] as Boolean
-        val postContained = params[4] as Boolean
-        val postShowUsername = params[5] as Boolean
-        val postSwapDateAndUsername = params[6] as Boolean
-        val navFloating = params[7] as Boolean
-        val navLabeled = params[8] as Boolean
-        val navBlurred = params[9] as Boolean
-        val appBarBlurred = params[10] as Boolean
-        val appBarFaded = params[11] as Boolean?
+        val postContained = params[3] as Boolean
+        val postShowUsername = params[4] as Boolean
+        val postSwapDateAndUsername = params[5] as Boolean
+        val navFloating = params[6] as Boolean
+        val navLabeled = params[7] as Boolean
+        val navBlurred = params[8] as Boolean
+        val appBarBlurred = params[9] as Boolean
+        val appBarFaded = params[10] as Boolean?
         UiState(
             color,
             animatedEmoji,
             darkTheme,
-            postHorizontalExtraSpace,
             postContained,
             postShowUsername,
             postSwapDateAndUsername,
@@ -89,6 +84,7 @@ class SettingsThemeViewModel(
             appBarBlurred,
             appBarFaded
         )
+
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
@@ -117,12 +113,6 @@ class SettingsThemeViewModel(
             is Event.OnUpdateAnimatedEmoji -> {
                 viewModelScope.launch {
                     settingsRepository.updateAnimatedEmoji(event.value)
-                }
-            }
-
-            is Event.OnUpdatePostHorizontalExtraSpace -> {
-                viewModelScope.launch {
-                    settingsRepository.updatePostHorizontalExtraSpace(event.value)
                 }
             }
 

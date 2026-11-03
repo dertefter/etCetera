@@ -260,25 +260,6 @@ fun SettingsThemeScreen(
                         }
                     }
 
-                    if (uiState.postContained){
-                        item {
-                            Row(
-                                modifier = Modifier.animateItem(),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large)
-                            ){
-                                Text(
-                                    stringResource(R.string.settings_theme_post_horizontal_padding),
-                                    modifier = Modifier.weight(1f)
-                                )
-                                Switch(
-                                    checked = uiState.postHorizontalExtraSpace,
-                                    onCheckedChange = { onEvent(Event.OnUpdatePostHorizontalExtraSpace(it)) }
-                                )
-                            }
-                        }
-                    }
-
                     item {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -493,7 +474,6 @@ private fun SettingsThemeScreenPreview() {
                 emojiAvatarHarmonizeColor = EmojiAvatarHarmonizationColor.PRIMARY_CONTAINER,
                 animatedEmoji = true,
                 darkTheme = false,
-                postHorizontalExtraSpace = true,
                 postContained = true,
                 postShowUsername = true,
                 postSwapDateAndUsername = true,

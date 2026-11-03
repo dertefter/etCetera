@@ -6,7 +6,6 @@ data class ThemeState(
     val emojiHarmonizationColor: EmojiAvatarHarmonizationColor,
     val animatedEmoji: Boolean = true,
     val darkTheme: Boolean?,
-    val postHorizontalExtraSpace: Boolean,
     val postContained: Boolean,
     val postShowUsername: Boolean,
     val postSwapDateAndUsername: Boolean,

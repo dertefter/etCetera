@@ -3,8 +3,10 @@ package com.dertefter.comments.presentation
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.plus
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -60,7 +62,7 @@ fun CommentsScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
                 modifier = Modifier
-                    .padding(bottom = MaterialTheme.spacing.defaultScreenPadding)
+                    .padding(vertical = MaterialTheme.spacing.small)
                     .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
             ){
 
@@ -133,7 +135,8 @@ fun CommentsScreen(
                 paginator = paginators[selectedTab]!!,
                 onEvent = onEvent,
                 uiState = uiStates[selectedTab]!!,
-                contentPadding = contentPadding,
+                contentPadding = contentPadding +
+                        PaddingValues(horizontal = MaterialTheme.spacing.defaultScreenPadding),
                 scrollBehavior = scrollBehavior
             )
         }

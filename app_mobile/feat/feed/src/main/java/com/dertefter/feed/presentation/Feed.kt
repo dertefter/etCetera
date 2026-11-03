@@ -1,5 +1,6 @@
 package com.dertefter.feed.presentation
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -79,6 +80,7 @@ fun Feed(
         state = gridState,
         contentPadding = contentPadding,
         columns = StaggeredGridCells.Adaptive(minSize = 500.dp),
+        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
         verticalItemSpacing = MaterialTheme.spacing.medium,
     ) {
         paginated(paged) {

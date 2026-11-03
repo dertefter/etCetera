@@ -3,6 +3,7 @@ package com.dertefter.etcetera
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
@@ -53,14 +54,13 @@ class MainActivity : ComponentActivity() {
 
                 if (uiState.isReady){
                     themeState?.let { themeState ->
+
                         val harmonizationColor =
                             DesignColor.valueOf(themeState.emojiHarmonizationColor.name)
-                        val darkTheme = themeState.darkTheme
 
                         AppTheme(
                             emojiAvatarHarmonizeColor = harmonizationColor,
-                            darkTheme = darkTheme,
-                            postHorizontalExtraSpace = themeState.postHorizontalExtraSpace,
+                            darkTheme = themeState.darkTheme,
                             postContained = themeState.postContained,
                             postShowUsername = themeState.postShowUsername,
                             postSwapDateAndUsername = themeState.postSwapDateAndUsername,

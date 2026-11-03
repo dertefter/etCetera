@@ -38,8 +38,6 @@ val LocalIsTab = staticCompositionLocalOf { false }
 val LocalIsBlurSupported = staticCompositionLocalOf { Build.VERSION.SDK_INT >= Build.VERSION_CODES.S }
 
 val LocalEmojiAvatarHarmonizationColor = staticCompositionLocalOf { EmojiAvatarHarmonizationColor.PRIMARY_CONTAINER }
-
-val LocalPostHorizontalExtraSpace = staticCompositionLocalOf { true }
 val LocalPostContained = staticCompositionLocalOf { true }
 val LocalAttachmentsHorizontalExtraSpace = staticCompositionLocalOf { true }
 val LocalAttachmentsIsCarousel = staticCompositionLocalOf { true }
@@ -176,20 +174,10 @@ val MaterialTheme.isTab: Boolean
     @ReadOnlyComposable
     get() = LocalIsTab.current
 
-val MaterialTheme.postHorizontalExtraSpace: Boolean
-    @Composable
-    @ReadOnlyComposable
-    get() = LocalPostHorizontalExtraSpace.current
-
 val MaterialTheme.postContained: Boolean
     @Composable
     @ReadOnlyComposable
     get() = LocalPostContained.current
-
-val MaterialTheme.attachmentsHorizontalExtraSpace: Boolean
-    @Composable
-    @ReadOnlyComposable
-    get() = LocalAttachmentsHorizontalExtraSpace.current
 
 val MaterialTheme.attachmentsIsCarousel: Boolean
     @Composable
@@ -267,7 +255,6 @@ fun AppTheme(
     darkTheme: Boolean? = isSystemInDarkTheme(),
     dynamicColor: Boolean = true,
     emojiAvatarHarmonizeColor: EmojiAvatarHarmonizationColor = EmojiAvatarHarmonizationColor.DEFAULT,
-    postHorizontalExtraSpace: Boolean = true,
     postContained: Boolean = true,
     attachmentsHorizontalExtraSpace: Boolean = true,
     attachmentsIsCarousel: Boolean = true,
@@ -327,7 +314,6 @@ fun AppTheme(
         LocalIsDark provides darkTheme,
         LocalIsBlurSupported provides isBlurSupported,
         LocalEmojiAvatarHarmonizationColor provides emojiAvatarHarmonizeColor,
-        LocalPostHorizontalExtraSpace provides postHorizontalExtraSpace,
         LocalPostContained provides postContained,
         LocalAttachmentsHorizontalExtraSpace provides attachmentsHorizontalExtraSpace,
         LocalAttachmentsIsCarousel provides attachmentsIsCarousel,

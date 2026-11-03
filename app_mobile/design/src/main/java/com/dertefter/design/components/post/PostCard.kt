@@ -50,7 +50,6 @@ import com.dertefter.design.components.poll.PollCard
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.postContained
-import com.dertefter.design.theme.postHorizontalExtraSpace
 import com.dertefter.design.theme.postShowUsername
 import com.dertefter.design.theme.postSwapDateAndUsername
 import com.dertefter.design.theme.rounding
@@ -84,16 +83,6 @@ fun PostCard(
     val clipboard = LocalClipboard.current
     val scope = rememberCoroutineScope()
 
-    val horizontalExtraSpace by animateDpAsState(
-        if (MaterialTheme.postContained) {
-            if (MaterialTheme.postHorizontalExtraSpace){
-                MaterialTheme.spacing.defaultScreenPadding
-            } else {
-                0.dp
-            }
-        } else{ MaterialTheme.spacing.defaultScreenPadding }
-    )
-
     val containerPadding by animateDpAsState(
         if (MaterialTheme.postContained){
             MaterialTheme.spacing.large
@@ -114,7 +103,6 @@ fun PostCard(
 
     Box(
         modifier = modifier
-            .padding(horizontal = horizontalExtraSpace)
             .clip(RoundedCornerShape(cornerRadius))
             .clickable(onClick = { onOpenPost(post.id) })
             .background(cardColor)

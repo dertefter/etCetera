@@ -59,7 +59,6 @@ class LocalDataSourceImpl(
     private val emojiAvatarHarmonizationColorKey = stringPreferencesKey("emoji_avatar_harmonization_color")
     private val animatedEmojiKey = booleanPreferencesKey("animated_emoji")
     private val darkThemeKey = booleanPreferencesKey("dark_theme")
-    private val postHorizontalExtraSpaceKey = booleanPreferencesKey("post_horizontal_extra_space")
     private val postContainedKey = booleanPreferencesKey("post_contained")
     private val postShowUsernameKey = booleanPreferencesKey("post_show_username")
     private val postSwapDateAndUsernameKey = booleanPreferencesKey("post_swap_date_and_username")
@@ -362,16 +361,6 @@ class LocalDataSourceImpl(
             } else {
                 preferences[darkThemeKey] = darkTheme
             }
-        }
-    }
-
-    override val postHorizontalExtraSpace: Flow<Boolean> = settingsDataStore.data.map { preferences ->
-        preferences[postHorizontalExtraSpaceKey] ?: true
-    }
-
-    override suspend fun updatePostHorizontalExtraSpace(value: Boolean) {
-        settingsDataStore.edit { preferences ->
-            preferences[postHorizontalExtraSpaceKey] = value
         }
     }
 

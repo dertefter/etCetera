@@ -169,7 +169,8 @@ private fun HashtagFeedContent(
                         .nestedScroll(scrollBehavior.nestedScrollConnection)
                         .fillMaxSize(),
                     contentPadding = contentPadding
-                            + PaddingValues(bottom = MaterialTheme.bottomNavHeight, top = MaterialTheme.spacing.defaultScreenPadding),
+                            + PaddingValues(horizontal = MaterialTheme.spacing.defaultScreenPadding)
+                            + PaddingValues(bottom = MaterialTheme.bottomNavHeight),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
                 ) {

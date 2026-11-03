@@ -262,6 +262,7 @@ fun FeedScreen(
                         onEvent = onEvent,
                         uiState = uiStates[tab]!!,
                         contentPadding = contentPadding
+                                + PaddingValues(horizontal = MaterialTheme.spacing.defaultScreenPadding)
                                 + PaddingValues(bottom = MaterialTheme.bottomNavHeight),
                         scrollBehavior = scrollBehaviors[tab]!!,
                         gridState = gridStates[tab]!!

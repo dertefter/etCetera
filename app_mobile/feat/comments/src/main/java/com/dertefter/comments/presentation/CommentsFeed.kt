@@ -9,10 +9,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
@@ -115,11 +113,7 @@ fun CommentsFeed(
                     is PaginatorUiState.Error -> state.state.data
                     is PaginatorUiState.Content -> state.items
                 }
-                // Deduplicated once per page set: `count` is read by every row, so counting
-                // inside the row factory would make composition O(n^2).
                 val visibleItems = remember(items) { items.distinctBy { it.id } }
-                // Aliased so that the parameter is not shadowed by the DSL `header { }` slot.
-                val headerScope = header
 
                 LazyColumn(
                     modifier = Modifier
@@ -133,19 +127,13 @@ fun CommentsFeed(
                     contentPadding = contentPadding
                 ) {
                     paginated(paged) {
-                        headerScope?.invoke(HeaderLazyListScope(this))
-                        header {
-                            Spacer(
-                                modifier = Modifier.height(MaterialTheme.spacing.small)
-                            )
-                        }
+                        header?.invoke(HeaderLazyListScope(this))
 
                         itemsIndexed(
                             visibleItems,
                             key = { _, comment -> comment.id }) { index, comment ->
                             Column(Modifier.animateItem()) {
                                 CommentCard(
-                                    modifier = Modifier.padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
                                     index = index,
                                     count = visibleItems.size,
                                     onAttachmentClick = {attachments, position ->
