@@ -1,5 +1,6 @@
 package com.dertefter.etcetera.presentation
 
+import android.os.SystemClock
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateIntAsState
@@ -38,6 +39,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -86,7 +88,8 @@ fun PhoneUI(
     onBack: () -> Unit,
     onNavItemClick: (tab: MainTab) -> Unit,
     hazeState: HazeState = rememberHazeState(),
-    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
+    onProfileDoubleTap: () -> Unit = {},
 ) {
 
     var navBarHeightPx by remember { mutableIntStateOf(0) }
@@ -236,9 +239,27 @@ fun PhoneUI(
                             val selected = selectedTab == tab
                             val isEventViewer = tab == MainTab.EventViewer
 
+                            var lastClickTime by remember(tab) {
+                                mutableLongStateOf(0L)
+                            }
+
                             NavigationBarItem(
                                 selected = selected,
-                                onClick = { onNavItemClick(tab) },
+                                onClick = {
+                                    if (tab == MainTab.Profile){
+                                        val currentTime = SystemClock.uptimeMillis()
+                                        if (currentTime - lastClickTime < 300L) {
+                                            lastClickTime = 0L
+                                            onProfileDoubleTap()
+                                        } else {
+                                            lastClickTime = currentTime
+                                            onNavItemClick(tab)
+                                        }
+                                    } else {
+                                        onNavItemClick(tab)
+                                    }
+                                },
+
                                 colors = if (isEventViewer) {
                                     NavigationBarItemDefaults.colors().copy(
                                         selectedIndicatorColor = Color(0xFF35F5BF).harmonize(
@@ -252,7 +273,10 @@ fun PhoneUI(
                                 icon = {
                                     BadgedBox(
                                         badge = {
-                                            if (tab == MainTab.Notifications && notificationCount != null && notificationCount > 0) {
+                                            if (tab == MainTab.Notifications &&
+                                                notificationCount != null &&
+                                                notificationCount > 0
+                                            ) {
                                                 Badge {
                                                     Text(notificationCount.toString())
                                                 }
@@ -267,7 +291,11 @@ fun PhoneUI(
                                             )
                                         } else {
                                             Icon(
-                                                imageVector = if (selected) tab.selectedIcon() else tab.icon(),
+                                                imageVector = if (selected) {
+                                                    tab.selectedIcon()
+                                                } else {
+                                                    tab.icon()
+                                                },
                                                 contentDescription = stringResource(tab.label)
                                             )
                                         }

@@ -1,5 +1,6 @@
 package com.dertefter.etcetera.presentation
 
+import android.os.SystemClock
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateIntAsState
@@ -40,6 +41,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -89,7 +91,8 @@ fun TabUI(
     onBack: () -> Unit,
     onNavItemClick: (tab: MainTab) -> Unit,
     hazeState: HazeState = rememberHazeState(),
-    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
+    onProfileDoubleTap: () -> Unit = {},
 ) {
     TabUIStateless(
         hazeState = hazeState,
@@ -100,6 +103,7 @@ fun TabUI(
         isPortalVisible = isPortalVisible,
         onNavItemClick = onNavItemClick,
         snackbarHostState = snackbarHostState,
+        onProfileDoubleTap = onProfileDoubleTap,
         content = {
             appNavHost(
                 entries,
@@ -121,7 +125,8 @@ fun TabUIStateless(
     isPortalVisible: Boolean = false,
     onNavItemClick: (tab: MainTab) -> Unit,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
+    onProfileDoubleTap: () -> Unit = {},
 ) {
     val isTab = MaterialTheme.isTab
     val navLabeled = MaterialTheme.navLabeled
@@ -334,10 +339,26 @@ fun TabUIStateless(
                         .forEach { tab ->
                             val selected = selectedTab == tab
                             val isEventViewer = tab == MainTab.EventViewer
+                            var lastClickTime by remember(tab) {
+                                mutableLongStateOf(0L)
+                            }
 
                             WideNavigationRailItem(
                                 selected = selected,
-                                onClick = { onNavItemClick(tab) },
+                                onClick = {
+                                    if (tab == MainTab.Profile){
+                                        val currentTime = SystemClock.uptimeMillis()
+                                        if (currentTime - lastClickTime < 300L) {
+                                            lastClickTime = 0L
+                                            onProfileDoubleTap()
+                                        } else {
+                                            lastClickTime = currentTime
+                                            onNavItemClick(tab)
+                                        }
+                                    } else {
+                                        onNavItemClick(tab)
+                                    }
+                                },
                                 icon = {
                                     BadgedBox(
                                         badge = {

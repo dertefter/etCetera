@@ -331,7 +331,12 @@ fun MainScreen(
                     selectedTab = MainTab.Feed
                 }
             },
-            onNavItemClick = onNavItemClick
+            onNavItemClick = onNavItemClick,
+            onProfileDoubleTap = {
+                navigator.openAsBottomSheet(
+                    Routes.SwitchAccount
+                )
+            },
         )
     }
     else {
@@ -350,6 +355,11 @@ fun MainScreen(
                 } else if (uiState.currentLogin != null && selectedTab != MainTab.Feed) {
                     selectedTab = MainTab.Feed
                 }
+            },
+            onProfileDoubleTap = {
+                navigator.openAsBottomSheet(
+                    Routes.SwitchAccount
+                )
             },
             onNavItemClick = onNavItemClick
         )
