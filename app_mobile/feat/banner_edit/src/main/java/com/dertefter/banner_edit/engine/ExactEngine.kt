@@ -39,7 +39,7 @@ fun exact(cols: Int, rows: Int, label: IntArray, palette: List<String>, white: I
 
     fun tipExt(t: Int, d: Int, l: Int): Int {
         var n = later(t, d, l)
-        val sides = if (abs(d) == 1) intArrayOf(rows, -rows) else intArrayOf(1, -1)
+        val sides = if (abs(d) == 1) intArrayOf(cols, -cols) else intArrayOf(1, -1)
         for (s in sides) if (n < 0) n = later(t, s, l)
         return n
     }
@@ -47,12 +47,12 @@ fun exact(cols: Int, rows: Int, label: IntArray, palette: List<String>, white: I
     fun tipsOut(tour: List<Int>, l: Int): List<Int> {
         if (tour.size == 1) {
             val s = tour[0]
-            for ((a, b) in listOf(1 to -1, rows to -rows)) {
+            for ((a, b) in listOf(1 to -1, cols to -cols)) {
                 val u = later(s, a, l)
                 val v = later(s, b, l)
                 if (u >= 0 && v >= 0) return listOf(u, s, v)
             }
-            val ns = intArrayOf(1, -1, rows, -rows).map { later(s, it, l) }.filter { it >= 0 }
+            val ns = intArrayOf(1, -1, cols, -cols).map { later(s, it, l) }.filter { it >= 0 }
             return when {
                 ns.size >= 2 -> listOf(ns[0], s, ns[1])
                 ns.size == 1 -> listOf(ns[0], s)
