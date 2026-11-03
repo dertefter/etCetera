@@ -108,12 +108,6 @@ class SettingsThemeViewModel(
                 navigator.navigateUp()
             }
 
-            is Event.OnNavigateTo -> {
-                navigator.navigate(
-                    event.route
-                )
-            }
-
             is Event.OnUpdateEmojiAvatarHarmonizationColor -> {
                 viewModelScope.launch {
                     settingsRepository.updateEmojiAvatarHarmonizationColor(event.color)

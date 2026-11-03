@@ -8,7 +8,7 @@
     <string name="settings_theme_emoji_avatar">Emoji avatars</string>
     <string name="settings_theme_emoji_animated">Animated emoji</string>
     <string name="settings_theme_preview">Preview</string>
-    <string name="settings_theme_emoji_harmonization">Emoji background harmonization</string>
+    <string name="settings_theme_emoji_harmonization">Harmonization</string>
     <string name="settings_theme_posts_view">Post view</string>
     <string name="settings_theme_post_preview_text">This is an example of how posts will look in the feed. Customize the post view below.</string>
     <string name="settings_theme_posts_appearance">Post appearance</string>

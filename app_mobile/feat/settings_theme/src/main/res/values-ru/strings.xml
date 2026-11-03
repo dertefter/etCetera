@@ -8,7 +8,7 @@
     <string name="settings_theme_emoji_avatar">Эмодзи аватарки</string>
     <string name="settings_theme_emoji_animated">Анимированные эмодзи</string>
     <string name="settings_theme_preview">Предпросмотр</string>
-    <string name="settings_theme_emoji_harmonization">Гармонизация фона эмодзи</string>
+    <string name="settings_theme_emoji_harmonization">Гармонизация</string>
     <string name="settings_theme_posts_view">Вид постов</string>
     <string name="settings_theme_post_preview_text">Это пример того, как будут выглядеть посты в ленте. Настройте вид поста ниже</string>
     <string name="settings_theme_posts_appearance">Внешний вид постов</string>
