@@ -91,7 +91,7 @@ fun CommentsButton(
         Icon(
             imageVector = Icons.Comment,
             contentDescription = null,
-            Modifier.size(20.dp),
+            Modifier.size(18.dp),
             tint = contentColor
         )
         if (comments > 0){

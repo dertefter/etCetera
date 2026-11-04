@@ -128,7 +128,7 @@ fun RepostButton(
             imageVector = icon,
             contentDescription = null,
             modifier = Modifier
-                .size(20.dp)
+                .size(18.dp)
                 .scale(scale.value),
             tint = contentColor
         )
