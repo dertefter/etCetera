@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.Flow
 import com.jamal_aliev.paginator.cursor.bookmark.CursorBookmark
 import com.jamal_aliev.paginator.cursor.cache.eviction.CursorMostRecentPagingCache
 import com.jamal_aliev.paginator.cursor.dsl.mutableCursorPaginator
+import com.jamal_aliev.paginator.cursor.extension.removeAll
 import com.jamal_aliev.paginator.cursor.extension.updateWhere
 import com.jamal_aliev.paginator.cursor.load.CursorLoadResult
 import java.lang.ref.WeakReference
@@ -46,6 +47,11 @@ class CommentsRepositoryImpl(
 
     private fun CommentDto.containsComment(targetId: String): Boolean {
         return this.id == targetId || (replies?: emptyList()).any { it.containsComment(targetId) }
+    }
+
+    private fun CommentDto.withoutComment(targetId: String): CommentDto {
+        val updatedReplies = replies?.filterNot { it.id == targetId }?.map { it.withoutComment(targetId) }
+        return if (updatedReplies != replies) copy(replies = updatedReplies) else this
     }
 
     private fun CommentDto.recursiveTransform(targetId: String, transform: (CommentDto) -> CommentDto): CommentDto {
@@ -158,8 +164,40 @@ class CommentsRepositoryImpl(
         }.onFailureLog(crashlyticsRepository)
     }
 
+    private suspend fun deletePagesInDb(commentId: String) {
+        val allComments = localDataSource.getAllComments()
+        allComments.forEach { comment ->
+            if (comment.containsComment(commentId)) {
+                localDataSource.saveComment(comment.withoutComment(commentId))
+            }
+        }
+        localDataSource.deleteComment(commentId)
+    }
+    private suspend fun resyncEmptiedPaginators() {
+        activePaginators.removeIf { it.get() == null }
+        activePaginators.forEach { reference ->
+            reference.get()?.let { paginator ->
+                if (!paginator.iterator().hasNext()) {
+                    paginator.restart(silentlyLoading = false)
+                }
+            }
+        }
+    }
+
     override suspend fun deleteComment(commentId: String): Result<Unit> {
-        return remoteDataSource.deleteComment(commentId).onFailureLog(crashlyticsRepository)
+        return remoteDataSource.deleteComment(commentId).onFailureLog(crashlyticsRepository).onSuccess {
+            // Удаляем из всех живых пагинаторов: корневые комментарии вырезаются целиком,
+            // вложенные ответы — из списков replies своих родителей.
+            updateInMem {
+                it.removeAll { comment -> comment.id == commentId }
+                it.updateWhere(
+                    predicate = { comment -> comment.containsComment(commentId) },
+                    transform = { comment -> comment.withoutComment(commentId) }
+                )
+            }
+            deletePagesInDb(commentId)
+            resyncEmptiedPaginators()
+        }
     }
 
     override suspend fun newComment(

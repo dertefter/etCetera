@@ -50,6 +50,15 @@ class PostRepositoryImpl(
         activePaginators.removeIf { it.paginator.get() == null }
         activePaginators.forEach { registered -> registered.paginator.get()?.let(action) }
     }
+    private suspend fun resyncEmptiedPaginators() {
+        activePaginators.removeIf { it.paginator.get() == null }
+        activePaginators.forEach { registered ->
+            val paginator = registered.paginator.get() ?: return@forEach
+            if (!paginator.iterator().hasNext()) {
+                paginator.restart(silentlyLoading = false)
+            }
+        }
+    }
 
     private fun prependWhereOwned(post: PostDto) {
         activePaginators.removeIf { it.paginator.get() == null }
@@ -116,6 +125,7 @@ class PostRepositoryImpl(
                 paginator.removeAll { it.id == postId }
             }
             localDataSource.deletePost(postId)
+            resyncEmptiedPaginators()
         }
     }
 

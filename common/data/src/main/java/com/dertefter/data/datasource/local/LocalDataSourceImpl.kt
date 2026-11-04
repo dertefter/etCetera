@@ -284,6 +284,10 @@ class LocalDataSourceImpl(
         database.commentDao().upsertComments(flatComments)
     }
 
+    override suspend fun deleteComment(commentId: String) {
+        db().commentDao().deleteComment(commentId)
+    }
+
     override suspend fun saveUsers(type: PageType, tab: String, self: String, users: List<FollowerUserDto>) {
         db().userDao().savePageWithUsers(type, tab, self, users.map { it.asEntity() })
     }

@@ -37,6 +37,9 @@ interface CommentDao {
     @Query("DELETE FROM page_comments WHERE type = :type AND tab = :tab AND self = :self")
     suspend fun deletePageComments(type: PageType, tab: String, self: String)
 
+    @Query("DELETE FROM comments WHERE id = :commentId")
+    suspend fun deleteComment(commentId: String)
+
     @Transaction
     suspend fun savePageWithComments(
         type: PageType,
