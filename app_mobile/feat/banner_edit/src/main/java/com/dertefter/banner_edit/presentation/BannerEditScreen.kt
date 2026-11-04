@@ -1,5 +1,6 @@
 package com.dertefter.banner_edit.presentation
 
+import android.app.Application
 import android.content.res.Configuration
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -55,6 +56,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -97,7 +99,7 @@ fun BannerEditScreen(
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
     ) { uri ->
-        if (uri != null) onEvent(Event.OnImportImage(uri))
+        if (uri != null) onEvent(Event.OnImagePicked(uri))
     }
 
     uiState.importedStrokes?.let { imported ->
@@ -136,6 +138,16 @@ fun BannerEditScreen(
                     Text(stringResource(R.string.banner_edit_import_error_ok))
                 }
             }
+        )
+    }
+
+    uiState.pendingCropUri?.let { cropUri ->
+        val app = LocalContext.current.applicationContext as Application
+        CropImageDialog(
+            uri = cropUri,
+            application = app,
+            onConfirm = { cropRect -> onEvent(Event.OnCropConfirmed(cropUri, cropRect)) },
+            onCancel = { onEvent(Event.OnCropCancelled) },
         )
     }
 

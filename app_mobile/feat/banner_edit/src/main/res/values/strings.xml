@@ -23,6 +23,9 @@
     <string name="banner_edit_import_error_title">Couldn\'t import</string>
     <string name="banner_edit_import_error_message">The image could not be read or converted into strokes. Try another picture.</string>
     <string name="banner_edit_import_error_ok">OK</string>
+    <string name="banner_edit_crop_cancel">Cancel</string>
+    <string name="banner_edit_crop_confirm">Crop</string>
+    <string name="banner_edit_crop_hint">Pan and zoom to select the area</string>
 
 
 </resources>

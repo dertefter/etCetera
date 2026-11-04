@@ -23,5 +23,8 @@
     <string name="banner_edit_import_error_title">Не удалось импортировать</string>
     <string name="banner_edit_import_error_message">Картинку не удалось прочитать или превратить в штрихи. Попробуйте другую.</string>
     <string name="banner_edit_import_error_ok">Понятно</string>
+    <string name="banner_edit_crop_cancel">Отмена</string>
+    <string name="banner_edit_crop_confirm">Обрезать</string>
+    <string name="banner_edit_crop_hint">Перемещайте и масштабируйте для выбора области</string>
 
 </resources>

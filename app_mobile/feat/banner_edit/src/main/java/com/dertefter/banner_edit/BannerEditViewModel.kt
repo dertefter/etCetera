@@ -3,6 +3,7 @@ package com.dertefter.banner_edit
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dertefter.banner_edit.presentation.CropRect
 import com.dertefter.banner_edit.presentation.Event
 import com.dertefter.banner_edit.presentation.ImportMode
 import com.dertefter.banner_edit.presentation.UiState
@@ -43,6 +44,7 @@ class BannerEditViewModel(
     private val _importedStrokes = MutableStateFlow<List<BannerStroke>?>(null)
     private val _importFailed = MutableStateFlow(false)
     private val _importMode = MutableStateFlow(ImportMode.STROKES)
+    private val _pendingCropUri = MutableStateFlow<Uri?>(null)
     private var importJob: Job? = null
 
     val uiState: StateFlow<UiState> = combine(
@@ -50,9 +52,9 @@ class BannerEditViewModel(
         _id,
         combine(_importStage, _importProgress) { stage, progress -> stage to progress },
         combine(_importedStrokes, _importMode) { imported, mode -> imported to mode },
-        _importFailed,
-    ) { uploadingStatus, id, (stage, progress), (imported, mode), failed ->
-        UiState(uploadingStatus, id, stage, progress, imported, failed, mode)
+        combine(_importFailed, _pendingCropUri) { failed, cropUri -> failed to cropUri },
+    ) { uploadingStatus, id, (stage, progress), (imported, mode), (failed, cropUri) ->
+        UiState(uploadingStatus, id, stage, progress, imported, failed, mode, cropUri)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), UiState())
 
     fun onEvent(event: Event) {
@@ -66,8 +68,18 @@ class BannerEditViewModel(
             Event.OnBack -> {
                 navigateBackUseCase()
             }
+            is Event.OnImagePicked -> {
+                _pendingCropUri.value = event.uri
+            }
+            is Event.OnCropConfirmed -> {
+                _pendingCropUri.value = null
+                importImage(event.uri, event.cropRect)
+            }
+            Event.OnCropCancelled -> {
+                _pendingCropUri.value = null
+            }
             is Event.OnImportImage -> {
-                importImage(event.uri)
+                importImage(event.uri, event.cropRect)
             }
             is Event.OnSelectImportMode -> {
                 _importMode.value = event.mode
@@ -87,14 +99,14 @@ class BannerEditViewModel(
         }
     }
 
-    private fun importImage(uri: Uri) {
+    private fun importImage(uri: Uri, cropRect: CropRect?) {
         if (importJob?.isActive == true) return
         _importFailed.value = false
         _importStage.value = ""
         _importProgress.value = 0f
         importJob = viewModelScope.launch {
             try {
-                val result = importBannerImageUseCase(uri, _importMode.value.engine) { stage, done ->
+                val result = importBannerImageUseCase(uri, _importMode.value.engine, cropRect = cropRect) { stage, done ->
                     _importStage.value = stage
                     _importProgress.value = done.coerceIn(0.0, 1.0).toFloat()
                 }

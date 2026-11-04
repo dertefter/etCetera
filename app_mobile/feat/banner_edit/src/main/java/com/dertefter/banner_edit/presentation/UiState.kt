@@ -1,5 +1,6 @@
 package com.dertefter.banner_edit.presentation
 
+import android.net.Uri
 import com.dertefter.banner_edit.presentation.drawbox.BannerStroke
 
 data class UiState(
@@ -10,4 +11,5 @@ data class UiState(
     val importedStrokes: List<BannerStroke>? = null,
     val importFailed: Boolean = false,
     val importMode: ImportMode = ImportMode.STROKES,
+    val pendingCropUri: Uri? = null,
 )
