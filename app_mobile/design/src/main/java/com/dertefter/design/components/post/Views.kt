@@ -24,7 +24,7 @@ fun Views(
         checkedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
         uncheckedContainerColor = Color.Transparent,
         uncheckedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-        checkedIcon = Icons.Visibility,
+        checkedIcon = Icons.VisibilityFilled,
         uncheckedIcon = Icons.Visibility
     )
 }

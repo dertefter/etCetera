@@ -438,6 +438,7 @@ fun PostCard(
 
                     Views(
                         views = post.viewsCount,
+                        isViewed = post.isViewed
                     )
                 }
             }
@@ -478,6 +479,7 @@ fun PostCardPreview() {
                 commentsCount = 5,
                 repostsCount = 2,
                 isReposted = true,
+                isViewed = true,
                 viewsCount = 100,
                 dominantEmoji = "🦎",
                 isPinned = true,

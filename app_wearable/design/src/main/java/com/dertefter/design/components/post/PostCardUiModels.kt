@@ -15,6 +15,7 @@ data class PostUiModel(
     val repostsCount: Int,
     val isReposted: Boolean,
     val viewsCount: Int,
+    val isViewed: Boolean = false,
     val dominantEmoji: String?,
     val isPinned: Boolean,
     val isOwner: Boolean,

@@ -34,6 +34,7 @@ fun PostDto.toUiModel(): PostUiModel {
         repostsCount = repostsCount,
         isReposted = isReposted,
         viewsCount = viewsCount,
+        isViewed = isViewed,
         dominantEmoji = dominantEmoji,
         isPinned = isPinned,
         isOwner = isOwner,

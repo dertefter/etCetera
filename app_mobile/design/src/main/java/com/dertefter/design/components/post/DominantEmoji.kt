@@ -65,7 +65,7 @@ fun DominantEmoji(
             ) {
                 Text(
                     text = stringResource(R.string.design_post_captured_by_clan),
-                    style = MaterialTheme.typography.labelLargeEmphasized,
+                    style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(MaterialTheme.spacing.small)
                 )
 
