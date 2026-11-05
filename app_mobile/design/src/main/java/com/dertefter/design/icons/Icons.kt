@@ -188,6 +188,9 @@ object Icons {
     val Visibility: ImageVector
         @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_visibility)
 
+    val VisibilityFilled: ImageVector
+        @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_visibility_filled)
+
     val VisibilityOff: ImageVector
         @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_visibility_off)
 

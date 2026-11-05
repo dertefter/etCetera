@@ -437,7 +437,7 @@ fun PostCard(
                     }
 
                     Views(
-                        views = post.viewsCount
+                        views = post.viewsCount,
                     )
                 }
             }
