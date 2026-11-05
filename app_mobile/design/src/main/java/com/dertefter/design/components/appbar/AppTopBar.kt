@@ -4,7 +4,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.displayCutoutPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumFlexibleTopAppBar
@@ -17,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
 import com.dertefter.design.theme.appBarBlurred
 import com.dertefter.design.theme.appBarFaded
@@ -166,7 +173,19 @@ fun AppTopBar(
             }
         }
 
-        supportingContent()
+        val safeDrawingPadding = WindowInsets.safeDrawing.asPaddingValues()
+        val ld = LocalLayoutDirection.current
+
+        Column(
+            modifier = Modifier
+                .padding(
+                    start = safeDrawingPadding.calculateStartPadding(ld),
+                    end = safeDrawingPadding.calculateEndPadding(ld)
+                )
+        ){
+            supportingContent()
+        }
+
     }
 
 }
