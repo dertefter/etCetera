@@ -69,6 +69,12 @@ class AuthViewModel(
     fun onEvent(event: Event) {
         when (event) {
 
+            is Event.OnSwitchAccount -> {
+                viewModelScope.launch {
+                    authRepository.switchToLogin(event.login)
+                }
+            }
+
             is Event.OnLoginChanged -> {
                 _login.value = event.login
             }

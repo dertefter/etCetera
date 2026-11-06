@@ -262,7 +262,12 @@ fun AuthScreen(onEvent: (Event) -> Unit, uiState: UiState) {
                     itemInnerPadding = PaddingValues(all = 0.dp)
                 )
                 {
-                    items(uiState.loginHistory) { login ->
+                    items(
+                        uiState.loginHistory,
+                        onClick = {
+                            onEvent(Event.OnSwitchAccount(it))
+                        }
+                    ) { login ->
                         val isCurrent = login == uiState.currentLogin
 
                         val containerColor by animateColorAsState(

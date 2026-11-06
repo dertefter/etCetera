@@ -8,4 +8,6 @@ sealed class Event {
     data class OnTurnstileTokenReceived(val token: String) : Event()
     object OnDismissTurnstile : Event()
     data class OnRemoveAccountFromHistory(val login: String) : Event()
+
+    data class OnSwitchAccount(val login: String) : Event()
 }
