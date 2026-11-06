@@ -10,6 +10,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -64,6 +65,7 @@ import com.dertefter.design.theme.EmojiAvatarHarmonizationColor
 import com.dertefter.design.theme.NotoColorEmoji
 import com.dertefter.design.theme.animatedEmoji
 import com.dertefter.design.theme.emojiAvatarHarmonizeColor
+import com.dertefter.design.theme.spacing
 import com.materialkolor.ktx.harmonize
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -167,39 +169,31 @@ fun EmojiAvatar(
     onClick: () -> Unit = {},
 ) {
 
+
+
     val lottieCompositionResult = rememberLottieComposition(
         LottieCompositionSpec.Url(emojiToLlottieUrl(emoji))
     )
     val lottieComposition = lottieCompositionResult.value
 
-    val targetBgColor by animateColorAsState(
-        when (MaterialTheme.emojiAvatarHarmonizeColor) {
+
+    val emojiAvatarHarmonizeColor = MaterialTheme.emojiAvatarHarmonizeColor
+
+    val targetBgColor = MaterialTheme.colorScheme.surfaceContainer
+
+    val targetEmojiColorStart by animateColorAsState(
+        when (emojiAvatarHarmonizeColor) {
             EmojiAvatarHarmonizationColor.PRIMARY -> MaterialTheme.colorScheme.primary
             EmojiAvatarHarmonizationColor.SECONDARY -> MaterialTheme.colorScheme.secondary
             EmojiAvatarHarmonizationColor.TERTIARY -> MaterialTheme.colorScheme.tertiary
-            EmojiAvatarHarmonizationColor.SURFACE_CONTAINER -> MaterialTheme.colorScheme.surfaceContainerHigh
+            EmojiAvatarHarmonizationColor.SURFACE_CONTAINER -> MaterialTheme.colorScheme.surfaceContainer
             EmojiAvatarHarmonizationColor.PRIMARY_CONTAINER -> MaterialTheme.colorScheme.primaryContainer
             EmojiAvatarHarmonizationColor.SECONDARY_CONTAINER -> MaterialTheme.colorScheme.secondaryContainer
             EmojiAvatarHarmonizationColor.TERTIARY_CONTAINER -> MaterialTheme.colorScheme.tertiaryContainer
-            else -> Color.Unspecified
+            else -> MaterialTheme.colorScheme.surfaceContainer
         }
     )
-
-    val targetEmojiColor by animateColorAsState(
-        when (MaterialTheme.emojiAvatarHarmonizeColor) {
-            EmojiAvatarHarmonizationColor.PRIMARY -> MaterialTheme.colorScheme.onPrimaryFixed
-            EmojiAvatarHarmonizationColor.SECONDARY -> MaterialTheme.colorScheme.onSecondaryFixed
-            EmojiAvatarHarmonizationColor.TERTIARY -> MaterialTheme.colorScheme.onTertiaryFixed
-            EmojiAvatarHarmonizationColor.SURFACE_CONTAINER -> MaterialTheme.colorScheme.onSecondaryFixed
-            EmojiAvatarHarmonizationColor.PRIMARY_CONTAINER -> MaterialTheme.colorScheme.onPrimaryFixedVariant
-            EmojiAvatarHarmonizationColor.SECONDARY_CONTAINER -> MaterialTheme.colorScheme.onSecondaryFixedVariant
-            EmojiAvatarHarmonizationColor.TERTIARY_CONTAINER -> MaterialTheme.colorScheme.onTertiaryFixedVariant
-            else -> Color.Transparent
-        }
-    )
-
-    val fallbackColor = MaterialTheme.colorScheme.surfaceContainer
-    val fallbackEmojiColor = MaterialTheme.colorScheme.outline
+    val targetEmojiColorEnd = Color.Black
 
     var baseEmojiColor by remember(emoji) { mutableStateOf<Color?>(null) }
 
@@ -210,25 +204,23 @@ fun EmojiAvatar(
         )
     }
 
-    val harmonizedBgColor by remember(
+    val harmonizedEmojiStartColor by remember(
         baseEmojiColor,
-        targetBgColor,
-        fallbackColor
+        targetEmojiColorStart,
+        emojiAvatarHarmonizeColor
     ) {
         derivedStateOf {
-            val color = baseEmojiColor ?: return@derivedStateOf fallbackColor
-            if (targetBgColor == Color.Unspecified) lerp(color, fallbackColor, 0.76f)
-            else color.harmonize(targetBgColor, matchSaturation = true)
+            val color = baseEmojiColor ?: return@derivedStateOf targetEmojiColorStart
+            if (emojiAvatarHarmonizeColor == EmojiAvatarHarmonizationColor.DEFAULT) color
+            else color.harmonize(targetEmojiColorStart, matchSaturation = true)
         }
     }
 
-    val harmonizedEmojiColor by remember(baseEmojiColor, targetEmojiColor, fallbackColor) {
-        derivedStateOf {
-            val color = baseEmojiColor ?: return@derivedStateOf fallbackColor
-            if (targetBgColor == Color.Unspecified) lerp(color, fallbackEmojiColor, 0.1f)
-            else color.harmonize(targetEmojiColor, matchSaturation = true)
-        }
-    }
+    val harmonizedEmojiEndColor = lerp(
+        start = harmonizedEmojiStartColor,
+        stop = targetEmojiColorEnd,
+        fraction = 0.42f
+    )
 
 
     val polygonParameters = remember(emoji) { getEmojiPolygonParameters(emoji) }
@@ -252,15 +244,16 @@ fun EmojiAvatar(
     val dynamicFontSize = (containerSize.value * 0.4f).sp
 
 
-    val textStyle = remember(harmonizedEmojiColor, isInspection) {
+    val textStyle = remember(harmonizedEmojiStartColor, isInspection) {
         TextStyle(
             fontSize = dynamicFontSize,
-            color = harmonizedEmojiColor,
+            color = harmonizedEmojiStartColor,
             fontFamily = NotoColorEmoji,
         )
     }
 
     val interactionSource = remember { MutableInteractionSource() }
+
 
     Box(
         modifier = modifier
@@ -277,13 +270,12 @@ fun EmojiAvatar(
                     ),
                     interactionSource = interactionSource
                 )
-                .background(harmonizedBgColor)
+                .background(targetBgColor)
                 .background(
                     brush = Brush.radialGradient(
                         colors = listOf(
-                            harmonizedEmojiColor.copy(alpha = 0.00f),
-                            harmonizedEmojiColor.copy(alpha = 0.10f),
-                            harmonizedEmojiColor.copy(alpha = 0.34f)
+                            harmonizedEmojiEndColor,
+                            harmonizedEmojiStartColor,
                         ),
                         center = Offset.Unspecified,
                     )
@@ -299,7 +291,7 @@ fun EmojiAvatar(
                         .graphicsLayer { rotationZ = -rotation },
                     textAlign = TextAlign.Center,
                     style = textStyle,
-                    color = harmonizedEmojiColor
+                    color = harmonizedEmojiStartColor
                 )
             } else {
                 LottieAnimation(
@@ -455,15 +447,23 @@ private fun EmojiAvatarPreview2() {
     wallpaper = Wallpapers.GREEN_DOMINATED_EXAMPLE,
     uiMode = Configuration.UI_MODE_NIGHT_YES
 )
+@Preview(
+    showBackground = true,
+    wallpaper = Wallpapers.GREEN_DOMINATED_EXAMPLE,
+    uiMode = Configuration.UI_MODE_NIGHT_NO
+)
 @Composable
 private fun EmojiAvatarPreview() {
     AppTheme(
-        emojiAvatarHarmonizeColor = EmojiAvatarHarmonizationColor.DEFAULT
+        emojiAvatarHarmonizeColor = EmojiAvatarHarmonizationColor.PRIMARY
     ) {
 
         EmojiAvatar(
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.surfaceContainer)
+                .padding(MaterialTheme.spacing.extraLarge),
             rotation = 0f,
-            emoji = "\uD83D\uDE00"
+            emoji = "❤️"
         )
 
     }
