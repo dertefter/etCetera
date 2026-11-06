@@ -1,6 +1,6 @@
 [versions]
 # Build and Plugins
-agp = "9.5.0"
+agp = "9.5.1"
 animation = "1.13.0-rc01"
 annotation = "1.11.0"
 annotationExperimental = "1.6.0"
