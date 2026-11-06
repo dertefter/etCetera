@@ -23,8 +23,27 @@ object DeepLinkParser {
             if (host != SITE_HOST && host != SITE_HOST_CYRILLIC) return null
         }
 
+        if (scheme == "etcetera") {
+            when (host) {
+                "feed" -> return Routes.Feed
+                "notifications" -> return Routes.Notifications(showBackButton = false)
+                "profile", "me" -> return Routes.User(userId = "", showBackButton = false)
+            }
+        }
+
         val pathSegments = uri.pathSegments ?: return null
         if (pathSegments.isEmpty()) return null
+
+        val firstSegment = pathSegments[0].lowercase()
+        if (firstSegment == "feed") {
+            return Routes.Feed
+        }
+        if (firstSegment == "notifications") {
+            return Routes.Notifications(showBackButton = false)
+        }
+        if (firstSegment == "profile" || firstSegment == "me") {
+            return Routes.User(userId = "", showBackButton = false)
+        }
 
         // Format: /@username/post/{postId} -> Routes.Post
         if (pathSegments.size >= 3 && pathSegments[0].startsWith("@") && pathSegments[1] == "post") {
@@ -51,7 +70,6 @@ object DeepLinkParser {
         }
 
         // Format: /@username -> Routes.UserByUsername
-        val firstSegment = pathSegments[0]
         if (firstSegment.startsWith("@")) {
             val username = firstSegment.removePrefix("@")
             if (username.isNotEmpty()) {

@@ -52,4 +52,7 @@
     <string name="app_main_tab_web">Event</string>
     <string name="app_main_tab_notifications">Notifis</string>
     <string name="app_main_tab_profile">Profile</string>
+    <string name="shortcut_feed">Home</string>
+    <string name="shortcut_notifications">Notifications</string>
+    <string name="shortcut_profile">Profile</string>
 </resources>

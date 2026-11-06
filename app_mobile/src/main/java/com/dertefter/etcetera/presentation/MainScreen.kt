@@ -440,7 +440,55 @@ fun MainScreen(
             when (action) {
                 is NavigationAction.Navigate -> {
                     scope.launch { sheetState.hide() }
-                    backStack.add(action.route)
+                    when (val route = action.route) {
+                        is Routes.Feed -> {
+                            selectedTab = MainTab.Feed
+                            if (feedBackStack.size > 1) {
+                                val root = feedBackStack.first()
+                                feedBackStack.clear()
+                                feedBackStack.add(root)
+                            }
+                        }
+                        is Routes.Notifications -> {
+                            selectedTab = MainTab.Notifications
+                            if (notificationsBackStack.size > 1) {
+                                val root = notificationsBackStack.first()
+                                notificationsBackStack.clear()
+                                notificationsBackStack.add(root)
+                            }
+                        }
+                        is Routes.User -> {
+                            if (route.userId.isEmpty() || route.userId == uiState.meUserId) {
+                                selectedTab = MainTab.Profile
+                                if (profileBackStack.size > 1) {
+                                    val root = profileBackStack.first()
+                                    profileBackStack.clear()
+                                    profileBackStack.add(root)
+                                }
+                            } else {
+                                backStack.add(route)
+                            }
+                        }
+                        is Routes.Search -> {
+                            selectedTab = MainTab.Search
+                            if (searchBackStack.size > 1) {
+                                val root = searchBackStack.first()
+                                searchBackStack.clear()
+                                searchBackStack.add(root)
+                            }
+                        }
+                        is Routes.EventViewer -> {
+                            selectedTab = MainTab.EventViewer
+                            if (eventViewerBackStack.size > 1) {
+                                val root = eventViewerBackStack.first()
+                                eventViewerBackStack.clear()
+                                eventViewerBackStack.add(root)
+                            }
+                        }
+                        else -> {
+                            backStack.add(route)
+                        }
+                    }
                 }
 
                 is NavigationAction.NavigateAndClearBackStack -> {

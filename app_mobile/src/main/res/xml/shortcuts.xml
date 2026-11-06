@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="shortcut_feed"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_feed"
+        android:shortcutShortLabel="@string/shortcut_feed"
+        android:shortcutLongLabel="@string/shortcut_feed">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.dertefter.etcetera"
+            android:targetClass="com.dertefter.etcetera.MainActivity"
+            android:data="etcetera://feed" />
+    </shortcut>
+
+    <shortcut
+        android:shortcutId="shortcut_notifications"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_notifications"
+        android:shortcutShortLabel="@string/shortcut_notifications"
+        android:shortcutLongLabel="@string/shortcut_notifications">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.dertefter.etcetera"
+            android:targetClass="com.dertefter.etcetera.MainActivity"
+            android:data="etcetera://notifications" />
+    </shortcut>
+
+    <shortcut
+        android:shortcutId="shortcut_profile"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_profile"
+        android:shortcutShortLabel="@string/shortcut_profile"
+        android:shortcutLongLabel="@string/shortcut_profile">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.dertefter.etcetera"
+            android:targetClass="com.dertefter.etcetera.MainActivity"
+            android:data="etcetera://profile" />
+    </shortcut>
+</shortcuts>
