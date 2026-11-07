@@ -1,13 +1,7 @@
 package com.dertefter.comments.presentation
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -55,133 +49,77 @@ fun CommentsFeed(
     val listState = rememberLazyListState()
     val paged = paginator.rememberPaginated(state = listState)
 
-    AnimatedContent(
-        targetState = uiState,
-        contentKey = {
-            when (it) {
-                PaginatorUiState.Idle -> 0
-                is PaginatorUiState.Empty -> 1
-                else -> 2
-            }
-        },
-        transitionSpec = {
-            fadeIn(animationSpec = tween(300)) togetherWith fadeOut(animationSpec = tween(300))
-        },
-        label = "comments_feed_state",
+    val items = when (uiState) {
+        is PaginatorUiState.Loading -> uiState.state.data
+        is PaginatorUiState.Error -> uiState.state.data
+        is PaginatorUiState.Content -> uiState.items
+        else -> emptyList()
+    }
+
+    val visibleItems = remember(items) { items.distinctBy { it.id } }
+
+    LazyColumn(
         modifier = modifier
             .fillMaxSize()
-    ) { state ->
-        when (state) {
-            PaginatorUiState.Idle -> {
-                Box(
-                    Modifier
-                        .padding(MaterialTheme.spacing.large)
-                        .padding(contentPadding)
-                        .fillMaxSize(), contentAlignment = Alignment.TopCenter
-                ) {
-                    AppLoadingIndicator()
-                }
-            }
+            .then(
+                if (scrollBehavior != null) Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                else Modifier
+            ),
+        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
+        state = listState,
+        contentPadding = contentPadding
+    ){
 
-            is PaginatorUiState.Empty -> {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .then(
-                            if (scrollBehavior != null) Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                            else Modifier
-                        ),
-                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large),
-                    state = listState,
-                    contentPadding = contentPadding
-                ) {
-                    header?.invoke(this)
-                    item {
-                        Box(
-                            Modifier
-                                .fillMaxSize(), contentAlignment = Alignment.TopCenter
-                        ) {
-                            Text(stringResource(R.string.comments_empty))
-                        }
+
+        paginated(paged) {
+
+            header?.invoke(HeaderLazyListScope(this))
+
+            itemsIndexed(
+                visibleItems,
+                key = { _, comment -> comment.id }) { index, comment ->
+                CommentCard(
+                    index = index,
+                    count = visibleItems.size,
+                    onAttachmentClick = {attachments, position ->
+                        onEvent(Event.OnOpenAttachmentsViewer(attachments, position))
+                    },
+                    meUserId = meUserId,
+                    comment = comment.toUiModel(meUserId),
+                    onLike = { onEvent(Event.OnLike(it)) },
+                    onUnlike = { onEvent(Event.OnUnlike(it)) },
+                    onLoadMoreReplies = { onEvent(Event.OnLoadMoreReplies(it)) },
+                    onUserClick = { onEvent(Event.OnOpenUser(it)) },
+                    onReplyClick = { commentId, userId ->
+                        onEvent(
+                            Event.OnReply(
+                                commentId, userId
+                            )
+                        )
+                    },
+                    onDelete = { commentId ->
+                        onEvent(
+                            Event.OnDeleteComment(commentId)
+                        )
+
+                    },
+                    onReport = { commentId ->
+                        onEvent(
+                            Event.OnReport(commentId)
+                        )
                     }
-                }
+                )
             }
 
-            else -> {
-                val items = when (state) {
-                    is PaginatorUiState.Loading -> state.state.data
-                    is PaginatorUiState.Error -> state.state.data
-                    is PaginatorUiState.Content -> state.items
-                }
-                val visibleItems = remember(items) { items.distinctBy { it.id } }
-
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .then(
-                            if (scrollBehavior != null) Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                            else Modifier
-                        ),
-                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
-                    state = listState,
-                    contentPadding = contentPadding
-                ) {
-                    paginated(paged) {
-                        header?.invoke(HeaderLazyListScope(this))
-
-                        itemsIndexed(
-                            visibleItems,
-                            key = { _, comment -> comment.id }) { index, comment ->
-                            Column(Modifier.animateItem()) {
-                                CommentCard(
-                                    index = index,
-                                    count = visibleItems.size,
-                                    onAttachmentClick = {attachments, position ->
-                                        onEvent(Event.OnOpenAttachmentsViewer(attachments, position))
-                                    },
-                                    meUserId = meUserId,
-                                    comment = comment.toUiModel(meUserId),
-                                    onLike = { onEvent(Event.OnLike(it)) },
-                                    onUnlike = { onEvent(Event.OnUnlike(it)) },
-                                    onLoadMoreReplies = { onEvent(Event.OnLoadMoreReplies(it)) },
-                                    onUserClick = { onEvent(Event.OnOpenUser(it)) },
-                                    onReplyClick = { commentId, userId ->
-                                        onEvent(
-                                            Event.OnReply(
-                                                commentId, userId
-                                            )
-                                        )
-                                    },
-                                    onDelete = { commentId ->
-                                        onEvent(
-                                            Event.OnDeleteComment(commentId)
-                                        )
-
-                                    },
-                                    onReport = { commentId ->
-                                        onEvent(
-                                            Event.OnReport(commentId)
-                                        )
-                                    }
-                                )
-                            }
-                        }
-
-                        appendIndicator {
-                            CommentAppendIndicator(state)
-                        }
-                    }
-                }
+            appendIndicator {
+                CommentAppendIndicator(uiState)
             }
+
         }
+
     }
 }
 
-/**
- * Routes the caller's header items through [PaginatedLazyListScope.header] so the paginator also
- * counts them: the DSL only tallies what the list actually rendered, and a header placed outside
- * the `paginated { }` block would shift every data index by its item count.
- */
 private class HeaderLazyListScope(
     private val scope: PaginatedLazyListScope,
 ) : LazyListScope by scope {
@@ -228,10 +166,8 @@ private fun CommentAppendIndicator(state: PaginatorUiState<CommentDto>) {
                     }
                 }
             }
-
+            is PaginatorUiState.Empty -> Text(stringResource(R.string.comments_empty))
             is PaginatorUiState.Idle -> AppLoadingIndicator()
-
-            else -> {}
         }
     }
 }
