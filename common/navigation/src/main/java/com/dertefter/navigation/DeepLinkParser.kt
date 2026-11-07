@@ -1,6 +1,7 @@
 package com.dertefter.navigation
 
 import android.net.Uri
+import androidx.core.net.toUri
 
 object DeepLinkParser {
 
@@ -91,6 +92,6 @@ object DeepLinkParser {
     
     fun parsePath(path: String?): Routes? {
         if (path.isNullOrBlank() || !path.startsWith("/")) return null
-        return parse(Uri.parse("https://$SITE_HOST$path"))
+        return parse("https://$SITE_HOST$path".toUri())
     }
 }
