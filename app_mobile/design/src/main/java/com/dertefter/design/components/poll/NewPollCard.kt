@@ -56,23 +56,21 @@ fun NewPollCard(
     onChangeQuestion: (id: String, text: String) -> Unit = { _, _ -> }
 ){
     Column(
-        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
         modifier = modifier
-            .clip(MaterialTheme.shapes.extraLarge)
+            .clip(MaterialTheme.shapes.large)
             .animateContentSize()
-            .background(MaterialTheme.colorScheme.tertiaryContainer)
+            .background(MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.8f))
     ){
         OutlinedTextField(
             value = title,
             onValueChange = onTitleChanged,
             modifier = Modifier
-                .padding(top = MaterialTheme.spacing.medium)
                 .fillMaxWidth(),
-            textStyle = MaterialTheme.typography.titleLargeEmphasized,
+            textStyle = MaterialTheme.typography.titleMediumEmphasized,
             placeholder = {
                 Text(
                     text = stringResource(R.string.design_new_poll_title_placeholder),
-                    style = MaterialTheme.typography.titleLargeEmphasized
+                    style = MaterialTheme.typography.titleMediumEmphasized
                 )
             },
             singleLine = false,

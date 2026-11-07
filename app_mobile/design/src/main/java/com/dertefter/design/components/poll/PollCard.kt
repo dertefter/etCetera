@@ -43,7 +43,6 @@ fun PollCard(
     }
 
     Column(
-        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
         modifier = modifier
             .clip(MaterialTheme.shapes.extraLarge)
             .animateContentSize()
@@ -53,14 +52,14 @@ fun PollCard(
             text = title,
             modifier = Modifier
                 .padding(all = MaterialTheme.spacing.extraLarge),
-            style = MaterialTheme.typography.titleLargeEmphasized
+            style = MaterialTheme.typography.titleMediumEmphasized
         )
 
         Column(
             modifier = Modifier
                 .padding(horizontal = MaterialTheme.spacing.medium)
                 .animateContentSize()
-                .clip(MaterialTheme.shapes.largeIncreased)
+                .clip(MaterialTheme.shapes.large)
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraSmall)
         ) {
