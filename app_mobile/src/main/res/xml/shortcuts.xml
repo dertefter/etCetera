@@ -27,6 +27,19 @@
     </shortcut>
 
     <shortcut
+        android:shortcutId="shortcut_search"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_search"
+        android:shortcutShortLabel="@string/shortcut_search"
+        android:shortcutLongLabel="@string/shortcut_search">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.dertefter.etcetera"
+            android:targetClass="com.dertefter.etcetera.MainActivity"
+            android:data="etcetera://search" />
+    </shortcut>
+
+    <shortcut
         android:shortcutId="shortcut_profile"
         android:enabled="true"
         android:icon="@drawable/ic_shortcut_profile"

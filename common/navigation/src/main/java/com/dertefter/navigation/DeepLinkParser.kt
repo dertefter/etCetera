@@ -27,6 +27,7 @@ object DeepLinkParser {
             when (host) {
                 "feed" -> return Routes.Feed
                 "notifications" -> return Routes.Notifications(showBackButton = false)
+                "search" -> return Routes.Search
                 "profile", "me" -> return Routes.User(userId = "", showBackButton = false)
             }
         }

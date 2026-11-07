@@ -55,4 +55,5 @@
     <string name="shortcut_feed">Home</string>
     <string name="shortcut_notifications">Notifications</string>
     <string name="shortcut_profile">Profile</string>
+    <string name="shortcut_search">Search</string>
 </resources>
