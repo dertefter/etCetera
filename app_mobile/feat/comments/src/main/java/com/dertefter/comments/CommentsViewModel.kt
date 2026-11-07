@@ -12,6 +12,7 @@ import com.dertefter.comments.usecase.GetRepliesUseCase
 import com.dertefter.comments.usecase.LikeCommentUseCase
 import com.dertefter.comments.usecase.NavigateToScreenUseCase
 import com.dertefter.comments.usecase.OpenAsBottomSheetUseCase
+import com.dertefter.comments.usecase.OpenAsDialogUseCase
 import com.dertefter.comments.usecase.UnlikeCommentUseCase
 import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.navigation.Routes
@@ -43,7 +44,8 @@ class CommentsViewModel(
     private val unlikeCommentUseCase: UnlikeCommentUseCase,
     private val getRepliesUseCase: GetRepliesUseCase,
     private val openAsBottomSheetUseCase: OpenAsBottomSheetUseCase,
-    private val navigateToScreenUseCase: NavigateToScreenUseCase
+    private val navigateToScreenUseCase: NavigateToScreenUseCase,
+    private val openAsDialogUseCase: OpenAsDialogUseCase
 ) : ViewModel() {
 
     val meUserId: StateFlow<String?> = getMeUseCase()
@@ -100,7 +102,7 @@ class CommentsViewModel(
         when (event) {
 
             is Event.OnOpenAttachmentsViewer -> {
-                navigateToScreenUseCase(
+                openAsDialogUseCase(
                     Routes.AttachmentsViewer(
                         event.attachments.map { it.toNavigationModel() }, event.position
                     )

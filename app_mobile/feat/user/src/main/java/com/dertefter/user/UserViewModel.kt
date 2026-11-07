@@ -24,6 +24,7 @@ import com.dertefter.user.usecase.LikePostUseCase
 import com.dertefter.user.usecase.NavigateBackUseCase
 import com.dertefter.user.usecase.NavigateToScreenUseCase
 import com.dertefter.user.usecase.OpenAsBottomSheetUseCase
+import com.dertefter.user.usecase.OpenAsDialogUseCase
 import com.dertefter.user.usecase.PinPostUseCase
 import com.dertefter.user.usecase.SaveMeUseCase
 import com.dertefter.user.usecase.UnblockUserUseCase
@@ -85,6 +86,7 @@ class UserViewModel(
     private val navigateToScreenUseCase: NavigateToScreenUseCase,
     private val openAsBottomSheetUseCase: OpenAsBottomSheetUseCase,
     private val navigateBackUseCase: NavigateBackUseCase,
+    private val openAsDialogUseCase: OpenAsDialogUseCase
 ) : ViewModel() {
 
     private val _meUserId = getMeUseCase().map {
@@ -202,7 +204,7 @@ class UserViewModel(
             }
 
             is Event.OnOpenAttachmentsViewer -> {
-                navigateToScreenUseCase(
+                openAsDialogUseCase(
                     Routes.AttachmentsViewer(
                         attachments = event.attachments.map { it.toNavigationModel() },
                         viewPosition = event.position

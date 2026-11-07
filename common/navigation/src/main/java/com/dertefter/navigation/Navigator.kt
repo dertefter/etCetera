@@ -10,6 +10,8 @@ interface Navigator {
 
     fun openAsBottomSheet(route: Routes)
 
+    fun openAsDialog(route: Routes)
+
     fun hideBottomSheet()
 
     fun navigateUp()

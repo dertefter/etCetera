@@ -3,10 +3,12 @@ package com.dertefter.etcetera.presentation
 import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.annotation.StringRes
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
@@ -37,12 +39,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberDecoratedNavEntries
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import com.dertefter.attachment_viewer.AttachmentViewerRoute
 import com.dertefter.comments.CommentsRoute
 import com.dertefter.data.common.AppError
 import com.dertefter.design.icons.Icons
@@ -242,6 +247,8 @@ fun MainScreen(
 
     val bottomSheetBackStack = remember { mutableStateListOf<Routes>() }
     val bottomSheetRoute = bottomSheetBackStack.lastOrNull()
+    val dialogBackStack = remember { mutableStateListOf<Routes>() }
+    val dialogRoute = dialogBackStack.lastOrNull()
     val sheetState = rememberBottomSheetState(
         initialValue = SheetValue.Hidden
     )
@@ -254,6 +261,10 @@ fun MainScreen(
 
     val bottomSheetBlurStyle = HazeMaterials.thick( // I L0VE TH1CK G1RLSSSSSS!!!!11!!!
         containerColor = MaterialTheme.colorScheme.surfaceContainer
+    )
+
+    val dialogBgBlurStyle = HazeMaterials.regular(
+        containerColor = Color.Black
     )
 
     val hideNav =
@@ -433,6 +444,67 @@ fun MainScreen(
         }
     }
 
+
+    AnimatedVisibility(
+        visible = dialogRoute != null,
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        Box(
+            modifier = Modifier
+                .hazeBlur(
+                    input = HazeInput.Sources(hazeState),
+                    style = dialogBgBlurStyle
+                )
+                .fillMaxSize()
+        ){
+
+        }
+    }
+
+    if (dialogRoute != null) {
+
+        Dialog(
+            properties = DialogProperties(
+                usePlatformDefaultWidth = false
+            ),
+            onDismissRequest = {
+                dialogBackStack.clear()
+            },
+        ) {
+
+            CompositionLocalProvider(
+                LocalBottomNavHeight provides WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+            ) {
+                Box {
+                    when (dialogRoute) {
+                        is Routes.AttachmentsViewer -> AttachmentViewerRoute(
+                            dialogRoute.attachments,
+                            dialogRoute.viewPosition
+                        )
+                        is Routes.PinChanger -> PinChangerRoute()
+                        is Routes.Report -> ReportRoute(dialogRoute.targetType, dialogRoute.targetId)
+                        is Routes.SwitchAccount -> SwitchAccountRoute()
+                        is Routes.Comments -> CommentsRoute(dialogRoute.postId)
+                        is Routes.NewPost -> NewPostRoute(dialogRoute.wallRecipientId)
+                        is Routes.Repost -> RepostRoute(dialogRoute.postIdForRepost, dialogRoute.wallRecipientId)
+                        is Routes.EditPost -> EditPostRoute(dialogRoute.postId)
+                        is Routes.NewComment -> NewCommentRoute(dialogRoute.postId)
+                        is Routes.NewCommentReply -> NewCommentReplyRoute(
+                            dialogRoute.postId,
+                            dialogRoute.commentId,
+                            dialogRoute.userId
+                        )
+
+                        else -> {
+                            Spacer(Modifier.height(1.dp))
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     val currentActiveBackStack by rememberUpdatedState(activeBackStack)
     LaunchedEffect(navigator) {
         navigator.navigationActions.collect { action ->
@@ -503,13 +575,19 @@ fun MainScreen(
                 }
 
                 NavigationAction.NavigateUp -> {
-                    if (backStack.size > 1) {
+                    if (dialogBackStack.isNotEmpty()) {
+                        dialogBackStack.removeAt(dialogBackStack.lastIndex)
+                    } else if (backStack.size > 1) {
                         backStack.removeAt(backStack.lastIndex)
                     }
                 }
 
                 is NavigationAction.OpenAsBottomSheet -> {
                     bottomSheetBackStack.add(action.route)
+                }
+
+                is NavigationAction.OpenAsDialog -> {
+                    dialogBackStack.add(action.route)
                 }
 
                 is NavigationAction.HideBottomSheet -> {

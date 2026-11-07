@@ -3,11 +3,16 @@
 
     <style name="Theme.EtCetera"
         parent="@style/Theme.Material3.DynamicColors.DayNight.NoActionBar">
+        <item name="android:dialogTheme">@style/Theme.EtCetera.DialogFullScreen</item>
     </style>
 
     <style name="Theme.EtCetera.Splash" parent="Theme.SplashScreen.IconBackground">
         <item name="windowSplashScreenAnimatedIcon">@drawable/app_icon_splash</item>
         <item name="postSplashScreenTheme">@style/Theme.EtCetera</item>
+    </style>
+
+    <style name="Theme.EtCetera.DialogFullScreen" parent="@style/ThemeOverlay.MaterialComponents.Dialog.Alert">
+        <item name="android:backgroundDimEnabled">false</item>
     </style>
 
 </resources>

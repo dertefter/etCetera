@@ -46,8 +46,9 @@ fun AttachmentViewerScreen(
 
     val hazeState = rememberHazeState()
 
+
     Scaffold(
-        containerColor = Color.Black
+        containerColor = Color.Transparent
     ) { contentPadding ->
         Box(
             modifier = Modifier
@@ -65,7 +66,7 @@ fun AttachmentViewerScreen(
                 Attachment(
                     isFullscreen = true,
                     attachment = attachment,
-                    containerColor = Color.Black,
+                    containerColor = Color.Transparent,
                     contentPadding = contentPadding,
                     modifier = Modifier.fillMaxSize()
                 )

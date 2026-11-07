@@ -25,6 +25,10 @@ class AppNavigator : Navigator {
         //dont need it
     }
 
+    override fun openAsDialog(route: Routes) {
+        _navigationActions.trySend(NavigationAction.OpenAsDialog(route))
+    }
+
     override fun hideBottomSheet() {
         //dont need it
     }

@@ -51,11 +51,6 @@ class HashtagFeedViewModel(
             initialValue = PaginatorUiState.Idle
         )
 
-    /**
-     * Reuses the paginator of the current hashtag so a re-subscription (for example after
-     * [SharingStarted.WhileSubscribed] stops the flow) does not throw away the loaded pages.
-     * Switching to another hashtag releases the previous paginator before a new one is built.
-     */
     private fun getOrCreatePaginator(name: String): MutableCursorPaginator<String, PostDto> {
         paginator?.takeIf { paginatorHashtag == name }?.let { return it }
         paginator?.release()
@@ -73,8 +68,6 @@ class HashtagFeedViewModel(
 
     private fun setupPaginator(paginator: MutableCursorPaginator<String, PostDto>) {
         viewModelScope.launch {
-            // Prefetch is owned by rememberPaginated() on the UI side: it creates and binds
-            // its own controller, so one built here would never be attached to the list.
             paginator.restart()
         }
     }
@@ -85,7 +78,7 @@ class HashtagFeedViewModel(
         when (event) {
 
             is Event.OnOpenAttachmentsViewer -> {
-                navigator.navigate(
+                navigator.openAsDialog(
                     Routes.AttachmentsViewer(
                         attachments = event.attachments.map { it.toNavigationModel() },
                         viewPosition = event.position

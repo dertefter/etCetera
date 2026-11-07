@@ -86,6 +86,10 @@ class MainActivity : ComponentActivity() {
                                     backStack.add(action.route)
                                 }
 
+                                is NavigationAction.OpenAsDialog -> {
+                                    backStack.add(action.route)
+                                }
+
                                 NavigationAction.HideBottomSheet -> {
                                     if (backStack.size > 1) {
                                         backStack.removeAt(backStack.lastIndex)

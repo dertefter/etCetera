@@ -107,7 +107,7 @@ class FeedViewModel(
             }
 
             is Event.OnOpenAttachmentsViewer -> {
-                navigator.navigate(
+                navigator.openAsDialog(
                     Routes.AttachmentsViewer(
                         event.attachments.map { it.toNavigationModel() }, event.position
                     )

@@ -8,4 +8,5 @@ sealed interface NavigationAction {
 
     data class NavigateAndClearBackStack(val route: Routes, val popupTo: Routes, val inclusive: Boolean = true) : NavigationAction
     data class OpenAsBottomSheet(val route: Routes) : NavigationAction
+    data class OpenAsDialog(val route: Routes) : NavigationAction
 }

@@ -84,7 +84,7 @@ class PostViewModel(
             }
 
             is Event.OnOpenAttachmentsViewer -> {
-                navigator.navigate(
+                navigator.openAsDialog(
                     Routes.AttachmentsViewer(
                         attachments = event.attachments.map { it.toNavigationModel() },
                         viewPosition = event.position
