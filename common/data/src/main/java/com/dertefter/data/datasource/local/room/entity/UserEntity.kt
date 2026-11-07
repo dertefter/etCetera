@@ -3,6 +3,7 @@ package com.dertefter.data.datasource.local.room.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.dertefter.data.dto.event.ActiveNicknameDto
+import com.dertefter.data.dto.feed.AuthorDto
 import com.dertefter.data.dto.feed.Pin
 import com.dertefter.data.dto.followers.FollowerUserDto
 import com.dertefter.data.dto.me.Me
@@ -21,8 +22,8 @@ data class UserEntity(
     val bio: String?,
     val createdAt: String,
     val displayName: String,
-    val followersCount: Int,
-    val followingCount: Int,
+    val followersCount: Int?,
+    val followingCount: Int?,
     val hasNuksta: Boolean,
     val isFollowedBy: Boolean,
     val isFollowing: Boolean,
@@ -36,8 +37,6 @@ data class UserEntity(
     val verified: Boolean,
     val wallAccess: VisibilityDto,
     val isBlockedByMe: Boolean = false,
-
-    // Me fields
     val isPhoneVerified: Boolean = false,
     val isPrivate: Boolean = false,
     val canMessage: Boolean = true,
@@ -106,6 +105,33 @@ fun FollowerUserDto.asEntity() = UserEntity(
     likesVisibility = VisibilityDto.EVERYONE,
     online = false,
     pin = null,
+    pinnedPostId = null,
+    postsCount = 0,
+    wallAccess = VisibilityDto.EVERYONE,
+    isMe = false
+)
+
+fun AuthorDto.asEntity() = UserEntity(
+    id = id,
+    username = username,
+    displayName = displayName,
+    avatar = avatar,
+    verified = verified,
+    hasNuksta = hasNuksta,
+    pin = pin,
+    activeNickname = activeNickname,
+
+    clanAvatar = avatar,
+    banner = null,
+    bio = null,
+    createdAt = "",
+    followersCount = null,
+    followingCount = null,
+    isFollowedBy = false,
+    isFollowing = false,
+    lastSeen = null,
+    likesVisibility = VisibilityDto.EVERYONE,
+    online = false,
     pinnedPostId = null,
     postsCount = 0,
     wallAccess = VisibilityDto.EVERYONE,

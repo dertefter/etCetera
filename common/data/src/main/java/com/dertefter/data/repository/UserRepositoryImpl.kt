@@ -73,7 +73,7 @@ class UserRepositoryImpl(
         followersRepository.updateFollowingStatus(userId, following)
         localDataSource.getUserById(userId).firstOrNull()?.let { user ->
             if (user.isFollowing != following) {
-                val newCount = if (following) user.followersCount + 1 else (user.followersCount - 1).coerceAtLeast(0)
+                val newCount: Int? = if (following) user.followersCount?.plus(1) else (user.followersCount?.minus(1)?.coerceAtLeast(0))
                 localDataSource.saveUser(user.copy(isFollowing = following, followersCount = newCount))
             }
         }

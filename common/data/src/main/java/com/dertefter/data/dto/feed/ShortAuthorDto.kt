@@ -14,3 +14,14 @@ data class ShortAuthorDto(
     val hasNuksta: Boolean,
     val activeNickname: ActiveNicknameDto? = null
 )
+
+fun ShortAuthorDto.asAuthorDto() = AuthorDto(
+    id = id,
+    avatar = avatar,
+    pin = pin,
+    username = username,
+    verified = verified,
+    hasNuksta = hasNuksta,
+    displayName = displayName,
+    activeNickname = activeNickname
+)

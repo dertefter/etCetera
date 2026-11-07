@@ -9,6 +9,7 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.room.Room
+import androidx.room.withTransaction
 import com.dertefter.data.datasource.local.room.AppDatabase
 import com.dertefter.data.datasource.local.room.entity.CommentEntity
 import com.dertefter.data.datasource.local.room.entity.PageEntity
@@ -26,6 +27,7 @@ import com.dertefter.data.dto.draft.DraftDto
 import com.dertefter.data.dto.event.CurrentEvent
 import com.dertefter.data.dto.feed.Pin
 import com.dertefter.data.dto.feed.PostDto
+import com.dertefter.data.dto.feed.asAuthorDto
 import com.dertefter.data.dto.followers.FollowerUserDto
 import com.dertefter.data.dto.me.Me
 import com.dertefter.data.dto.me.Privacy
@@ -221,7 +223,13 @@ class LocalDataSourceImpl(
     }
 
     override suspend fun savePosts(type: PageType, tab: String, self: String, posts: List<PostDto>) {
-        db().postDao().savePageWithPosts(type, tab, self, posts.map { it.asEntity() })
+        val database = db()
+        val authors = posts.map { it.author } +
+            posts.mapNotNull { it.originalPost?.author?.asAuthorDto() }
+        database.withTransaction {
+            database.postDao().savePageWithPosts(type, tab, self, posts.map { it.asEntity() })
+            database.userDao().upsertUsersFromAuthors(authors)
+        }
     }
 
     override suspend fun getPostsForPage(type: PageType, tab: String, self: String): List<PostDto> {

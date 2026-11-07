@@ -8,6 +8,8 @@ import androidx.room.Transaction
 import com.dertefter.data.datasource.local.room.entity.PageType
 import com.dertefter.data.datasource.local.room.entity.PageUserEntity
 import com.dertefter.data.datasource.local.room.entity.UserEntity
+import com.dertefter.data.datasource.local.room.entity.asEntity
+import com.dertefter.data.dto.feed.AuthorDto
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -20,6 +22,9 @@ interface UserDao {
 
     @Query("SELECT * FROM users WHERE id = :userId")
     suspend fun getUserById(userId: String): UserEntity?
+
+    @Query("SELECT * FROM users WHERE id IN (:userIds)")
+    suspend fun getUsersByIds(userIds: List<String>): List<UserEntity>
 
     @Query("SELECT * FROM users WHERE isMe = 1 LIMIT 1")
     fun getMe(): Flow<UserEntity?>
@@ -46,6 +51,26 @@ interface UserDao {
 
     @Query("DELETE FROM page_users WHERE type = :type AND tab = :tab AND self = :self")
     suspend fun deletePageUsers(type: PageType, tab: String, self: String)
+
+    @Transaction
+    suspend fun upsertUsersFromAuthors(authors: List<AuthorDto>) {
+        val distinctAuthors = authors.distinctBy { it.id }
+        if (distinctAuthors.isEmpty()) return
+        val existingById = getUsersByIds(distinctAuthors.map { it.id }).associateBy { it.id }
+        insertUsers(
+            distinctAuthors.map { author ->
+                existingById[author.id]?.copy(
+                    avatar = author.avatar,
+                    username = author.username,
+                    displayName = author.displayName,
+                    verified = author.verified,
+                    hasNuksta = author.hasNuksta,
+                    pin = author.pin,
+                    activeNickname = author.activeNickname
+                ) ?: author.asEntity()
+            }
+        )
+    }
 
     @Transaction
     suspend fun savePageWithUsers(
