@@ -40,6 +40,7 @@ import com.dertefter.design.components.post.AuthorUiModel
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
+import com.dertefter.design.transition.sharedElementByKey
 import com.dertefter.user.R
 import com.dertefter.user.presentation.mapper.toPresentationString
 import dev.chrisbanes.haze.hazeSource
@@ -140,6 +141,7 @@ fun Header(
 
 
             Avatar(
+                modifier = Modifier.sharedElementByKey("user_avatar_${author.id}"),
                 data = author.avatar,
                 rotation = rotation,
                 containerSize = avatarSize

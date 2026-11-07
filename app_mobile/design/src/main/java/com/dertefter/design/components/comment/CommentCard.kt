@@ -57,6 +57,8 @@ import com.dertefter.design.theme.postContained
 import com.dertefter.design.theme.postShowUsername
 import com.dertefter.design.theme.postSwapDateAndUsername
 import com.dertefter.design.theme.spacing
+import com.dertefter.design.transition.sharedElementByKey
+import kotlin.uuid.Uuid
 
 @Composable
 fun CommentCard(
@@ -93,6 +95,13 @@ fun CommentCard(
         }else{ 0.dp }
     )
 
+    var sharedAvatarId by remember(comment.id) {
+        mutableStateOf("post_avatar_${comment.id}" + Uuid.random())
+    }
+    fun installRealSharedId() {
+        sharedAvatarId = "user_avatar_${comment.author.id}"
+    }
+
 
     Column{
 
@@ -120,7 +129,11 @@ fun CommentCard(
                 ) {
                     Row(
                         modifier = Modifier
-                            .clickable(onClick = { onUserClick(comment.author.id) })
+                            .clickable(onClick = {
+                                installRealSharedId()
+                                onUserClick(comment.author.id)
+                            }
+                            )
                             .weight(1f),
                         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
                         verticalAlignment = Alignment.CenterVertically
@@ -128,14 +141,20 @@ fun CommentCard(
                     {
                         Avatar(
                             data = comment.author.avatar,
-                            containerSize = 44.dp
+                            modifier = Modifier
+                                .sharedElementByKey(sharedAvatarId),
+                            containerSize = 46.dp
                         )
                         Column(
                             modifier = Modifier
                                 .weight(1f)
                                 .clip(MaterialTheme.shapes.medium)
                                 .clickable(
-                                    onClick = { onUserClick(comment.author.id) })
+                                    onClick = {
+                                        installRealSharedId()
+                                        onUserClick(comment.author.id)
+                                    }
+                                )
                         )
                         {
                             DisplayName(
@@ -257,6 +276,7 @@ fun CommentCard(
                                 LinkAnnotation.Clickable(
                                     tag = "user",
                                     linkInteractionListener = {
+                                        installRealSharedId()
                                         onUserClick(replyTo.id)
                                     }
                                 )

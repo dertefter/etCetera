@@ -54,12 +54,15 @@ import com.dertefter.design.theme.postShowUsername
 import com.dertefter.design.theme.postSwapDateAndUsername
 import com.dertefter.design.theme.rounding
 import com.dertefter.design.theme.spacing
+import com.dertefter.design.transition.sharedElementByKey
 import kotlinx.coroutines.launch
+import kotlin.uuid.Uuid
 
 @Composable
 fun PostCard(
     post: PostUiModel,
     modifier: Modifier = Modifier,
+    cardSharedKey: String? = null,
     onLike: (postId: String) -> Unit = {},
     onUnlike: (postId: String) -> Unit = {},
     onCommentsClick: (postId: String) -> Unit = {},
@@ -101,10 +104,28 @@ fun PostCard(
         }else{ 0.dp }
     )
 
+    var sharedAvatarId by remember(post.id) {
+        mutableStateOf("post_avatar_${post.id}" + Uuid.random())
+    }
+    fun installRealSharedId() {
+        sharedAvatarId = "user_avatar_${post.author.id}"
+    }
+
+    var sharedCardId by remember(post.id) {
+        mutableStateOf("post_card_local_${post.id}" + Uuid.random())
+    }
+    fun installSharedCardId() {
+        sharedCardId = "post_card_${post.id}"
+    }
+
     Box(
         modifier = modifier
+            .sharedElementByKey(cardSharedKey ?: sharedCardId)
             .clip(RoundedCornerShape(cornerRadius))
-            .clickable(onClick = { onOpenPost(post.id) })
+            .clickable(onClick = {
+                installSharedCardId()
+                onOpenPost(post.id)
+            })
             .background(cardColor)
             .fillMaxWidth()
     ) {
@@ -124,15 +145,24 @@ fun PostCard(
                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
             ) {
                 Avatar(
+                    modifier = Modifier
+                        .sharedElementByKey(sharedAvatarId),
                     data = post.author.avatar,
-                    onClick = { onUserClick(post.author.id) }
+                    onClick = {
+                        installRealSharedId()
+                        onUserClick(post.author.id)
+                    }
                 )
                 Column(
                     modifier = Modifier
                         .weight(1f)
                         .clip(MaterialTheme.shapes.medium)
                         .clickable(
-                            onClick = { onUserClick(post.author.id) })
+                            onClick = {
+                                installRealSharedId()
+                                onUserClick(post.author.id)
+                            }
+                        )
                 ) {
                     DisplayName(
                         name = post.author.displayName,
