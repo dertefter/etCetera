@@ -18,7 +18,8 @@ data class CommentEntity(
     val isLiked: Boolean,
     val createdAt: String,
     val attachments: List<AttachmentDto>,
-    val replyTo: ReplyToDto?
+    val replyTo: ReplyToDto?,
+    val editedAt: String? = null
 )
 
 fun CommentDto.asEntity(parentId: String? = null): CommentEntity {
@@ -32,7 +33,8 @@ fun CommentDto.asEntity(parentId: String? = null): CommentEntity {
         isLiked = isLiked,
         createdAt = createdAt,
         attachments = attachments,
-        replyTo = replyTo
+        replyTo = replyTo,
+        editedAt = editedAt
     )
 }
 
@@ -47,6 +49,7 @@ fun CommentEntity.asExternalModel(replies: List<CommentDto>? = null): CommentDto
         createdAt = createdAt,
         attachments = attachments,
         replies = replies,
-        replyTo = replyTo
+        replyTo = replyTo,
+        editedAt = editedAt
     )
 }

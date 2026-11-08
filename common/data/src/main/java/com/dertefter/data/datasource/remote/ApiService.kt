@@ -6,6 +6,8 @@ import com.dertefter.data.dto.auth.SignInRequest
 import com.dertefter.data.dto.auth.SignInResponse
 import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.data.dto.comments.CommentsResponseDto
+import com.dertefter.data.dto.comments.EditCommentRequestDto
+import com.dertefter.data.dto.comments.EditCommentResponseDto
 import com.dertefter.data.dto.comments.NewCommentRequestDto
 import com.dertefter.data.dto.comments.RepliesResponseDto
 import com.dertefter.data.dto.event.CurrentEvent
@@ -44,6 +46,7 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
@@ -129,6 +132,12 @@ interface ApiService {
         @Path("postId") postId: String,
         @Body postRequest: NewCommentRequestDto
     ): Response<CommentDto>
+
+    @PATCH("api/comments/{commentId}")
+    suspend fun editComment(
+        @Path("commentId") commentId: String,
+        @Body request: EditCommentRequestDto
+    ): Response<EditCommentResponseDto>
 
     @DELETE("api/comments/{commentId}")
     suspend fun deleteComment(

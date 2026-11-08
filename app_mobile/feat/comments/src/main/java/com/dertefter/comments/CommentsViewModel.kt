@@ -187,6 +187,14 @@ class CommentsViewModel(
                 )
             }
 
+            is Event.OnEditComment -> {
+                currentPostId?.let { postId ->
+                    openAsBottomSheetUseCase(
+                        Routes.EditComment(postId = postId, commentId = event.commentId)
+                    )
+                }
+            }
+
         }
     }
 

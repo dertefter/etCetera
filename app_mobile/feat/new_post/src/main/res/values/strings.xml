@@ -5,6 +5,7 @@
     <string name="new_repost_title">Repost</string>
     <string name="edit_post_title">Edit post</string>
     <string name="new_comment_title">New comment</string>
+    <string name="edit_comment_title">Edit comment</string>
     <string name="span_bold">Bold</string>
     <string name="span_italic">Italic</string>
     <string name="span_underline">Underline</string>

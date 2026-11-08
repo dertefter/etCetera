@@ -29,7 +29,8 @@ fun CommentDto.toUiModel(meUserId: String? = null): CommentUiModel {
         replyTo = replyTo?.toUiModel(),
         attachments = attachments.map { it.toUiModel() },
         replies = replies?.map { it.toUiModel(meUserId) },
-        isOwner = author.id == meUserId
+        isOwner = author.id == meUserId,
+        editedAt = editedAt
     )
 }
 

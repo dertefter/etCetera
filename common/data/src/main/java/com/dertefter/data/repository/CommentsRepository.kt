@@ -1,6 +1,8 @@
 package com.dertefter.data.repository
 
 import com.dertefter.data.dto.comments.CommentDto
+import com.dertefter.data.dto.comments.EditCommentRequestDto
+import com.dertefter.data.dto.comments.EditCommentResponseDto
 import com.dertefter.data.dto.comments.NewCommentRequestDto
 import com.dertefter.data.dto.comments.RepliesDataDto
 import com.dertefter.data.dto.draft.DraftDto
@@ -26,6 +28,10 @@ interface CommentsRepository {
         commentId: String,
         newCommentRequestDto: NewCommentRequestDto
     ): Result<CommentDto>
+
+    fun getComment(commentId: String): Flow<CommentDto?>
+
+    suspend fun editComment(commentId: String, editCommentRequestDto: EditCommentRequestDto): Result<EditCommentResponseDto>
 
     suspend fun saveCommentDraft(draftDto: DraftDto, key: String)
 

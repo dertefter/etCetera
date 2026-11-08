@@ -26,6 +26,7 @@ import com.dertefter.followers.FollowersRoute
 import com.dertefter.hashtag_feed.HashtagFeedRoute
 import com.dertefter.navigation.Routes
 import com.dertefter.new_post.EditPostRoute
+import com.dertefter.new_post.EditCommentRoute
 import com.dertefter.new_post.NewCommentReplyRoute
 import com.dertefter.new_post.NewCommentRoute
 import com.dertefter.new_post.NewPostRoute
@@ -130,6 +131,7 @@ fun RouteContent(route: Routes) {
             is Routes.EditPost -> EditPostRoute(route.postId)
             is Routes.NewComment -> NewCommentRoute(route.postId)
             is Routes.NewCommentReply -> NewCommentReplyRoute(route.postId, route.commentId, route.userId)
+            is Routes.EditComment -> EditCommentRoute(route.postId, route.commentId)
             is Routes.AttachmentsViewer -> AttachmentViewerRoute(route.attachments, route.viewPosition)
             is Routes.Followers -> FollowersRoute(route.userId, route.startTabIsFollowing)
             is Routes.Notifications -> NotificationsRoute(route.showBackButton)

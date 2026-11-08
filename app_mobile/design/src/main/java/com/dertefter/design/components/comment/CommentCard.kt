@@ -178,7 +178,7 @@ fun CommentCard(
                                 } else if (swap) {
                                     PrettyDate(
                                         createdDate = comment.getCreatedAtDate(),
-                                        editedDate = null,
+                                        editedDate = comment.getEditedAtDate(),
                                         textStyle = MaterialTheme.typography.labelLargeEmphasized,
                                     )
                                 }
@@ -200,7 +200,7 @@ fun CommentCard(
                             } else if (!swap) {
                                 PrettyDate(
                                     createdDate = comment.getCreatedAtDate(),
-                                    editedDate = null,
+                                    editedDate = comment.getEditedAtDate(),
                                     textStyle = MaterialTheme.typography.labelMediumEmphasized,
                                 )
                             }

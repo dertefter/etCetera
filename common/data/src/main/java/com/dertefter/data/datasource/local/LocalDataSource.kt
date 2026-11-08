@@ -73,6 +73,7 @@ interface LocalDataSource {
     suspend fun getAllComments(): List<CommentDto>
     suspend fun saveComment(comment: CommentDto)
     suspend fun deleteComment(commentId: String)
+    fun getComment(commentId: String): Flow<CommentDto?>
 
     suspend fun saveUsers(type: PageType, tab: String, self: String, users: List<FollowerUserDto>)
     suspend fun getUsersForPage(type: PageType, tab: String, self: String): List<FollowerUserDto>

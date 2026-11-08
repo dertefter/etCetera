@@ -6,6 +6,8 @@ import com.dertefter.data.dto.auth.SignInRequest
 import com.dertefter.data.dto.auth.SignInResponse
 import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.data.dto.comments.CommentsDataDto
+import com.dertefter.data.dto.comments.EditCommentRequestDto
+import com.dertefter.data.dto.comments.EditCommentResponseDto
 import com.dertefter.data.dto.comments.NewCommentRequestDto
 import com.dertefter.data.dto.comments.RepliesDataDto
 import com.dertefter.data.dto.event.CurrentEvent
@@ -85,6 +87,8 @@ interface RemoteDataSource {
     suspend fun repost(postId: String, newPostRequest: NewPostRequestDto): Result<PostDto>
 
     suspend fun newComment(postId: String, newCommentRequest: NewCommentRequestDto): Result<CommentDto>
+
+    suspend fun editComment(commentId: String, editCommentRequest: EditCommentRequestDto): Result<EditCommentResponseDto>
 
     suspend fun deleteComment(commentId: String): Result<Unit>
 

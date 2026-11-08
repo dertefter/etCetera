@@ -6,6 +6,8 @@ import com.dertefter.data.dto.auth.SignInRequest
 import com.dertefter.data.dto.auth.SignInResponse
 import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.data.dto.comments.CommentsDataDto
+import com.dertefter.data.dto.comments.EditCommentRequestDto
+import com.dertefter.data.dto.comments.EditCommentResponseDto
 import com.dertefter.data.dto.comments.NewCommentRequestDto
 import com.dertefter.data.dto.comments.RepliesDataDto
 import com.dertefter.data.dto.event.CurrentEvent
@@ -237,6 +239,12 @@ class RemoteDataSourceImpl(
     override suspend fun newComment(postId: String, newCommentRequest: NewCommentRequestDto): Result<CommentDto> {
         return runCatching {
             apiService.newComment(postId, newCommentRequest).handleResponse { it }.getOrThrow()
+        }
+    }
+
+    override suspend fun editComment(commentId: String, editCommentRequest: EditCommentRequestDto): Result<EditCommentResponseDto> {
+        return runCatching {
+            apiService.editComment(commentId, editCommentRequest).handleResponse { it }.getOrThrow()
         }
     }
 

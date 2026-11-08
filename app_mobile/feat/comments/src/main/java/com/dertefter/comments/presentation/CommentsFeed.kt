@@ -107,6 +107,11 @@ fun CommentsFeed(
                         onEvent(
                             Event.OnReport(commentId)
                         )
+                    },
+                    onEdit = { commentId ->
+                        onEvent(
+                            Event.OnEditComment(commentId)
+                        )
                     }
                 )
             }

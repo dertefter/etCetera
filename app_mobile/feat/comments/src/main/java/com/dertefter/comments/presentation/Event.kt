@@ -24,4 +24,6 @@ sealed interface Event {
 
     data class OnDeleteComment(val commentId: String) : Event
 
+    data class OnEditComment(val commentId: String) : Event
+
 }

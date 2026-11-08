@@ -19,10 +19,16 @@ data class CommentUiModel(
     val replyTo: ReplyToUiModel? = null,
     val attachments: List<AttachmentUiModel> = emptyList(),
     val replies: List<CommentUiModel>? = emptyList(),
-    val isOwner: Boolean = false
+    val isOwner: Boolean = false,
+    val editedAt: String? = null
 ){
     fun getCreatedAtDate(): LocalDateTime? {
         return DateParser.parseToInstant(createdAt)
+            ?.atZone(ZoneId.systemDefault())
+            ?.toLocalDateTime()
+    }
+    fun getEditedAtDate(): LocalDateTime? {
+        return DateParser.parseToInstant(editedAt)
             ?.atZone(ZoneId.systemDefault())
             ?.toLocalDateTime()
     }

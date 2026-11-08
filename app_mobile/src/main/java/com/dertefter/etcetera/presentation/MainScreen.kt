@@ -59,6 +59,7 @@ import com.dertefter.navigation.NavigationAction
 import com.dertefter.navigation.Navigator
 import com.dertefter.navigation.Routes
 import com.dertefter.new_post.EditPostRoute
+import com.dertefter.new_post.EditCommentRoute
 import com.dertefter.new_post.NewCommentReplyRoute
 import com.dertefter.new_post.NewCommentRoute
 import com.dertefter.new_post.NewPostRoute
@@ -433,6 +434,10 @@ fun MainScreen(
                             bottomSheetRoute.commentId,
                             bottomSheetRoute.userId
                         )
+                        is Routes.EditComment -> EditCommentRoute(
+                            bottomSheetRoute.postId,
+                            bottomSheetRoute.commentId
+                        )
 
                         else -> {
                             Spacer(Modifier.height(1.dp))
@@ -494,6 +499,10 @@ fun MainScreen(
                             dialogRoute.postId,
                             dialogRoute.commentId,
                             dialogRoute.userId
+                        )
+                        is Routes.EditComment -> EditCommentRoute(
+                            dialogRoute.postId,
+                            dialogRoute.commentId
                         )
 
                         else -> {

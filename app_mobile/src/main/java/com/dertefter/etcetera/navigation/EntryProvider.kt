@@ -22,6 +22,7 @@ fun getAppEntryProvider(): (NavKey) -> NavEntry<NavKey> = entryProvider {
     entry<Routes.EditPost> { RouteContent(it) }
     entry<Routes.NewComment> { RouteContent(it) }
     entry<Routes.NewCommentReply> { RouteContent(it) }
+    entry<Routes.EditComment> { RouteContent(it) }
     entry<Routes.Followers> { RouteContent(it) }
     entry<Routes.Post> { RouteContent(it) }
     entry<Routes.HashtagFeed> { RouteContent(it) }

@@ -8,6 +8,7 @@ import androidx.room.Transaction
 import com.dertefter.data.datasource.local.room.entity.CommentEntity
 import com.dertefter.data.datasource.local.room.entity.PageCommentEntity
 import com.dertefter.data.datasource.local.room.entity.PageType
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CommentDao {
@@ -30,6 +31,9 @@ interface CommentDao {
 
     @Query("SELECT * FROM comments WHERE id = :commentId")
     suspend fun getCommentById(commentId: String): CommentEntity?
+
+    @Query("SELECT * FROM comments WHERE id = :commentId")
+    fun observeComment(commentId: String): Flow<CommentEntity?>
 
     @Query("SELECT * FROM comments")
     suspend fun getAllComments(): List<CommentEntity>

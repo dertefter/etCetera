@@ -231,6 +231,7 @@ fun NewPostScreen(
                         ScreenMode.REPOST -> stringResource(R.string.new_repost_title)
                         ScreenMode.EDIT_POST -> stringResource(R.string.edit_post_title)
                         ScreenMode.NEW_COMMENT -> stringResource(R.string.new_comment_title)
+                        ScreenMode.EDIT_COMMENT -> stringResource(R.string.edit_comment_title)
                     }
                 )
 
@@ -488,6 +489,7 @@ fun NewPostScreen(
                                         ScreenMode.REPOST -> stringResource(R.string.repost_placeholder)
                                         ScreenMode.EDIT_POST -> stringResource(R.string.post_placeholder)
                                         ScreenMode.NEW_COMMENT -> stringResource(R.string.comment_placeholder)
+                                        ScreenMode.EDIT_COMMENT -> stringResource(R.string.comment_placeholder)
                                     }
                                 )
                             },

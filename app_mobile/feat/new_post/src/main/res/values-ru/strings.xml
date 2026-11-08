@@ -5,6 +5,7 @@
     <string name="new_repost_title">Репост</string>
     <string name="edit_post_title">Редактировать пост</string>
     <string name="new_comment_title">Новый комментарий</string>
+    <string name="edit_comment_title">Редактировать комментарий</string>
     <string name="span_bold">Жирный</string>
     <string name="span_italic">Курсив</string>
     <string name="span_underline">Подчеркнутый</string>

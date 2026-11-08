@@ -15,5 +15,6 @@ data class CommentDto(
     val createdAt: String,
     val attachments: List<AttachmentDto> = emptyList(),
     val replies: List<CommentDto>? = emptyList(),
-    val replyTo: ReplyToDto? = null
+    val replyTo: ReplyToDto? = null,
+    val editedAt: String? = null
 )

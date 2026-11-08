@@ -7,6 +7,8 @@ import com.dertefter.data.datasource.local.room.entity.PageEntity
 import com.dertefter.data.datasource.local.room.entity.PageType
 import com.dertefter.data.datasource.remote.RemoteDataSource
 import com.dertefter.data.dto.comments.CommentDto
+import com.dertefter.data.dto.comments.EditCommentRequestDto
+import com.dertefter.data.dto.comments.EditCommentResponseDto
 import com.dertefter.data.dto.comments.NewCommentRequestDto
 import com.dertefter.data.dto.comments.RepliesDataDto
 import com.dertefter.data.dto.draft.DraftDto
@@ -186,8 +188,6 @@ class CommentsRepositoryImpl(
 
     override suspend fun deleteComment(commentId: String): Result<Unit> {
         return remoteDataSource.deleteComment(commentId).onFailureLog(crashlyticsRepository).onSuccess {
-            // Удаляем из всех живых пагинаторов: корневые комментарии вырезаются целиком,
-            // вложенные ответы — из списков replies своих родителей.
             updateInMem {
                 it.removeAll { comment -> comment.id == commentId }
                 it.updateWhere(
@@ -212,6 +212,28 @@ class CommentsRepositoryImpl(
         newCommentRequestDto: NewCommentRequestDto
     ): Result<CommentDto> {
         return remoteDataSource.newCommentReply(commentId, newCommentRequestDto).onFailureLog(crashlyticsRepository)
+    }
+
+    override fun getComment(commentId: String): Flow<CommentDto?> {
+        return localDataSource.getComment(commentId)
+    }
+
+    override suspend fun editComment(
+        commentId: String,
+        editCommentRequestDto: EditCommentRequestDto
+    ): Result<EditCommentResponseDto> {
+        return remoteDataSource.editComment(commentId, editCommentRequestDto)
+            .onFailureLog(crashlyticsRepository)
+            .onSuccess { response ->
+                val transform: (CommentDto) -> CommentDto = { comment ->
+                    if (comment.id == response.id) {
+                        comment.copy(content = response.content, editedAt = response.editedAt)
+                    } else {
+                        comment
+                    }
+                }
+                updateData(commentId, transform)
+            }
     }
 
     private suspend fun applyOptimisticLike(commentId: String, liked: Boolean) {

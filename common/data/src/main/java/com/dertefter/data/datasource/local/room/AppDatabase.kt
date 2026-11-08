@@ -42,7 +42,7 @@ import com.dertefter.data.datasource.local.room.entity.UserEntity
         AuthSessionEntity::class,
         PostDraftEntity::class,
     ],
-    version = 71,
+    version = 72,
     exportSchema = false
 )
 

@@ -296,6 +296,10 @@ class LocalDataSourceImpl(
         db().commentDao().deleteComment(commentId)
     }
 
+    override fun getComment(commentId: String): Flow<CommentDto?> = currentLogin.flatMapLatest { login ->
+        getDatabase(login).commentDao().observeComment(commentId)
+    }.map { it?.asExternalModel() }
+
     override suspend fun saveUsers(type: PageType, tab: String, self: String, users: List<FollowerUserDto>) {
         db().userDao().savePageWithUsers(type, tab, self, users.map { it.asEntity() })
     }
