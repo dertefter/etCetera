@@ -68,23 +68,27 @@ fun UserScreen(
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
                         ) {
-                            TitleValueCard(
-                                modifier = Modifier.weight(1f),
-                                title = stringResource(R.string.user_followers),
-                                value = userUiState.userDto.followersCount,
-                                onClick = {
-                                    onEvent(Event.OnOpenFollowers(userId = userUiState.userDto.id))
-                                }
-                            )
+                            userUiState.userDto.followersCount?.let { followersCount ->
+                                TitleValueCard(
+                                    modifier = Modifier.weight(1f),
+                                    title = stringResource(R.string.user_followers),
+                                    value = followersCount,
+                                    onClick = {
+                                        onEvent(Event.OnOpenFollowers(userId = userUiState.userDto.id))
+                                    }
+                                )
+                            }
 
-                            TitleValueCard(
-                                modifier = Modifier.weight(1f),
-                                title = stringResource(R.string.user_following),
-                                value = userUiState.userDto.followingCount,
-                                onClick = {
-                                    onEvent(Event.OnOpenFollowing(userId = userUiState.userDto.id))
-                                }
-                            )
+                            userUiState.userDto.followingCount?.let { followingCount ->
+                                TitleValueCard(
+                                    modifier = Modifier.weight(1f),
+                                    title = stringResource(R.string.user_following),
+                                    value = followingCount,
+                                    onClick = {
+                                        onEvent(Event.OnOpenFollowing(userId = userUiState.userDto.id))
+                                    }
+                                )
+                            }
                         }
                     }
                 }
