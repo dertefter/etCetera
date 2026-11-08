@@ -150,28 +150,45 @@ class UserViewModel(
 
     private var initJob: Job? = null
 
+    private var initializedUserId: String? = null
+    private var initializedUsername: String? = null
+
     fun initWithUserId(userId: String) {
+        if (initializedUserId == userId && isLoadingOrLoaded()) return
+        initializedUsername = null
+        initializedUserId = userId
         initJob?.cancel()
         initJob = viewModelScope.launch {
-            _userId.value = userId
-            update()
+            loadUser(userId)
         }
     }
 
     fun initWithUsername(username: String) {
+        if (initializedUsername == username && isLoadingOrLoaded()) return
+        initializedUsername = username
+        initializedUserId = null
         initJob?.cancel()
         initJob = viewModelScope.launch {
             _isLoading.value = true
+            _error.value = null
             val userId: String? = updateUserUseCase(username)
                 .getOrNull()?.id ?: getUserByUsernameUseCase(username).first()?.id
             if (userId != null) {
-                initWithUserId(userId)
+                loadUser(userId)
             } else {
+                initializedUsername = null
                 _isLoading.value = false
                 _error.value = AppError.ApiError(code = null, message = null)
             }
 
         }
+    }
+
+    private fun isLoadingOrLoaded() = initJob?.isActive == true || _paginators.value.isNotEmpty()
+
+    private suspend fun loadUser(userId: String) {
+        _userId.value = userId
+        update()
     }
 
     fun updateMe() {
@@ -182,8 +199,6 @@ class UserViewModel(
 
     private fun setupPaginator(paginator: MutableCursorPaginator<String, PostDto>) {
         viewModelScope.launch {
-            // Prefetch is owned by rememberPaginated() on the UI side: it creates and binds
-            // its own controller, so one built here would never be attached to the list.
             paginator.restart(silentlyLoading = true)
         }
     }
