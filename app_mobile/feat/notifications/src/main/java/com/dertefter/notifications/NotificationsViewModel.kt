@@ -9,6 +9,7 @@ import com.dertefter.navigation.Routes
 import com.dertefter.notifications.presentation.Event
 import com.jamal_aliev.paginator.core.page.PaginatorUiState
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
+import com.jamal_aliev.paginator.cursor.extension.refreshAll
 import com.jamal_aliev.paginator.cursor.extension.uiState
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
@@ -87,7 +88,7 @@ class NotificationsViewModel(
 
             is Event.OnRefresh -> {
                 viewModelScope.launch {
-                    paginator.restart()
+                    paginator.refreshAll()
                     notificationsRepository.readAll()
                 }
             }

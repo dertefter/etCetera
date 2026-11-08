@@ -19,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -44,7 +45,7 @@ fun NotificationsFeed(
     uiState: PaginatorUiState<NotificationDto>,
     onEvent: (Event) -> Unit,
 ) {
-    val listState = androidx.compose.runtime.remember(paginator) { LazyListState() }
+    val listState = rememberSaveable(paginator, saver = LazyListState.Saver) { LazyListState() }
     val paged = paginator.rememberPaginated(state = listState)
 
     AnimatedContent(
