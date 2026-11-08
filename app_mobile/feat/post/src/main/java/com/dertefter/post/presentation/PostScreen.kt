@@ -150,7 +150,6 @@ fun PostScreenContent(
                                 item(key = "post_card_${post.id}") {
                                     PostCard(
                                         post = post,
-                                        cardSharedKey = "post_card_${post.id}",
                                         onRepostClick = { postId -> onEvent(Event.OnRepost(postId)) },
                                         onLike = { postId -> onEvent(Event.OnLike(postId)) },
                                         onUnlike = { postId -> onEvent(Event.OnUnlike(postId)) },

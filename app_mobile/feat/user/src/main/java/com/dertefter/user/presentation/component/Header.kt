@@ -70,6 +70,13 @@ fun Header(
 
     val hazeState = rememberHazeState()
 
+    val sharedAvatarId = "avatar_${author.id}"
+
+    val sharedNameId = "display_name_${author.id}"
+
+    val sharedUsernameId = "username_${author.id}"
+
+
     val scrollFraction = if (scrollBehavior != null) {
         if (SDK_INT <= 29) {
             0f
@@ -141,7 +148,8 @@ fun Header(
 
 
             Avatar(
-                modifier = Modifier.sharedElementByKey("user_avatar_${author.id}"),
+                modifier = Modifier
+                    .sharedElementByKey(sharedAvatarId),
                 data = author.avatar,
                 rotation = rotation,
                 containerSize = avatarSize
@@ -149,7 +157,9 @@ fun Header(
         }
 
        DisplayName(
-           modifier = Modifier.padding(top = MaterialTheme.spacing.small),
+           modifier = Modifier
+               .sharedElementByKey(sharedNameId)
+               .padding(top = MaterialTheme.spacing.small),
            name = author.displayName,
            activeNickname = author.activeNickname,
            verified = author.verified,
@@ -162,7 +172,9 @@ fun Header(
            text = "@${author.username}",
            style = MaterialTheme.typography.bodyLargeEmphasized,
            color = MaterialTheme.colorScheme.secondary,
-           modifier = Modifier.padding(top = MaterialTheme.spacing.extraSmall)
+           modifier = Modifier
+               .sharedElementByKey(sharedUsernameId)
+               .padding(top = MaterialTheme.spacing.extraSmall)
        )
 
        val lastSeenText = if (!isMe && !isOnline) {

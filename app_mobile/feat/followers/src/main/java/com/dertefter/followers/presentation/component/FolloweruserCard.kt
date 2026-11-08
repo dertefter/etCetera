@@ -21,6 +21,7 @@ import com.dertefter.design.components.avatar.Avatar
 import com.dertefter.design.components.avatar.DisplayName
 import com.dertefter.design.components.lists.SegmentedContentItem
 import com.dertefter.design.theme.spacing
+import com.dertefter.design.transition.sharedElementByKey
 import com.dertefter.followers.R
 
 @Composable
@@ -33,6 +34,13 @@ fun FollowerUserCard(
     index: Int = 0,
     count: Int = 0
 ) {
+
+    val sharedAvatarId = "avatar_${followerUser.id}"
+
+    val sharedNameId = "display_name_${followerUser.id}"
+
+    val sharedUsernameId = "username_${followerUser.id}"
+
 
     SegmentedContentItem(
         index = index,
@@ -49,7 +57,9 @@ fun FollowerUserCard(
             Avatar(
                 data = followerUser.avatar,
                 containerSize = 48.dp,
-                onClick = onClick
+                onClick = onClick,
+                modifier = Modifier
+                    .sharedElementByKey(sharedAvatarId)
             )
             Column(
                 modifier = Modifier.weight(1f)
@@ -58,12 +68,14 @@ fun FollowerUserCard(
                     name = followerUser.displayName,
                     verified = followerUser.verified,
                     hasNuksta = false,
-                    pin = null
+                    pin = null,
+                    modifier = Modifier.sharedElementByKey(sharedNameId)
                 )
                 Text(
                     text = "@${followerUser.username}",
                     style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.sharedElementByKey(sharedUsernameId)
                 )
             }
             if (followerUser.isFollowing) {
@@ -93,6 +105,11 @@ fun FollowerUserCardVertical(
     onFollow: (userId: String) -> Unit = {},
     onUnfollow: (userId: String) -> Unit = {},
 ) {
+
+    val sharedAvatarId = "avatar_${followerUser.id}"
+
+    val sharedNameId = "display_name_${followerUser.id}"
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
@@ -103,7 +120,8 @@ fun FollowerUserCardVertical(
         Avatar(
             data = followerUser.avatar,
             containerSize = 86.dp,
-            onClick = onClick
+            onClick = onClick,
+            modifier = Modifier.sharedElementByKey(sharedAvatarId)
         )
 
         DisplayName(
@@ -111,7 +129,9 @@ fun FollowerUserCardVertical(
             verified = followerUser.verified,
             hasNuksta = false,
             pin = null,
-            modifier = Modifier.padding(horizontal = MaterialTheme.spacing.large)
+            modifier = Modifier
+                .sharedElementByKey(sharedNameId)
+                .padding(horizontal = MaterialTheme.spacing.large)
         )
 
         if (followerUser.isFollowing) {

@@ -29,6 +29,7 @@ fun LazyListScope.feed(
     paged: PaginatedLazyListHolder<*>,
     onEvent: (Event) -> Unit,
     isMe: Boolean = false,
+    authorId: String,
 ) {
     when (uiState) {
         is PaginatorUiState.Empty -> {
@@ -53,7 +54,12 @@ fun LazyListScope.feed(
             }
 
             paginated(paged) {
-                postItems(items, onEvent, isMe)
+                postItems(
+                    items,
+                    onEvent,
+                    isMe,
+                    authorId
+                )
 
                 appendIndicator {
                     UserFeedAppendIndicator(uiState)
@@ -67,9 +73,12 @@ private fun LazyListScope.postItems(
     items: List<PostDto>,
     onEvent: (Event) -> Unit,
     isMe: Boolean = false,
+    authorId: String,
 ) {
     itemsIndexed(items.distinctBy { it.id }, key = { _, post -> "post_${post.id}" }) { _, post ->
+
         PostCard(
+            sharedKeyAppend = if (post.author.id == authorId) "_not_shared" else "",
             modifier = Modifier
                 .padding(horizontal = MaterialTheme.spacing.defaultScreenPadding)
                 .animateItem()

@@ -66,7 +66,7 @@ fun HeaderWide(
     lastSeenDto: LastSeenDto? = null,
     isOnline: Boolean = false,
     onOpenPinChanger: () -> Unit = {},
-){
+) {
 
     val context = LocalContext.current
     val hazeState = rememberHazeState()
@@ -75,24 +75,33 @@ fun HeaderWide(
         if (SDK_INT <= 29) {
             0f
         } else {
-            (scrollBehavior.state.contentOffset.absoluteValue / (scrollBehavior.state.heightOffsetLimit.absoluteValue * 4)).coerceIn(0f, 1f)
+            (scrollBehavior.state.contentOffset.absoluteValue / (scrollBehavior.state.heightOffsetLimit.absoluteValue * 4)).coerceIn(
+                0f,
+                1f
+            )
         }
-    }else{
+    } else {
         0f
     }
 
     val rotation = scrollFraction * 90f
 
-   Column(
+    val sharedAvatarId = "avatar_${author.id}"
+
+    val sharedNameId = "display_name_${author.id}"
+
+    val sharedUsernameId = "username_${author.id}"
+
+    Column(
         modifier = modifier
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
-    ){
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-        ){
-            if (!bannerUrl.isNullOrEmpty() || isMe){
+        ) {
+            if (!bannerUrl.isNullOrEmpty() || isMe) {
                 Box(
                     modifier = Modifier
                         .alpha(sqrt(1f - scrollFraction))
@@ -101,17 +110,18 @@ fun HeaderWide(
                         .background(MaterialTheme.colorScheme.surfaceVariant)
                         .fillMaxWidth()
                         .height(172.dp),
-                ){
+                ) {
                     AsyncImage(
                         model = bannerUrl,
                         contentDescription = null,
                         modifier = Modifier
+                            .sharedElementByKey(sharedAvatarId)
                             .hazeSource(state = hazeState)
                             .fillMaxSize(),
                         contentScale = ContentScale.Crop,
                     )
 
-                    if (isMe){
+                    if (isMe) {
                         AppNavigationIcon(
                             onClick = onEditClick,
                             modifier = Modifier
@@ -132,7 +142,7 @@ fun HeaderWide(
                 modifier = Modifier.fillMaxWidth(),
                 itemVerticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
-            ){
+            ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large),
@@ -151,6 +161,7 @@ fun HeaderWide(
 
                     Column {
                         DisplayName(
+                            modifier = Modifier.sharedElementByKey(sharedNameId),
                             name = author.displayName,
                             verified = author.verified,
                             hasNuksta = author.hasNuksta,
@@ -162,7 +173,9 @@ fun HeaderWide(
                             text = "@${author.username}",
                             style = MaterialTheme.typography.bodyLargeEmphasized,
                             color = MaterialTheme.colorScheme.secondary,
-                            modifier = Modifier.padding(top = MaterialTheme.spacing.extraSmall)
+                            modifier = Modifier
+                                .sharedElementByKey(sharedUsernameId)
+                                .padding(top = MaterialTheme.spacing.extraSmall)
                         )
                         val lastSeenText = if (!isMe && !isOnline) {
                             lastSeenDto.toPresentationString(context, false)
@@ -173,17 +186,17 @@ fun HeaderWide(
                         }
 
                         val color by animateColorAsState(
-                            if (isOnline){
+                            if (isOnline) {
                                 MaterialTheme.colorScheme.tertiary
-                            }else {
+                            } else {
                                 MaterialTheme.colorScheme.outline
                             }
                         )
 
                         val fontWeight by animateIntAsState(
-                            if (isOnline){
+                            if (isOnline) {
                                 600
-                            }else {
+                            } else {
                                 400
                             }
                         )
@@ -225,10 +238,7 @@ fun HeaderWide(
             }
 
 
-
-
         }
-
 
 
     }

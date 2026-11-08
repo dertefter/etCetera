@@ -58,7 +58,6 @@ import com.dertefter.design.theme.postShowUsername
 import com.dertefter.design.theme.postSwapDateAndUsername
 import com.dertefter.design.theme.spacing
 import com.dertefter.design.transition.sharedElementByKey
-import kotlin.uuid.Uuid
 
 @Composable
 fun CommentCard(
@@ -95,13 +94,11 @@ fun CommentCard(
         }else{ 0.dp }
     )
 
-    var sharedAvatarId by remember(comment.id) {
-        mutableStateOf("post_avatar_${comment.id}" + Uuid.random())
-    }
-    fun installRealSharedId() {
-        sharedAvatarId = "user_avatar_${comment.author.id}"
-    }
+    val sharedAvatarId = "avatar_${comment.author.id}"
 
+    val sharedNameId = "display_name_${comment.author.id}"
+
+    val sharedUsernameId = "username_${comment.author.id}"
 
     Column{
 
@@ -130,7 +127,6 @@ fun CommentCard(
                     Row(
                         modifier = Modifier
                             .clickable(onClick = {
-                                installRealSharedId()
                                 onUserClick(comment.author.id)
                             }
                             )
@@ -151,7 +147,6 @@ fun CommentCard(
                                 .clip(MaterialTheme.shapes.medium)
                                 .clickable(
                                     onClick = {
-                                        installRealSharedId()
                                         onUserClick(comment.author.id)
                                     }
                                 )
@@ -162,7 +157,9 @@ fun CommentCard(
                                 verified = comment.author.verified,
                                 hasNuksta = comment.author.hasNuksta,
                                 pin = comment.author.pin,
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier
+                                    .sharedElementByKey(sharedNameId)
+                                    .fillMaxWidth()
                             )
                             Crossfade(
                                 targetState = MaterialTheme.postSwapDateAndUsername to MaterialTheme.postShowUsername
@@ -173,7 +170,9 @@ fun CommentCard(
                                         style = MaterialTheme.typography.labelLargeEmphasized,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                                         maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis
+                                        overflow = TextOverflow.Ellipsis,
+                                        modifier = Modifier
+                                            .sharedElementByKey(sharedUsernameId)
                                     )
                                 } else if (swap) {
                                     PrettyDate(
@@ -276,7 +275,6 @@ fun CommentCard(
                                 LinkAnnotation.Clickable(
                                     tag = "user",
                                     linkInteractionListener = {
-                                        installRealSharedId()
                                         onUserClick(replyTo.id)
                                     }
                                 )

@@ -571,7 +571,8 @@ fun UserScreen(
                             uiState = currentTabUiState,
                             isMe = userUiState.isMe && selectedTab == FeedTab.POSTS,
                             paged = paged,
-                            onEvent = onEvent
+                            onEvent = onEvent,
+                            authorId = userUiState.userDto.id
                         )
                     }
                 }

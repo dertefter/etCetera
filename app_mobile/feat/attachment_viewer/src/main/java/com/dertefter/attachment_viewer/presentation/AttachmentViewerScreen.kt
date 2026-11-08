@@ -4,6 +4,7 @@ import android.app.DownloadManager
 import android.content.Context
 import android.os.Environment
 import android.widget.Toast
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,8 +16,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -46,6 +54,19 @@ fun AttachmentViewerScreen(
 
     val hazeState = rememberHazeState()
 
+    var startAnimation by remember { mutableStateOf(false) }
+
+    val scale by animateFloatAsState(
+        targetValue = if (startAnimation) 1f else 0.5f,
+        animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec(),
+        label = "scaleAnimation"
+    )
+
+    LaunchedEffect(Unit) {
+        startAnimation = true
+    }
+
+
 
     Scaffold(
         containerColor = Color.Transparent
@@ -57,6 +78,7 @@ fun AttachmentViewerScreen(
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier
+                    .scale(scale)
                     .hazeSource(state = hazeState)
                     .fillMaxSize(),
                 pageSpacing = 16.dp,
@@ -93,9 +115,10 @@ fun AttachmentViewerScreen(
                     color = Color.White,
                     modifier = Modifier
                         .align(Alignment.TopCenter)
+                        .clip(CircleShape)
                         .padding(contentPadding)
                         .padding(MaterialTheme.spacing.defaultScreenPadding)
-                        .background(Color.Black.copy(alpha = 0.5f), CircleShape)
+                        .background(Color.Black.copy(alpha = 0.5f))
                         .padding(horizontal = 12.dp, vertical = 4.dp)
                 )
             }

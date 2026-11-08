@@ -15,10 +15,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,10 +32,8 @@ import com.dertefter.design.components.lists.SegmentedContentItem
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
-import com.dertefter.design.transition.sharedElementByKey
 import com.dertefter.notifications.R
 import com.materialkolor.ktx.harmonize
-import kotlin.uuid.Uuid
 
 @Composable
 fun NotificationCard(
@@ -50,14 +44,6 @@ fun NotificationCard(
     onUserClick: () -> Unit = {},
     onClick: () -> Unit = {},
 ) {
-
-    var sharedAvatarId by remember(notification.id) {
-        mutableStateOf("post_avatar_${notification.id}" + Uuid.random())
-    }
-    fun installRealSharedId() {
-        sharedAvatarId = "user_avatar_${notification.actor?.id}"
-    }
-
 
     SegmentedContentItem(
         modifier = modifier
@@ -88,13 +74,12 @@ fun NotificationCard(
 
                 Avatar(
                     data = notification.actor?.avatar ?: "🔔",
-                    onClick = { if (notification.actor != null) {
-                        installRealSharedId()
-                        onUserClick()
-                    }
+                    onClick = {
+                        if (notification.actor != null) {
+                            onUserClick()
+                        }
                     },
                     modifier = Modifier
-                        .sharedElementByKey(sharedAvatarId)
                         .padding(
                             bottom = MaterialTheme.spacing.medium,
                             end = MaterialTheme.spacing.medium
@@ -129,7 +114,6 @@ fun NotificationCard(
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier
                             .clickable(enabled = notification.actor != null, onClick = {
-                                installRealSharedId()
                                 onUserClick()
                             }
                             )
@@ -142,7 +126,7 @@ fun NotificationCard(
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
-                if (!notification.preview.isNullOrEmpty()){
+                if (!notification.preview.isNullOrEmpty()) {
                     Text(
                         text = notification.preview!!,
                         style = MaterialTheme.typography.bodyLarge,
@@ -173,7 +157,11 @@ private fun getNotificationText(notification: NotificationDto): String {
         "follow_accepted" -> stringResource(R.string.notification_follow_accepted)
 
         "like", "post_reaction" -> if (count > 1) {
-            pluralStringResource(R.plurals.notification_post_reaction_multiple, count - 1, count - 1)
+            pluralStringResource(
+                R.plurals.notification_post_reaction_multiple,
+                count - 1,
+                count - 1
+            )
         } else {
             stringResource(R.string.notification_post_reaction_single)
         }
@@ -187,7 +175,11 @@ private fun getNotificationText(notification: NotificationDto): String {
         }
 
         "comment_reaction", "comment_like" -> if (count > 1) {
-            pluralStringResource(R.plurals.notification_comment_reaction_multiple, count - 1, count - 1)
+            pluralStringResource(
+                R.plurals.notification_comment_reaction_multiple,
+                count - 1,
+                count - 1
+            )
         } else {
             stringResource(R.string.notification_comment_reaction_single)
         }
