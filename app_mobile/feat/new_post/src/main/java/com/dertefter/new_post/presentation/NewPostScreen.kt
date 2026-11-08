@@ -447,7 +447,7 @@ fun NewPostScreen(
 
             val animatedFontSize by animateFloatAsState(
                 targetValue = when {
-                    textFieldState.text.length < 60 -> 32f
+                    textFieldState.text.length < 44 -> 32f
                     else -> 24f
                 },
                 label = "fontSize"
