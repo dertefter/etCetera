@@ -21,10 +21,13 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -47,12 +50,18 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.dertefter.design.common.prettifyInt
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
+
+
+enum class PostActionButtonStyle {
+    SMALL, LARGE
+}
 
 @Composable
 fun PostActionButton(
@@ -68,6 +77,7 @@ fun PostActionButton(
     uncheckedContentColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
     uncheckedIcon: ImageVector,
     checkedIcon: ImageVector = uncheckedIcon,
+    style: PostActionButtonStyle = PostActionButtonStyle.SMALL
     ) {
 
     val floatSpec = MaterialTheme.motionScheme.slowEffectsSpec<Float>()
@@ -114,6 +124,21 @@ fun PostActionButton(
         isFirstRun = false
     }
 
+    val iconSize = when(style){
+        PostActionButtonStyle.SMALL -> 20.dp
+        PostActionButtonStyle.LARGE -> 28.dp
+    }
+
+    val fontSize = when(style){
+        PostActionButtonStyle.SMALL -> 16.sp
+        PostActionButtonStyle.LARGE -> 20.sp
+    }
+
+    val verticalPadding = when(style){
+        PostActionButtonStyle.SMALL -> MaterialTheme.spacing.medium
+        PostActionButtonStyle.LARGE -> MaterialTheme.spacing.large
+    }
+
     Row(
         modifier = modifier
             .clip(CircleShape)
@@ -130,7 +155,7 @@ fun PostActionButton(
                 horizontal = animatedHorizontalPadding,
             ),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+        horizontalArrangement = Arrangement.Center
     ) {
         AnimatedContent(
             targetState = isChecked,
@@ -145,14 +170,19 @@ fun PostActionButton(
                 imageVector = if (isChecked) checkedIcon else uncheckedIcon,
                 contentDescription = contentDescription,
                 modifier = Modifier
-                    .padding(vertical = MaterialTheme.spacing.medium)
-                    .size(20.dp)
+                    .padding(vertical = verticalPadding)
+                    .size(iconSize)
                     .scale(scale.value),
                 tint = contentColor
             )
         }
 
         if (value > 0) {
+
+            Spacer(
+                modifier = Modifier.width(MaterialTheme.spacing.small)
+            )
+
             AnimatedContent(
                 targetState = animatedTextValue,
                 transitionSpec = {
@@ -172,7 +202,10 @@ fun PostActionButton(
                     color = contentColor,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = fontWeight)
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontSize = fontSize,
+                        fontWeight = fontWeight
+                    )
                 )
             }
         }
@@ -196,9 +229,8 @@ fun PostActionButtonPreview() {
                 }
             }
 
-            Box(
+            Column(
                 modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
             ){
                 PostActionButton(
                     value = values[index],
@@ -206,6 +238,15 @@ fun PostActionButtonPreview() {
                     onClick = { isLiked = !isLiked },
                     uncheckedIcon = Icons.Refresh
                 )
+
+                PostActionButton(
+                    value = values[index],
+                    isChecked = isLiked,
+                    onClick = { isLiked = !isLiked },
+                    uncheckedIcon = Icons.Refresh,
+                    style = PostActionButtonStyle.LARGE
+                )
+
             }
 
         },

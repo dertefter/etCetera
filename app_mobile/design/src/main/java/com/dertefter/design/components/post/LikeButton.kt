@@ -26,7 +26,8 @@ fun LikeButton(
     modifier: Modifier = Modifier,
     likes: Int,
     isLiked: Boolean,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    style: PostActionButtonStyle = PostActionButtonStyle.SMALL
 ) {
 
     PostActionButton(
@@ -39,7 +40,8 @@ fun LikeButton(
         checkedContainerColor = MaterialTheme.customColors.likeContainerColor,
         checkedContentColor = MaterialTheme.customColors.onLikeContainerColor,
         checkedIcon = Icons.FavFilled,
-        uncheckedIcon = Icons.Fav
+        uncheckedIcon = Icons.Fav,
+        style = style
     )
 }
 

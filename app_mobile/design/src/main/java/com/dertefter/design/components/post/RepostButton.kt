@@ -14,6 +14,7 @@ fun RepostButton(
     reposts: Int,
     isReposted: Boolean,
     onClick: () -> Unit = {},
+    style: PostActionButtonStyle = PostActionButtonStyle.SMALL
 ){
 
     PostActionButton(
@@ -24,7 +25,8 @@ fun RepostButton(
         checkedContentDescription = stringResource(R.string.design_unrepost),
         uncheckedContentDescription = stringResource(R.string.design_repost),
         checkedIcon = Icons.Cached,
-        uncheckedIcon = Icons.Cached
+        uncheckedIcon = Icons.Cached,
+        style = style
     )
 }
 

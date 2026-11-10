@@ -14,7 +14,8 @@ import com.dertefter.design.theme.customColors
 fun CommentsButton(
     modifier: Modifier = Modifier,
     comments: Int,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    style: PostActionButtonStyle = PostActionButtonStyle.SMALL
 ){
 
     PostActionButton(
@@ -27,7 +28,8 @@ fun CommentsButton(
         checkedContainerColor = MaterialTheme.customColors.likeContainerColor,
         checkedContentColor = MaterialTheme.customColors.onLikeContainerColor,
         checkedIcon = Icons.Comment,
-        uncheckedIcon = Icons.Comment
+        uncheckedIcon = Icons.Comment,
+        style = style
     )
 }
 

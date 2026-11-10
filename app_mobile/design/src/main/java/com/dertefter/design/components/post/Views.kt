@@ -13,6 +13,7 @@ fun Views(
     modifier: Modifier = Modifier,
     views: Int,
     isViewed: Boolean = false,
+    style: PostActionButtonStyle = PostActionButtonStyle.SMALL
 ){
 
     PostActionButton(
@@ -25,7 +26,8 @@ fun Views(
         uncheckedContainerColor = Color.Transparent,
         uncheckedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
         checkedIcon = Icons.VisibilityFilled,
-        uncheckedIcon = Icons.Visibility
+        uncheckedIcon = Icons.Visibility,
+        style = style
     )
 }
 
