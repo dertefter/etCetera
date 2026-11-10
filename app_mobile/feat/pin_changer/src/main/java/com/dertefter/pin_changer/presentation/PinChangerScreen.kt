@@ -110,7 +110,6 @@ fun PinChangerScreenPreview() {
                     followersCount = 0,
                     followingCount = 0,
                     id = "id",
-                    isPhoneVerified = false,
                     isPrivate = false,
                     likesVisibility = VisibilityDto.EVERYONE,
                     pin = null,

@@ -17,7 +17,6 @@ data class Me(
     val followersCount: Int?,
     val followingCount: Int?,
     val id: String,
-    val isPhoneVerified: Boolean,
     val isPrivate: Boolean,
     val likesVisibility: VisibilityDto,
     val pin: Pin?,
