@@ -5,9 +5,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Privacy(
-    val isPrivate: Boolean,
-    val wallAccess: VisibilityDto,
-    val likesVisibility: VisibilityDto,
-    val messageAccess: VisibilityDto,
-    val showLastSeen: Boolean
+    val isPrivate: Boolean = false,
+    val wallAccess: VisibilityDto = VisibilityDto.EVERYONE,
+    val likesVisibility: VisibilityDto = VisibilityDto.EVERYONE,
+    val messageAccess: VisibilityDto = VisibilityDto.EVERYONE,
+    val showLastSeen: Boolean = true
 )
