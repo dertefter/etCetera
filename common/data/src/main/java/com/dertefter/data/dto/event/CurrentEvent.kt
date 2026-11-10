@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CurrentEvent(
-    val active: Boolean,
-    val title: String,
-    val url: String
+    val active: Boolean = false,
+    val title: String = "",
+    val url: String = ""
 )
