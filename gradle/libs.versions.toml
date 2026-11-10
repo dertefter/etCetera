@@ -15,7 +15,7 @@ kotlin = "2.4.21"
 kotlinxCoroutinesCore = "1.11.0"
 kotlinxSerializationCore = "1.12.0"
 ksp = "2.3.12"
-litertlmAndroid = "0.19.0"
+litertlmAndroid = "0.19.1"
 lottieCompose = "6.7.1"
 materialColorUtilities = "6.0.0"
 materialKolorCore = "6.0.0"
@@ -64,7 +64,7 @@ composeWear = "1.7.1"
 playServicesWearable = "20.0.1"
 
 # Dependency Injection
-metro = "1.5.1"
+metro = "1.5.2"
 
 # Networking and Serialization
 kotlinxSerializationJson = "1.12.0"
