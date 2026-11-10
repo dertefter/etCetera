@@ -12,11 +12,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -330,6 +332,10 @@ fun CommentCard(
                                     repliesCount
                                 )
                             )
+                        } else {
+                            Spacer(
+                                modifier = Modifier.weight(1f)
+                            )
                         }
                     }
                     Text(
@@ -383,20 +389,22 @@ fun CommentCard(
                         index = index,
                         count = comment.replies.count(),
                         isReply = true,
-                        modifier = Modifier.padding(horizontal = MaterialTheme.spacing.defaultScreenPadding),
                         onAttachmentClick = { attachments, position ->
                             onAttachmentClick(attachments, position)
                         }
                     )
                 }
                 if ((comment.repliesCount ?: 0) > (comment.replies?.size ?: 0)) {
-                    Text(
-                        text = stringResource(R.string.design_comment_load_more),
-                        style = MaterialTheme.typography.labelMediumEmphasized,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier
-                            .clickable { onLoadMoreReplies(comment.id) }
-                    )
+                    FilledTonalButton(
+                        onClick = {
+                            onLoadMoreReplies(comment.id)
+                        }
+                    ) {
+                        Text(
+                            text = stringResource(R.string.design_comment_load_more),
+                        )
+                    }
+
                 }
             }
         }
@@ -426,7 +434,7 @@ fun CommentCardPreview() {
                         pin = null,
                     ),
                     likesCount = 42,
-                    repliesCount = 3,
+                    repliesCount = 0,
                     isLiked = false,
                     createdAt = "2023-10-27T12:00:00Z",
                     replyTo = ReplyToUiModel(
