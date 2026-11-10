@@ -58,8 +58,8 @@ fun AttachmentsCarousel(
                     .fillMaxWidth(),
                 itemSpacing = MaterialTheme.spacing.small,
                 preferredItemWidth = itemWidth,
-                maxSmallItemWidth = itemWidth/16,
-                minSmallItemWidth = itemWidth/18
+                maxSmallItemWidth = itemWidth/12,
+                minSmallItemWidth = itemWidth/14
             ) { index ->
                 Attachment(
                     attachment = attachments[index],
