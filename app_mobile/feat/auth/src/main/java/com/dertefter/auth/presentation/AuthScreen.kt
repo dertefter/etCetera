@@ -42,10 +42,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentType
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -148,7 +151,11 @@ fun AuthScreen(onEvent: (Event) -> Unit, uiState: UiState) {
                     value = uiState.login,
                     onValueChange = { onEvent(Event.OnLoginChanged(it)) },
                     label = { Text(stringResource(R.string.auth_login_hint)) },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .semantics {
+                            contentType = ContentType.Username
+                        }
+                        .fillMaxWidth(),
                     singleLine = true,
                     enabled = !uiState.isLoading,
                     isError = !uiState.isLoginValid,
@@ -165,7 +172,11 @@ fun AuthScreen(onEvent: (Event) -> Unit, uiState: UiState) {
                 OutlinedSecureTextField(
                     state = passwordState,
                     label = { Text(stringResource(R.string.auth_password_hint)) },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .semantics {
+                            contentType = ContentType.Password
+                        }
+                        .fillMaxWidth(),
                     textObfuscationMode = if (uiState.isPasswordVisible) TextObfuscationMode.Visible else TextObfuscationMode.Hidden,
                     trailingIcon = {
                         IconButton(onClick = { onEvent(Event.OnTogglePasswordVisibility) }) {
