@@ -19,7 +19,7 @@ fun Modifier.sharedElementByKey(key: String?): Modifier {
     val sharedTransitionScope = LocalSharedTransitionScope.current ?: return this
     val animatedVisibilityScope = LocalSharedAnimatedVisibilityScope.current ?: return this
     return with(sharedTransitionScope) {
-        sharedElement(
+        sharedBounds(
             rememberSharedContentState(key = key),
             animatedVisibilityScope = animatedVisibilityScope,
         )
