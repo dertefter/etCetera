@@ -45,6 +45,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -140,7 +141,7 @@ class UserViewModel(
         initJob?.cancel()
         initJob = viewModelScope.launch {
             if (userId != null) {
-                _userId.value = userId
+                _userId.value = userId.removePrefix("@")
                 update()
             } else {
                 _meUserId.collect { id ->
@@ -340,27 +341,36 @@ class UserViewModel(
     }
 
     private suspend fun update() {
-        val userId = _userId.value ?: return
+        val currentIdOrUsername = _userId.value ?: return
         _isLoading.value = true
         _error.value = null
 
-        val pinnedPostId: String? = updateUserUseCase(userId)
-            .getOrNull()
-            ?.pinnedPostId
+        val updateUserResult = updateUserUseCase(currentIdOrUsername)
+        val userDto = updateUserResult.getOrNull()
+
+        val resolvedUserId = userDto?.id ?: currentIdOrUsername
+        _userId.value = resolvedUserId
+
+        if (userDto == null && getUserUseCase(resolvedUserId).first() == null) {
+            _isLoading.value = false
+            _error.value = updateUserResult.exceptionOrNull()?.toAppError()
+                ?: AppError.ApiError(code = null, message = null)
+            return
+        }
+
+        val pinnedPostId: String? = userDto?.pinnedPostId
 
         _paginators.value.values.forEach { it.release() }
         _paginators.value = emptyMap()
 
         val map = tabs.associateWith { tab ->
             when (tab) {
-                FeedTab.POSTS -> getPostsPaginatorUseCase(userId, pinnedPostId = { pinnedPostId })
-                FeedTab.LIKES -> getLikedPostsPaginatorUseCase(userId)
+                FeedTab.POSTS -> getPostsPaginatorUseCase(resolvedUserId, pinnedPostId = { pinnedPostId })
+                FeedTab.LIKES -> getLikedPostsPaginatorUseCase(resolvedUserId)
             }
         }
         _paginators.value = map
         map.values.forEach { setupPaginator(it) }
-
-
 
         _isLoading.value = false
     }

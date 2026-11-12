@@ -48,7 +48,10 @@ fun buildPostAnnotatedString(
                     }
                     "mention" -> {
                         addStyle(SpanStyle(color = primaryColor, fontWeight = FontWeight.Bold), start, end)
-                        span.username?.let { addStringAnnotation("MENTION", it, start, end) }
+                        val mentionText = (span.username ?: content.substring(start, end)).removePrefix("@").trim()
+                        if (mentionText.isNotEmpty()) {
+                            addStringAnnotation("MENTION", mentionText, start, end)
+                        }
                     }
                     "hashtag" -> {
                         addStyle(SpanStyle(color = primaryColor, fontWeight = FontWeight.Bold), start, end)

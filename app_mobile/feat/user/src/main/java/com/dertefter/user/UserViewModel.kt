@@ -4,6 +4,7 @@ package com.dertefter.user
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dertefter.data.common.AppError
+import com.dertefter.data.common.toAppError
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.data.dto.me.UpdateMeRequestDto
 import com.dertefter.data.dto.user.UserDto
@@ -154,25 +155,27 @@ class UserViewModel(
     private var initializedUsername: String? = null
 
     fun initWithUserId(userId: String) {
-        if (initializedUserId == userId && isLoadingOrLoaded()) return
+        val cleanId = userId.removePrefix("@")
+        if (initializedUserId == cleanId && isLoadingOrLoaded()) return
         initializedUsername = null
-        initializedUserId = userId
+        initializedUserId = cleanId
         initJob?.cancel()
         initJob = viewModelScope.launch {
-            loadUser(userId)
+            loadUser(cleanId)
         }
     }
 
     fun initWithUsername(username: String) {
-        if (initializedUsername == username && isLoadingOrLoaded()) return
-        initializedUsername = username
+        val cleanUsername = username.removePrefix("@")
+        if (initializedUsername == cleanUsername && isLoadingOrLoaded()) return
+        initializedUsername = cleanUsername
         initializedUserId = null
         initJob?.cancel()
         initJob = viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
-            val userId: String? = updateUserUseCase(username)
-                .getOrNull()?.id ?: getUserByUsernameUseCase(username).first()?.id
+            val userId: String? = updateUserUseCase(cleanUsername)
+                .getOrNull()?.id ?: getUserByUsernameUseCase(cleanUsername).first()?.id
             if (userId != null) {
                 loadUser(userId)
             } else {
@@ -187,7 +190,8 @@ class UserViewModel(
     private fun isLoadingOrLoaded() = initJob?.isActive == true || _paginators.value.isNotEmpty()
 
     private suspend fun loadUser(userId: String) {
-        _userId.value = userId
+        val cleanId = userId.removePrefix("@")
+        _userId.value = cleanId
         update()
     }
 
@@ -394,27 +398,40 @@ class UserViewModel(
     }
 
     private suspend fun update() {
-        val userId = _userId.value ?: return
+        val currentIdOrUsername = _userId.value ?: return
         _isLoading.value = true
         _error.value = null
 
-        val pinnedPostId: String? = updateUserUseCase(userId)
-            .getOrNull()
-            ?.pinnedPostId
+        val updateUserResult = updateUserUseCase(currentIdOrUsername)
+        val userDto = updateUserResult.getOrNull()
+
+        val resolvedUserId = userDto?.id
+            ?: getUserByUsernameUseCase(currentIdOrUsername).first()?.id
+            ?: getUserByIdUseCase(currentIdOrUsername).first()?.id
+            ?: currentIdOrUsername
+
+        _userId.value = resolvedUserId
+
+        if (userDto == null && getUserByIdUseCase(resolvedUserId).first() == null) {
+            _isLoading.value = false
+            _error.value = updateUserResult.exceptionOrNull()?.toAppError()
+                ?: AppError.ApiError(code = null, message = null)
+            return
+        }
+
+        val pinnedPostId: String? = userDto?.pinnedPostId
 
         _paginators.value.values.forEach { it.release() }
         _paginators.value = emptyMap()
 
         val map = tabs.associateWith { tab ->
             when (tab) {
-                FeedTab.POSTS -> getPostsPaginatorUseCase(userId, pinnedPostId = { pinnedPostId })
-                FeedTab.LIKES -> getLikedPostsPaginatorUseCase(userId)
+                FeedTab.POSTS -> getPostsPaginatorUseCase(resolvedUserId, pinnedPostId = { pinnedPostId })
+                FeedTab.LIKES -> getLikedPostsPaginatorUseCase(resolvedUserId)
             }
         }
         _paginators.value = map
         map.values.forEach { setupPaginator(it) }
-
-
 
         _isLoading.value = false
     }
