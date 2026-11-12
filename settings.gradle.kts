@@ -30,7 +30,7 @@ pluginManagement {
 plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 
-    id("com.autonomousapps.build-health") version "3.20.1"
+    id("com.autonomousapps.build-health") version "3.20.2"
 
     id("io.github.shivathapaa.aalekh") version "0.7.0"
 
