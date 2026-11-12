@@ -48,6 +48,7 @@ dependencies {
     api(libs.kotlinx.serialization.json)
     api(platform(libs.jamal.wia.paginator.bom))
     api(libs.paginator.cursor)
+    api(libs.paginator.offset)
     api(libs.androidx.datastore.preferences.core)
     implementation(libs.androidx.room.common)
     implementation(libs.androidx.sqlite)

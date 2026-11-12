@@ -4,6 +4,7 @@ import android.content.Context
 import com.dertefter.data.datasource.local.LocalDataSource
 import com.dertefter.data.datasource.local.TokenManager
 import com.dertefter.data.datasource.remote.ApiService
+import com.dertefter.data.datasource.remote.EbdiApiService
 import com.dertefter.data.dto.auth.SignInRequest
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.Wearable
@@ -39,6 +40,10 @@ annotation class InternalAuthApi
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class IsWearDevice
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class EbdiRetrofit
 
 object RequestContext {
     private val ownerLogin = ThreadLocal<String>()
@@ -387,5 +392,22 @@ object NetworkModule {
     @SingleIn(AppScope::class)
     fun provideAuthApi(retrofit: Retrofit): ApiService {
         return retrofit.create(ApiService::class.java)
+    }
+
+    @Provides
+    @SingleIn(AppScope::class)
+    @EbdiRetrofit
+    fun provideEbdiRetrofit(okHttpClient: OkHttpClient, json: Json): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://itdsdk.qzz.io/api/ebdi/")
+            .client(okHttpClient)
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+            .build()
+    }
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideEbdiApiService(@EbdiRetrofit retrofit: Retrofit): EbdiApiService {
+        return retrofit.create(EbdiApiService::class.java)
     }
 }

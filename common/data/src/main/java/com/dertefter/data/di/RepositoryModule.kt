@@ -51,4 +51,7 @@ interface RepositoryModule {
 
     @Binds
     fun bindEventsRepository(impl: EventsRepositoryImpl): EventsRepository
+
+    @Binds
+    fun bindEbdiRepository(impl: EbdiRepositoryImpl): EbdiRepository
 }
