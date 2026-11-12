@@ -28,6 +28,62 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v7
 
+      - name: Determine Build Options
+        id: options
+        shell: bash
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+
+          BUILD_MOBILE=true
+          BUILD_WEAR=true
+          DEPLOY_PLAY=true
+
+          if [[ "$TAG" == *"-indev"* ]]; then
+            DEPLOY_PLAY=false
+          fi
+
+          if [[ "$TAG" == *"mobile_only"* ]]; then
+            BUILD_WEAR=false
+          fi
+
+          if [[ "$TAG" == *"wear_only"* ]]; then
+            BUILD_MOBILE=false
+          fi
+
+          echo "build_mobile=$BUILD_MOBILE" >> "$GITHUB_OUTPUT"
+          echo "build_wear=$BUILD_WEAR" >> "$GITHUB_OUTPUT"
+          echo "deploy_play=$DEPLOY_PLAY" >> "$GITHUB_OUTPUT"
+
+          echo "Mobile: $BUILD_MOBILE"
+          echo "Wear: $BUILD_WEAR"
+          echo "Google Play: $DEPLOY_PLAY"
+
+      - name: Determine Google Play Track
+        id: determine_track
+        if: steps.options.outputs.deploy_play == 'true'
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            MOBILE="${{ inputs.manual_track }}"
+            WEAR="${{ inputs.manual_track }}"
+          else
+            TAG="${GITHUB_REF_NAME}"
+
+            if [[ "$TAG" == *"-alpha"* ]]; then
+              MOBILE="alpha"
+              WEAR="alpha"
+            elif [[ "$TAG" == *"-beta"* ]]; then
+              MOBILE="beta"
+              WEAR="beta"
+            else
+              MOBILE="production"
+              WEAR="production"
+            fi
+          fi
+
+          echo "mobile_track=$MOBILE" >> "$GITHUB_OUTPUT"
+          echo "wear_track=$WEAR" >> "$GITHUB_OUTPUT"
+
       - name: Set up JDK 21
         uses: actions/setup-java@v6
         with:
@@ -35,49 +91,41 @@ jobs:
           java-version: '21'
 
       - name: Setup Android SDK
+        if: steps.options.outputs.deploy_play == 'true'
         uses: android-actions/setup-android@v4
 
       - name: Install NDK
+        if: steps.options.outputs.deploy_play == 'true'
         run: |
           yes | sdkmanager --licenses
           sdkmanager --install "ndk;27.2.12479018"
 
       - name: Decode Keystore
+        if: steps.options.outputs.deploy_play == 'true'
         run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > app_wearable/release.jks
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > app_mobile/release.jks
+          if [[ "${{ steps.options.outputs.build_wear }}" == "true" ]]; then
+            echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > app_wearable/release.jks
+          fi
+
+          if [[ "${{ steps.options.outputs.build_mobile }}" == "true" ]]; then
+            echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > app_mobile/release.jks
+          fi
 
       - name: Make gradlew executable
         run: chmod +x gradlew
 
-      - name: Determine Google Play Track
-        id: determine_track
-        run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            MOBILE="${{ inputs.manual_track }}"
-            WEAR="wear:${{ inputs.manual_track }}"
-          else
-            TAG="${{ github.ref_name }}"
-            if [[ "$TAG" == *"-alpha"* ]]; then
-              MOBILE="alpha"
-              WEAR="wear:alpha"
-            elif [[ "$TAG" == *"-beta"* ]]; then
-              MOBILE="beta"
-              WEAR="wear:beta"
-            else
-              MOBILE="production"
-              WEAR="wear:production"
-            fi
-          fi
-          
-          echo "mobile_track=$MOBILE" >> $GITHUB_OUTPUT
-          echo "wear_track=$WEAR" >> $GITHUB_OUTPUT
-          
-          echo "Determined mobile track: $MOBILE"
-          echo "Determined wearable track: $WEAR"
+      - name: Build Mobile
+        if: steps.options.outputs.build_mobile == 'true'
+        run: ./gradlew :app_mobile:bundleRelease :app_mobile:assembleRelease
+        env:
+          ANDROID_KEYSTORE_FILE: release.jks
+          ANDROID_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
-      - name: Build & Sign Release AAB and APK
-        run: ./gradlew bundleRelease assembleRelease
+      - name: Build Wearable
+        if: steps.options.outputs.build_wear == 'true'
+        run: ./gradlew :app_wearable:bundleRelease :app_wearable:assembleRelease
         env:
           ANDROID_KEYSTORE_FILE: release.jks
           ANDROID_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
@@ -85,6 +133,9 @@ jobs:
           ANDROID_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
       - name: Upload Mobile to Google Play
+        if: |
+          steps.options.outputs.deploy_play == 'true' &&
+          steps.options.outputs.build_mobile == 'true'
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_KEY }}
@@ -96,6 +147,9 @@ jobs:
           tracks: ${{ steps.determine_track.outputs.mobile_track }}
 
       - name: Upload Wearable to Google Play
+        if: |
+          steps.options.outputs.deploy_play == 'true' &&
+          steps.options.outputs.build_wear == 'true'
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_KEY }}
@@ -111,9 +165,9 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            app_mobile/build/outputs/apk/release/app_mobile-release.apk
-            app_wearable/build/outputs/apk/release/app_wearable-release.apk
+            ${{ steps.options.outputs.build_mobile == 'true' && 'app_mobile/build/outputs/apk/release/app_mobile-release.apk' || '' }}
+            ${{ steps.options.outputs.build_wear == 'true' && 'app_wearable/build/outputs/apk/release/app_wearable-release.apk' || '' }}
           generate_release_notes: false
-          prerelease: ${{ contains(github.ref_name, '-alpha') || contains(github.ref_name, '-beta') }}
+          prerelease: ${{ contains(github.ref_name, '-alpha') || contains(github.ref_name, '-beta') || contains(github.ref_name, '-indev') }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
