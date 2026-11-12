@@ -16,7 +16,7 @@ android {
     compileSdk { version = release(37) { minorApiLevel = 1 } }
 
     defaultConfig {
-        minSdk = 25
+        minSdk = 27
     }
 
 
