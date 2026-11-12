@@ -43,7 +43,6 @@ dependencies {
     api(libs.metrox.viewmodel)
     implementation(libs.metrox.viewmodel.compose)
 
-    implementation(libs.androidx.animation.core)
     implementation(libs.androidx.foundation.layout)
     implementation(libs.androidx.foundation)
     implementation(libs.compose.material3)
@@ -61,4 +60,5 @@ dependencies {
     debugApi(libs.paginator.cursor.android.debug)
     releaseApi(libs.paginator.cursor)
     api(libs.kotlinx.coroutines.core)
+    implementation(libs.compose.ui.tooling.preview)
 }

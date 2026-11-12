@@ -41,7 +41,6 @@ dependencies {
     api(libs.metrox.viewmodel)
     implementation(libs.metrox.viewmodel.compose)
     implementation(libs.androidx.animation.core)
-    implementation(libs.androidx.animation)
     api(libs.androidx.foundation.layout)
     api(libs.androidx.foundation)
     api(libs.compose.material3)

@@ -56,7 +56,6 @@ dependencies {
     api(libs.compose.ui)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     api(libs.androidx.lifecycle.viewmodel)
-    implementation(libs.haze)
     implementation(libs.coil.compose)
     api(libs.kotlinx.coroutines.core)
 }

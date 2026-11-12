@@ -64,4 +64,6 @@ dependencies {
     debugApi(libs.paginator.offset.android.debug)
     releaseApi(libs.paginator.offset)
     api(libs.kotlinx.coroutines.core)
+  implementation(libs.compose.ui.tooling.preview)
+  implementation(libs.coil.compose)
 }

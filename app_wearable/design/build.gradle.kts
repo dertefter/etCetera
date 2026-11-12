@@ -68,7 +68,6 @@ dependencies {
     androidTestRuntimeOnly(libs.core)
     androidTestRuntimeOnly(libs.androidx.runner)
     runtimeOnly(libs.androidx.transition)
-    api(libs.material.color.utilities)
     implementation(libs.coil.compose.core)
     implementation(libs.coil.core)
     implementation(libs.kotlinx.coroutines.core)

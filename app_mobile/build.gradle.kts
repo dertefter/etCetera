@@ -32,7 +32,6 @@ android {
     }
 
     compileOptions {
-        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
@@ -111,7 +110,6 @@ dependencies {
     implementation(project(":app_mobile:feat:pin_changer"))
     implementation(project(":app_mobile:feat:oss"))
 
-    coreLibraryDesugaring(libs.desugar.jdk.libs)
     implementation(libs.coil.gif)
     implementation(libs.core.splashscreen)
     implementation(libs.activity.compose)
@@ -160,5 +158,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.core)
     implementation(libs.retrofit)
     implementation(libs.material.kolor.core)
+    implementation(libs.coil.core)
+    implementation(libs.coil)
     implementation(libs.core.ktx)
 }

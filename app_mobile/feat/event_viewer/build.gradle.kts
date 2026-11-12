@@ -36,7 +36,7 @@ dependencies {
 
     api(project(":common:data"))
     api(project(":common:navigation"))
-    api(project(":app_mobile:design"))
+    implementation(project(":app_mobile:design"))
 
     implementation(libs.compose.webview)
     api(libs.metro.runtime)
@@ -52,4 +52,6 @@ dependencies {
     api(libs.androidx.lifecycle.viewmodel)
     runtimeOnly(libs.coil.network.okhttp)
     api(libs.kotlinx.coroutines.core)
+  implementation(libs.compose.material3)
+  implementation(libs.androidx.ui.unit)
 }

@@ -23,7 +23,6 @@ android {
 
 
     compileOptions {
-        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
@@ -34,11 +33,9 @@ android {
 }
 
 dependencies {
-    api(libs.composefadingedges)
-    implementation(libs.androidx.ui.text.google.fonts)
-    coreLibraryDesugaring(libs.desugar.jdk.libs)
+    api(libs.androidx.ui.text.google.fonts)
     implementation(libs.appcompat)
-    api(libs.androidx.palette)
+    implementation(libs.androidx.palette)
     api(platform(libs.compose.bom.alpha))
     api(libs.compose.ui)
     api(libs.compose.ui.graphics)
@@ -77,6 +74,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.annotations)
     api(libs.material.kolor.core)
-    implementation(libs.core.ktx)
     implementation(libs.lottie.compose)
+    implementation(libs.lottie)
+    implementation(libs.core.ktx)
 }

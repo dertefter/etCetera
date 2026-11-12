@@ -34,7 +34,6 @@ android {
 }
 
 dependencies {
-    implementation(libs.core.ktx)
     api(libs.metro.runtime)
     implementation(libs.datastore.preferences)
     api(libs.androidx.datastore.core)
@@ -58,4 +57,6 @@ dependencies {
     debugApi(libs.paginator.cursor.android.debug)
     api(libs.kotlinx.coroutines.core)
     api(libs.kotlinx.serialization.core)
+    implementation(libs.androidx.core)
+    debugApi(libs.paginator.offset.android.debug)
 }

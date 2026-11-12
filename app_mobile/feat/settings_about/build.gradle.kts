@@ -38,7 +38,7 @@ dependencies {
     implementation(project(":app_mobile:design"))
 
     implementation(libs.material.kolor.core)
-    implementation(libs.oss.licenses.droibit)
+    runtimeOnly(libs.oss.licenses.droibit)
     implementation(libs.androidx.animation.graphics)
     api(libs.metro.runtime)
     api(libs.metrox.viewmodel)

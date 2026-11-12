@@ -32,9 +32,10 @@ android {
 }
 
 dependencies {
-    implementation(libs.litertlm.android)
+    api(libs.litertlm.android)
     implementation(libs.datastore.preferences)
-    implementation(libs.metro.runtime)
-    implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.core.ktx)
+    api(libs.metro.runtime)
+    api(libs.kotlinx.coroutines.core)
+    api(libs.androidx.datastore.core)
+    api(libs.androidx.datastore.preferences.core)
 }

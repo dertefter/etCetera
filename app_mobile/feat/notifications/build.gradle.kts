@@ -65,4 +65,5 @@ dependencies {
     releaseApi(libs.paginator.cursor)
     api(libs.kotlinx.coroutines.core)
     implementation(libs.material.kolor.core)
+    implementation(libs.androidx.runtime.saveable)
 }

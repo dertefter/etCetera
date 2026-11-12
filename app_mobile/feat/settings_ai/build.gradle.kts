@@ -35,7 +35,7 @@ android {
 dependencies {
 
     api(project(":common:navigation"))
-    implementation(project(":common:ai"))
+    api(project(":common:ai"))
     implementation(project(":app_mobile:design"))
 
     implementation(libs.activity.compose)
@@ -43,9 +43,8 @@ dependencies {
     api(libs.metrox.viewmodel)
     implementation(libs.metrox.viewmodel.compose)
     implementation(libs.androidx.animation.core)
-    implementation(libs.androidx.animation)
     api(libs.androidx.foundation.layout)
-    implementation(libs.androidx.foundation)
+    api(libs.androidx.foundation)
     implementation(libs.compose.material3)
     api(libs.androidx.runtime)
     implementation(libs.compose.ui.graphics)
@@ -58,4 +57,6 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     api(libs.androidx.lifecycle.viewmodel)
     api(libs.kotlinx.coroutines.core)
+    implementation(libs.androidx.activity)
+    implementation(libs.haze)
 }
