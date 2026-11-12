@@ -93,6 +93,7 @@ dependencies {
     implementation(project(":app_mobile:feat:banner_edit"))
     implementation(project(":app_mobile:feat:crash_reports"))
     implementation(project(":app_mobile:feat:post"))
+    implementation(project(":app_mobile:feat:edbi_users"))
     implementation(project(":app_mobile:feat:attachment_viewer"))
     implementation(project(":app_mobile:feat:search"))
     implementation(project(":app_mobile:feat:hashtag_feed"))

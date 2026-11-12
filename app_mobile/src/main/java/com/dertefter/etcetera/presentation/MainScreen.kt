@@ -79,9 +79,6 @@ enum class MainTab(
     val selectedIcon: @Composable () -> ImageVector
 ) {
     Feed(R.string.app_main_tab_feed, { Icons.Home }, { Icons.HomeFilled }),
-
-    Search(R.string.app_main_tab_search, { Icons.Search }, { Icons.Search }),
-
     EventViewer(R.string.app_main_tab_web, { Icons.EventAvailable }, { Icons.EventAvailable }),
     Notifications(R.string.app_main_tab_notifications, { Icons.Notifications }, { Icons.NotificationsFilled }),
     Profile(R.string.app_main_tab_profile, { Icons.User }, { Icons.UserFilled })
@@ -164,7 +161,6 @@ fun MainScreen(
     val onBoardingBackStack = rememberNavBackStack(Routes.OnBoarding)
     val authBackStack = rememberNavBackStack(Routes.Auth)
     val feedBackStack = rememberNavBackStack(Routes.Feed)
-    val searchBackStack = rememberNavBackStack(Routes.Search)
     val eventViewerBackStack = rememberNavBackStack(Routes.EventViewer)
     val notificationsBackStack = rememberNavBackStack(Routes.Notifications(showBackButton = false))
     val profileBackStack = rememberNavBackStack(
@@ -181,7 +177,6 @@ fun MainScreen(
 
     val onBoardingEntries = rememberDecoratedNavEntries(onBoardingBackStack, decorators, appEntryProvider)
     val feedEntries = rememberDecoratedNavEntries(feedBackStack, decorators, appEntryProvider)
-    val searchEntries = rememberDecoratedNavEntries(searchBackStack, decorators, appEntryProvider)
     val notificationsEntries = rememberDecoratedNavEntries(notificationsBackStack, decorators, appEntryProvider)
     val profileEntries = rememberDecoratedNavEntries(profileBackStack, decorators, appEntryProvider)
     val authEntries = rememberDecoratedNavEntries(authBackStack, decorators, appEntryProvider)
@@ -193,7 +188,6 @@ fun MainScreen(
         isOnBoarding -> onBoardingEntries
         uiState.currentLogin == null -> authEntries
         selectedTab == MainTab.Feed -> feedEntries
-        selectedTab == MainTab.Search -> searchEntries
         selectedTab == MainTab.Notifications -> notificationsEntries
         selectedTab == MainTab.Profile -> profileEntries
         selectedTab == MainTab.EventViewer -> eventEntries
@@ -207,7 +201,6 @@ fun MainScreen(
         isOnBoarding -> onBoardingBackStack
         uiState.currentLogin == null -> authBackStack
         selectedTab == MainTab.Feed -> feedBackStack
-        selectedTab == MainTab.Search -> searchBackStack
         selectedTab == MainTab.Notifications -> notificationsBackStack
         selectedTab == MainTab.Profile -> profileBackStack
         selectedTab == MainTab.EventViewer -> eventViewerBackStack
@@ -218,8 +211,6 @@ fun MainScreen(
         if (uiState.currentLogin != lastSeenLogin) {
             feedBackStack.clear()
             feedBackStack.add(Routes.Feed)
-            searchBackStack.clear()
-            searchBackStack.add(Routes.Search)
             notificationsBackStack.clear()
             notificationsBackStack.add(Routes.Notifications(showBackButton = false))
             if (uiState.currentLogin == null) {
@@ -314,7 +305,6 @@ fun MainScreen(
             val targetBackStack = when (tab) {
                 MainTab.Feed -> feedBackStack
                 MainTab.EventViewer -> eventViewerBackStack
-                MainTab.Search -> searchBackStack
                 MainTab.Notifications -> notificationsBackStack
                 MainTab.Profile -> profileBackStack
             }
@@ -548,14 +538,6 @@ fun MainScreen(
                                 }
                             } else {
                                 backStack.add(route)
-                            }
-                        }
-                        is Routes.Search -> {
-                            selectedTab = MainTab.Search
-                            if (searchBackStack.size > 1) {
-                                val root = searchBackStack.first()
-                                searchBackStack.clear()
-                                searchBackStack.add(root)
                             }
                         }
                         is Routes.EventViewer -> {

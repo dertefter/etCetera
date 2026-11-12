@@ -6,6 +6,7 @@ annotation = "1.11.0"
 annotationExperimental = "1.6.0"
 annotations = "26.1.0"
 coilGif = "3.6.3"
+composefadingedges = "1.0.4"
 composeWebview = "1.9.1"
 core = "1.7.0"
 foundation = "1.13.0-rc01"
@@ -133,6 +134,7 @@ coil-core = { module = "io.coil-kt.coil3:coil-core", version.ref = "coilGif" }
 coil-gif = { module = "io.coil-kt.coil3:coil-gif", version.ref = "coilGif" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilGif" }
 compose-webview = { module = "io.github.parkwoocheol:compose-webview", version.ref = "composeWebview" }
+composefadingedges = { module = "com.github.GIGAMOLE:ComposeFadingEdges", version.ref = "composefadingedges" }
 core = { module = "androidx.test:core", version.ref = "core" }
 core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
 core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
@@ -165,9 +167,11 @@ haze-blur-materials = { module = "dev.chrisbanes.haze:haze-blur-materials", vers
 kdroidfilter-composemediaplayer = { module = "io.github.kdroidfilter:composemediaplayer", version.ref = "composemediaplayer" }
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
 paginator-compose-cursor-android-debug = { module = "io.github.jamal-wia:paginator-compose-cursor-android-debug", version.ref = "paginatorComposeCursorAndroidDebug" }
+paginator-compose-offset-android-debug = { module = "io.github.jamal-wia:paginator-compose-offset-android-debug", version.ref = "paginatorComposeCursorAndroidDebug" }
 paginator-core = { module = "io.github.jamal-wia:paginator-core", version.ref = "paginatorCore" }
 paginator-core-android-debug = { module = "io.github.jamal-wia:paginator-core-android-debug", version.ref = "paginatorCoreAndroidDebug" }
 paginator-cursor-android-debug = { module = "io.github.jamal-wia:paginator-cursor-android-debug", version.ref = "paginatorCursorAndroidDebug" }
+paginator-offset-android-debug = { module = "io.github.jamal-wia:paginator-offset-android-debug", version.ref = "paginatorCursorAndroidDebug" }
 parser = { module = "io.github.droibit.oss-licenses-android:parser", version.ref = "parser" }
 zoomable = { module = "net.engawapg.lib:zoomable", version.ref = "zoomable" }
 
@@ -199,7 +203,9 @@ androidx-media3-exoplayer = { group = "androidx.media3", name = "media3-exoplaye
 # Paging
 jamal-wia-paginator-bom = { module = "io.github.jamal-wia:paginator-bom", version.ref = "paginatorBom" }
 paginator-compose-cursor = { module = "io.github.jamal-wia:paginator-compose-cursor" }
+paginator-compose-offset = { module = "io.github.jamal-wia:paginator-compose-offset" }
 paginator-cursor = { module = "io.github.jamal-wia:paginator-cursor" }
+paginator-offset = { module = "io.github.jamal-wia:paginator-offset" }
 
 # Widgets
 androidx-glance-appwidget = { group = "androidx.glance", name = "glance-appwidget", version.ref = "glance" }

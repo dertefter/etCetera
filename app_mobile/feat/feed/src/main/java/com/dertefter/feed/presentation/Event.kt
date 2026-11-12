@@ -4,6 +4,7 @@ import com.dertefter.design.components.post.AttachmentUiModel
 
 sealed interface Event {
     data object OnLoadMore : Event
+
     data class OnRefresh(val tab: FeedTab) : Event
     data object OnOpenNotifications : Event
 
@@ -32,6 +33,8 @@ sealed interface Event {
     data object OnOpenNewPost : Event
 
     data object OnOpenSearch: Event
+
+    data class OnOpenClan(val clan: String): Event
 
     data class OnNavigateToComments(val postId: String) : Event
 

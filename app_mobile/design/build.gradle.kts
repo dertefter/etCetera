@@ -34,10 +34,11 @@ android {
 }
 
 dependencies {
+    api(libs.composefadingedges)
     implementation(libs.androidx.ui.text.google.fonts)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
     implementation(libs.appcompat)
-    implementation(libs.androidx.palette)
+    api(libs.androidx.palette)
     api(platform(libs.compose.bom.alpha))
     api(libs.compose.ui)
     api(libs.compose.ui.graphics)
@@ -75,7 +76,7 @@ dependencies {
     implementation(libs.coil.core)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.annotations)
-    implementation(libs.material.kolor.core)
+    api(libs.material.kolor.core)
     implementation(libs.core.ktx)
     implementation(libs.lottie.compose)
 }

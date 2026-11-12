@@ -13,6 +13,8 @@ fun FeedRoute(
 ) {
 
     val selectedTab by viewModel.selectedTab.collectAsStateWithLifecycle()
+    val topClans by viewModel.topClans.collectAsStateWithLifecycle()
+    val hashtags by viewModel.hashtags.collectAsStateWithLifecycle()
 
     val popularUiState by viewModel.uiStates[FeedTab.POPULAR]!!.collectAsStateWithLifecycle()
     val clanUiState by viewModel.uiStates[FeedTab.CLAN]!!.collectAsStateWithLifecycle()
@@ -29,6 +31,8 @@ fun FeedRoute(
     FeedScreen(
         onEvent = viewModel::onEvent,
         selectedTab = selectedTab,
+        hashtags = hashtags,
+        topClans = topClans,
         uiStates = uiStates,
         paginators = paginators
     )

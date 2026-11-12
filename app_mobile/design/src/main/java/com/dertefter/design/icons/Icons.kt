@@ -8,6 +8,8 @@ import com.dertefter.design.R
 @Suppress("unused")
 object Icons {
 
+    val TrendingUp: ImageVector
+        @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_trending_up)
     val NetworkIntelligenceFilled: ImageVector
         @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_network_intelligence_filled)
 

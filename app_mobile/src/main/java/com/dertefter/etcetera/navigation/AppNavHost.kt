@@ -21,6 +21,7 @@ import com.dertefter.auth.AuthRoute
 import com.dertefter.banner_edit.BannerEditRoute
 import com.dertefter.comments.CommentsRoute
 import com.dertefter.crash_reports.CrashReportsRoute
+import com.dertefter.edbi_users.EdbiUsers
 import com.dertefter.feed.FeedRoute
 import com.dertefter.followers.FollowersRoute
 import com.dertefter.hashtag_feed.HashtagFeedRoute
@@ -136,6 +137,7 @@ fun RouteContent(route: Routes) {
             is Routes.Followers -> FollowersRoute(route.userId, route.startTabIsFollowing)
             is Routes.Notifications -> NotificationsRoute(route.showBackButton)
             is Routes.BannerEdit -> BannerEditRoute()
+            is Routes.EdbiUsers -> EdbiUsers(route.clan)
             is Routes.CrashReports -> CrashReportsRoute()
             is Routes.Post -> PostRoute(route.postId)
             is Routes.Search -> SearchRoute()

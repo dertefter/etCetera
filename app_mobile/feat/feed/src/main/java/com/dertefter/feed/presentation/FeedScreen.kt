@@ -1,18 +1,23 @@
 package com.dertefter.feed.presentation
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.plus
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ButtonGroup
 import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -32,10 +37,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.Wallpapers
+import androidx.compose.ui.unit.dp
 import com.dertefter.data.dto.feed.AuthorDto
 import com.dertefter.data.dto.feed.PostDto
+import com.dertefter.data.dto.search.TopClanDto
 import com.dertefter.design.components.PullToRefreshIndicator
 import com.dertefter.design.components.appbar.AppTopBar
+import com.dertefter.design.components.appbar.AppTopBarStyle
 import com.dertefter.design.components.buttons.FloatingAction
 import com.dertefter.design.components.buttons.FloatingActions
 import com.dertefter.design.components.buttons.FloatingActionsScrolledStatus
@@ -44,6 +52,9 @@ import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.bottomNavHeight
 import com.dertefter.design.theme.spacing
 import com.dertefter.feed.R
+import com.dertefter.feed.presentation.components.SearchBar
+import com.dertefter.feed.presentation.components.TopClanItem
+import com.gigamole.composefadingedges.horizontalFadingEdges
 import com.jamal_aliev.paginator.core.extension.isProgressState
 import com.jamal_aliev.paginator.core.page.PaginatorUiState
 import com.jamal_aliev.paginator.cursor.MutableCursorPaginator
@@ -58,6 +69,8 @@ import kotlinx.coroutines.launch
 fun FeedScreen(
     onEvent: (Event) -> Unit,
     selectedTab: FeedTab,
+    hashtags: List<String> = emptyList(),
+    topClans: List<TopClanDto> = emptyList(),
     uiStates: Map<FeedTab, PaginatorUiState<PostDto>>,
     paginators: Map<FeedTab, MutableCursorPaginator<String, PostDto>>
 ) {
@@ -147,8 +160,70 @@ fun FeedScreen(
             topBar = {
                 AppTopBar(
                     hazeState = hazeState,
+                    appTopBarStyle = AppTopBarStyle.SMALL,
                     title = {
-                        Text(stringResource(R.string.feed_title))
+                        Column(
+                            modifier = Modifier,
+                            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+                        ){
+                            SearchBar(
+                                modifier = Modifier.padding(
+                                    top = MaterialTheme.spacing.largeIncreased,
+                                    start = MaterialTheme.spacing.largeIncreased,
+                                    end = MaterialTheme.spacing.largeIncreased,
+                                ),
+                                onClick = {
+                                    onEvent(
+                                        Event.OnOpenSearch
+                                    )
+                                },
+                                hashtags = hashtags,
+                            )
+                            AnimatedVisibility(
+                                visible = topClans.isNotEmpty()
+                            ) {
+
+                                LazyRow(
+                                    modifier = Modifier
+                                        .padding(bottom = MaterialTheme.spacing.largeIncreased)
+                                        .horizontalFadingEdges(
+                                        length = MaterialTheme.spacing.largeIncreased,
+                                    ),
+                                    contentPadding = PaddingValues(
+                                        horizontal = MaterialTheme.spacing.largeIncreased
+                                    ),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+                                ) {
+
+                                    item {
+                                        Icon(
+                                            imageVector = Icons.TrendingUp,
+                                            contentDescription = null,
+                                            modifier = Modifier
+                                                .padding(end = MaterialTheme.spacing.small)
+                                                .size(32.dp),
+                                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
+
+                                    topClans.forEach { clan ->
+                                        item {
+                                            TopClanItem(
+                                                clanDto = clan,
+                                                onClick = {
+                                                    onEvent(
+                                                        Event.OnOpenClan(clan.avatar)
+                                                    )
+                                                },
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+
                     },
                     scrollBehavior = scrollBehavior,
                     supportingContent = {
@@ -427,6 +502,26 @@ fun FeedScreenPreview() {
 
             FeedScreen(
                 onEvent = {},
+                topClans = listOf(
+                    TopClanDto(
+                        "❤️", 1000
+                    ),
+                    TopClanDto(
+                        "❤️", 1000
+                    ),
+                    TopClanDto(
+                        "❤️", 1000
+                    ),
+                    TopClanDto(
+                        "❤️", 1000
+                    ),
+                    TopClanDto(
+                        "❤️", 1000
+                    ),
+                    TopClanDto(
+                        "❤️", 1000
+                    )
+                ),
                 selectedTab = FeedTab.POPULAR,
                 uiStates = uiStates,
                 paginators = paginators,

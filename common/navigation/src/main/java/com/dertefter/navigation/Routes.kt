@@ -60,6 +60,11 @@ sealed interface Routes : NavKey {
     data object BannerEdit : Routes
 
     @Serializable
+    data class EdbiUsers(
+        val clan: String,
+    ) : Routes
+
+    @Serializable
     data class NewPost(
         val wallRecipientId: String? = null,
     ) : Routes

@@ -4,9 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.zacsweers.metro.AppScope
 import com.dertefter.data.dto.feed.PostDto
+import com.dertefter.data.dto.search.TopClanDto
 import com.dertefter.data.repository.FeedRepository
 import com.dertefter.data.repository.MeRepository
 import com.dertefter.data.repository.PostRepository
+import com.dertefter.data.repository.SearchRepository
 import com.dertefter.feed.presentation.Event
 import com.dertefter.feed.presentation.FeedTab
 import com.dertefter.feed.presentation.mapper.toNavigationModel
@@ -22,6 +24,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -33,6 +36,7 @@ class FeedViewModel(
     private val feedRepository: FeedRepository,
     private val postRepository: PostRepository,
     private val meRepository: MeRepository,
+    private val searchRepository: SearchRepository,
     private val navigator: Navigator
 
 ) : ViewModel() {
@@ -41,6 +45,23 @@ class FeedViewModel(
 
     private val _selectedTab = MutableStateFlow(FeedTab.POPULAR)
     val selectedTab: StateFlow<FeedTab> = _selectedTab.asStateFlow()
+
+    val topClans: StateFlow<List<TopClanDto>> = searchRepository.getTopClans()
+        .map { it ?: emptyList() }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
+
+    val hashtags: StateFlow<List<String>> = searchRepository.getTrendingHashtags()
+        .map { list -> list?.map { it.name } ?: emptyList() }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
+
 
     private val paginators = tabs.associateWith { tab ->
         feedRepository.getFeedPaginator(tab.value)
@@ -67,8 +88,12 @@ class FeedViewModel(
     private fun updateMe() {
         viewModelScope.launch {
             meRepository.updateMe()
+            searchRepository.updateTopClans()
+            searchRepository.updateTrendingHashtags()
         }
     }
+
+
 
     private fun setupPaginator(paginator: MutableCursorPaginator<String, PostDto>) {
         viewModelScope.launch {
@@ -83,6 +108,10 @@ class FeedViewModel(
 
             is Event.OnOpenSearch -> {
                 navigator.navigate(Routes.Search)
+            }
+
+            is Event.OnOpenClan -> {
+                navigator.navigate(Routes.EdbiUsers(clan = event.clan))
             }
 
             is Event.OnReport -> {
