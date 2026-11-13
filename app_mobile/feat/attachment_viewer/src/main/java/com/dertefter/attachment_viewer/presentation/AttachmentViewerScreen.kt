@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
@@ -58,7 +59,7 @@ fun AttachmentViewerScreen(
 
     val scale by animateFloatAsState(
         targetValue = if (startAnimation) 1f else 0.5f,
-        animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec(),
+        animationSpec = MaterialTheme.motionScheme.defaultEffectsSpec(),
         label = "scaleAnimation"
     )
 
@@ -78,6 +79,7 @@ fun AttachmentViewerScreen(
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier
+                    .alpha(scale)
                     .scale(scale)
                     .hazeSource(state = hazeState)
                     .fillMaxSize(),
