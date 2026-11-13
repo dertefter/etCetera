@@ -26,11 +26,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import com.dertefter.design.components.buttons.AppNavigationIcon
 import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.icons.Icons
+import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
@@ -200,3 +202,22 @@ fun VideoAttachment(
     }
 
 }
+
+@Preview(showBackground = false)
+@Composable
+fun VideoAttachmentPreview() {
+    AppTheme(
+        content = {
+            VideoAttachment(
+                attachment = AttachmentUiModel(
+                    id = "1",
+                    type = "video",
+                    url = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+                    mimeType = "video/mp4"
+                ),
+                modifier = Modifier.size(200.dp),
+            )
+        },
+    )
+}
+

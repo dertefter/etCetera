@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -19,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dertefter.data.dto.upload.AttachmentUploadResponseDto
+import com.dertefter.design.components.buttons.AppNavigationIcon
 import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.components.post.Attachment
 import com.dertefter.design.components.post.AttachmentUiModel
@@ -91,22 +90,15 @@ fun UploadCard(
             else -> {}
         }
 
-        IconButton(
+        AppNavigationIcon(
             onClick = onDelete,
             modifier = Modifier
-                .align(alignment = Alignment.TopEnd)
-                .padding(MaterialTheme.spacing.small)
-                .size(36.dp),
-            colors = IconButtonDefaults.iconButtonColors(
-                contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                containerColor = MaterialTheme.colorScheme.surfaceVariant
-            )
-        ) {
-            Icon(
-                contentDescription = null,
-                imageVector = Icons.Close
-            )
-        }
+                .align(alignment = Alignment.BottomEnd)
+                .padding(MaterialTheme.spacing.small),
+            icon = Icons.Delete,
+            contentColor = MaterialTheme.colorScheme.error,
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        )
 
 
     }
@@ -155,7 +147,7 @@ fun UploadCardErrorPreview() {
             upload = Upload(
                 uploadStatus = UploadStatus.ERROR,
                 uri = Uri.EMPTY,
-                mimeType = "image/jpeg",
+                mimeType = "video/mp4",
                 attachment = null
             )
         )
