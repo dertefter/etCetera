@@ -1,3 +1,4 @@
+
 name: Deploy to Google Play
 
 on:
@@ -91,17 +92,14 @@ jobs:
           java-version: '21'
 
       - name: Setup Android SDK
-        if: steps.options.outputs.deploy_play == 'true'
         uses: android-actions/setup-android@v4
 
       - name: Install NDK
-        if: steps.options.outputs.deploy_play == 'true'
         run: |
           yes | sdkmanager --licenses
           sdkmanager --install "ndk;27.2.12479018"
 
       - name: Decode Keystore
-        if: steps.options.outputs.deploy_play == 'true'
         run: |
           if [[ "${{ steps.options.outputs.build_wear }}" == "true" ]]; then
             echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > app_wearable/release.jks
@@ -114,18 +112,19 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x gradlew
 
-      - name: Build Mobile
-        if: steps.options.outputs.build_mobile == 'true'
-        run: ./gradlew :app_mobile:bundleRelease :app_mobile:assembleRelease
-        env:
-          ANDROID_KEYSTORE_FILE: release.jks
-          ANDROID_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          ANDROID_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+      - name: Build Release
+        run: |
+          TASKS=""
 
-      - name: Build Wearable
-        if: steps.options.outputs.build_wear == 'true'
-        run: ./gradlew :app_wearable:bundleRelease :app_wearable:assembleRelease
+          if [[ "${{ steps.options.outputs.build_mobile }}" == "true" ]]; then
+            TASKS="$TASKS :app_mobile:bundleRelease :app_mobile:assembleRelease"
+          fi
+
+          if [[ "${{ steps.options.outputs.build_wear }}" == "true" ]]; then
+            TASKS="$TASKS :app_wearable:bundleRelease :app_wearable:assembleRelease"
+          fi
+
+          ./gradlew $TASKS
         env:
           ANDROID_KEYSTORE_FILE: release.jks
           ANDROID_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
