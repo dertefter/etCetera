@@ -187,7 +187,7 @@ fun EmojiAvatar(
 
     val isInspection = LocalInspectionMode.current
 
-    val dynamicFontSize = (containerSize.value * 0.4f).sp
+    val dynamicFontSize = (containerSize.value * 0.48f).sp
 
     val textStyle = remember(harmonizedEmojiColor, isInspection, dynamicFontSize) {
         TextStyle(
@@ -290,10 +290,10 @@ private suspend fun extractEmojiColor(
 @Composable
 private fun ImageAvatarPreview() {
     WearableTheme {
-        ImageAvatar(
+        Avatar (
             containerSize = 48.dp,
             rotation = 0f,
-            url = "https://cdn.xn--d1ah4a.com/images/avatars/44f5f3ed-1d7e-4441-ade1-5ff241c0baab.jpg"
+            data = "❤️"
         )
     }
 }

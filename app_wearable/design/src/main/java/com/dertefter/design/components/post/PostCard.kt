@@ -155,7 +155,7 @@ fun PostHeader(
         ) {
             Avatar(
                 emoji = post.author.avatar,
-                modifier = Modifier.size(32.dp)
+                containerSize = 32.dp
             )
             Column(
                 modifier = Modifier.weight(1f)
