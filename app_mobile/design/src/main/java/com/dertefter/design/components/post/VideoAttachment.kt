@@ -10,14 +10,13 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Slider
-import androidx.compose.material3.rememberSliderState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,18 +28,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.ui.compose.ContentFrame
+import androidx.media3.ui.compose.material3.buttons.PlayPauseButton
+import androidx.media3.ui.compose.material3.indicator.ProgressSlider
 import com.dertefter.design.components.buttons.AppNavigationIcon
 import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
-import dev.chrisbanes.haze.hazeSource
-import dev.chrisbanes.haze.rememberHazeState
-import io.github.kdroidfilter.composemediaplayer.AudioMode
-import io.github.kdroidfilter.composemediaplayer.CacheConfig
-import io.github.kdroidfilter.composemediaplayer.InterruptionMode
-import io.github.kdroidfilter.composemediaplayer.VideoPlayerSurface
-import io.github.kdroidfilter.composemediaplayer.rememberVideoPlayerState
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -54,36 +49,31 @@ fun VideoAttachment(
     containerColor: Color? = null,
 ) {
 
-    val contentScale = when (contentScale) {
+    val videoContentScale = when (contentScale) {
         AttachmentContentScale.FIT -> ContentScale.Fit
         AttachmentContentScale.CROP -> ContentScale.Crop
-        null -> null
+        null -> if (isFullscreen) ContentScale.Fit else ContentScale.Crop
     }
 
-    val hazeState = rememberHazeState()
+    val backgroundColor =
+        containerColor ?: if (isFullscreen) Color.Black else MaterialTheme.colorScheme.surfaceVariant
 
-    var mute by remember { mutableStateOf(true) }
-
-    val playerState = rememberVideoPlayerState(
-        audioMode = AudioMode(
-            interruptionMode = if (mute) InterruptionMode.MixWithOthers else InterruptionMode.DoNotMix
-        ),
-        cacheConfig = CacheConfig(
-            enabled = true,
-            maxCacheSizeBytes = 200L * 1024L * 1024L
-        )
+    val controlColors = IconButtonDefaults.filledIconButtonColors(
+        containerColor = Color.Black.copy(alpha = 0.5f),
+        contentColor = Color.White,
     )
 
-    LaunchedEffect(attachment.url) {
-        attachment.url?.let {
-            playerState.openUri(it)
-        }
-    }
+    val player = rememberVideoPlayer(
+        url = attachment.url,
+        loop = true,
+        initiallyMuted = true,
+    )
+
+    val isBuffering = rememberIsBuffering(player)
+
+    val isMuted = rememberIsMuted(player)
 
     var visibleControls by remember { mutableStateOf(false) }
-
-    playerState.volume = if (mute) 0f else 1f
-    playerState.loop = true
 
     Box(
         modifier = modifier
@@ -95,40 +85,38 @@ fun VideoAttachment(
                 visibleControls = !visibleControls
             }
     ) {
-        VideoPlayerSurface(
-            playerState = playerState,
-            contentScale = contentScale ?: if (isFullscreen) ContentScale.Fit else ContentScale.Crop,
+        ContentFrame(
+            player = player,
             modifier = Modifier
-                .hazeSource(state = hazeState)
-                .background(containerColor ?: if (isFullscreen) Color.Black else MaterialTheme.colorScheme.surfaceVariant)
-                .fillMaxWidth()
+                .background(backgroundColor)
+                .fillMaxWidth(),
+            contentScale = videoContentScale,
+            shutter = {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(backgroundColor)
+                )
+            }
         )
 
-        if (playerState.isLoading) {
+        if (isBuffering) {
             AppLoadingIndicator(modifier = Modifier.align(Alignment.Center))
         }
 
         if (!isFullscreen) {
             AppNavigationIcon(
-                onClick = {
-                    mute = !mute
-                },
+                onClick = { player.volume = if (isMuted) 1f else 0f },
                 modifier = Modifier
                     .padding(MaterialTheme.spacing.small)
                     .size(44.dp)
                     .align(Alignment.TopStart),
                 containerColor = Color.Black.copy(alpha = 0.5f),
                 contentColor = Color.White,
-                hazeState = hazeState,
-                icon = if (!mute) {
-                    Icons.VolumeUpFilled
-                } else {
-                    Icons.VolumeOffFilled
-                },
+                icon = if (isMuted) Icons.VolumeOffFilled else Icons.VolumeUpFilled,
                 contentDescription = null
             )
-        }
-        if (!isFullscreen){
+
             AppNavigationIcon(
                 onClick = onClick,
                 modifier = Modifier
@@ -137,12 +125,10 @@ fun VideoAttachment(
                     .align(Alignment.TopEnd),
                 containerColor = Color.Black.copy(alpha = 0.5f),
                 contentColor = Color.White,
-                hazeState = hazeState,
                 icon = Icons.Fullscreen,
                 contentDescription = null
             )
         }
-
 
         AnimatedVisibility(
             visible = visibleControls,
@@ -150,15 +136,10 @@ fun VideoAttachment(
             exit = fadeOut(),
             modifier = Modifier.align(Alignment.Center)
         ) {
-            AppNavigationIcon(
-                onClick = {
-                    if (playerState.isPlaying) playerState.pause() else playerState.play()
-                },
-                containerColor = Color.Black.copy(alpha = 0.5f),
-                contentColor = Color.White,
-                hazeState = hazeState,
+            PlayPauseButton(
+                player = player,
+                colors = controlColors,
                 modifier = Modifier.size(56.dp),
-                icon =  if (playerState.isPlaying) Icons.Pause else Icons.Play
             )
         }
 
@@ -174,33 +155,19 @@ fun VideoAttachment(
             Column(horizontalAlignment = Alignment.Start) {
                 if (isFullscreen) {
                     AppNavigationIcon(
-                        onClick = {
-                            mute = !mute
-                        },
+                        onClick = { player.volume = if (isMuted) 1f else 0f },
                         modifier = Modifier
                             .padding(bottom = MaterialTheme.spacing.small)
                             .size(44.dp),
                         containerColor = Color.Black.copy(alpha = 0.5f),
                         contentColor = Color.White,
-                        hazeState = hazeState,
-                        icon = if (!mute) {
-                            Icons.VolumeUpFilled
-                        } else {
-                            Icons.VolumeOffFilled
-                        },
+                        icon = if (isMuted) Icons.VolumeOffFilled else Icons.VolumeUpFilled,
                         contentDescription = null
                     )
                 }
-                val sliderState = rememberSliderState(
-                    value = playerState.sliderPos,
-                    trackRange = 0f..1000f
-                )
-                sliderState.value = playerState.sliderPos
-                Slider(
-                    state = sliderState,
-                    onValueChange = { playerState.seekStart(it) },
-                    onValueChangeFinished = { playerState.seekFinished() },
-                    modifier = Modifier.fillMaxWidth()
+                ProgressSlider(
+                    player = player,
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
         }
@@ -225,4 +192,3 @@ fun VideoAttachmentPreview() {
         },
     )
 }
-
