@@ -36,7 +36,9 @@ import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
+import io.github.kdroidfilter.composemediaplayer.AudioMode
 import io.github.kdroidfilter.composemediaplayer.CacheConfig
+import io.github.kdroidfilter.composemediaplayer.InterruptionMode
 import io.github.kdroidfilter.composemediaplayer.VideoPlayerSurface
 import io.github.kdroidfilter.composemediaplayer.rememberVideoPlayerState
 
@@ -60,7 +62,12 @@ fun VideoAttachment(
 
     val hazeState = rememberHazeState()
 
+    var mute by remember { mutableStateOf(true) }
+
     val playerState = rememberVideoPlayerState(
+        audioMode = AudioMode(
+            interruptionMode = if (mute) InterruptionMode.MixWithOthers else InterruptionMode.DoNotMix
+        ),
         cacheConfig = CacheConfig(
             enabled = true,
             maxCacheSizeBytes = 200L * 1024L * 1024L
@@ -72,8 +79,6 @@ fun VideoAttachment(
             playerState.openUri(it)
         }
     }
-
-    var mute by remember { mutableStateOf(true) }
 
     var visibleControls by remember { mutableStateOf(false) }
 
