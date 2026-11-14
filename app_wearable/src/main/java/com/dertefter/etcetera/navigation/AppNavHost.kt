@@ -139,7 +139,11 @@ fun AppNavHost(
 
             entry<Routes.AttachmentsViewer> { route ->
                 AttachmentViewerRoute(
-                    attachments = route.attachments
+                    attachments = route.attachments,
+                    viewPosition = route.viewPosition,
+                    onDismiss = {
+                        backStack.removeAt(backStack.lastIndex)
+                    }
                 )
             }
         }

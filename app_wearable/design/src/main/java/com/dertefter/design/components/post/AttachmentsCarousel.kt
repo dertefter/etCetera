@@ -38,7 +38,7 @@ fun AttachmentsCarousel(
                 attachment = attachment,
                 modifier = Modifier
                     .height(itemHeight)
-                    .width(100.dp)
+                    .width(120.dp)
                     .clip(itemShape),
                 onClick = {
                     onItemClick(index)

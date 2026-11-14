@@ -59,6 +59,7 @@ uiTextGoogleFonts = "1.12.1"
 # Wear OS
 composeWear = "1.7.1"
 playServicesWearable = "20.0.1"
+wearRemoteInteractions = "1.2.0"
 
 # Dependency Injection
 metro = "1.5.2"
@@ -173,6 +174,7 @@ compose-wear-foundation = { group = "androidx.wear.compose", name = "compose-fou
 compose-wear-material3 = { group = "androidx.wear.compose", name = "compose-material3", version.ref = "composeWear" }
 compose-wear-navigation3 = { module = "androidx.wear.compose:compose-navigation3", version.ref = "composeWear" }
 play-services-wearable = { group = "com.google.android.gms", name = "play-services-wearable", version.ref = "playServicesWearable" }
+wear-remote-interactions = { module = "androidx.wear:wear-remote-interactions", version.ref = "wearRemoteInteractions" }
 
 # Dependency Injection
 metro-runtime = { module = "dev.zacsweers.metro:runtime", version.ref = "metro" }

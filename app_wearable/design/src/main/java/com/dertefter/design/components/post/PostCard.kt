@@ -1,6 +1,5 @@
 package com.dertefter.design.components.post
 
-import android.content.ClipData
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -17,14 +16,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.ClipEntry
-import androidx.compose.ui.platform.LocalClipboard
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.style.TextOverflow
@@ -41,6 +36,7 @@ import androidx.wear.compose.material3.IconButton
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
 import com.dertefter.design.R
+import com.dertefter.design.common.rememberOpenUriOnPhone
 import com.dertefter.design.components.avatar.Avatar
 import com.dertefter.design.components.avatar.DisplayName
 import com.dertefter.design.components.poll.PollCard
@@ -48,7 +44,6 @@ import com.dertefter.design.components.poll.PollUiModel
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.WearableTheme
 import com.dertefter.design.theme.spacing
-import kotlinx.coroutines.launch
 
 @Composable
 fun PostCard(
@@ -71,8 +66,8 @@ fun PostCard(
     onLinkClick: ((url: String) -> Unit)? = null,
     onAttachmentClick: (attachments: List<AttachmentUiModel>, position: Int) -> Unit
 ) {
-    val uriHandler = LocalUriHandler.current
-    val finalOnLinkClick = onLinkClick ?: { url -> uriHandler.openUri(url) }
+    val openUriOnPhone = rememberOpenUriOnPhone()
+    val finalOnLinkClick = onLinkClick ?: { url -> openUriOnPhone(url) }
 
     Box(
         modifier = modifier
@@ -90,7 +85,8 @@ fun PostCard(
                 onEdit = onEdit,
                 onPin = onPin,
                 onUnpin = onUnpin,
-                onDelete = onDelete
+                onDelete = onDelete,
+                onLinkClick = finalOnLinkClick
             )
             PostContent(
                 post = post,
@@ -136,10 +132,11 @@ fun PostHeader(
     onEdit: () -> Unit = {},
     onPin: () -> Unit,
     onUnpin: () -> Unit,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
+    onLinkClick: ((url: String) -> Unit)? = null
 ) {
-    val clipboard = LocalClipboard.current
-    val scope = rememberCoroutineScope()
+    val openUriOnPhone = rememberOpenUriOnPhone()
+    val finalOnLinkClick = onLinkClick ?: { url -> openUriOnPhone(url) }
 
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -155,7 +152,7 @@ fun PostHeader(
         ) {
             Avatar(
                 emoji = post.author.avatar,
-                containerSize = 32.dp
+                containerSize = 34.dp
             )
             Column(
                 modifier = Modifier.weight(1f)
@@ -197,17 +194,13 @@ fun PostHeader(
                     Button(
                         onClick = {
                             val link = "https://xn--d1ah4a.com/@${post.author.username}/post/${post.id}"
-                            scope.launch {
-                                clipboard.setClipEntry(
-                                    ClipEntry(ClipData.newPlainText(null, link))
-                                )
-                            }
+                            finalOnLinkClick(link)
                             showMenu = false
                         },
-                        icon = { Icon(Icons.ContentCopy, contentDescription = null) },
+                        icon = { Icon(Icons.OpenInNew, contentDescription = null) },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(stringResource(R.string.design_post_copy_link))
+                        Text(stringResource(R.string.design_post_open_on_phone))
                     }
                 }
                 if (isOnMyWall) {
@@ -285,8 +278,8 @@ fun PostContent(
     onLinkClick: ((url: String) -> Unit)? = null
 ) {
     if (post.content.isNotEmpty()) {
-        val uriHandler = LocalUriHandler.current
-        val finalOnLinkClick = onLinkClick ?: { url -> uriHandler.openUri(url) }
+        val openUriOnPhone = rememberOpenUriOnPhone()
+        val finalOnLinkClick = onLinkClick ?: { url -> openUriOnPhone(url) }
         var revealedSpoilers by remember { mutableStateOf(setOf<Int>()) }
         val annotatedString = buildPostAnnotatedString(post.content, post.spans, revealedSpoilers)
         var layoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
@@ -350,7 +343,7 @@ fun PostAttachments(
         AttachmentsCarousel(
             attachments = attachments,
             itemShape = RoundedCornerShape(14.dp),
-            itemHeight = 100.dp,
+            itemHeight = 140.dp,
             onItemClick = { position ->
                 onAttachmentClick(attachments, position)
             },
@@ -388,8 +381,8 @@ fun PostOriginalPost(
     onAttachmentClick: (attachments: List<AttachmentUiModel>, position: Int) -> Unit
 ) {
     originalPost?.let { origPost ->
-        val uriHandler = LocalUriHandler.current
-        val finalOnLinkClick = onLinkClick ?: { url -> uriHandler.openUri(url) }
+        val openUriOnPhone = rememberOpenUriOnPhone()
+        val finalOnLinkClick = onLinkClick ?: { url -> openUriOnPhone(url) }
         OriginalPostCard(
             modifier = modifier,
             originalPost = origPost,

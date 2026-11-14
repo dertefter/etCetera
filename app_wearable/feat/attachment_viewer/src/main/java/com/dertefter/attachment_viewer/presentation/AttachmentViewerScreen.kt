@@ -1,5 +1,7 @@
 package com.dertefter.attachment_viewer.presentation
 
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
+import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,22 +10,54 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
+import androidx.wear.compose.foundation.edgeSwipeToDismiss
+import androidx.wear.compose.foundation.rememberSwipeToDismissBoxState
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.ScreenScaffold
+import androidx.wear.compose.material3.SwipeToDismissBox
 import androidx.wear.compose.material3.Text
 import com.dertefter.design.components.post.Attachment
 import com.dertefter.design.components.post.AttachmentUiModel
-
+import kotlinx.coroutines.launch
 
 @Composable
 fun AttachmentViewerScreen(
     attachments: List<AttachmentUiModel>,
     viewPosition: Int = 0,
+    onDismiss: (() -> Unit)? = null,
 ) {
+    val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+    val scope = rememberCoroutineScope()
+
+    val screenAlpha = remember { Animatable(1f) }
+    var isDismissing by remember { mutableStateOf(false) }
+
+    val dismissAction: () -> Unit = {
+        if (!isDismissing) {
+            isDismissing = true
+            scope.launch {
+                screenAlpha.snapTo(0f)
+                if (onDismiss != null) {
+                    onDismiss()
+                } else {
+                    backDispatcher?.onBackPressed()
+                }
+            }
+        }
+    }
+
+    val swipeState = rememberSwipeToDismissBoxState()
+
     val pagerState = rememberPagerState(
         initialPage = viewPosition,
         pageCount = { attachments.size }
@@ -33,37 +67,57 @@ fun AttachmentViewerScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Black)
+                .graphicsLayer { alpha = screenAlpha.value }
         ) {
-            HorizontalPager(
-                state = pagerState,
-                modifier = Modifier
-                    .fillMaxSize(),
-                pageSpacing = 8.dp,
-                userScrollEnabled = true,
-            ) { page ->
-                val attachment = attachments[page]
-                Attachment(
-                    attachment = attachment,
-                    isFullscreen = true,
-                    containerColor = Color.Black,
-                    modifier = Modifier
-                        .fillMaxSize()
-                )
+            SwipeToDismissBox(
+                state = swipeState,
+                onDismissed = { dismissAction() },
+                userSwipeEnabled = true,
+            ) { isBackground ->
+                if (isBackground) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Black)
+                    )
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Black)
+                    ) {
+                        HorizontalPager(
+                            state = pagerState,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .edgeSwipeToDismiss(swipeState),
+                            pageSpacing = 8.dp,
+                            userScrollEnabled = attachments.size > 1,
+                        ) { page ->
+                            val attachment = attachments[page]
+                            Attachment(
+                                attachment = attachment,
+                                isFullscreen = true,
+                                containerColor = Color.Black,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                            )
+                        }
 
-            }
-
-            if (attachments.size > 1) {
-                Text(
-                    text = "${pagerState.currentPage + 1} / ${attachments.size}",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = Color.White,
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(bottom = 12.dp)
-                        .background(Color.Black.copy(alpha = 0.5f), CircleShape)
-                        .padding(horizontal = 8.dp, vertical = 2.dp)
-                )
+                        if (attachments.size > 1) {
+                            Text(
+                                text = "${pagerState.currentPage + 1} / ${attachments.size}",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = Color.White,
+                                modifier = Modifier
+                                    .align(Alignment.BottomCenter)
+                                    .padding(bottom = 12.dp)
+                                    .background(Color.Black.copy(alpha = 0.5f), CircleShape)
+                                    .padding(horizontal = 8.dp, vertical = 2.dp)
+                            )
+                        }
+                    }
+                }
             }
         }
     }

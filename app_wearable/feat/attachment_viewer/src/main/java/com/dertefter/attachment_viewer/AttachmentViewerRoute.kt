@@ -9,11 +9,12 @@ import com.dertefter.navigation.AttachmentNavigationModel
 fun AttachmentViewerRoute(
     attachments: List<AttachmentNavigationModel>,
     viewPosition: Int = 0,
+    onDismiss: (() -> Unit)? = null,
 ) {
-
     AttachmentViewerScreen(
         viewPosition = viewPosition,
-        attachments = attachments.map { it.toUiModel() }
+        attachments = attachments.map { it.toUiModel() },
+        onDismiss = onDismiss
     )
 }
 

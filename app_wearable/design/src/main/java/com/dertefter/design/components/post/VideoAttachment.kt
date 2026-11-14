@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.wear.compose.material3.Icon
@@ -31,6 +32,7 @@ import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Slider
 import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.icons.Icons
+import com.dertefter.design.theme.WearableTheme
 import com.dertefter.design.theme.spacing
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
@@ -46,7 +48,17 @@ fun VideoAttachment(
     contentPadding: PaddingValues = PaddingValues(),
     onClick: () -> Unit = {},
     isFullscreen: Boolean = false,
+    contentScale: AttachmentContentScale? = null,
+    containerColor: Color? = null,
 ) {
+    val videoContentScale = when (contentScale) {
+        AttachmentContentScale.FIT -> ContentScale.Fit
+        AttachmentContentScale.CROP -> ContentScale.Crop
+        null -> if (isFullscreen) ContentScale.Fit else ContentScale.Crop
+    }
+
+    val backgroundColor =
+        containerColor ?: if (isFullscreen) Color.Black else MaterialTheme.colorScheme.surfaceContainer
 
     val hazeState = rememberHazeState()
 
@@ -82,10 +94,10 @@ fun VideoAttachment(
     ) {
         VideoPlayerSurface(
             playerState = playerState,
-            contentScale = if (isFullscreen) ContentScale.Fit else ContentScale.Crop,
+            contentScale = videoContentScale,
             modifier = Modifier
                 .hazeSource(state = hazeState)
-                .background(if (isFullscreen) Color.Black else MaterialTheme.colorScheme.surfaceContainer)
+                .background(backgroundColor)
                 .fillMaxWidth()
         )
 
@@ -198,4 +210,20 @@ fun VideoAttachment(
         }
     }
 
+}
+
+@Preview(showBackground = false)
+@Composable
+fun VideoAttachmentPreview() {
+    WearableTheme {
+        VideoAttachment(
+            attachment = AttachmentUiModel(
+                id = "1",
+                type = "video",
+                url = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+                mimeType = "video/mp4"
+            ),
+            modifier = Modifier.size(200.dp),
+        )
+    }
 }

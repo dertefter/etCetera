@@ -38,6 +38,7 @@ dependencies {
     api(project(":app_wearable:design"))
 
     implementation(platform(libs.compose.bom.alpha))
+    implementation(libs.activity.compose)
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.graphics)
     implementation(libs.compose.wear.material3)

@@ -108,7 +108,7 @@ fun FeedScreen(
                                 modifier = Modifier
                                     .padding(horizontal = MaterialTheme.spacing.extraSmall)
                                     .weight(1f)
-                                    .height(32.dp)
+                                    .height(38.dp)
                                     .clip(RoundedCornerShape(shapeCorner))
                                     .clickable(
                                         onClick = {
@@ -124,13 +124,13 @@ fun FeedScreen(
                                         imageVector = icon,
                                         contentDescription = text,
                                         tint = contentColor,
-                                        modifier = Modifier.size(20.dp)
+                                        modifier = Modifier.size(22.dp)
                                     )
                                 }
                                 if (tab == FeedTab.CLAN){
                                     Text(
                                         text = topAppBarState.avatarEmoji ?: "",
-                                        fontSize = 16.sp
+                                        fontSize = 18.sp
                                     )
                                 }
 

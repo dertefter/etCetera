@@ -42,6 +42,7 @@ dependencies {
     implementation(libs.compose.ui.tooling.preview)
     api(libs.compose.wear.material3)
     api(libs.compose.wear.foundation)
+    implementation(libs.wear.remote.interactions)
     debugImplementation(libs.compose.ui.tooling)
     debugRuntimeOnly(libs.compose.ui.test.manifest)
     implementation(libs.coil.compose)

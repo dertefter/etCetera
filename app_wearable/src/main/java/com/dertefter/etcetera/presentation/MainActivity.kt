@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
-        viewModel // Force initialization to start listening for data changes
+        viewModel
 
         splashScreen.setKeepOnScreenCondition {
             viewModel.mainScreenState.value.isAuthorized == null

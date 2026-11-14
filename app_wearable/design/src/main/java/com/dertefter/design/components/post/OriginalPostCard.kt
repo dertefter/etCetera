@@ -19,13 +19,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
+import com.dertefter.design.common.rememberOpenUriOnPhone
 import com.dertefter.design.components.avatar.Avatar
 import com.dertefter.design.components.avatar.DisplayName
 import com.dertefter.design.theme.WearableTheme
@@ -41,8 +41,8 @@ fun OriginalPostCard(
     onLinkClick: ((String) -> Unit)? = null,
     onAttachmentClick: (attachments: List<AttachmentUiModel>, position: Int) -> Unit
 ) {
-    val uriHandler = LocalUriHandler.current
-    val finalOnLinkClick = onLinkClick ?: { url -> uriHandler.openUri(url) }
+    val openUriOnPhone = rememberOpenUriOnPhone()
+    val finalOnLinkClick = onLinkClick ?: { url -> openUriOnPhone(url) }
     Box(
         modifier = modifier
             .fillMaxWidth()
