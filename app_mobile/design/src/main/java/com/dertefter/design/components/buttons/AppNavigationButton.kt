@@ -3,7 +3,7 @@ package com.dertefter.design.components.buttons
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
@@ -34,11 +34,11 @@ import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.blur.hazeBlur
 import dev.chrisbanes.haze.blur.materials.HazeMaterials
 
-
 @Composable
 fun AppNavigationButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
+    onLongClick: (() -> Unit)? = null,
     icon: ImageVector = Icons.ArrowBack,
     contentDescription: String? = null,
     containerColor: Color = MaterialTheme.colorScheme.surfaceContainer,
@@ -71,10 +71,11 @@ fun AppNavigationButton(
                 height = 40.dp
             )
             .clip(CircleShape)
-            .clickable(
+            .combinedClickable(
                 interactionSource = interactionSource,
                 indication = ripple(),
                 enabled = enabled,
+                onLongClick = onLongClick,
                 onClick = onClick
             ),
         contentAlignment = Alignment.Center
