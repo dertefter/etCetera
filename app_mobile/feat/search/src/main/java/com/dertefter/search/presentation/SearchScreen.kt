@@ -20,7 +20,10 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
@@ -30,9 +33,12 @@ import androidx.compose.ui.unit.times
 import com.dertefter.data.dto.search.SearchHashtagDto
 import com.dertefter.data.dto.search.SearchUserDto
 import com.dertefter.design.components.appbar.AppTopBar
+import com.dertefter.design.components.appbar.AppTopBarStyle
+import com.dertefter.design.components.buttons.AppNavigationIcon
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.bottomNavHeight
 import com.dertefter.design.theme.spacing
+import com.dertefter.design.transition.sharedElementByKey
 import com.dertefter.search.R
 import com.dertefter.search.presentation.component.SearchHashtagCard
 import com.dertefter.search.presentation.component.SearchUserCard
@@ -47,9 +53,14 @@ fun SearchScreen(
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     val textFieldState = rememberTextFieldState()
+    val focusRequester = remember { FocusRequester() }
 
     LaunchedEffect(textFieldState.text) {
         onEvent(Event.OnSearchQueryChanged(textFieldState.text.toString()))
+    }
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
     }
 
     val hazeState = rememberHazeState()
@@ -58,19 +69,28 @@ fun SearchScreen(
 
 
     Scaffold(
+        modifier = Modifier.sharedElementByKey("searchbar"),
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
         topBar = {
             AppTopBar(
+                appTopBarStyle = AppTopBarStyle.SMALL,
                 hazeState = hazeState,
-                title = {
-                    Text(text = stringResource(R.string.search_title))
+                navigationIcon = {
+                    AppNavigationIcon(
+                        onClick = {
+                            onEvent(Event.OnNavigateBack)
+                        }
+                    )
                 },
+                title = {},
                 scrollBehavior = scrollBehavior,
                 supportingContent = {
                     TextField(
                         state = textFieldState,
                         modifier = Modifier
                             .padding(horizontal = searchBarHorizontalSpace)
-                            .fillMaxWidth(),
+                            .fillMaxWidth()
+                            .focusRequester(focusRequester),
                         lineLimits = TextFieldLineLimits.SingleLine,
                         placeholder = {
                             Text(
@@ -89,8 +109,8 @@ fun SearchScreen(
                             unfocusedIndicatorColor = Color.Transparent,
                             disabledIndicatorColor = Color.Transparent,
                             errorIndicatorColor = Color.Transparent,
-                            focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha =  1 - scrollBehavior.state.overlappedFraction),
-                            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha =  1 - scrollBehavior.state.overlappedFraction),
+                            focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha =  1 - scrollBehavior.state.overlappedFraction),
+                            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha =  1 - scrollBehavior.state.overlappedFraction),
                         )
                     )
                 }
