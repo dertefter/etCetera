@@ -51,6 +51,7 @@ import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.bottomNavHeight
 import com.dertefter.design.theme.spacing
+import com.dertefter.design.transition.sharedElementByKey
 import com.dertefter.feed.R
 import com.dertefter.feed.presentation.components.SearchBar
 import com.dertefter.feed.presentation.components.TopClanItem
@@ -167,7 +168,9 @@ fun FeedScreen(
                             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
                         ){
                             SearchBar(
-                                modifier = Modifier.padding(
+                                modifier = Modifier
+                                    .sharedElementByKey("searchbar")
+                                    .padding(
                                     top = MaterialTheme.spacing.largeIncreased,
                                     start = MaterialTheme.spacing.largeIncreased,
                                     end = MaterialTheme.spacing.largeIncreased,
