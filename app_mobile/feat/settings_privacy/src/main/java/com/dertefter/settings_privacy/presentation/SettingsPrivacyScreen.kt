@@ -21,7 +21,7 @@ import com.dertefter.data.dto.me.Privacy
 import com.dertefter.data.dto.user.VisibilityDto
 import com.dertefter.design.components.PullToRefreshIndicator
 import com.dertefter.design.components.appbar.AppTopBar
-import com.dertefter.design.components.buttons.AppNavigationIcon
+import com.dertefter.design.components.buttons.AppNavigationButton
 import com.dertefter.design.components.lists.SegmentedColumn
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
@@ -66,7 +66,7 @@ fun SettingsPrivacyScreen(
                         Text(text = stringResource(R.string.settings_privacy_title))
                     },
                     navigationIcon = {
-                        AppNavigationIcon(
+                        AppNavigationButton(
                             icon = Icons.ArrowBack,
                             onClick = { onEvent(Event.OnNavigateBack) },
                             contentDescription = stringResource(com.dertefter.design.R.string.design_back_content_desc)

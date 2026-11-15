@@ -45,7 +45,7 @@ import com.dertefter.data.dto.user.VisibilityDto
 import com.dertefter.design.components.PullToRefreshIndicator
 import com.dertefter.design.components.appbar.AppTopBar
 import com.dertefter.design.components.avatar.Avatar
-import com.dertefter.design.components.buttons.AppNavigationIcon
+import com.dertefter.design.components.buttons.AppNavigationButton
 import com.dertefter.design.components.lists.SegmentedColumn
 import com.dertefter.design.components.text_fields.TextFieldItem
 import com.dertefter.design.components.util.collapse
@@ -113,7 +113,7 @@ fun SettingsAccountScreen(
                         Text(text = stringResource(R.string.settings_account_title))
                     },
                     navigationIcon = {
-                        AppNavigationIcon(
+                        AppNavigationButton(
                             icon = Icons.ArrowBack,
                             onClick = { onEvent(Event.OnNavigateBack) },
                             contentDescription = stringResource(com.dertefter.design.R.string.design_back_content_desc)

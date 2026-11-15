@@ -31,7 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.dertefter.data.dto.feed.PostDto
 import com.dertefter.design.components.PullToRefreshIndicator
 import com.dertefter.design.components.appbar.AppTopBar
-import com.dertefter.design.components.buttons.AppNavigationIcon
+import com.dertefter.design.components.buttons.AppNavigationButton
 import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
@@ -93,7 +93,7 @@ fun HashtagFeedScreen(
                     hazeState = hazeState,
                     scrollBehavior = scrollBehavior,
                     navigationIcon = {
-                        AppNavigationIcon(
+                        AppNavigationButton(
                             icon = Icons.ArrowBack,
                             onClick = { onEvent(Event.OnNavigateBack) },
                         )

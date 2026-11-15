@@ -34,7 +34,7 @@ import com.dertefter.data.dto.search.SearchHashtagDto
 import com.dertefter.data.dto.search.SearchUserDto
 import com.dertefter.design.components.appbar.AppTopBar
 import com.dertefter.design.components.appbar.AppTopBarStyle
-import com.dertefter.design.components.buttons.AppNavigationIcon
+import com.dertefter.design.components.buttons.AppNavigationButton
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.bottomNavHeight
 import com.dertefter.design.theme.spacing
@@ -76,7 +76,7 @@ fun SearchScreen(
                 appTopBarStyle = AppTopBarStyle.SMALL,
                 hazeState = hazeState,
                 navigationIcon = {
-                    AppNavigationIcon(
+                    AppNavigationButton(
                         onClick = {
                             onEvent(Event.OnNavigateBack)
                         }

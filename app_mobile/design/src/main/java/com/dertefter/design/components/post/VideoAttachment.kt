@@ -31,7 +31,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.compose.ContentFrame
 import androidx.media3.ui.compose.material3.buttons.PlayPauseButton
 import androidx.media3.ui.compose.material3.indicator.ProgressSlider
-import com.dertefter.design.components.buttons.AppNavigationIcon
+import com.dertefter.design.components.buttons.AppNavigationButton
 import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
@@ -105,7 +105,7 @@ fun VideoAttachment(
         }
 
         if (!isFullscreen) {
-            AppNavigationIcon(
+            AppNavigationButton(
                 onClick = { player.volume = if (isMuted) 1f else 0f },
                 modifier = Modifier
                     .padding(MaterialTheme.spacing.small)
@@ -117,7 +117,7 @@ fun VideoAttachment(
                 contentDescription = null
             )
 
-            AppNavigationIcon(
+            AppNavigationButton(
                 onClick = onClick,
                 modifier = Modifier
                     .padding(MaterialTheme.spacing.small)
@@ -154,7 +154,7 @@ fun VideoAttachment(
         ) {
             Column(horizontalAlignment = Alignment.Start) {
                 if (isFullscreen) {
-                    AppNavigationIcon(
+                    AppNavigationButton(
                         onClick = { player.volume = if (isMuted) 1f else 0f },
                         modifier = Modifier
                             .padding(bottom = MaterialTheme.spacing.small)

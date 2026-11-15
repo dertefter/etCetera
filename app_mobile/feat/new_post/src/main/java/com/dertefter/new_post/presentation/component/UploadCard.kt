@@ -17,7 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dertefter.data.dto.upload.AttachmentUploadResponseDto
-import com.dertefter.design.components.buttons.AppNavigationIcon
+import com.dertefter.design.components.buttons.AppNavigationButton
 import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.components.post.Attachment
 import com.dertefter.design.components.post.AttachmentUiModel
@@ -90,7 +90,7 @@ fun UploadCard(
             else -> {}
         }
 
-        AppNavigationIcon(
+        AppNavigationButton(
             onClick = onDelete,
             modifier = Modifier
                 .align(alignment = Alignment.BottomEnd)

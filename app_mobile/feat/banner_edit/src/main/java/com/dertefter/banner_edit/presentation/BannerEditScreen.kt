@@ -65,7 +65,7 @@ import com.dertefter.banner_edit.domain.BannerLimits
 import com.dertefter.banner_edit.presentation.drawbox.DrawBox
 import com.dertefter.banner_edit.presentation.drawbox.DrawController
 import com.dertefter.design.components.appbar.AppTopBar
-import com.dertefter.design.components.buttons.AppNavigationIcon
+import com.dertefter.design.components.buttons.AppNavigationButton
 import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.components.loading.Shimmer
 import com.dertefter.design.icons.Icons
@@ -161,7 +161,7 @@ fun BannerEditScreen(
                     Text(stringResource(R.string.banner_edit_title))
                 },
                 navigationIcon = {
-                    AppNavigationIcon(
+                    AppNavigationButton(
                         onClick = { onEvent(Event.OnBack) }
                     )
                 },
@@ -170,19 +170,19 @@ fun BannerEditScreen(
 
 
                     if (importing) {
-                        AppNavigationIcon(
+                        AppNavigationButton(
                             onClick = { onEvent(Event.OnCancelImport) },
                             icon = Icons.Close,
                             contentDescription = stringResource(R.string.banner_edit_import_cancel),
                         )
                     }
-                    AppNavigationIcon(
+                    AppNavigationButton(
                         onClick = { drawController.undo() },
                         icon = Icons.Undo,
                         enabled = canUndo && !busy,
                         contentDescription = stringResource(R.string.banner_edit_undo),
                     )
-                    AppNavigationIcon(
+                    AppNavigationButton(
                         onClick = { drawController.redo() },
                         icon = Icons.Redo,
                         enabled = canRedo && !busy,

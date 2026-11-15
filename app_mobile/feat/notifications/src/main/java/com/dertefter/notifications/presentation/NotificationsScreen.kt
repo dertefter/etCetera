@@ -31,7 +31,7 @@ import com.dertefter.data.dto.notifications.ActorDto
 import com.dertefter.data.dto.notifications.NotificationDto
 import com.dertefter.design.components.PullToRefreshIndicator
 import com.dertefter.design.components.appbar.AppTopBar
-import com.dertefter.design.components.buttons.AppNavigationIcon
+import com.dertefter.design.components.buttons.AppNavigationButton
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.bottomNavHeight
 import com.dertefter.design.theme.spacing
@@ -79,7 +79,7 @@ fun NotificationsScreen(
                     hazeState = hazeState,
                     navigationIcon = {
                         if (showBackButton){
-                            AppNavigationIcon(
+                            AppNavigationButton(
                                 onClick = {
                                     onEvent(Event.OnNavigateBack)
                                 }

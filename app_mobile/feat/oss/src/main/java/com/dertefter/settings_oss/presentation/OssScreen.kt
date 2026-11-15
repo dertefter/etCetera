@@ -33,7 +33,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import com.dertefter.design.components.appbar.AppTopBar
 import com.dertefter.design.components.appbar.AppTopBarStyle
-import com.dertefter.design.components.buttons.AppNavigationIcon
+import com.dertefter.design.components.buttons.AppNavigationButton
 import com.dertefter.design.components.common.ErrorCard
 import com.dertefter.design.components.lists.SegmentedContentItem
 import com.dertefter.design.components.loading.AppLoadingIndicator
@@ -67,7 +67,7 @@ fun OssScreen(
                     )
                 },
                 navigationIcon = {
-                    AppNavigationIcon(
+                    AppNavigationButton(
                         icon = Icons.ArrowBack,
                         onClick = { onEvent(Event.OnNavigateBack) },
                         contentDescription = stringResource(com.dertefter.design.R.string.design_back_content_desc)

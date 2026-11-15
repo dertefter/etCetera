@@ -40,7 +40,7 @@ import com.dertefter.data.dto.feed.AuthorDto
 import com.dertefter.design.components.PullToRefreshIndicator
 import com.dertefter.design.components.appbar.AppTopBar
 import com.dertefter.design.components.appbar.AppTopBarStyle
-import com.dertefter.design.components.buttons.AppNavigationIcon
+import com.dertefter.design.components.buttons.AppNavigationButton
 import com.dertefter.design.components.post.AuthorUiModel
 import com.dertefter.design.components.post.PostCardExtended
 import com.dertefter.design.components.post.PostUiModel
@@ -144,7 +144,7 @@ fun PostScreenContent(
                     hazeState = hazeState,
                     title = {},
                     navigationIcon = {
-                        AppNavigationIcon(
+                        AppNavigationButton(
                             onClick = { onEvent(Event.OnNavigateBack) }
                         )
                     },
@@ -152,7 +152,7 @@ fun PostScreenContent(
 
                         uiState.post?.let { post ->
                             Box {
-                                AppNavigationIcon(
+                                AppNavigationButton(
                                     onClick = { showMenu = true },
                                     icon = Icons.MoreVert
                                 )
@@ -284,7 +284,7 @@ fun PostScreenContent(
                                     ) {
 
                                         Box {
-                                            AppNavigationIcon(
+                                            AppNavigationButton(
                                                 onClick = { showCommentsFiltersMenu = true },
                                                 containerColor = MaterialTheme.colorScheme.surfaceVariant,
                                                 contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -331,7 +331,7 @@ fun PostScreenContent(
                                                 .weight(1f)
                                         )
 
-                                        AppNavigationIcon(
+                                        AppNavigationButton(
                                             onClick = {
                                                 onCommentsEvent(CommentsEvent.OnNewComment)
                                             },

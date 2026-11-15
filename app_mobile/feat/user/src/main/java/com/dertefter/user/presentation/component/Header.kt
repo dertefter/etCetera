@@ -35,7 +35,7 @@ import coil3.compose.AsyncImage
 import com.dertefter.data.dto.user.LastSeenDto
 import com.dertefter.design.components.avatar.Avatar
 import com.dertefter.design.components.avatar.DisplayName
-import com.dertefter.design.components.buttons.AppNavigationIcon
+import com.dertefter.design.components.buttons.AppNavigationButton
 import com.dertefter.design.components.post.AuthorUiModel
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
@@ -132,7 +132,7 @@ fun Header(
 
 
             if (isMe){
-                AppNavigationIcon(
+                AppNavigationButton(
                     onClick = onEditClick,
                     modifier = Modifier
                         .align(Alignment.TopEnd)

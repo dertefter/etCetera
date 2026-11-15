@@ -34,7 +34,7 @@ import com.dertefter.ai.model.AiBackend
 import com.dertefter.ai.model.AiError
 import com.dertefter.ai.model.AiModel
 import com.dertefter.design.components.appbar.AppTopBar
-import com.dertefter.design.components.buttons.AppNavigationIcon
+import com.dertefter.design.components.buttons.AppNavigationButton
 import com.dertefter.design.components.common.ErrorCard
 import com.dertefter.design.components.lists.SegmentedColumn
 import com.dertefter.design.components.loading.AppLoadingIndicator
@@ -74,7 +74,7 @@ fun SettingsAiScreen(
                     Text(text = stringResource(R.string.settings_ai_title))
                 },
                 navigationIcon = {
-                    AppNavigationIcon(
+                    AppNavigationButton(
                         icon = Icons.ArrowBack,
                         onClick = { onEvent(Event.OnNavigateBack) },
                         contentDescription = stringResource(com.dertefter.design.R.string.design_back_content_desc)

@@ -57,7 +57,7 @@ import com.dertefter.design.components.PullToRefreshIndicator
 import com.dertefter.design.components.appbar.AppTopBar
 import com.dertefter.design.components.appbar.AppTopBarStyle
 import com.dertefter.design.components.avatar.Avatar
-import com.dertefter.design.components.buttons.AppNavigationIcon
+import com.dertefter.design.components.buttons.AppNavigationButton
 import com.dertefter.design.components.buttons.FloatingAction
 import com.dertefter.design.components.buttons.FloatingActions
 import com.dertefter.design.components.buttons.FloatingActionsScrolledStatus
@@ -212,7 +212,7 @@ fun UserScreen(
                     scrollBehavior = scrollBehavior,
                     navigationIcon = {
                         if (showBackButton){
-                            AppNavigationIcon(
+                            AppNavigationButton(
                                 icon = Icons.ArrowBack,
                                 onClick = { onEvent(Event.OnNavigateBack) },
                                 contentDescription = stringResource(com.dertefter.design.R.string.design_back_content_desc)
@@ -242,7 +242,7 @@ fun UserScreen(
                     },
                     actions = {
                         Box {
-                            AppNavigationIcon(
+                            AppNavigationButton(
                                 icon = Icons.MoreVert,
                                 onClick = { showOverflowMenu = true },
                                 contentDescription = stringResource(R.string.user_more)
@@ -321,7 +321,7 @@ fun UserScreen(
                             }
                         }
                         if (userUiState.isMe) {
-                            AppNavigationIcon(
+                            AppNavigationButton(
                                 icon = Icons.Settings,
                                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
                                 contentColor = MaterialTheme.colorScheme.onSecondaryContainer,

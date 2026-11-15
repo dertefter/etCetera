@@ -32,7 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.dertefter.attachment_viewer.R
-import com.dertefter.design.components.buttons.AppNavigationIcon
+import com.dertefter.design.components.buttons.AppNavigationButton
 import com.dertefter.design.components.post.Attachment
 import com.dertefter.design.components.post.AttachmentUiModel
 import com.dertefter.design.icons.Icons
@@ -97,7 +97,7 @@ fun AttachmentViewerScreen(
 
             }
 
-            AppNavigationIcon(
+            AppNavigationButton(
                 onClick = {
                     onEvent(Event.OnNavigateBack)
                 },
@@ -125,7 +125,7 @@ fun AttachmentViewerScreen(
                 )
             }
 
-            AppNavigationIcon(
+            AppNavigationButton(
                 onClick = {
                     downloadAttachment(context, attachments[pagerState.currentPage])
                 },

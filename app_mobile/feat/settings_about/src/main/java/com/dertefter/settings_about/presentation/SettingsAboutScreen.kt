@@ -36,7 +36,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.dertefter.design.components.appbar.AppTopBar
 import com.dertefter.design.components.appbar.AppTopBarStyle
-import com.dertefter.design.components.buttons.AppNavigationIcon
+import com.dertefter.design.components.buttons.AppNavigationButton
 import com.dertefter.design.components.lists.SegmentedColumn
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
@@ -216,7 +216,7 @@ fun SettingsAboutScreen(
                     )
                 },
                 navigationIcon = {
-                    AppNavigationIcon(
+                    AppNavigationButton(
                         icon = Icons.ArrowBack,
                         onClick = { onEvent(Event.OnNavigateBack) },
                         contentDescription = stringResource(com.dertefter.design.R.string.design_back_content_desc)

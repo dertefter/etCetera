@@ -36,7 +36,7 @@ import dev.chrisbanes.haze.blur.materials.HazeMaterials
 
 
 @Composable
-fun AppNavigationIcon(
+fun AppNavigationButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     icon: ImageVector = Icons.ArrowBack,
@@ -108,7 +108,7 @@ fun AppNavigationIcon(
 
 @Preview
 @Composable
-private fun AppNavigationIconPreview() {
+private fun AppNavigationButtonPreview() {
     AppTheme(
         content = {
             Box(
@@ -116,7 +116,7 @@ private fun AppNavigationIconPreview() {
                     .background(MaterialTheme.colorScheme.surface)
                     .padding(16.dp)
             ) {
-                AppNavigationIcon(onClick = {})
+                AppNavigationButton(onClick = {})
             }
         },
     )
@@ -124,7 +124,7 @@ private fun AppNavigationIconPreview() {
 
 @Preview
 @Composable
-private fun AppNavigationIconDarkPreview() {
+private fun AppNavigationButtonDarkPreview() {
     AppTheme(
         darkTheme = true,
         content = {
@@ -133,7 +133,7 @@ private fun AppNavigationIconDarkPreview() {
                     .background(MaterialTheme.colorScheme.surface)
                     .padding(16.dp)
             ) {
-                AppNavigationIcon(onClick = {})
+                AppNavigationButton(onClick = {})
             }
         },
     )

@@ -31,7 +31,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.dertefter.data.dto.auth.AuthSessionDto
 import com.dertefter.design.components.PullToRefreshIndicator
 import com.dertefter.design.components.appbar.AppTopBar
-import com.dertefter.design.components.buttons.AppNavigationIcon
+import com.dertefter.design.components.buttons.AppNavigationButton
 import com.dertefter.design.components.lists.SegmentedColumn
 import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.icons.Icons
@@ -78,7 +78,7 @@ fun SettingsSecurityScreen(
                         Text(text = stringResource(R.string.settings_security_title))
                     },
                     navigationIcon = {
-                        AppNavigationIcon(
+                        AppNavigationButton(
                             icon = Icons.ArrowBack,
                             onClick = { onEvent(Event.OnNavigateBack) },
                             contentDescription = stringResource(com.dertefter.design.R.string.design_back_content_desc)

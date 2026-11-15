@@ -33,7 +33,7 @@ import com.dertefter.data.dto.ebdi.EbdiUser
 import com.dertefter.design.components.PullToRefreshIndicator
 import com.dertefter.design.components.appbar.AppTopBar
 import com.dertefter.design.components.appbar.AppTopBarStyle
-import com.dertefter.design.components.buttons.AppNavigationIcon
+import com.dertefter.design.components.buttons.AppNavigationButton
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
@@ -114,12 +114,12 @@ fun EdbiUsersScreen(
                     },
                     scrollBehavior = scrollBehavior,
                     navigationIcon = {
-                        AppNavigationIcon(
+                        AppNavigationButton(
                             onClick = { onEvent(Event.OnBackClick) }
                         )
                     },
                     actions = {
-                        AppNavigationIcon(
+                        AppNavigationButton(
                             icon = if (isGrid) Icons.List else Icons.GridView,
                             onClick = { isGrid = !isGrid }
                         )

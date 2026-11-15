@@ -33,7 +33,7 @@ import com.dertefter.data.dto.followers.FollowerUserDto
 import com.dertefter.design.components.PullToRefreshIndicator
 import com.dertefter.design.components.appbar.AppTopBar
 import com.dertefter.design.components.appbar.AppTopBarStyle
-import com.dertefter.design.components.buttons.AppNavigationIcon
+import com.dertefter.design.components.buttons.AppNavigationButton
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.spacing
 import com.dertefter.followers.R
@@ -132,14 +132,14 @@ fun FollowersScreen(
                     title = {},
                     scrollBehavior = scrollBehavior,
                     navigationIcon = {
-                        AppNavigationIcon(
+                        AppNavigationButton(
                             onClick = {
                                 onEvent(Event.OnBackClick)
                             }
                         )
                     },
                     actions = {
-                        AppNavigationIcon(
+                        AppNavigationButton(
                             icon = if (isGrid) Icons.List else Icons.GridView,
                             onClick = {
                                 isGrid = !isGrid

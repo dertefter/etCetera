@@ -29,7 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.dertefter.comments.R
 import com.dertefter.data.dto.comments.CommentDto
 import com.dertefter.data.dto.feed.AuthorDto
-import com.dertefter.design.components.buttons.AppNavigationIcon
+import com.dertefter.design.components.buttons.AppNavigationButton
 import com.dertefter.design.icons.Icons
 import com.dertefter.design.theme.AppTheme
 import com.dertefter.design.theme.spacing
@@ -68,7 +68,7 @@ fun CommentsScreen(
 
 
                 Box {
-                    AppNavigationIcon(
+                    AppNavigationButton(
                         onClick = { showMenu = true },
                         containerColor = MaterialTheme.colorScheme.surfaceVariant,
                         contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -116,7 +116,7 @@ fun CommentsScreen(
                     color = MaterialTheme.colorScheme.onSurface,
                 )
 
-                AppNavigationIcon(
+                AppNavigationButton(
                     onClick = {
                         onEvent(Event.OnNewComment)
                     },
