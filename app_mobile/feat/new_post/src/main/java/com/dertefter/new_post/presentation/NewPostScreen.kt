@@ -37,7 +37,6 @@ import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
@@ -72,6 +71,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.dertefter.design.components.buttons.AppNavigationButton
 import com.dertefter.design.components.loading.AppLoadingIndicator
 import com.dertefter.design.components.loading.Shimmer
 import com.dertefter.design.components.poll.NewPollCard
@@ -287,24 +287,19 @@ fun NewPostScreen(
 
 
 
-                FilledIconButton(
+                AppNavigationButton(
                     onClick = { onEvent(Event.OnSavePost) },
-                    shape = MaterialTheme.shapes.extraLargeIncreased,
-                    enabled = (uiState.content.isNotBlank()
-                            || uiState.uploads.isNotEmpty()
-                            || !uiState.isRewritingWithAi
-                            || ((uiState.poll != null)) && (uiState.poll.isReady()))
-                            || (uiState.originalPost != null)
-                ) {
-                    if (uiState.isUploadingPost) {
-                        AppLoadingIndicator(
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            modifier = Modifier.size(34.dp)
-                        )
-                    } else {
-                        Icon(imageVector = Icons.Check, contentDescription = stringResource(R.string.action_save))
-                    }
-                }
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                    icon = Icons.Check,
+                    contentDescription = stringResource(R.string.action_save),
+                    enabled = (!uiState.isRewritingWithAi && !uiState.isUploadingPost) && (
+                            uiState.content.isNotBlank()
+                                    || uiState.uploads.isNotEmpty()
+                                    || (uiState.poll != null && uiState.poll.isReady())
+                                    || uiState.originalPost != null
+                            )
+                )
             }
         },
     ) { contentPadding ->
