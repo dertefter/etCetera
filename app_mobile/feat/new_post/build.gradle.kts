@@ -60,4 +60,5 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     api(libs.androidx.lifecycle.viewmodel)
     api(libs.kotlinx.coroutines.core)
+    implementation(libs.androidx.work.runtime.ktx)
 }
