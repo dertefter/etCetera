@@ -5,10 +5,17 @@ import android.net.Uri
 import android.webkit.MimeTypeMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.dertefter.ai.model.AiError
 import com.dertefter.ai.prompt.Prompt
 import com.dertefter.ai.repository.AiRepository
 import com.dertefter.data.dto.feed.PostDto
+import com.dertefter.data.dto.feed.SpanDto
+import com.dertefter.data.dto.new_post.NewPollDto
+import com.dertefter.data.dto.new_post.NewPollOptionDto
+import com.dertefter.data.dto.new_post.NewPostRequestDto
 import com.dertefter.data.repository.AttachmentsRepository
 import com.dertefter.design.components.poll.NewPollOptionUiModel
 import com.dertefter.design.components.poll.NewPollUiModel
@@ -19,6 +26,7 @@ import com.dertefter.new_post.presentation.Event
 import com.dertefter.new_post.presentation.UiState
 import com.dertefter.new_post.presentation.Upload
 import com.dertefter.new_post.presentation.UploadStatus
+import com.dertefter.new_post.worker.ScheduledPostWorker
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -27,8 +35,12 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.json.Json
 import java.io.File
 import java.util.UUID
+import java.util.concurrent.TimeUnit
 
 @Suppress("unchecked_cast")
 abstract class BaseNewPostViewModel(
@@ -114,6 +126,7 @@ abstract class BaseNewPostViewModel(
             is Event.OnPollMultipleChoiceChanged -> _poll.update { it?.copy(isMultipleChoice = event.isMultipleChoice) }
             is Event.OnRewriteWithAi -> rewriteWithAi(event.prompt)
             Event.OnSavePost -> savePost()
+            is Event.OnSchedulePost -> schedulePost(event.scheduledTimeMillis)
             Event.OnRestoreDraft -> {}
             Event.OnDeleteDraft -> {}
         }
@@ -294,6 +307,79 @@ abstract class BaseNewPostViewModel(
     }
 
     abstract fun savePost()
+
+    protected open fun schedulePost(scheduledTimeMillis: Long) {}
+
+    protected fun buildPostRequest(wallRecipientId: String?): NewPostRequestDto {
+        val pollDto = _poll.value?.let { poll ->
+            NewPollDto(
+                question = poll.title,
+                options = poll.questions.map { NewPollOptionDto(it.text) },
+                multipleChoice = poll.isMultipleChoice
+            )
+        }
+        val attachmentIds = _uploads.value
+            .filter { it.uploadStatus == UploadStatus.SUCCESS }
+            .mapNotNull { it.attachment?.id }
+
+        return NewPostRequestDto(
+            content = _content.value,
+            spans = _spans.value.map {
+                SpanDto(
+                    it.type,
+                    it.length,
+                    it.offset,
+                    it.username,
+                    it.tag,
+                    it.url
+                )
+            },
+            poll = pollDto,
+            attachmentIds = attachmentIds,
+            wallRecipientId = wallRecipientId
+        )
+    }
+
+    /**
+     * WorkInput data is limited to primitives, hence the DTOs travel as json strings.
+     */
+    protected fun enqueueScheduledPost(
+        scheduledTimeMillis: Long,
+        request: NewPostRequestDto,
+        repostId: String? = null,
+    ) {
+        val json = Json { encodeDefaults = true }
+
+        val inputData = Data.Builder()
+            .putString(ScheduledPostWorker.KEY_CONTENT, request.content)
+            .putString(
+                ScheduledPostWorker.KEY_SPANS,
+                json.encodeToString(ListSerializer(SpanDto.serializer()), request.spans)
+            )
+            .putString(
+                ScheduledPostWorker.KEY_ATTACHMENT_IDS,
+                json.encodeToString(
+                    ListSerializer(String.serializer()),
+                    request.attachmentIds
+                )
+            )
+            .putString(ScheduledPostWorker.KEY_WALL_RECIPIENT_ID, request.wallRecipientId)
+            .apply {
+                request.poll?.let {
+                    putString(ScheduledPostWorker.KEY_POLL, json.encodeToString(NewPollDto.serializer(), it))
+                }
+                repostId?.let { putString(ScheduledPostWorker.KEY_REPOST_ID, it) }
+            }
+            .build()
+
+        val delayMillis = (scheduledTimeMillis - System.currentTimeMillis()).coerceAtLeast(0L)
+        val workRequest = OneTimeWorkRequestBuilder<ScheduledPostWorker>()
+            .setInitialDelay(delayMillis, TimeUnit.MILLISECONDS)
+            .setInputData(inputData)
+            .build()
+
+        WorkManager.getInstance(application).enqueue(workRequest)
+    }
 
     protected fun clearAll() {
         _content.value = ""

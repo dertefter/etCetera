@@ -9,7 +9,6 @@ import com.dertefter.data.dto.draft.DraftDto
 import com.dertefter.data.dto.feed.SpanDto
 import com.dertefter.data.dto.new_post.NewPollDto
 import com.dertefter.data.dto.new_post.NewPollOptionDto
-import com.dertefter.data.dto.new_post.NewPostRequestDto
 import com.dertefter.data.dto.upload.AttachmentUploadResponseDto
 import com.dertefter.data.repository.AttachmentsRepository
 import com.dertefter.data.repository.PostRepository
@@ -151,36 +150,8 @@ class NewPostViewModel(
     override fun savePost() {
         viewModelScope.launch {
             isUploadingPost.value = true
-            val pollDto = poll.value?.let { poll ->
-                NewPollDto(
-                    question = poll.title,
-                    options = poll.questions.map { NewPollOptionDto(it.text) },
-                    multipleChoice = poll.isMultipleChoice
-                )
-            }
-            val attachmentIds = uploads.value
-                .filter { it.uploadStatus == UploadStatus.SUCCESS }
-                .mapNotNull { it.attachment?.id }
-
-            val request = NewPostRequestDto(
-                content = content.value,
-                spans = spans.value.map {
-                    SpanDto(
-                        it.type,
-                        it.length,
-                        it.offset,
-                        it.username,
-                        it.tag,
-                        it.url
-                    )
-                },
-                poll = pollDto,
-                attachmentIds = attachmentIds,
-                wallRecipientId = wallRecipientId
-            )
-
+            val request = buildPostRequest(wallRecipientId)
             val result = postRepository.newPost(request)
-
             if (result.isSuccess) {
                 isPostSaved = true
                 val draftKey = "post_${wallRecipientId ?: "main"}"
@@ -190,6 +161,18 @@ class NewPostViewModel(
             }
             isUploadingPost.value = false
         }
+    }
+
+    override fun schedulePost(scheduledTimeMillis: Long) {
+        enqueueScheduledPost(scheduledTimeMillis, buildPostRequest(wallRecipientId))
+
+        isPostSaved = true
+        val draftKey = "post_${wallRecipientId ?: "main"}"
+        viewModelScope.launch(Dispatchers.IO) {
+            postRepository.savePostDraft(DraftDto(wallRecipientId = wallRecipientId), draftKey)
+        }
+        clearAll()
+        navigator.hideBottomSheet()
     }
 
     override fun onCleared() {

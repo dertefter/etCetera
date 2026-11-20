@@ -1,8 +1,13 @@
 package com.dertefter.new_post.presentation
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateFloatAsState
@@ -60,7 +65,10 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextRange
@@ -82,6 +90,7 @@ import com.dertefter.design.theme.bottomNavHeight
 import com.dertefter.design.theme.spacing
 import com.dertefter.new_post.R
 import com.dertefter.new_post.presentation.component.PromptSelector
+import com.dertefter.new_post.presentation.component.SchedulePostDialog
 import com.dertefter.new_post.presentation.component.UploadCard
 import com.dertefter.new_post.presentation.mapper.toOriginalPostUiModel
 
@@ -133,6 +142,28 @@ fun NewPostScreen(
     var linkUrlInput by remember { mutableStateOf("") }
 
     var showPromptSelector by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+    val hapticFeedback = LocalHapticFeedback.current
+    var showScheduleDialog by remember { mutableStateOf(false) }
+
+    // A scheduled post is published by a worker, so it is announced through a notification. On
+    val postScheduledMessage = stringResource(R.string.post_scheduled_toast)
+    val notificationPermissionDeniedMessage =
+        stringResource(R.string.schedule_notification_permission_denied)
+
+    // The worker publishes the post while the app is closed and reports the result through a
+    // notification, which on Android 13+ needs the POST_NOTIFICATIONS runtime permission. It is
+    // requested as soon as the user schedules something, while the context is still obvious.
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        RequestPermission()
+    ) { granted ->
+        if (!granted) {
+            Toast.makeText(context, notificationPermissionDeniedMessage, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    val canSchedulePost = screenMode == ScreenMode.NEW_POST || screenMode == ScreenMode.REPOST
 
     LaunchedEffect(uiState.isRewritingWithAi, uiState.content.isEmpty()) {
         if (uiState.isRewritingWithAi || uiState.content.isEmpty()) showPromptSelector = false
@@ -205,6 +236,23 @@ fun NewPostScreen(
             dismissButton = {
                 TextButton(onClick = { showLinkDialog = false }) {
                     Text(text = stringResource(R.string.action_cancel))
+                }
+            }
+        )
+    }
+
+    if (showScheduleDialog) {
+        SchedulePostDialog(
+            onDismiss = { showScheduleDialog = false },
+            onConfirm = { scheduledTimeMillis ->
+                showScheduleDialog = false
+                onEvent(Event.OnSchedulePost(scheduledTimeMillis))
+                Toast.makeText(context, postScheduledMessage, Toast.LENGTH_SHORT).show()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                    context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) !=
+                    PackageManager.PERMISSION_GRANTED
+                ) {
+                    notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                 }
             }
         )
@@ -289,6 +337,12 @@ fun NewPostScreen(
 
                 AppNavigationButton(
                     onClick = { onEvent(Event.OnSavePost) },
+                    onLongClick = if (canSchedulePost) {
+                        {
+                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                            showScheduleDialog = true
+                        }
+                    } else null,
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary,
                     icon = Icons.Check,
