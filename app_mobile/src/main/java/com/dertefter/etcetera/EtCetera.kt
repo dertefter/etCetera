@@ -8,10 +8,15 @@ import coil3.SingletonImageLoader
 import coil3.gif.AnimatedImageDecoder
 import coil3.gif.GifDecoder
 import coil3.request.crossfade
+import com.dertefter.data.repository.PostRepository
 import com.dertefter.etcetera.di.AppGraph
+import com.dertefter.new_post.worker.PostRepositoryProvider
 import dev.zacsweers.metro.createGraphFactory
 
-class EtCetera : Application(), SingletonImageLoader.Factory {
+class EtCetera : Application(), SingletonImageLoader.Factory, PostRepositoryProvider {
+
+    override val postRepository: PostRepository
+        get() = appGraph.postRepository
 
     val appGraph: AppGraph by lazy {
         createGraphFactory<AppGraph.Factory>().create(this)
