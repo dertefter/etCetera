@@ -35,6 +35,8 @@ sealed interface Event {
 
     data object OnSavePost : Event
 
+    data class OnSchedulePost(val scheduledTimeMillis: Long) : Event
+
     data object OnRestoreDraft : Event
 
     data object OnDeleteDraft : Event
