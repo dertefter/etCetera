@@ -399,7 +399,7 @@ object NetworkModule {
     @EbdiRetrofit
     fun provideEbdiRetrofit(okHttpClient: OkHttpClient, json: Json): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://itdsdk.qzz.io/api/ebdi/")
+            .baseUrl("https://ebdi.firezka.lol/api/ebdi/")
             .client(okHttpClient)
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
