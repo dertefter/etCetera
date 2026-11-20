@@ -32,4 +32,22 @@
     <string name="comment_placeholder" tools:ignore="TypographyEllipsis">Комментарий...</string>
     <string name="restore_draft">Восстановить черновик</string>
 
+    <string name="schedule_dialog_title">Запланировать публикацию</string>
+    <string name="schedule_step_date">Дата</string>
+    <string name="schedule_step_time">Время</string>
+    <string name="schedule_action_next">Далее</string>
+    <string name="schedule_action_back">Назад</string>
+    <string name="schedule_action_confirm">Запланировать</string>
+    <string name="schedule_selected_datetime">Опубликовать %1$s в %2$s</string>
+    <string name="schedule_error_time_in_past">Выбранное время уже прошло</string>
+    <string name="post_scheduled_toast">Публикация запланирована</string>
+    <string name="schedule_notification_permission_denied">Без доступа к уведомлениям вы не узнаете результат запланированной публикации</string>
+
+    <string name="notification_scheduled_posts_channel_name">Запланированные публикации</string>
+    <string name="notification_scheduled_posts_channel_description">Результат запланированных публикаций</string>
+    <string name="notification_post_published_title">Опубликовано</string>
+    <string name="notification_post_published_text">Запланированная публикация опубликована</string>
+    <string name="notification_post_failed_title">Не опубликовано</string>
+    <string name="notification_post_failed_text">Не удалось опубликовать запланированную публикацию</string>
+
 </resources>
