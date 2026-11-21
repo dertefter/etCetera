@@ -168,5 +168,16 @@ You will need:
 - To all alpha/beta testers and members of the [Telegram channel](https://t.me/etcetera_app) for their feedback and bug reports
 - [Cola Bochkari](https://bochkari.ru/brand-portfolio/beverages/cola_bochkari/) (for being so delicious!)
 
+## Star History
+
+<a href="https://www.star-history.com/?repos=dertefter%2Fetcetera&type=date&releases=&legend=bottom-right">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=dertefter/etcetera&type=date&theme=dark&legend=bottom-right" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=dertefter/etcetera&type=date&legend=bottom-right" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=dertefter/etcetera&type=date&legend=bottom-right" />
+ </picture>
+</a>
+
+
 ## Support me
 [https://dalink.to/dertefter](https://dalink.to/dertefter)

@@ -169,5 +169,15 @@
 - Всем тестировщикам альфа/бета версий, а также участникам [Telegram-канала](https://t.me/etcetera_app) за отзывы и отчёты об ошибках
 - [Cola Bochkari](https://bochkari.ru/brand-portfolio/beverages/cola_bochkari/) (за то, что она очень вкусная!)
 
+## Звёздочки
+
+<a href="https://www.star-history.com/?repos=dertefter%2Fetcetera&type=date&releases=&legend=bottom-right">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=dertefter/etcetera&type=date&theme=dark&legend=bottom-right" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=dertefter/etcetera&type=date&legend=bottom-right" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=dertefter/etcetera&type=date&legend=bottom-right" />
+ </picture>
+</a>
+
 ## Поддержать меня
 [https://dalink.to/dertefter](https://dalink.to/dertefter)
