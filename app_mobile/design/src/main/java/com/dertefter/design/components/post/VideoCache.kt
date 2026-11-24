@@ -26,7 +26,14 @@ object VideoCache {
     }
 
     fun createMediaSourceFactory(context: Context): DefaultMediaSourceFactory {
-        val httpDataSourceFactory = DefaultHttpDataSource.Factory()
+        val prefs = context.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
+        val accessToken = prefs.all.keys.firstOrNull { it.startsWith("access_token_") }?.let { prefs.getString(it, null) }
+
+        val httpDataSourceFactory = DefaultHttpDataSource.Factory().apply {
+            accessToken?.let { token ->
+                setDefaultRequestProperties(mapOf("Authorization" to "Bearer $token"))
+            }
+        }
         val cacheDataSourceFactory = CacheDataSource.Factory()
             .setCache(getCache(context))
             .setUpstreamDataSourceFactory(httpDataSourceFactory)
