@@ -89,6 +89,7 @@ include(":app_mobile:feat:event_viewer")
 include(":app_mobile:feat:onboarding")
 include(":app_mobile:feat:pin_changer")
 include(":app_mobile:feat:oss")
+include(":app_mobile:feat:messanger")
 
 //wearable
 include(":app_wearable")

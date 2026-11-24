@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="chats_title">Чаты</string>
+    <string name="chats_empty_state">Чатов пока нет</string>
+    <string name="chats_load_error">Ошибка загрузки: %1$s</string>
+    <string name="chats_append_error">Ошибка загрузки дополнительных чатов</string>
+</resources>

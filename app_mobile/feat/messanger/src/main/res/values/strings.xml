@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="chats_title">Chats</string>
+    <string name="chats_empty_state">No chats yet</string>
+    <string name="chats_load_error">Loading error: %1$s</string>
+    <string name="chats_append_error">Error loading more chats</string>
+</resources>
