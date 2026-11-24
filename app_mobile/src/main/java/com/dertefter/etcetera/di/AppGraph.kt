@@ -11,6 +11,7 @@ import com.dertefter.navigation.Navigator
 import dev.zacsweers.metro.DependencyGraph
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metrox.viewmodel.ViewModelGraph
+import okhttp3.OkHttpClient
 
 @DependencyGraph(AppScope::class)
 interface AppGraph : ViewModelGraph {
@@ -20,6 +21,7 @@ interface AppGraph : ViewModelGraph {
     val searchRepository: SearchRepository
     val authRepository: AuthRepository
     val tokenManager: TokenManager
+    val okHttpClient: OkHttpClient
     val viewModelFactory: dev.zacsweers.metrox.viewmodel.MetroViewModelFactory
 
     @DependencyGraph.Factory

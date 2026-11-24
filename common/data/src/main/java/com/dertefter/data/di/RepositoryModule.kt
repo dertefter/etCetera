@@ -54,4 +54,7 @@ interface RepositoryModule {
 
     @Binds
     fun bindEbdiRepository(impl: EbdiRepositoryImpl): EbdiRepository
+
+    @Binds
+    fun bindMessangerRepository(impl: MessangerRepositoryImpl): MessangerRepository
 }
