@@ -24,6 +24,9 @@ import com.dertefter.data.dto.followers.FollowersResponseDataDto
 import com.dertefter.data.dto.me.UpdateMeRequestDto
 import com.dertefter.data.dto.me.UpdateMeResponse
 import com.dertefter.data.dto.me.UpdatePrivacyRequestDto
+import com.dertefter.data.dto.messenger.ChatsResponseDto
+import com.dertefter.data.dto.messenger.FileLinksResponseDto
+import com.dertefter.data.dto.messenger.MessagesResponseDto
 import com.dertefter.data.dto.new_post.EditPostRequestDto
 import com.dertefter.data.dto.new_post.EditPostResponseDto
 import com.dertefter.data.dto.new_post.NewPostRequestDto
@@ -140,5 +143,11 @@ interface RemoteDataSource {
     suspend fun deletePin(): Result<Unit>
 
     suspend fun createReport(reportRequestDto: ReportRequestDto): Result<ReportDataDto>
+
+    suspend fun getMessengerChats(limit: Int = 100, before: String? = null): Result<ChatsResponseDto>
+
+    suspend fun getMessengerMessages(chatId: String, limit: Int = 50, before: String? = null): Result<MessagesResponseDto>
+
+    suspend fun getFileLinks(chatId: String, fileIds: List<String>): Result<FileLinksResponseDto>
 
 }

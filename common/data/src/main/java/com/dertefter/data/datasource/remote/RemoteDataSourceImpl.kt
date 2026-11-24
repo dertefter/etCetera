@@ -25,6 +25,10 @@ import com.dertefter.data.dto.me.SavePinRequestDto
 import com.dertefter.data.dto.me.UpdateMeRequestDto
 import com.dertefter.data.dto.me.UpdateMeResponse
 import com.dertefter.data.dto.me.UpdatePrivacyRequestDto
+import com.dertefter.data.dto.messenger.ChatsResponseDto
+import com.dertefter.data.dto.messenger.FileLinksRequestDto
+import com.dertefter.data.dto.messenger.FileLinksResponseDto
+import com.dertefter.data.dto.messenger.MessagesResponseDto
 import com.dertefter.data.dto.new_post.EditPostRequestDto
 import com.dertefter.data.dto.new_post.EditPostResponseDto
 import com.dertefter.data.dto.new_post.NewPostRequestDto
@@ -404,6 +408,24 @@ class RemoteDataSourceImpl(
     override suspend fun deletePin(): Result<Unit> {
         return runCatching {
             apiService.deletePin().handleUnitResponse().getOrThrow()
+        }
+    }
+
+    override suspend fun getMessengerChats(limit: Int, before: String?): Result<ChatsResponseDto> {
+        return runCatching {
+            apiService.messengerChats(limit = limit, before = before).handleResponse { it }.getOrThrow()
+        }
+    }
+
+    override suspend fun getMessengerMessages(chatId: String, limit: Int, before: String?): Result<MessagesResponseDto> {
+        return runCatching {
+            apiService.messengerMessages(chatId = chatId, limit = limit, before = before).handleResponse { it }.getOrThrow()
+        }
+    }
+
+    override suspend fun getFileLinks(chatId: String, fileIds: List<String>): Result<FileLinksResponseDto> {
+        return runCatching {
+            apiService.getFileLinks(chatId = chatId, body = FileLinksRequestDto(fileIds)).handleResponse { it }.getOrThrow()
         }
     }
 }
