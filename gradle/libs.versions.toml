@@ -1,7 +1,7 @@
 [versions]
 # Build and Plugins
-agp = "9.5.1"
-animation = "1.13.0-rc01"
+agp = "9.5.2"
+animation = "1.13.0"
 annotation = "1.11.0"
 annotationExperimental = "1.6.0"
 annotations = "26.1.0"
@@ -9,14 +9,14 @@ coilGif = "3.6.3"
 composefadingedges = "1.0.4"
 composeWebview = "1.9.1"
 core = "1.7.0"
-foundation = "1.13.0-rc01"
+foundation = "1.13.0"
 glanceVersion = "1.2.0"
 graphicsShapes = "1.1.0"
 kotlin = "2.4.21"
 kotlinxCoroutinesCore = "1.11.0"
-kotlinxSerializationCore = "1.12.0"
+kotlinxSerializationCore = "1.13.0"
 ksp = "2.3.12"
-litertlmAndroid = "0.19.1"
+litertlmAndroid = "0.20.0"
 lottie = "6.7.1"
 lottieCompose = "6.7.1"
 materialKolorCore = "6.0.0"
@@ -31,14 +31,14 @@ coreKtx = "1.19.1"
 coreSplashscreen = "1.2.0"
 datastoreCore = "1.3.0"
 datastorePreferences = "1.3.0"
-lifecycleRuntimeKtx = "2.11.0"
+lifecycleRuntimeKtx = "2.11.1"
 paginator = "10.3.1"
 palette = "1.1.0"
 
 # Jetpack Compose
 activityCompose = "1.13.0"
-composeBomAlpha = "2026.11.00"
-navigation3 = "1.2.1"
+composeBomAlpha = "2026.11.01"
+navigation3 = "1.2.2"
 
 # UI Libraries
 coilCompose = "3.6.3"
@@ -46,27 +46,27 @@ composemediaplayer = "0.11.4"
 haze = "2.1.0"
 parser = "0.10.0"
 roomCommon = "2.8.5"
-runtime = "1.13.0-rc01"
-runtimeAnnotation = "1.13.0-rc01"
+runtime = "1.13.0"
+runtimeAnnotation = "1.13.0"
 sqlite = "2.7.1"
 transition = "1.7.2"
-uiUnit = "1.13.0-rc01"
-uiUtil = "1.13.0-rc01"
+uiUnit = "1.13.0"
+uiUtil = "1.13.0"
 zoomable = "2.16.0"
-animationGraphics = "1.12.1"
-uiTextGoogleFonts = "1.12.1"
+animationGraphics = "1.13.0"
+uiTextGoogleFonts = "1.13.0"
 
 # Wear OS
-composeWear = "1.7.1"
+composeWear = "1.7.2"
 playServicesWearable = "20.0.1"
 wearRemoteInteractions = "1.2.0"
 workRuntimeKtx = "2.12.0"
 
 # Dependency Injection
-metro = "1.5.2"
+metro = "1.6.0"
 
 # Networking and Serialization
-kotlinxSerializationJson = "1.12.0"
+kotlinxSerializationJson = "1.13.0"
 okhttpUrlconnection = "5.5.1"
 retrofit = "3.0.0"
 
@@ -81,7 +81,7 @@ glance = "1.2.0"
 
 # Testing
 kotlinxCoroutines = "1.11.0"
-mockk = "1.14.11"
+mockk = "1.14.12"
 
 # Licenses
 droibitOssLicenses = "0.10.0"
@@ -109,6 +109,7 @@ androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-
 androidx-media3-common = { module = "androidx.media3:media3-common", version.ref = "media3Common" }
 androidx-media3-database = { module = "androidx.media3:media3-database", version.ref = "media3Common" }
 androidx-media3-datasource = { module = "androidx.media3:media3-datasource", version.ref = "media3Common" }
+androidx-media3-datasource-okhttp = { module = "androidx.media3:media3-datasource-okhttp", version.ref = "media3Common" }
 androidx-navigation-common = { module = "androidx.navigation:navigation-common", version.ref = "navigationCommon" }
 androidx-palette = { module = "androidx.palette:palette", version.ref = "palette" }
 androidx-room-common = { module = "androidx.room:room-common", version.ref = "roomCommon" }
@@ -211,7 +212,7 @@ androidx-glance-appwidget = { group = "androidx.glance", name = "glance-appwidge
 androidx-glance-preview = { group = "androidx.glance", name = "glance-preview", version.ref = "glance" }
 
 # Testing
-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version = "1.12.1" }
+compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version = "1.13.0" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 

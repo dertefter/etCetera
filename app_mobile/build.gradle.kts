@@ -89,6 +89,7 @@ dependencies {
     implementation(project(":app_mobile:feat:new_post"))
     implementation(project(":app_mobile:feat:followers"))
     implementation(project(":app_mobile:feat:notifications"))
+    implementation(project(":app_mobile:feat:messanger"))
     implementation(project(":app_mobile:feat:banner_edit"))
     implementation(project(":app_mobile:feat:crash_reports"))
     implementation(project(":app_mobile:feat:post"))
@@ -161,5 +162,6 @@ dependencies {
     implementation(libs.material.kolor.core)
     implementation(libs.coil.core)
     implementation(libs.coil)
+    implementation(libs.coil.network.okhttp)
     implementation(libs.core.ktx)
 }

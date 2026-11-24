@@ -69,6 +69,7 @@ dependencies {
     implementation(libs.androidx.media3.common)
     implementation(libs.androidx.media3.database)
     implementation(libs.androidx.media3.datasource)
+    implementation(libs.androidx.media3.datasource.okhttp)
     runtimeOnly(libs.androidx.transition)
     implementation(libs.coil.compose.core)
     implementation(libs.coil.core)
