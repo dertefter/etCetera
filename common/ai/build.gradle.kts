@@ -13,7 +13,7 @@ plugins {
 
 android {
     namespace = "com.dertefter.ai"
-    compileSdk { version = release(37) { minorApiLevel = 1 } }
+    compileSdk { version = release(37) { minorApiLevel = 2 } }
 
     defaultConfig {
         minSdk = 27

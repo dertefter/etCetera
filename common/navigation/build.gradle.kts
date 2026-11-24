@@ -13,7 +13,7 @@ kotlin {
 
 android {
     namespace = "com.dertefter.navigation"
-    compileSdk { version = release(37) { minorApiLevel = 1 } }
+    compileSdk { version = release(37) { minorApiLevel = 2 } }
 
     defaultConfig {
         minSdk = 27
