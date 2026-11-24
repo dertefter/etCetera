@@ -51,6 +51,7 @@
     <string name="app_main_tab_feed">Лента</string>
     <string name="app_main_tab_search">Поиск</string>
     <string name="app_main_tab_web">Ивент</string>
+    <string name="app_main_tab_chats">Чаты</string>
     <string name="app_main_tab_notifications">Уведы</string>
     <string name="app_main_tab_profile">Профиль</string>
     <string name="shortcut_feed">Главная</string>

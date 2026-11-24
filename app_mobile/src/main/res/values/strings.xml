@@ -50,6 +50,7 @@
     <string name="app_main_tab_feed">Feed</string>
     <string name="app_main_tab_search">Search</string>
     <string name="app_main_tab_web">Event</string>
+    <string name="app_main_tab_chats">Chats</string>
     <string name="app_main_tab_notifications">Notifis</string>
     <string name="app_main_tab_profile">Profile</string>
     <string name="shortcut_feed">Home</string>
