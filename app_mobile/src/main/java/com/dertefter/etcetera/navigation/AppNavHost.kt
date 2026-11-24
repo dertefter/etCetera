@@ -33,6 +33,8 @@ import com.dertefter.new_post.NewCommentRoute
 import com.dertefter.new_post.NewPostRoute
 import com.dertefter.new_post.RepostRoute
 import com.dertefter.notifications.NotificationsRoute
+import com.dertefter.messanger.ChatListRoute
+import com.dertefter.messanger.chat.ChatRoute
 import com.dertefter.post.PostRoute
 import com.dertefter.report.ReportRoute
 import com.dertefter.search.SearchRoute
@@ -136,6 +138,8 @@ fun RouteContent(route: Routes) {
             is Routes.AttachmentsViewer -> AttachmentViewerRoute(route.attachments, route.viewPosition)
             is Routes.Followers -> FollowersRoute(route.userId, route.startTabIsFollowing)
             is Routes.Notifications -> NotificationsRoute(route.showBackButton)
+            is Routes.ChatList -> ChatListRoute(route.showBackButton)
+            is Routes.Chat -> ChatRoute(route.chatId)
             is Routes.BannerEdit -> BannerEditRoute()
             is Routes.EdbiUsers -> EdbiUsers(route.clan)
             is Routes.CrashReports -> CrashReportsRoute()

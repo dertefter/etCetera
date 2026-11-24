@@ -39,5 +39,7 @@ fun getAppEntryProvider(): (NavKey) -> NavEntry<NavKey> = entryProvider {
     entry<Routes.Report> { RouteContent(it) }
     entry<Routes.EventViewer> { RouteContent(it) }
     entry<Routes.PinChanger> { RouteContent(it) }
+    entry<Routes.ChatList> { RouteContent(it) }
+    entry<Routes.Chat> { RouteContent(it) }
 
 }

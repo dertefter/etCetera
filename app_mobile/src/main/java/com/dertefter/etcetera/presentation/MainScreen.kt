@@ -80,6 +80,7 @@ enum class MainTab(
 ) {
     Feed(R.string.app_main_tab_feed, { Icons.Home }, { Icons.HomeFilled }),
     EventViewer(R.string.app_main_tab_web, { Icons.EventAvailable }, { Icons.EventAvailable }),
+    Chats(R.string.app_main_tab_chats, { Icons.Comment }, { Icons.CommentFilled }),
     Notifications(R.string.app_main_tab_notifications, { Icons.Notifications }, { Icons.NotificationsFilled }),
     Profile(R.string.app_main_tab_profile, { Icons.User }, { Icons.UserFilled })
 }
@@ -162,6 +163,7 @@ fun MainScreen(
     val authBackStack = rememberNavBackStack(Routes.Auth)
     val feedBackStack = rememberNavBackStack(Routes.Feed)
     val eventViewerBackStack = rememberNavBackStack(Routes.EventViewer)
+    val chatsBackStack = rememberNavBackStack(Routes.ChatList(showBackButton = false))
     val notificationsBackStack = rememberNavBackStack(Routes.Notifications(showBackButton = false))
     val profileBackStack = rememberNavBackStack(
         if (uiState.meUserId != null) Routes.User(uiState.meUserId, showBackButton = false) else Routes.Auth
@@ -177,6 +179,7 @@ fun MainScreen(
 
     val onBoardingEntries = rememberDecoratedNavEntries(onBoardingBackStack, decorators, appEntryProvider)
     val feedEntries = rememberDecoratedNavEntries(feedBackStack, decorators, appEntryProvider)
+    val chatsEntries = rememberDecoratedNavEntries(chatsBackStack, decorators, appEntryProvider)
     val notificationsEntries = rememberDecoratedNavEntries(notificationsBackStack, decorators, appEntryProvider)
     val profileEntries = rememberDecoratedNavEntries(profileBackStack, decorators, appEntryProvider)
     val authEntries = rememberDecoratedNavEntries(authBackStack, decorators, appEntryProvider)
@@ -188,6 +191,7 @@ fun MainScreen(
         isOnBoarding -> onBoardingEntries
         uiState.currentLogin == null -> authEntries
         selectedTab == MainTab.Feed -> feedEntries
+        selectedTab == MainTab.Chats -> chatsEntries
         selectedTab == MainTab.Notifications -> notificationsEntries
         selectedTab == MainTab.Profile -> profileEntries
         selectedTab == MainTab.EventViewer -> eventEntries
@@ -201,6 +205,7 @@ fun MainScreen(
         isOnBoarding -> onBoardingBackStack
         uiState.currentLogin == null -> authBackStack
         selectedTab == MainTab.Feed -> feedBackStack
+        selectedTab == MainTab.Chats -> chatsBackStack
         selectedTab == MainTab.Notifications -> notificationsBackStack
         selectedTab == MainTab.Profile -> profileBackStack
         selectedTab == MainTab.EventViewer -> eventViewerBackStack
@@ -211,6 +216,8 @@ fun MainScreen(
         if (uiState.currentLogin != lastSeenLogin) {
             feedBackStack.clear()
             feedBackStack.add(Routes.Feed)
+            chatsBackStack.clear()
+            chatsBackStack.add(Routes.ChatList(showBackButton = false))
             notificationsBackStack.clear()
             notificationsBackStack.add(Routes.Notifications(showBackButton = false))
             if (uiState.currentLogin == null) {
@@ -305,6 +312,7 @@ fun MainScreen(
             val targetBackStack = when (tab) {
                 MainTab.Feed -> feedBackStack
                 MainTab.EventViewer -> eventViewerBackStack
+                MainTab.Chats -> chatsBackStack
                 MainTab.Notifications -> notificationsBackStack
                 MainTab.Profile -> profileBackStack
             }
@@ -518,6 +526,14 @@ fun MainScreen(
                                 val root = feedBackStack.first()
                                 feedBackStack.clear()
                                 feedBackStack.add(root)
+                            }
+                        }
+                        is Routes.ChatList -> {
+                            selectedTab = MainTab.Chats
+                            if (chatsBackStack.size > 1) {
+                                val root = chatsBackStack.first()
+                                chatsBackStack.clear()
+                                chatsBackStack.add(root)
                             }
                         }
                         is Routes.Notifications -> {
