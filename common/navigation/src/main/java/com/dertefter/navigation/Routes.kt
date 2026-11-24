@@ -57,6 +57,16 @@ sealed interface Routes : NavKey {
     ) : Routes
 
     @Serializable
+    data class ChatList(
+        val showBackButton: Boolean = true
+    ) : Routes
+
+    @Serializable
+    data class Chat(
+        val chatId: String
+    ) : Routes
+
+    @Serializable
     data object BannerEdit : Routes
 
     @Serializable
