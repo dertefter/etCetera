@@ -6,7 +6,9 @@ enum class PageType {
     POST,
     COMMENT,
     USER,
-    NOTIFICATION
+    NOTIFICATION,
+    CHAT,
+    MESSAGE
 }
 
 @Entity(
