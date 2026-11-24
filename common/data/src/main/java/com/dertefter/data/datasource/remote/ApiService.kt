@@ -28,6 +28,10 @@ import com.dertefter.data.dto.me.UpdatePrivacyRequestDto
 import com.dertefter.data.dto.new_post.EditPostRequestDto
 import com.dertefter.data.dto.new_post.EditPostResponseDto
 import com.dertefter.data.dto.new_post.NewPostRequestDto
+import com.dertefter.data.dto.messenger.ChatsResponseDto
+import com.dertefter.data.dto.messenger.FileLinksRequestDto
+import com.dertefter.data.dto.messenger.FileLinksResponseDto
+import com.dertefter.data.dto.messenger.MessagesResponseDto
 import com.dertefter.data.dto.notifications.NotificationCountDto
 import com.dertefter.data.dto.notifications.NotificationsResponseDto
 import com.dertefter.data.dto.poll.PollVoteResponseDto
@@ -324,5 +328,25 @@ interface ApiService {
     suspend fun savePin(
         @Body body: SavePinRequestDto
     ): Response<Unit>
+
+    @GET("api/v1/messenger/chats")
+    suspend fun messengerChats(
+        @Query("limit") limit: Int = 100,
+        @Query("before") before: String? = null,
+        @Query("manual_unread") manualUnread: Int = 1
+    ): Response<ChatsResponseDto>
+
+    @GET("api/v1/messenger/chats/{chatId}/messages")
+    suspend fun messengerMessages(
+        @Path("chatId") chatId: String,
+        @Query("limit") limit: Int = 50,
+        @Query("before") before: String? = null
+    ): Response<MessagesResponseDto>
+
+    @POST("api/v1/messenger/chats/{chatId}/file-links")
+    suspend fun getFileLinks(
+        @Path("chatId") chatId: String,
+        @Body body: FileLinksRequestDto
+    ): Response<FileLinksResponseDto>
 
 }
